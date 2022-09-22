@@ -44,6 +44,42 @@
                 }
             }
         },
+        "trimming": {
+            "title": "Trimming",
+            "type": "object",
+            "description": "Parameters for Trim Galore!",
+            "default": "",
+            "fa_icon": "fas fa-cut",
+            "properties": {
+                "clip_r1": {
+                    "type": "string"
+                },
+                "clip_r2": {
+                    "type": "string"
+                },
+                "three_prime_clip_r1": {
+                    "type": "string"
+                },
+                "three_prime_clip_r2": {
+                    "type": "string"
+                },
+                "trim_nextseq": {
+                    "type": "string"
+                },
+                "save_trimmed": {
+                    "type": "string"
+                },
+                "skip_trimming": {
+                    "type": "string"
+                },
+                "skip_qc": {
+                    "type": "string"
+                },
+                "skip_fastqc": {
+                    "type": "string"
+                }
+            }
+        },
         "reference_genome_options": {
             "title": "Reference genome options",
             "type": "object",
@@ -245,6 +281,9 @@
     "allOf": [
         {
             "$ref": "#/definitions/input_output_options"
+        },
+        {
+            "$ref": "#/definitions/trimming"
         },
         {
             "$ref": "#/definitions/reference_genome_options"
