@@ -2,32 +2,16 @@ include { FETCH_NCBI } from '../../modules/local/fetch_ncbi'
 include { GUNZIP     } from '../../modules/nf-core/gunzip/main'
 include { PRODIGAL   } from '../../modules/nf-core/prodigal/main'
 
-process TEST {
-    input:
-    tuple val(meta), path(file)
-    val type
-
-    output:
-    path "${file}.out", emit: fsize
-
-    script:
-    """
-    echo "$meta.id, $type" > ${file}.out
-    ls -lL $file >> ${file}.out
-    """
-}
-
 workflow FETCH_NCBI_PRODIGAL {
     take: ch_ncbi_accessions
 
     main:
     FETCH_NCBI(ch_ncbi_accessions)
 
-    GUNZIP(FETCH_NCBI.out.fnas.flatten())
+    FETCH_NCBI.out.fnas.flatten().map {[ [ id: it.getBaseName() ], it ]}.set{ch_test}
+    GUNZIP(ch_test)
 
-    //PRODIGAL(GUNZIP.out.gunzip.map { [ [ id: it.getBaseName() ], it ] }, 'gff')
-    //TEST(GUNZIP.out.gunzip.map { [ id: 'hej' ], it })
-    PRODIGAL(GUNZIP.out.gunzip.map { [ [ id: it.getBaseName() ], it ] }, 'gff')
+    PRODIGAL(GUNZIP.out.gunzip, 'gff')
 
     emit:
     fnas = FETCH_NCBI.out.fnas
