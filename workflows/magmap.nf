@@ -97,6 +97,7 @@ workflow MAGMAP {
         ch_clean_reads  = FASTQC_TRIMGALORE.out.reads
         ch_bbduk_logs = Channel.empty()
     }
+
     //
     // MODULE: custom dump software versions
     //
