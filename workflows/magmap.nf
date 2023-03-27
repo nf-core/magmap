@@ -56,7 +56,7 @@ include { FASTQC_TRIMGALORE } from '../subworkflows/local/fastqc_trimgalore'
 include { FASTQC                      } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-
+include { BBMAP_BBDUK                 } from '../modules/nf-core/bbmap/bbduk/main'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -88,6 +88,15 @@ workflow MAGMAP {
     )
     ch_versions = ch_versions.mix(FASTQC_TRIMGALORE.out.versions)
 
+    if ( params.sequence_filter ) {
+        BBMAP_BBDUK ( FASTQC_TRIMGALORE.out.reads, params.sequence_filter )
+        ch_clean_reads  = BBMAP_BBDUK.out.reads
+        ch_bbduk_logs = BBMAP_BBDUK.out.log.collect { it[1] }.map { [ it ] }
+        ch_versions   = ch_versions.mix(BBMAP_BBDUK.out.versions)
+    } else {
+        ch_clean_reads  = FASTQC_TRIMGALORE.out.reads
+        ch_bbduk_logs = Channel.empty()
+    }
     //
     // MODULE: custom dump software versions
     //
