@@ -65,16 +65,16 @@
                     "type": "string"
                 },
                 "save_trimmed": {
-                    "type": "string"
+                    "type": "boolean"
                 },
                 "skip_trimming": {
-                    "type": "string"
+                    "type": "boolean"
                 },
                 "skip_qc": {
-                    "type": "string"
+                    "type": "boolean"
                 },
                 "skip_fastqc": {
-                    "type": "string"
+                    "type": "boolean"
                 }
             }
         },
@@ -87,7 +87,7 @@
             "properties": {
                 "sequence_filter": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 }
             }
         },
