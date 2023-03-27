@@ -16,6 +16,24 @@ for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true
 // Check mandatory parameters
 if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
 
+// Populate the ch_genome_fnas channel either from the params.genome_fna_dir and params.genome_fna_ext combination or the genome_fnas list
+if ( params.genome_fna_dir && params.genome_fna_ext ) {
+    Channel
+        .fromPath(params.genome_fna_dir + params.genome_fna_ext)
+        .ifEmpty { exit 1, "Cannot find any files matching \"${params.genome_fna_dir}${params.genome_fna_ext}\"\nPlease revise the genome directory (\"--genome_fna_dir\") and extension (\"--genome_fna_ext\")." }
+        .set { ch_genome_fnas }
+} else if ( params.genome_fnas ) {
+    Channel
+        .fromPath(Arrays.asList(params.genome_fnas.split(',')))
+        .set { ch_genome_fnas }
+} else if ( params.ncbi_accessions ) {
+    Channel
+        .fromPath( params.ncbi_accessions )
+        .set {  ch_ncbi_accessions }
+} else {
+    exit 1, "You need to specifiy either a combination of genome fna directory and genome fna extension (\"--genome_fna_dir\" and \"--genome_fna_ext\") or a comma separated list of genome fna files (\"--genome_fnas\")."
+}
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     CONFIG FILES
@@ -98,6 +116,14 @@ workflow MAGMAP {
         ch_bbduk_logs = Channel.empty()
     }
 
+    //
+    // SUBWORKFLOW: if asked to, fetch genomes from NCBI, then call ORFs with Prodigal
+    //
+    if ( params.ncbi_accessions ) {
+        FETCH_NCBI_PRODIGAL(ch_ncbi_accessions)
+        ch_genome_fnas = FETCH_NCBI_PRODIGAL.out.fnas
+        ch_genome_gffs = FETCH_NCBI_PRODIGAL.out.gffs.map { it[1] }
+    }
     //
     // MODULE: custom dump software versions
     //
