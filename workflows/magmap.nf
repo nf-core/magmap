@@ -43,6 +43,7 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 // SUBWORKFLOW: Local
 //
 include { FASTQC_TRIMGALORE   } from '../subworkflows/local/fastqc_trimgalore'
+include { CREATE_BBMAP_INDEX  } from '../subworkflows/local/create_bbmap_index'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -104,6 +105,14 @@ workflow MAGMAP {
         ch_clean_reads  = FASTQC_TRIMGALORE.out.reads
         ch_bbduk_logs = Channel.empty()
     }
+
+    //
+    // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
+    //
+    ch_reference.collect{ it[1] }.map{ [ [ id: 'all_references'], it ] }.view()
+
+    CREATE_BBMAP_INDEX ( ch_reference.collect{ it[1] }.map{ [ [ id: 'all_references'], it ] } )
+    ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
     // MODULE: custom dump software versions
     //
