@@ -43,7 +43,6 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 // SUBWORKFLOW: Local
 //
 include { FASTQC_TRIMGALORE   } from '../subworkflows/local/fastqc_trimgalore'
-include { FETCH_NCBI_PRODIGAL } from '../subworkflows/local/fetch_ncbi_prodigal'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -86,7 +85,6 @@ workflow MAGMAP {
             .set { ch_genomes }
     }
 
-    ch_genomes.view()
     //
     // SUBWORKFLOW: Read QC and trim adapters
     //
