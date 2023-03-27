@@ -86,6 +86,7 @@ workflow MAGMAP {
             .set { ch_genomes }
     }
 
+    ch_genomes.view()
     //
     // SUBWORKFLOW: Read QC and trim adapters
     //
