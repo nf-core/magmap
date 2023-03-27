@@ -78,6 +78,19 @@
                 }
             }
         },
+        "bbduk_option": {
+            "title": "BBduk option",
+            "type": "object",
+            "description": "Use BBduk to remove specific sequences",
+            "default": "",
+            "help_text": "It has to be a fasta file",
+            "properties": {
+                "sequence_filter": {
+                    "type": "string",
+                    "default": null
+                }
+            }
+        },
         "reference_genome_options": {
             "title": "Reference genome options",
             "type": "object",
@@ -309,6 +322,9 @@
         },
         {
             "$ref": "#/definitions/trimming"
+        },
+        {
+            "$ref": "#/definitions/bbduk_option"
         },
         {
             "$ref": "#/definitions/reference_genome_options"
