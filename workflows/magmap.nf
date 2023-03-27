@@ -77,12 +77,12 @@ workflow MAGMAP {
     )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
-    if ( params.genomes_csv) {
+    if ( params.reference_csv) {
         Channel
-            .fromPath( params.genomes_csv )
+            .fromPath( params.reference_csv )
             .splitCsv( sep: ',', skip: 1 )
             .map { [ [id: it[0]], it[1], it[2] ] }
-            .set { ch_genomes }
+            .set { ch_reference }
     }
 
     //
