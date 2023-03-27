@@ -40,10 +40,9 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 
 
 //
-// SUBWORKFLOW: Adapted from rnaseq!
+// SUBWORKFLOW: Local
 //
-include { FASTQC_TRIMGALORE } from '../subworkflows/local/fastqc_trimgalore'
-
+include { FASTQC_TRIMGALORE   } from '../subworkflows/local/fastqc_trimgalore'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -78,6 +77,14 @@ workflow MAGMAP {
     )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
+    if ( params.reference_csv) {
+        Channel
+            .fromPath( params.reference_csv )
+            .splitCsv( sep: ',', skip: 1 )
+            .map { [ [id: it[0]], it[1], it[2] ] }
+            .set { ch_reference }
+    }
+
     //
     // SUBWORKFLOW: Read QC and trim adapters
     //
@@ -98,7 +105,6 @@ workflow MAGMAP {
         ch_bbduk_logs = Channel.empty()
     }
 
-    //
     // MODULE: custom dump software versions
     //
     CUSTOM_DUMPSOFTWAREVERSIONS (
