@@ -43,6 +43,7 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 // SUBWORKFLOW: Local
 //
 include { FASTQC_TRIMGALORE   } from '../subworkflows/local/fastqc_trimgalore'
+include { CAT_GFFS            } from '../subworkflows/local/concatenate_gff'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -56,6 +57,7 @@ include { FASTQC                      } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { BBMAP_BBDUK                 } from '../modules/nf-core/bbmap/bbduk/main'
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
