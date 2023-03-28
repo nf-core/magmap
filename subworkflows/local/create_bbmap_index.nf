@@ -13,8 +13,10 @@ workflow CREATE_BBMAP_INDEX {
     main:
         FIRST_CAT   (ch_genome_fnas)
         SECOND_CAT  (FIRST_CAT.out.file_out.map{ [ [ id:'references' ], it[1] ] } )
+        ch_versions = ch_versions.mix(FIRST_CAT.out.versions)
 
         BBMAP_INDEX (SECOND_CAT.out.file_out.map{ it[1]})
+        ch_versions = ch_versions.mix(BBMAP_INDEX.out.versions)
 
     emit:
     index         = BBMAP_INDEX.out.index
