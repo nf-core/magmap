@@ -24,7 +24,7 @@
                 },
                 "reference_csv": {
                     "type": "string",
-                    "default": null
+                    "default": "None"
                 },
                 "outdir": {
                     "type": "string",
@@ -82,18 +82,23 @@
                 }
             }
         },
-        "bbduk_option": {
-            "title": "BBduk option",
+        "bbmap_options": {
+            "title": "BBmap options",
             "type": "object",
-            "description": "Use BBduk to remove specific sequences",
             "default": "",
             "help_text": "It has to be a fasta file",
             "properties": {
                 "sequence_filter": {
                     "type": "string",
-                    "default": "None"
+                    "default": "None",
+                    "description": "Use BBduk to remove specific sequences"
+                },
+                "save_bam": {
+                    "type": "boolean",
+                    "description": "save bam files in output directory"
                 }
-            }
+            },
+            "description": "Options for BBmap modules"
         },
         "reference_genome_options": {
             "title": "Reference genome options",
@@ -328,7 +333,7 @@
             "$ref": "#/definitions/trimming"
         },
         {
-            "$ref": "#/definitions/bbduk_option"
+            "$ref": "#/definitions/bbmap_options"
         },
         {
             "$ref": "#/definitions/reference_genome_options"
