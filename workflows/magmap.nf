@@ -44,6 +44,7 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 //
 include { FASTQC_TRIMGALORE   } from '../subworkflows/local/fastqc_trimgalore'
 include { CREATE_BBMAP_INDEX  } from '../subworkflows/local/create_bbmap_index'
+include { SOURMASH            } from '../subworkflows/local/sourmash'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
