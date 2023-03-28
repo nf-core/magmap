@@ -58,6 +58,7 @@ include { FASTQC                      } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { BBMAP_BBDUK                 } from '../modules/nf-core/bbmap/bbduk/main'
+include { BBMAP_ALIGN                 } from '../modules/nf-core/bbmap/align/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -125,6 +126,12 @@ workflow MAGMAP {
     //
     CAT_GFFS ( ch_reference )
     ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
+
+    //
+    // BBMAP ALIGN. Call BBMap with the index once per sample
+    //
+    BBMAP_ALIGN ( ch_clean_reads, CREATE_BBMAP_INDEX.out.index )
+    ch_versions = ch_versions.mix(BBMAP_ALIGN.out.versions)
 
     //
     // MODULE: custom dump software versions
