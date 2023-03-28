@@ -10,9 +10,10 @@ workflow CREATE_BBMAP_INDEX {
     take: ch_genome_fnas
 
     main:
-        FIRST_CAT  (ch_genome_fnas)
-        CAT_CAT.out.file_out.view()
-        BBMAP_INDEX        (CAT_CAT.out.file_out.map{ it[1]})
+        FIRST_CAT   (ch_genome_fnas)
+        SECOND_CAT  (FIRST_CAT.out.file_out)
+        SECOND_CAT.out.file_out.view()
+        BBMAP_INDEX (SECOND_CAT.out.file_out.map{ it[1]})
 
     emit:
     index         = BBMAP_INDEX.out.index

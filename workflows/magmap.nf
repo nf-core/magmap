@@ -109,7 +109,6 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
-    ch_reference.collect{ it[1] }.collate(1000).map{ [ [ id: 'all_references'], it ] }.view()
 
     CREATE_BBMAP_INDEX ( ch_reference.collect{ it[1] }.map{ [ [ id: 'all_references'], it ] } )
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
