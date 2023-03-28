@@ -43,6 +43,7 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 // SUBWORKFLOW: Local
 //
 include { FASTQC_TRIMGALORE   } from '../subworkflows/local/fastqc_trimgalore'
+include { CAT_GFFS            } from '../subworkflows/local/concatenate_gff'
 include { CREATE_BBMAP_INDEX  } from '../subworkflows/local/create_bbmap_index'
 include { SOURMASH            } from '../subworkflows/local/sourmash'
 /*
@@ -58,6 +59,7 @@ include { FASTQC                      } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
 include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { BBMAP_BBDUK                 } from '../modules/nf-core/bbmap/bbduk/main'
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
@@ -123,10 +125,16 @@ workflow MAGMAP {
         .collect{ it[1] }
         .collate(1000)
         .map{ [ [ id: 'all_references'], it[0] ] }
-        .set { ch_reference }
+        .set { ch_reference_fnas }
 
-    CREATE_BBMAP_INDEX ( ch_reference )
+    CREATE_BBMAP_INDEX ( ch_reference_fnas )
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
+
+    //
+    // SUBWORKFLOW: Concatenate gff files
+    //
+    CAT_GFFS ( ch_reference )
+    ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
 
     //
     // MODULE: custom dump software versions
