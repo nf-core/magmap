@@ -108,6 +108,15 @@ workflow MAGMAP {
     }
 
     //
+    // SUBWORKFLOW: Use SOURMASH on samples reads and genomes to reduce the number of the latter
+    //
+    ch_reference
+        .map { [ it[0], it[1] ] }
+        .set { ch_genomes_to_filter}
+
+    SOURMASH(ch_genomes_to_filter, ch_clean_reads)
+
+    //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
     ch_reference
