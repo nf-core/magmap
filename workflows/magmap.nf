@@ -43,7 +43,6 @@ include { COLLECT_FEATURECOUNTS } from '../modules/local/collect_featurecounts'
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
 
-
 //
 // SUBWORKFLOW: Local
 //
@@ -60,17 +59,17 @@ include { SOURMASH            } from '../subworkflows/local/sourmash'
 //
 // MODULE: Installed directly from nf-core/modules
 //
-include { FASTQC                      } from '../modules/nf-core/fastqc/main'
-include { MULTIQC                     } from '../modules/nf-core/multiqc/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS } from '../modules/nf-core/custom/dumpsoftwareversions/main'
-include { BBMAP_BBDUK                 } from '../modules/nf-core/bbmap/bbduk/main'
-include { BBMAP_ALIGN                 } from '../modules/nf-core/bbmap/align/main'
-include { SUBREAD_FEATURECOUNTS       } from '../modules/nf-core/subread/featurecounts/main'
+include { FASTQC                                 } from '../modules/nf-core/fastqc/main'
+include { MULTIQC                                } from '../modules/nf-core/multiqc/main'
+include { CUSTOM_DUMPSOFTWAREVERSIONS            } from '../modules/nf-core/custom/dumpsoftwareversions/main'
+include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk/main'
+include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align/main'
+include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts/main'
 
 //
 // SUBWORKFLOWS: Installed directly from nf-core/modules
 //
-include { BAM_SORT_SAMTOOLS                          } from '../subworkflows/nf-core/bam_sort_samtools/main'
+include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core/bam_sort_stats_samtools/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -157,29 +156,27 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: sort bam file
     //
-    BAM_SORT_SAMTOOLS ( BBMAP_ALIGN.out.bam )
-    ch_versions = ch_versions.mix(BAM_SORT_SAMTOOLS.out.versions)
+    BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genomes_fnas )
+    ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
     //
     // MODULE: FeatureCounts
     //
 
-    BAM_SORT_SAMTOOLS.out.bam
-        .combine(ch_gff.map { it[1] })
+    BAM_SORT_STATS_SAMTOOLS.out.bam
+        .combine(CAT_GFFS.out.gff.map { it[1] })
         .set { ch_featurecounts }
 
-    ch_collect_stats
-        .combine(BAM_SORT_SAMTOOLS.out.idxstats.collect { it[1]}.map { [ it ] })
-        .set { ch_collect_stats }
+    ch_collect_stats = BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect { it[1]}.map { [ it ] }
 
-    FEATURECOUNTS_CDS ( ch_featurecounts)
-    ch_versions       = ch_versions.mix(FEATURECOUNTS_CDS.out.versions)
+    FEATURECOUNTS ( ch_featurecounts )
+    ch_versions = ch_versions.mix(FEATURECOUNTS.out.versions)
 
     //
     // MODULE: Collect featurecounts output counts in one table
     //
 
-    FEATURECOUNTS_CDS.out.counts
+    FEATURECOUNTS.out.counts
         .collect() { it[1] }
         .map { [ [ id:'all_samples'], it ] }
         .set { ch_collect_feature }
