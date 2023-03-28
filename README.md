@@ -12,9 +12,7 @@
 
 ## Introduction
 
-<!-- TODO nf-core: Write a 1-2 sentence summary of what data the pipeline is for and what it does -->
-
-**nf-core/magmap** is a bioinformatics best-practice analysis pipeline for nf-core/magmap is a bioinformatics best-practice analysis pipeline for mapping reads to a (large) collections of genomes..
+**nf-core/magmap** is a bioinformatics best-practice analysis pipeline for nf-core/magmap is a bioinformatics best-practice analysis pipeline for mapping reads to a (large) collections of genomes.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -23,11 +21,20 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources.The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/magmap/results).
 
 ## Pipeline summary
-
-<!-- TODO nf-core: Fill in short bullet-pointed list of the default steps in the pipeline -->
-
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
+3. Quality trimming and adapters removal for raw reads ( [`Trimm Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
+4. Filter reads with [`BBduk`]()
+5. Filter the genomes with SOURMASH
+6. Quantification of genes identified in filtered genomes:
+   1. generate index of assembly [`BBmap index`](https://sourceforge.net/projects/bbmap/)
+   2. Mapping cleaned reads to the assembly for quantification [`BBmap`](https://sourceforge.net/projects/bbmap/)
+   3. Get raw counts per each gene present in the genomes [`Featurecounts`](http://subread.sourceforge.net) -> TSV table with collected featurecounts output
+7. Choice of functional annotation:
+   1. [`Eggnog-mapper`](http://eggnog-mapper.embl.de)
+   2. [`kofamscan`](https://github.com/takaram/kofam_scan)
+   3. [`Hmmsearch`](https://www.ebi.ac.uk/Tools/hmmer/search/hmmsearch). Besides searching the ORFs, each ORF's hits will be ranked.
+8. Summary statistics table. Collect_stats.R
 
 ## Quick Start
 
@@ -50,10 +57,8 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 4. Start running your own analysis!
 
-   <!-- TODO nf-core: Update the example "typical command" below used to run the pipeline -->
-
    ```bash
-   nextflow run nf-core/magmap --input samplesheet.csv --outdir <OUTDIR> --genome GRCh37 -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+   nextflow run nf-core/magmap --input samplesheet.csv --reference_csv reference_genomes.csv --outdir <OUTDIR> -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
    ```
 
 ## Documentation
@@ -62,11 +67,7 @@ The nf-core/magmap pipeline comes with documentation about the pipeline [usage](
 
 ## Credits
 
-nf-core/magmap was originally written by Danilo Di Leo, Emelie Nilsson and Daniel Lundin.
-
-We thank the following people for their extensive assistance in the development of this pipeline:
-
-<!-- TODO nf-core: If applicable, make list of people who have also contributed -->
+nf-core/magmap was originally written by Danilo Di Leo [@danilodileo](https://github.com/danilodileo), Emelie Nilsson [@emnillson](https://github.com/emnilsson) and Daniel Lundin [@erikrikardaniel](https://github.com/erikrikarddaniel).
 
 ## Contributions and Support
 
