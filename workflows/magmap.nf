@@ -43,6 +43,7 @@ include { INPUT_CHECK } from '../subworkflows/local/input_check'
 // SUBWORKFLOW: Local
 //
 include { FASTQC_TRIMGALORE   } from '../subworkflows/local/fastqc_trimgalore'
+include { CREATE_BBMAP_INDEX  } from '../subworkflows/local/create_bbmap_index'
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -105,6 +106,18 @@ workflow MAGMAP {
         ch_bbduk_logs = Channel.empty()
     }
 
+    //
+    // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
+    //
+    ch_reference
+        .collect{ it[1] }
+        .collate(1000)
+        .map{ [ [ id: 'all_references'], it[0] ] }
+        .set { ch_reference }
+
+    CREATE_BBMAP_INDEX ( ch_reference )
+    ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
+
     // MODULE: custom dump software versions
     //
     CUSTOM_DUMPSOFTWAREVERSIONS (
@@ -124,9 +137,6 @@ workflow MAGMAP {
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
-
-    // Make sure we integrate FASTQC output from FASTQC_TRIMGALORE here!!!
-    //ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]}.ifEmpty([]))
 
     MULTIQC (
         ch_multiqc_files.collect(),
