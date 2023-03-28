@@ -11,6 +11,7 @@ workflow CREATE_BBMAP_INDEX {
         ch_genome_fnas
 
     main:
+        ch_versions = Channel.empty()
         FIRST_CAT   (ch_genome_fnas)
         SECOND_CAT  (FIRST_CAT.out.file_out.map{ [ [ id:'references' ], it[1] ] } )
         ch_versions = ch_versions.mix(FIRST_CAT.out.versions)

@@ -128,6 +128,7 @@ workflow MAGMAP {
     CREATE_BBMAP_INDEX ( ch_reference )
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
+    //
     // MODULE: custom dump software versions
     //
     CUSTOM_DUMPSOFTWAREVERSIONS (
