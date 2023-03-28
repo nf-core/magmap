@@ -115,11 +115,18 @@ workflow MAGMAP {
         .collect{ it[1] }
         .collate(1000)
         .map{ [ [ id: 'all_references'], it[0] ] }
-        .set { ch_reference }
+        .set { ch_reference_fnas }
 
-    CREATE_BBMAP_INDEX ( ch_reference )
+    CREATE_BBMAP_INDEX ( ch_reference_fnas )
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
+    //
+    // SUBWORKFLOW: Concatenate gff files
+    //
+    CAT_GFFS ( ch_reference )
+    ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
+
+    //
     // MODULE: custom dump software versions
     //
     CUSTOM_DUMPSOFTWAREVERSIONS (

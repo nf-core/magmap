@@ -22,7 +22,6 @@ process GENOMEINDEX {
     """
     echo "genome\tID" | gzip -c > ${outfilename}
     for f in ${gffs}; do
-        #unpigz -c -p ${cpus} \$f | grep -o 'ID=[A-Z0-9_]\\+' | sed "s/^/\$f\\t/; s/ID=//; s/.gff.gz//" | pigz -c -p ${cpus} >> ${outfilename}
         gunzip -c \$f | grep -o 'ID=[A-Z0-9_]\\+' | sed "s/^/\$f\\t/; s/ID=//; s/.gff.gz//" | gzip -c >> ${outfilename}
     done
 
