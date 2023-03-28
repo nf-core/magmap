@@ -9,7 +9,6 @@ workflow CREATE_BBMAP_INDEX {
     take: ch_genome_fnas
 
     main:
-
         CAT_CAT  (ch_genome_fnas)
         BBMAP_INDEX        (CAT_CAT.out.file_out.map{ it[1]})
 
