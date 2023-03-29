@@ -42,12 +42,12 @@
                     },
                     "sourmash/gather": {
                         "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "git_sha": "1c7be83f545e87656c69e056ff57eb9e1c068576",
                         "installed_by": ["modules"]
                     },
                     "sourmash/sketch": {
                         "branch": "master",
-                        "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
+                        "git_sha": "1c7be83f545e87656c69e056ff57eb9e1c068576",
                         "installed_by": ["modules"]
                     },
                     "trimgalore": {
