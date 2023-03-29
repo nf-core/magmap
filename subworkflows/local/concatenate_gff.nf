@@ -12,14 +12,17 @@ workflow CAT_GFFS {
 
     main:
         ch_versions = Channel.empty()
-
+        def i = 0
         ch_genome_gffs
-            .collect{ it[2] }
+            .map{ it[2] }
+            .flatten()
             .collate(1000)
-            .map{ [ [ id: 'all_references'], it[0] ] }
+            .map{ [ [ id: "all_references${i++}" ], it ] }
             .set { ch_reference_gffs }
 
         FIRST_CAT   (ch_reference_gffs)
+        ch_versions = ch_versions.mix(FIRST_CAT.out.versions)
+
         SECOND_CAT  (FIRST_CAT.out.file_out.map{ [ [ id:'reference_gffs' ], it[1] ] })
         ch_versions = ch_versions.mix(SECOND_CAT.out.versions)
 
