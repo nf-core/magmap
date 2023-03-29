@@ -10,6 +10,7 @@ workflow SOURMASH {
     take:
         reference_genomes
         samples_reads
+        indexes
 
     main:
         save_unassigned    = true
@@ -23,9 +24,13 @@ workflow SOURMASH {
         SAMPLES_SKETCH(samples_reads)
         ch_versions = ch_versions.mix(SAMPLES_SKETCH.out.versions)
 
-        SOURMASH_GATHER(SAMPLES_SKETCH.out.signatures,
-                        GENOMES_SKETCH.out.signatures.collect()
-                        .map { it[1] },
+        SOURMASH_GATHER(SAMPLES_SKETCH.out.signatures
+                        .collect{ it[1] }
+                        .map { [ [id: 'samples_sig'], it ]},
+                        GENOMES_SKETCH.out.signatures
+                        .collect()
+                        .map { it[1] }
+                        .combine(indexes),
                         save_unassigned,
                         save_matches_sig,
                         save_prefetch,

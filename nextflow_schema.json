@@ -357,5 +357,11 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ]
+    ],
+    "properties": {
+        "indexes": {
+            "type": "string",
+            "default": null
+        }
+    }
 }

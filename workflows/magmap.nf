@@ -92,12 +92,28 @@ workflow MAGMAP {
     )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
+    //
+    // INPUT: if user provides, populate ch_reference
+    //
     if ( params.reference_csv) {
         Channel
             .fromPath( params.reference_csv )
             .splitCsv( sep: ',', skip: 1 )
             .map { [ [id: it[0]], it[1], it[2] ] }
             .set { ch_reference }
+    }
+
+    //
+    // INPUT: if user provides, populate ch_indexes
+    //
+    ch_indexes = Channel.empty()
+
+    if ( params.indexes) {
+        Channel
+            .fromPath( params.indexes )
+            .splitCsv( sep: ',', skip: 1 )
+            //.map { [ [id: 'user_indexes'], it ] }
+            .set { ch_indexes }
     }
 
     //
@@ -119,7 +135,6 @@ workflow MAGMAP {
         ch_clean_reads  = FASTQC_TRIMGALORE.out.reads
         ch_bbduk_logs = Channel.empty()
     }
-
     //
     // SUBWORKFLOW: Use SOURMASH on samples reads and genomes to reduce the number of the latter
     //
@@ -127,7 +142,7 @@ workflow MAGMAP {
         .map { [ it[0], it[1] ] }
         .set { ch_genomes_to_filter}
 
-    SOURMASH(ch_genomes_to_filter, ch_clean_reads)
+    SOURMASH(ch_genomes_to_filter, ch_clean_reads, ch_indexes)
 
     //
     // SUBWORKFLOW: Concatenate gff files
