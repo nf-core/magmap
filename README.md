@@ -12,7 +12,7 @@
 
 ## Introduction
 
-**nf-core/magmap** is a bioinformatics best-practice analysis pipeline for nf-core/magmap is a bioinformatics best-practice analysis pipeline for mapping reads to a (large) collections of genomes.
+**nf-core/magmap** is a bioinformatics best-practice analysis pipeline for mapping reads to a (large) collections of genomes.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -23,13 +23,13 @@ On release, automated continuous integration tests run the pipeline on a full-si
 ## Pipeline summary
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
-3. Quality trimming and adapters removal for raw reads ( [`Trimm Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
-4. Filter reads with [`BBduk`]()
-5. Filter the genomes with SOURMASH
-6. Quantification of genes identified in filtered genomes:
-   1. generate index of assembly [`BBmap index`](https://sourceforge.net/projects/bbmap/)
-   2. Mapping cleaned reads to the assembly for quantification [`BBmap`](https://sourceforge.net/projects/bbmap/)
-   3. Get raw counts per each gene present in the genomes [`Featurecounts`](http://subread.sourceforge.net) -> TSV table with collected featurecounts output
+3. Quality trimming and adapters removal for raw reads ([`Trimm Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
+4. Filter reads with [`BBduk`](https://sourceforge.net/projects/bbmap/)
+5. Select reference genomes based on k-mer signatures in reads with [`SOURMASH`](https://sourmash.readthedocs.io/en/latest/)
+6. Quantification of genes identified in selected reference genomes:
+   1. generate index of assembly ([`BBmap index`](https://sourceforge.net/projects/bbmap/))
+   2. Mapping cleaned reads to the assembly for quantification ([`BBmap`](https://sourceforge.net/projects/bbmap/))
+   3. Get raw counts per each gene present in the genomes ([`Featurecounts`](http://subread.sourceforge.net)) -> TSV table with collected featurecounts output
 7. Choice of functional annotation:
    1. [`Eggnog-mapper`](http://eggnog-mapper.embl.de)
    2. [`kofamscan`](https://github.com/takaram/kofam_scan)
