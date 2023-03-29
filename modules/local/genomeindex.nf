@@ -13,6 +13,9 @@ process GENOMEINDEX {
     path "${outfilename}", emit: genomes2id
     path "versions.yml"  , emit: versions
 
+    when:
+    task.ext.when == null || task.ext.when
+
     script:
     outfilename = File.createTempFile('outfile', '.gz').getName()
     cpus        = Math.floor(task.cpus/2).toInteger()
