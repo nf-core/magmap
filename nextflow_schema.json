@@ -24,7 +24,8 @@
                 },
                 "reference_csv": {
                     "type": "string",
-                    "default": "None"
+                    "default": "None",
+                    "description": "Path to comma-separated file containing information for reference genomes"
                 },
                 "outdir": {
                     "type": "string",
@@ -54,31 +55,40 @@
             "fa_icon": "fas fa-cut",
             "properties": {
                 "clip_r1": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 1 (or single-end reads)."
                 },
                 "clip_r2": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 2 (paired-end reads only)."
                 },
                 "three_prime_clip_r1": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 1 AFTER adapter/quality trimming has been performed."
                 },
                 "three_prime_clip_r2": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 2 AFTER adapter/quality trimming has been performed."
                 },
                 "trim_nextseq": {
-                    "type": "string"
+                    "type": "string",
+                    "description": "Instructs Trim Galore to apply the --nextseq=X option, to trim based on quality after removing poly-G tails."
                 },
                 "save_trimmed": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Save the trimmed FastQ files in the results directory."
                 },
                 "skip_trimming": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Skip the adapter trimming step."
                 },
                 "skip_qc": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Skip all QC steps except for MultiQC."
                 },
                 "skip_fastqc": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Skip FastQC."
                 }
             }
         },

@@ -130,22 +130,25 @@ workflow MAGMAP {
     SOURMASH(ch_genomes_to_filter, ch_clean_reads)
 
     //
-    // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
-    //
-    ch_reference
-        .collect{ it[1] }
-        .collate(1000)
-        .map{ [ [ id: 'all_references'], it[0] ] }
-        .set { ch_reference_fnas }
-
-    CREATE_BBMAP_INDEX ( ch_reference_fnas )
-    ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
-
-    //
     // SUBWORKFLOW: Concatenate gff files
     //
     CAT_GFFS ( ch_reference )
     ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
+
+    //
+    // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
+    //
+
+    def i = 0
+    ch_reference
+        .map{ it[1] }
+        .flatten()
+        .collate(1000)
+        .map{ [ [ id: "all_references${i++}" ], it ] }
+        .set { ch_reference_fnas }
+
+    CREATE_BBMAP_INDEX ( ch_reference_fnas )
+    ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
     //
     // BBMAP ALIGN. Call BBMap with the index once per sample
