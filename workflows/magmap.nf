@@ -37,6 +37,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 // MODULE: Local
 //
 include { COLLECT_FEATURECOUNTS } from '../modules/local/collect_featurecounts'
+include { COLLECT_STATS         } from '../modules/local/collect_stats'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -126,14 +127,34 @@ workflow MAGMAP {
     )
     ch_versions = ch_versions.mix(FASTQC_TRIMGALORE.out.versions)
 
+    ch_collect_stats = INPUT_CHECK.out.reads.collect { it[0].id }.map { [ [ id: "magmap" ], it ] }
+    if ( params.skip_trimming ) {
+        ch_collect_stats
+            .map { [ it[0], it[1], [] ] }
+            .set { ch_collect_stats }
+    } else {
+        ch_collect_stats
+            .combine(FASTQC_TRIMGALORE.out.trim_log.collect { it[1][0] }.map { [ it ] })
+            .set { ch_collect_stats }
+    }
+
+    //
+    // MODULE: Run BBDuk to clean out whatever sequences the user supplied via params.sequence_filter
+    //
     if ( params.sequence_filter ) {
         BBMAP_BBDUK ( FASTQC_TRIMGALORE.out.reads, params.sequence_filter )
         ch_clean_reads  = BBMAP_BBDUK.out.reads
         ch_bbduk_logs = BBMAP_BBDUK.out.log.collect { it[1] }.map { [ it ] }
         ch_versions   = ch_versions.mix(BBMAP_BBDUK.out.versions)
+        ch_collect_stats
+            .combine(ch_bbduk_logs)
+            .set {ch_collect_stats}
     } else {
         ch_clean_reads  = FASTQC_TRIMGALORE.out.reads
         ch_bbduk_logs = Channel.empty()
+        ch_collect_stats
+            .map { [ it[0], it[1], it[2], [] ] }
+            .set { ch_collect_stats }
     }
     //
     // SUBWORKFLOW: Use SOURMASH on samples reads and genomes to reduce the number of the latter
@@ -172,20 +193,22 @@ workflow MAGMAP {
     ch_versions = ch_versions.mix(BBMAP_ALIGN.out.versions)
 
     //
-    // SUBWORKFLOW: sort bam file
+    // SUBWORKFLOW: sort bam file and produce statistics
     //
     BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genomes_fnas )
     ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
-
-    //
-    // MODULE: FeatureCounts
-    //
 
     BAM_SORT_STATS_SAMTOOLS.out.bam
         .combine(CAT_GFFS.out.gff.map { it[1] })
         .set { ch_featurecounts }
 
-    ch_collect_stats = BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect { it[1]}.map { [ it ] }
+    ch_collect_stats
+        .combine(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect { it[1]}.map { [ it ] })
+        .set { ch_collect_stats }
+
+    //
+    // MODULE: FeatureCounts
+    //
 
     FEATURECOUNTS ( ch_featurecounts )
     ch_versions = ch_versions.mix(FEATURECOUNTS.out.versions)
@@ -206,6 +229,12 @@ workflow MAGMAP {
     ch_collect_stats
         .combine(ch_fcs_for_stats)
         .set { ch_collect_stats }
+
+    //
+    // Collect statistics from the pipeline
+    //
+    COLLECT_STATS(ch_collect_stats)
+    ch_versions     = ch_versions.mix(COLLECT_STATS.out.versions)
 
     //
     // MODULE: custom dump software versions
