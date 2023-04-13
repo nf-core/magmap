@@ -102,6 +102,8 @@ workflow MAGMAP {
             .splitCsv( sep: ',', skip: 1 )
             .map { [ [id: it[0]], it[1], it[2] ] }
             .set { ch_reference }
+    } else {
+        ch_reference = Channel.empty()
     }
 
     //
@@ -156,6 +158,7 @@ workflow MAGMAP {
             .map { [ it[0], it[1], it[2], [] ] }
             .set { ch_collect_stats }
     }
+
     //
     // SUBWORKFLOW: Use SOURMASH on samples reads and genomes to reduce the number of the latter
     //
