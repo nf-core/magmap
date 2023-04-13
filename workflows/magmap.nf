@@ -114,7 +114,6 @@ workflow MAGMAP {
     if ( params.indexes) {
         Channel
             .fromPath( params.indexes )
-            .splitCsv( sep: ',', skip: 1 )
             //.map { [ [id: 'user_indexes'], it ] }
             .set { ch_indexes }
     }

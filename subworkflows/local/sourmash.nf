@@ -40,6 +40,8 @@ workflow SOURMASH {
     emit:
         gindex        = GENOMES_SKETCH.out.signatures
         sindex        = SAMPLES_SKETCH.out.signatures
+        result        = SOURMASH_GATHER.out.result
+
         versions      = ch_versions
 
 }
