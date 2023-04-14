@@ -171,7 +171,7 @@ workflow MAGMAP {
         .fromPath( params.reference_csv )
         .map { [ [ id: 'genomes'], it ] }
 
-    FILTER_GENOMES(ch_ch_reference_fnas_unfiltered, SOURMASH.out.result)
+    FILTER_GENOMES(ch_reference_fnas_unfiltered, SOURMASH.out.result)
 
     //
     // Create a new channel with the filtered genomes that will be used for downstream analysis
