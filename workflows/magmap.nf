@@ -95,20 +95,20 @@ workflow MAGMAP {
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
-    // INPUT: if user provides, populate ch_reference
+    // INPUT: if user provides, populate ch_reference with a table that provides the genomes to filter with sourmash
     //
     if ( params.reference_csv) {
         Channel
             .fromPath( params.reference_csv )
             .splitCsv( sep: ',', skip: 1 )
             .map { [ [id: it[0]], it[1], it[2] ] }
-            .set { ch_reference }
-        ch_reference
+            .set { ch_reference_unfiltered }
+        ch_reference_unfiltered
             .map { [ it[0], it[1] ] }
-            .set { ch_genomes_to_filter}
+            .set { ch_reference_fnas_unfiltered}
     } else {
-        ch_reference         = Channel.empty()
-        ch_genomes_to_filter = Channel.empty()
+        ch_reference_unfiltered      = Channel.empty()
+        ch_reference_fnas_unfiltered = Channel.empty()
     }
 
     //
@@ -165,36 +165,42 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Use SOURMASH on samples reads and genomes to reduce the number of the latter
     //
-    SOURMASH(ch_genomes_to_filter, ch_clean_reads, ch_indexes)
+    SOURMASH(ch_reference_fnas_unfiltered, ch_clean_reads, ch_indexes)
 
-    ch_reference_to_filter = Channel
+    ch_reference_fnas_unfiltered = Channel
         .fromPath( params.reference_csv )
         .map { [ [ id: 'genomes'], it ] }
 
-    FILTER_GENOMES(ch_reference_to_filter, SOURMASH.out.result)
+    FILTER_GENOMES(ch_ch_reference_fnas_unfiltered, SOURMASH.out.result)
 
     //
-    // SUBWORKFLOW: Concatenate gff files
+    // Create a new channel with the filtered genomes that will be used for downstream analysis
     //
-    CAT_GFFS ( ch_reference )
-    ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
+    FILTER_GENOMES.out.filtered_genomes
+        .map{ it[1] }
+        .splitCsv( sep: '\t', skip: 1 )
+        .map { [ [id: it[0]], it[1], it[2] ] }
+        .set { ch_reference_filtered }
 
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
-
     def i = 0
-    FILTER_GENOMES.out.filtered_genomes
-        .map{ it[1] }
-        .splitCsv( sep: ',', skip: 1 )
+    ch_reference_filtered
         .map{ it[1] }
         .flatten()
         .collate(1000)
         .map{ [ [ id: "all_references${i++}" ], it ] }
-        .set { ch_reference_fnas }
+        .set { ch_reference_fnas_filtered }
 
-    CREATE_BBMAP_INDEX ( ch_reference_fnas )
+    CREATE_BBMAP_INDEX ( ch_reference_fnas_filtered )
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
+
+    //
+    // SUBWORKFLOW: Concatenate gff files
+    //
+    CAT_GFFS ( ch_reference_filtered )
+    ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
 
     //
     // BBMAP ALIGN. Call BBMap with the index once per sample
