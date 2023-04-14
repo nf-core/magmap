@@ -5,6 +5,7 @@
 include { SOURMASH_GATHER                   } from '../../modules/nf-core/sourmash/gather/main'
 include { SOURMASH_SKETCH as GENOMES_SKETCH } from '../../modules/nf-core/sourmash/sketch/main'
 include { SOURMASH_SKETCH as SAMPLES_SKETCH } from '../../modules/nf-core/sourmash/sketch/main'
+include { GUNZIP                            } from '../../modules/nf-core/gunzip/main'
 
 workflow SOURMASH {
     take:
@@ -16,7 +17,7 @@ workflow SOURMASH {
         save_unassigned    = true
         save_matches_sig   = true
         save_prefetch      = true
-        save_prefetch_csv  = true
+        save_prefetch_csv  = false
 
         ch_versions = Channel.empty()
 
@@ -26,7 +27,7 @@ workflow SOURMASH {
 
         SOURMASH_GATHER(SAMPLES_SKETCH.out.signatures
                         .collect{ it[1] }
-                        .map { [ [id: 'samples_sig'], it ]},
+                        .map { [ [id: 'samples_sig'], it ] },
                         GENOMES_SKETCH.out.signatures
                         .collect()
                         .map { it[1] }
@@ -37,10 +38,11 @@ workflow SOURMASH {
                         save_prefetch_csv
                         )
 
+        GUNZIP(SOURMASH_GATHER.out.result.map{ [ it[0], it[1] ] } )
     emit:
         gindex        = GENOMES_SKETCH.out.signatures
         sindex        = SAMPLES_SKETCH.out.signatures
-        result        = SOURMASH_GATHER.out.result
+        result        = GUNZIP.out.gunzip
 
         versions      = ch_versions
 

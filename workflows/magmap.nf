@@ -38,6 +38,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 include { COLLECT_FEATURECOUNTS } from '../modules/local/collect_featurecounts'
 include { COLLECT_STATS         } from '../modules/local/collect_stats'
+include { FILTER_GENOMES        } from '../modules/local/filter_genomes'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -102,8 +103,12 @@ workflow MAGMAP {
             .splitCsv( sep: ',', skip: 1 )
             .map { [ [id: it[0]], it[1], it[2] ] }
             .set { ch_reference }
+        ch_reference
+            .map { [ it[0], it[1] ] }
+            .set { ch_genomes_to_filter}
     } else {
-        ch_reference = Channel.empty()
+        ch_reference         = Channel.empty()
+        ch_genomes_to_filter = Channel.empty()
     }
 
     //
@@ -114,7 +119,6 @@ workflow MAGMAP {
     if ( params.indexes) {
         Channel
             .fromPath( params.indexes )
-            //.map { [ [id: 'user_indexes'], it ] }
             .set { ch_indexes }
     }
 
@@ -161,11 +165,13 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Use SOURMASH on samples reads and genomes to reduce the number of the latter
     //
-    ch_reference
-        .map { [ it[0], it[1] ] }
-        .set { ch_genomes_to_filter}
-
     SOURMASH(ch_genomes_to_filter, ch_clean_reads, ch_indexes)
+
+    ch_reference_to_filter = Channel
+        .fromPath( params.reference_csv )
+        .map { [ [ id: 'genomes'], it ] }
+
+    FILTER_GENOMES(ch_reference_to_filter, SOURMASH.out.result)
 
     //
     // SUBWORKFLOW: Concatenate gff files
@@ -178,7 +184,9 @@ workflow MAGMAP {
     //
 
     def i = 0
-    ch_reference
+    FILTER_GENOMES.out.filtered_genomes
+        .map{ it[1] }
+        .splitCsv( sep: ',', skip: 1 )
         .map{ it[1] }
         .flatten()
         .collate(1000)
