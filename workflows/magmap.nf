@@ -176,17 +176,14 @@ workflow MAGMAP {
     //
     //FILTER_GENOMES(ch_reference_fnas_unfiltered, SOURMASH.out.result)
     //
-    COLLECTGENOMES(ch_filtered_accno, ch_reference_unfiltered)
+    ch_filtered_accno.view()
+    COLLECTGENOMES(ch_filtered_accno, ch_reference_unfiltered.collect())
 
     //
     // Create a new channel with the filtered genomes that will be used for downstream analysis
     //
-    //FILTER_GENOMES.out.filtered_genomes
-    //    .map{ it[1] }
-    //    .splitCsv( sep: '\t', skip: 1 )
-    //    .map { [ [id: it[0]], it[1], it[2] ] }
-    //    .set { ch_reference_filtered }
     ch_reference_filtered = Channel.empty()
+
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
