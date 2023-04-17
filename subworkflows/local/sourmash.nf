@@ -38,7 +38,7 @@ workflow SOURMASH {
                         save_prefetch,
                         save_prefetch_csv
                         )
-
+        SOURMASH_GATHER.out.result.map{ [ it[0], it[1] ] }.view()
         GUNZIP(SOURMASH_GATHER.out.result.map{ [ it[0], it[1] ] } )
 
         FILTER_ACCNO( GUNZIP.out.gunzip)

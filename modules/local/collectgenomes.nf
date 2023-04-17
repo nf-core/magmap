@@ -24,9 +24,21 @@ process COLLECTGENOMES {
     def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
+    # Set the target filename to search for
+    target_filename1="${accno}*.fna.gz"
 
-    find . -name "${accno}*.fna.gz"
-    find . -name "${accno}*.gff.gz"
+    # Use the find command to search for the target filename
+    found_file=\$(find . -name "$target_filename" -print -quit)
+
+    # Check if the file was found
+    mkdir genome
+    if [[ -n "$found_file" ]]; then
+        echo "File found: $found_file"
+    # Create a symlink for the found file
+        ln -s "$found_file" ./genome
+    else
+        echo "No matching file found"
+    fi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
