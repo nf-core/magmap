@@ -6,6 +6,7 @@ include { SOURMASH_GATHER                   } from '../../modules/nf-core/sourma
 include { SOURMASH_SKETCH as GENOMES_SKETCH } from '../../modules/nf-core/sourmash/sketch/main'
 include { SOURMASH_SKETCH as SAMPLES_SKETCH } from '../../modules/nf-core/sourmash/sketch/main'
 include { GUNZIP                            } from '../../modules/nf-core/gunzip/main'
+include { FILTER_ACCNO                      } from '../../modules/local/create_accno_list'
 
 workflow SOURMASH {
     take:
@@ -37,12 +38,14 @@ workflow SOURMASH {
                         save_prefetch,
                         save_prefetch_csv
                         )
-
+        SOURMASH_GATHER.out.result.map{ [ it[0], it[1] ] }.view()
         GUNZIP(SOURMASH_GATHER.out.result.map{ [ it[0], it[1] ] } )
+        FILTER_ACCNO( GUNZIP.out.gunzip)
+
     emit:
         gindex        = GENOMES_SKETCH.out.signatures
         sindex        = SAMPLES_SKETCH.out.signatures
-        result        = GUNZIP.out.gunzip
+        result        = FILTER_ACCNO.out.filtered_accno
 
         versions      = ch_versions
 

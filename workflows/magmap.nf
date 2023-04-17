@@ -39,7 +39,7 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 include { COLLECT_FEATURECOUNTS } from '../modules/local/collect_featurecounts'
 include { COLLECT_STATS         } from '../modules/local/collect_stats'
 include { FILTER_GENOMES        } from '../modules/local/filter_genomes'
-
+include { COLLECTGENOMES        } from '../modules/local/collectgenomes'
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
@@ -167,21 +167,26 @@ workflow MAGMAP {
     //
     SOURMASH(ch_reference_fnas_unfiltered, ch_clean_reads, ch_indexes)
 
-    ch_reference_fnas_unfiltered = Channel
-        .fromPath( params.reference_csv )
-        .map { [ [ id: 'genomes'], it ] }
+    SOURMASH.out.result
+        .map { it[1] }
+        .splitCsv( sep: '\t', skip: 1 )
+        .map { [ [id: "${it[0]}"], it[0] ] }
+        .set { ch_filtered_accno}
 
-    FILTER_GENOMES(ch_reference_fnas_unfiltered, SOURMASH.out.result)
+    //
+    //FILTER_GENOMES(ch_reference_fnas_unfiltered, SOURMASH.out.result)
+    //
+    COLLECTGENOMES(ch_filtered_accno, ch_reference_unfiltered)
 
     //
     // Create a new channel with the filtered genomes that will be used for downstream analysis
     //
-    FILTER_GENOMES.out.filtered_genomes
-        .map{ it[1] }
-        .splitCsv( sep: '\t', skip: 1 )
-        .map { [ [id: it[0]], it[1], it[2] ] }
-        .set { ch_reference_filtered }
-
+    //FILTER_GENOMES.out.filtered_genomes
+    //    .map{ it[1] }
+    //    .splitCsv( sep: '\t', skip: 1 )
+    //    .map { [ [id: it[0]], it[1], it[2] ] }
+    //    .set { ch_reference_filtered }
+    ch_reference_filtered = Channel.empty()
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
