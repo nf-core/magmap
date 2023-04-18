@@ -121,7 +121,6 @@ workflow MAGMAP {
             .fromPath( params.indexes )
             .set { ch_indexes }
     }
-
     //
     // SUBWORKFLOW: Read QC and trim adapters
     //
@@ -166,8 +165,9 @@ workflow MAGMAP {
     // SUBWORKFLOW: Use SOURMASH on samples reads and genomes to reduce the number of the latter
     //
     SOURMASH(ch_reference_fnas_unfiltered, ch_clean_reads, ch_indexes)
+    ch_versions = ch_versions.mix(SOURMASH.out.versions)
 
-    SOURMASH.out.result
+    SOURMASH.out.accnos
         .map { it[1] }
         .splitCsv( sep: '\t', skip: 1 )
         .map { [ [id: "${it[0]}"], it[0] ] }
@@ -176,7 +176,6 @@ workflow MAGMAP {
     //
     //FILTER_GENOMES(ch_reference_fnas_unfiltered, SOURMASH.out.result)
     //
-    ch_filtered_accno.view()
     COLLECTGENOMES(ch_filtered_accno, ch_reference_unfiltered.collect())
 
     //

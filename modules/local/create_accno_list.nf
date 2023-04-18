@@ -22,15 +22,11 @@ process FILTER_ACCNO {
     def prefix = task.ext.prefix ?: "${meta.id}"
     """
     #!/usr/bin/env Rscript
-
-    library(tidyverse)
-    library(data.table)
-    library(dtplyr)
     library(readr)
     library(dplyr)
     library(stringr)
 
-    sourmash_output <- fread('samples_sig.csv')
+    sourmash_output <- read_csv('samples_sig.csv')
 
     filtered_genomes <- sourmash_output[,10] %>%
         as_data_frame() %>%

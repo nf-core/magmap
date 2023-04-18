@@ -38,15 +38,20 @@ workflow SOURMASH {
                         save_prefetch,
                         save_prefetch_csv
                         )
-        SOURMASH_GATHER.out.result.map{ [ it[0], it[1] ] }.view()
+        ch_versions = ch_versions.mix(SOURMASH_GATHER.out.versions)
+
         GUNZIP(SOURMASH_GATHER.out.result.map{ [ it[0], it[1] ] } )
+        SOURMASH_GATHER.out.result
+            .map{ it[1] }
+            .splitCsv( sep: ',', skip: 1 )
+            .map{ it[11] }
 
         FILTER_ACCNO( GUNZIP.out.gunzip)
 
     emit:
         gindex        = GENOMES_SKETCH.out.signatures
         sindex        = SAMPLES_SKETCH.out.signatures
-        result        = FILTER_ACCNO.out.filtered_accno
+        accnos        = FILTER_ACCNO.out.filtered_accno
 
         versions      = ch_versions
 
