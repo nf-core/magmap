@@ -43,20 +43,14 @@ workflow SOURMASH {
         GUNZIP(SOURMASH_GATHER.out.result.map{ [ it[0], it[1] ] } )
         SOURMASH_GATHER.out.result
             .map{ it[1] }
-            .splitCsv( sep: ',', skip: 1 )
-            .map{ it[9] }
+            .splitCsv( sep: ',', header: true)
+            .map{ it.name }
+            .map { [ it.split()[0].replaceFirst('^"', '') ] }
             .set{ ch_accnos }
-
-        ch_accnos.view()
-
-        //FILTER_ACCNO( GUNZIP.out.gunzip)
 
     emit:
         gindex        = GENOMES_SKETCH.out.signatures
         sindex        = SAMPLES_SKETCH.out.signatures
-        accnos        = Channel.empty()
-        //FILTER_ACCNO.out.filtered_accno
-
+        accnos        = ch_accnos
         versions      = ch_versions
-
 }
