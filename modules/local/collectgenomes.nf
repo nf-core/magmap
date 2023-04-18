@@ -12,8 +12,8 @@ process COLLECTGENOMES {
     tuple val(meta), path(fnas), path(gffs)
 
     output:
-    tuple val(meta), path("*.fna.gz") , emit: fnas
-    tuple val(meta), path("*.gff.gz") , emit: gffs
+    tuple val(meta), path("*.fna.gz") , optional: true, emit: fnas
+    tuple val(meta), path("*.gff.gz") , optional: true, emit: gffs
     path "versions.yml"               , emit: versions
 
     when:
