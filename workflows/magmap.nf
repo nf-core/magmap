@@ -167,16 +167,15 @@ workflow MAGMAP {
     SOURMASH(ch_reference_fnas_unfiltered, ch_clean_reads, ch_indexes)
     ch_versions = ch_versions.mix(SOURMASH.out.versions)
 
-    SOURMASH.out.accnos
-        .map { it[1] }
-        .splitCsv( sep: '\t', skip: 1 )
-        .map { [ [id: "${it[0]}"], it[0] ] }
-        .set { ch_filtered_accno}
-
     //
     //FILTER_GENOMES(ch_reference_fnas_unfiltered, SOURMASH.out.result)
     //
-    COLLECTGENOMES(ch_filtered_accno, ch_reference_unfiltered.collect())
+    Channel
+        .fromPath(params.reference_csv)
+        .map { [ [id: 'refs_to_filter'], it ] }
+        .set { ch_reference_to_filter }
+
+    COLLECTGENOMES(SOURMASH.out.accnos, ch_reference_to_filter )
 
     //
     // Create a new channel with the filtered genomes that will be used for downstream analysis

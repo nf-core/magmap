@@ -43,9 +43,8 @@ workflow SOURMASH {
         GUNZIP(SOURMASH_GATHER.out.result.map{ [ it[0], it[1] ] } )
         SOURMASH_GATHER.out.result
             .map{ it[1] }
-            .splitCsv( sep: ',', header: true)
-            .map{ it.name }
-            .map { [ it.split()[0].replaceFirst('^"', '') ] }
+            .splitCsv( sep: ',', header: true, quote: '"')
+            .map{ [ it.name.split()[0].replaceFirst('^"', '') ] }
             .set{ ch_accnos }
 
     emit:
