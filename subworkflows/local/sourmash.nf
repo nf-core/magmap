@@ -6,12 +6,27 @@ include { SOURMASH_GATHER                   } from '../../modules/nf-core/sourma
 include { SOURMASH_SKETCH as GENOMES_SKETCH } from '../../modules/nf-core/sourmash/sketch/main'
 include { SOURMASH_SKETCH as SAMPLES_SKETCH } from '../../modules/nf-core/sourmash/sketch/main'
 include { FILTER_ACCNO                      } from '../../modules/local/create_accno_list'
+include { COLLECTGENOMES                    } from '../../modules/local/collectgenomes'
+
+process ECHO_ACCNO {
+    input: val acc
+
+    output:
+    stdout
+
+    script:
+
+    """
+    echo "I've seen $acc"
+    """
+}
 
 workflow SOURMASH {
     take:
         reference_genomes
         samples_reads
         indexes
+        reference_csv
 
     main:
         // I like that you create named variables for these, but they look more like config file
@@ -49,6 +64,10 @@ workflow SOURMASH {
             .splitCsv( sep: ',', header: true, quote: '"')
             .map { it.name.replaceFirst(' .*', '') }
             .set { ch_accnos }
+
+    ECHO_ACCNO( ch_accnos )
+    ECHO_ACCNO.out.view()
+    COLLECTGENOMES(ch_accnos, reference_csv )
 
     emit:
         gindex        = GENOMES_SKETCH.out.signatures

@@ -164,10 +164,12 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Use SOURMASH on samples reads and genomes to reduce the number of the latter
     //
-    SOURMASH(ch_reference_fnas_unfiltered, ch_clean_reads, ch_indexes)
+    Channel
+        .fromPath(params.reference_csv)
+        .map { [ [id: 'refs_to_filter'], it ] }
+        .set { ch_reference_to_filter }
+    SOURMASH(ch_reference_fnas_unfiltered, ch_clean_reads, ch_indexes, ch_reference_to_filter)
     ch_versions = ch_versions.mix(SOURMASH.out.versions)
-
-    SOURMASH.out.accnos.view()
 
     // I commented out this part because I think it makes sense to have it in the subworkflow.
     /**
