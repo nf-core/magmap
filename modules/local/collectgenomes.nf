@@ -9,7 +9,6 @@ process COLLECTGENOMES {
 
     input:
     val(accno)
-    //tuple val(meta), path(csv)
     path(csv)
 
     output:
