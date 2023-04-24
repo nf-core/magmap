@@ -1,5 +1,5 @@
 process COLLECTGENOMES {
-    tag "$meta.id"
+    tag "$accno"
     label 'process_single'
 
     conda "conda-forge::pigz=2.6"
@@ -9,25 +9,25 @@ process COLLECTGENOMES {
 
     input:
     val(accno)
-    tuple val(meta), path(csv)
+    //tuple val(meta), path(csv)
+    path(csv)
 
     output:
-    tuple val(meta), path("${accno}*.fna.gz") , optional: true, emit: fnas
-    tuple val(meta), path("${accno}*.gff.gz") , optional: true, emit: gffs
-    path "versions.yml"                       , emit: versions
+    path "${accno}*.fna.gz" , optional: true, emit: fna
+    path "${accno}*.gff.gz" , optional: true, emit: gff
+    path "versions.yml"     , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
 
     """
-    if grep -q $accno .; then
-    echo "The string is present in the file."
+    if grep -q $accno $csv; then
+        echo "The string is present in the file."
     else
-    echo "The string is not present in the file."
+        echo "The string is not present in the file."
     fi
 
     cat <<-END_VERSIONS > versions.yml

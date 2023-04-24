@@ -52,7 +52,7 @@ workflow SOURMASH {
             .map { it.name.replaceFirst(' .*', '') }
             .set { ch_accnos }
 
-    COLLECTGENOMES(ch_accnos, reference_csv )
+        COLLECTGENOMES(ch_accnos, reference_csv)
 
     emit:
         gindex        = GENOMES_SKETCH.out.signatures
