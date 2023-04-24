@@ -8,19 +8,6 @@ include { SOURMASH_SKETCH as SAMPLES_SKETCH } from '../../modules/nf-core/sourma
 include { FILTER_ACCNO                      } from '../../modules/local/create_accno_list'
 include { COLLECTGENOMES                    } from '../../modules/local/collectgenomes'
 
-process ECHO_ACCNO {
-    input: val acc
-
-    output:
-    stdout
-
-    script:
-
-    """
-    echo "I've seen $acc"
-    """
-}
-
 workflow SOURMASH {
     take:
         reference_genomes
@@ -65,8 +52,6 @@ workflow SOURMASH {
             .map { it.name.replaceFirst(' .*', '') }
             .set { ch_accnos }
 
-    ECHO_ACCNO( ch_accnos )
-    ECHO_ACCNO.out.view()
     COLLECTGENOMES(ch_accnos, reference_csv )
 
     emit:
