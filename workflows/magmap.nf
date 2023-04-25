@@ -95,20 +95,20 @@ workflow MAGMAP {
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
-    // INPUT: if user provides, populate ch_reference with a table that provides the genomes to filter with sourmash
+    // INPUT: if user provides, populate ch_genomeinfo with a table that provides the genomes to filter with sourmash
     //
-    if ( params.reference_csv) {
+    if ( params.genomeinfo) {
         Channel
-            .fromPath( params.reference_csv )
+            .fromPath( params.genomeinfo )
             .splitCsv( sep: ',', skip: 1 )
             .map { [ [id: it[0]], it[1], it[2] ] }
-            .set { ch_reference_unfiltered }
-        ch_reference_unfiltered
+            .set { ch_genomeinfo_unfiltered }
+        ch_genomeinfo_unfiltered
             .map { [ it[0], it[1] ] }
-            .set { ch_reference_fnas_unfiltered}
+            .set { ch_genomeinfo_fnas_unfiltered}
     } else {
-        ch_reference_unfiltered      = Channel.empty()
-        ch_reference_fnas_unfiltered = Channel.empty()
+        ch_genomeinfo_unfiltered      = Channel.empty()
+        ch_genomeinfo_fnas_unfiltered = Channel.empty()
     }
 
     //
@@ -165,34 +165,34 @@ workflow MAGMAP {
     // SUBWORKFLOW: Use SOURMASH on samples reads and genomes to reduce the number of the latter
     //
     Channel
-        .value(file(params.reference_csv))
-        .set { ch_reference_to_filter }
-    SOURMASH(ch_reference_fnas_unfiltered, ch_clean_reads, ch_indexes, ch_reference_to_filter)
+        .value(file(params.genomeinfo))
+        .set { ch_genomeinfo }
+    SOURMASH(ch_genomeinfo_fnas_unfiltered, ch_clean_reads, ch_indexes, ch_genomeinfo)
     ch_versions = ch_versions.mix(SOURMASH.out.versions)
 
     //
     // Create a new channel with the filtered genomes that will be used for downstream analysis
     //
-    ch_reference_filtered = Channel.empty()
+    ch_genomeinfo_filtered = Channel.empty()
 
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
     def i = 0
-    ch_reference_filtered
+    ch_genomeinfo_filtered
         .map{ it[1] }
         .flatten()
         .collate(1000)
         .map{ [ [ id: "all_references${i++}" ], it ] }
-        .set { ch_reference_fnas_filtered }
+        .set { ch_genomeinfo_fnas_filtered }
 
-    CREATE_BBMAP_INDEX ( ch_reference_fnas_filtered )
+    CREATE_BBMAP_INDEX ( ch_genomeinfo_fnas_filtered )
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
     //
     // SUBWORKFLOW: Concatenate gff files
     //
-    CAT_GFFS ( ch_reference_filtered )
+    CAT_GFFS ( ch_genomeinfo_filtered )
     ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
 
     //

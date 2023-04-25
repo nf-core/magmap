@@ -13,7 +13,7 @@ workflow SOURMASH {
         reference_genomes
         samples_reads
         indexes
-        reference_csv
+        genomeinfo
 
     main:
         // I like that you create named variables for these, but they look more like config file
@@ -52,7 +52,7 @@ workflow SOURMASH {
             .map { it.name.replaceFirst(' .*', '') }
             .set { ch_accnos }
 
-        COLLECTGENOMES(ch_accnos, reference_csv)
+        COLLECTGENOMES(ch_accnos, genomeinfo)
 
     emit:
         gindex        = GENOMES_SKETCH.out.signatures
