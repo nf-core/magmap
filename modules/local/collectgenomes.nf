@@ -12,9 +12,9 @@ process COLLECTGENOMES {
     path genomeinfo
 
     output:
-    path "${accno}*.fna.gz" , optional: true, emit: fna
-    path "${accno}*.gff.gz" , optional: true, emit: gff
-    path "versions.yml"     , emit: versions
+    tuple val(accno), path("*.fna.gz"), optional: true, emit: fna
+    tuple val(accno), path("*.gff.gz"), optional: true, emit: gff
+    path "versions.yml"               , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -23,8 +23,11 @@ process COLLECTGENOMES {
     def args = task.ext.args ?: ''
 
     """
+
     if grep -q $accno $genomeinfo; then
         echo "The string is present in the file."
+        ln -s "\$(grep "$accno" $genomeinfo | cut -d "," -f 2)" .
+        ln -s "\$(grep "$accno" $genomeinfo | cut -d "," -f 3)" .
     else
         echo "The string is not present in the file."
     fi

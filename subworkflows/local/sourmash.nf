@@ -51,12 +51,15 @@ workflow SOURMASH {
             .splitCsv( sep: ',', header: true, quote: '"')
             .map { it.name.replaceFirst(' .*', '') }
             .set { ch_accnos }
-
+        ch_accnos = "GCA_002688505.1"
         COLLECTGENOMES(ch_accnos, genomeinfo)
+        ch_versions = ch_versions.mix(COLLECTGENOMES.out.versions)
+        COLLECTGENOMES.out.fna.collect().view()
 
     emit:
         gindex        = GENOMES_SKETCH.out.signatures
         sindex        = SAMPLES_SKETCH.out.signatures
-        accnos        = ch_accnos
+        fnas          = COLLECTGENOMES.out.fna
+        gffs          = COLLECTGENOMES.out.gff
         versions      = ch_versions
 }
