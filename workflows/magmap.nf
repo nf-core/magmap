@@ -40,6 +40,7 @@ include { COLLECT_FEATURECOUNTS } from '../modules/local/collect_featurecounts'
 include { COLLECT_STATS         } from '../modules/local/collect_stats'
 include { FILTER_GENOMES        } from '../modules/local/filter_genomes'
 include { COLLECTGENOMES        } from '../modules/local/collectgenomes'
+
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
@@ -52,6 +53,7 @@ include { FASTQC_TRIMGALORE   } from '../subworkflows/local/fastqc_trimgalore'
 include { CAT_GFFS            } from '../subworkflows/local/concatenate_gff'
 include { CREATE_BBMAP_INDEX  } from '../subworkflows/local/create_bbmap_index'
 include { SOURMASH            } from '../subworkflows/local/sourmash'
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -175,6 +177,8 @@ workflow MAGMAP {
     //
     ch_genomeinfo_filtered = Channel.empty()
 
+    ch_genomeinfo_filtered = SOURMASH.out.fnas
+
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
@@ -186,6 +190,7 @@ workflow MAGMAP {
         .map{ [ [ id: "all_references${i++}" ], it ] }
         .set { ch_genomeinfo_fnas_filtered }
 
+    ch_genomeinfo_fnas_filtered.view()
     CREATE_BBMAP_INDEX ( ch_genomeinfo_fnas_filtered )
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
