@@ -5,41 +5,61 @@
 include { SOURMASH_GATHER                   } from '../../modules/nf-core/sourmash/gather/main'
 include { SOURMASH_SKETCH as GENOMES_SKETCH } from '../../modules/nf-core/sourmash/sketch/main'
 include { SOURMASH_SKETCH as SAMPLES_SKETCH } from '../../modules/nf-core/sourmash/sketch/main'
+include { FILTER_ACCNO                      } from '../../modules/local/create_accno_list'
+include { COLLECTGENOMES                    } from '../../modules/local/collectgenomes'
 
 workflow SOURMASH {
     take:
         reference_genomes
         samples_reads
         indexes
+        genomeinfo
 
     main:
+        // I like that you create named variables for these, but they look more like config file
+        // params than module arguments. Now, they *are* module arguments so we need to handle them,
+        // but wouldn't it be better to let the subworkflow take them, and expose them via parameters?
         save_unassigned    = true
         save_matches_sig   = true
         save_prefetch      = true
-        save_prefetch_csv  = true
+        save_prefetch_csv  = false
 
         ch_versions = Channel.empty()
 
         GENOMES_SKETCH(reference_genomes)
+        ch_versions = ch_versions.mix(GENOMES_SKETCH.out.versions)
+
         SAMPLES_SKETCH(samples_reads)
         ch_versions = ch_versions.mix(SAMPLES_SKETCH.out.versions)
 
-        SOURMASH_GATHER(SAMPLES_SKETCH.out.signatures
-                        .collect{ it[1] }
-                        .map { [ [id: 'samples_sig'], it ]},
-                        GENOMES_SKETCH.out.signatures
-                        .collect()
-                        .map { it[1] }
-                        .combine(indexes),
-                        save_unassigned,
-                        save_matches_sig,
-                        save_prefetch,
-                        save_prefetch_csv
-                        )
+        SAMPLES_SKETCH.out.signatures
+            .collect{ it[1] }
+            .map { [ [id: 'samples_sig'], it ] }
+            .set { ch_sample_sigs }
+
+        GENOMES_SKETCH.out.signatures
+            .collect()
+            .map { it[1] }
+            .combine(indexes)
+            .set { ch_genome_sigs }
+
+        SOURMASH_GATHER ( ch_sample_sigs, ch_genome_sigs, save_unassigned, save_matches_sig, save_prefetch, save_prefetch_csv )
+        ch_versions = ch_versions.mix(SOURMASH_GATHER.out.versions)
+
+        SOURMASH_GATHER.out.result
+            .map{ it[1] }
+            .splitCsv( sep: ',', header: true, quote: '"')
+            .map { it.name.replaceFirst(' .*', '') }
+            .set { ch_accnos }
+        ch_accnos = "GCA_002688505.1"
+        COLLECTGENOMES(ch_accnos, genomeinfo)
+        ch_versions = ch_versions.mix(COLLECTGENOMES.out.versions)
+        COLLECTGENOMES.out.fna.collect().view()
 
     emit:
         gindex        = GENOMES_SKETCH.out.signatures
         sindex        = SAMPLES_SKETCH.out.signatures
+        fnas          = COLLECTGENOMES.out.fna
+        gffs          = COLLECTGENOMES.out.gff
         versions      = ch_versions
-
 }

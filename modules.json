@@ -35,6 +35,11 @@
                         "git_sha": "c8e35eb2055c099720a75538d1b8adb3fb5a464c",
                         "installed_by": ["modules"]
                     },
+                    "gunzip": {
+                        "branch": "master",
+                        "git_sha": "0f8a77ff00e65eaeebc509b8156eaa983192474b",
+                        "installed_by": ["modules"]
+                    },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "ee80d14721e76e2e079103b8dcd5d57129e584ba",
@@ -68,6 +73,11 @@
                     "sourmash/gather": {
                         "branch": "master",
                         "git_sha": "1c7be83f545e87656c69e056ff57eb9e1c068576",
+                        "installed_by": ["modules"]
+                    },
+                    "sourmash/index": {
+                        "branch": "master",
+                        "git_sha": "4321e71830d874a49c6141550c1381c6d243ca63",
                         "installed_by": ["modules"]
                     },
                     "sourmash/sketch": {

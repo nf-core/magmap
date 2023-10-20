@@ -38,7 +38,8 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 //
 include { COLLECT_FEATURECOUNTS } from '../modules/local/collect_featurecounts'
 include { COLLECT_STATS         } from '../modules/local/collect_stats'
-
+include { FILTER_GENOMES        } from '../modules/local/filter_genomes'
+include { COLLECTGENOMES        } from '../modules/local/collectgenomes'
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
@@ -94,14 +95,20 @@ workflow MAGMAP {
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
-    // INPUT: if user provides, populate ch_reference
+    // INPUT: if user provides, populate ch_genomeinfo with a table that provides the genomes to filter with sourmash
     //
-    if ( params.reference_csv) {
+    if ( params.genomeinfo) {
         Channel
-            .fromPath( params.reference_csv )
+            .fromPath( params.genomeinfo )
             .splitCsv( sep: ',', skip: 1 )
             .map { [ [id: it[0]], it[1], it[2] ] }
-            .set { ch_reference }
+            .set { ch_genomeinfo_unfiltered }
+        ch_genomeinfo_unfiltered
+            .map { [ it[0], it[1] ] }
+            .set { ch_genomeinfo_fnas_unfiltered}
+    } else {
+        ch_genomeinfo_unfiltered      = Channel.empty()
+        ch_genomeinfo_fnas_unfiltered = Channel.empty()
     }
 
     //
@@ -112,11 +119,8 @@ workflow MAGMAP {
     if ( params.indexes) {
         Channel
             .fromPath( params.indexes )
-            .splitCsv( sep: ',', skip: 1 )
-            //.map { [ [id: 'user_indexes'], it ] }
             .set { ch_indexes }
     }
-
     //
     // SUBWORKFLOW: Read QC and trim adapters
     //
@@ -156,35 +160,40 @@ workflow MAGMAP {
             .map { [ it[0], it[1], it[2], [] ] }
             .set { ch_collect_stats }
     }
+
     //
     // SUBWORKFLOW: Use SOURMASH on samples reads and genomes to reduce the number of the latter
     //
-    ch_reference
-        .map { [ it[0], it[1] ] }
-        .set { ch_genomes_to_filter}
-
-    SOURMASH(ch_genomes_to_filter, ch_clean_reads, ch_indexes)
+    Channel
+        .value(file(params.genomeinfo))
+        .set { ch_genomeinfo }
+    SOURMASH(ch_genomeinfo_fnas_unfiltered, ch_clean_reads, ch_indexes, ch_genomeinfo)
+    ch_versions = ch_versions.mix(SOURMASH.out.versions)
 
     //
-    // SUBWORKFLOW: Concatenate gff files
+    // Create a new channel with the filtered genomes that will be used for downstream analysis
     //
-    CAT_GFFS ( ch_reference )
-    ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
+    ch_genomeinfo_filtered = Channel.empty()
 
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
-
     def i = 0
-    ch_reference
+    ch_genomeinfo_filtered
         .map{ it[1] }
         .flatten()
         .collate(1000)
         .map{ [ [ id: "all_references${i++}" ], it ] }
-        .set { ch_reference_fnas }
+        .set { ch_genomeinfo_fnas_filtered }
 
-    CREATE_BBMAP_INDEX ( ch_reference_fnas )
+    CREATE_BBMAP_INDEX ( ch_genomeinfo_fnas_filtered )
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
+
+    //
+    // SUBWORKFLOW: Concatenate gff files
+    //
+    CAT_GFFS ( ch_genomeinfo_filtered )
+    ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
 
     //
     // BBMAP ALIGN. Call BBMap with the index once per sample
