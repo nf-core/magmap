@@ -45,22 +45,21 @@ workflow SOURMASH {
 
         SOURMASH_GATHER ( ch_sample_sigs, ch_genome_sigs, save_unassigned, save_matches_sig, save_prefetch, save_prefetch_csv )
         ch_versions = ch_versions.mix(SOURMASH_GATHER.out.versions)
-        SOURMASH_GATHER.out.result.view()
 
         SOURMASH_GATHER.out.result
             .map{ it[1] }
             .splitCsv( sep: ',', header: true, quote: '"')
-            .map { it.name.replaceFirst(' .*', '') }
+            .map { [ id:it.name.replaceFirst(' .*', '') ] }
             .set { ch_accnos }
 
-        ch_accnos.view()
-        COLLECTGENOMES(ch_accnos, genomeinfo)
-        ch_versions = ch_versions.mix(COLLECTGENOMES.out.versions)
+        ch_accnos
+            .join(genomeinfo)
+            .set{ ch_filtered_genomes }
 
     emit:
         gindex        = GENOMES_SKETCH.out.signatures
         sindex        = SAMPLES_SKETCH.out.signatures
-        fnas          = COLLECTGENOMES.out.fna
-        gffs          = COLLECTGENOMES.out.gff
+        fnas          = ch_filtered_genomes.map { [ it[0], it[1] ] } 
+        gffs          = ch_filtered_genomes.map { [ it[0], it[2] ] }
         versions      = ch_versions
 }
