@@ -170,7 +170,7 @@ workflow MAGMAP {
         .value(file(params.genomeinfo))
         .set { ch_genomeinfo }
     SOURMASH(ch_genomeinfo_fnas_unfiltered, ch_clean_reads, ch_indexes, ch_genomeinfo)
-    ch_versions = ch_versions.mix(SOURMASH.out.versions)
+    //ch_versions = ch_versions.mix(SOURMASH.out.versions)
 
     //
     // Create a new channel with the filtered genomes that will be used for downstream analysis
