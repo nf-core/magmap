@@ -40,7 +40,7 @@ workflow SOURMASH {
         GENOMES_SKETCH.out.signatures
             .collect()
             .map { it[1] }
-            .combine(indexes)
+            .mix(indexes)
             .set { ch_genome_sigs }
 
         SOURMASH_GATHER ( ch_sample_sigs, ch_genome_sigs, save_unassigned, save_matches_sig, save_prefetch, save_prefetch_csv )
@@ -49,17 +49,17 @@ workflow SOURMASH {
         SOURMASH_GATHER.out.result
             .map{ it[1] }
             .splitCsv( sep: ',', header: true, quote: '"')
-            .map { it.name.replaceFirst(' .*', '') }
+            .map { [ id:it.name.replaceFirst(' .*', '') ] }
             .set { ch_accnos }
-        ch_accnos = "GCA_002688505.1"
-        COLLECTGENOMES(ch_accnos, genomeinfo)
-        ch_versions = ch_versions.mix(COLLECTGENOMES.out.versions)
-        COLLECTGENOMES.out.fna.collect().view()
+
+        ch_accnos
+            .join(genomeinfo)
+            .set{ ch_filtered_genomes }
 
     emit:
         gindex        = GENOMES_SKETCH.out.signatures
         sindex        = SAMPLES_SKETCH.out.signatures
-        fnas          = COLLECTGENOMES.out.fna
-        gffs          = COLLECTGENOMES.out.gff
+        fnas          = ch_filtered_genomes.map { [ it[0], it[1] ] } 
+        gffs          = ch_filtered_genomes.map { [ it[0], it[2] ] }
         versions      = ch_versions
 }

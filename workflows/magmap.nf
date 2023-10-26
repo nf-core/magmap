@@ -40,6 +40,7 @@ include { COLLECT_FEATURECOUNTS } from '../modules/local/collect_featurecounts'
 include { COLLECT_STATS         } from '../modules/local/collect_stats'
 include { FILTER_GENOMES        } from '../modules/local/filter_genomes'
 include { COLLECTGENOMES        } from '../modules/local/collectgenomes'
+
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
@@ -52,6 +53,7 @@ include { FASTQC_TRIMGALORE   } from '../subworkflows/local/fastqc_trimgalore'
 include { CAT_GFFS            } from '../subworkflows/local/concatenate_gff'
 include { CREATE_BBMAP_INDEX  } from '../subworkflows/local/create_bbmap_index'
 include { SOURMASH            } from '../subworkflows/local/sourmash'
+
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT NF-CORE MODULES/SUBWORKFLOWS
@@ -164,26 +166,19 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Use SOURMASH on samples reads and genomes to reduce the number of the latter
     //
-    Channel
-        .value(file(params.genomeinfo))
-        .set { ch_genomeinfo }
-    SOURMASH(ch_genomeinfo_fnas_unfiltered, ch_clean_reads, ch_indexes, ch_genomeinfo)
+    SOURMASH(ch_genomeinfo_fnas_unfiltered, ch_clean_reads, ch_indexes, ch_genomeinfo_unfiltered)
     ch_versions = ch_versions.mix(SOURMASH.out.versions)
-
-    //
-    // Create a new channel with the filtered genomes that will be used for downstream analysis
-    //
-    ch_genomeinfo_filtered = Channel.empty()
 
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
     def i = 0
-    ch_genomeinfo_filtered
+
+    SOURMASH.out.fnas
         .map{ it[1] }
         .flatten()
         .collate(1000)
-        .map{ [ [ id: "all_references${i++}" ], it ] }
+        .map{ [ [ id: "all_references${i++}" ], it[0] ] }
         .set { ch_genomeinfo_fnas_filtered }
 
     CREATE_BBMAP_INDEX ( ch_genomeinfo_fnas_filtered )
@@ -192,7 +187,7 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Concatenate gff files
     //
-    CAT_GFFS ( ch_genomeinfo_filtered )
+    CAT_GFFS ( SOURMASH.out.gffs )
     ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
 
     //

@@ -2,10 +2,10 @@ process COLLECTGENOMES {
     tag "$accno"
     label 'process_single'
 
-    conda "conda-forge::pigz=2.6"
+    conda "conda-forge::wget=1.18"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-5799ab18b5fc681e75923b2450abaa969907ec98:941789bd7fe00db16531c26de8bf3c5c985242a5-0':
-        'quay.io/biocontainers/mulled-v2-5799ab18b5fc681e75923b2450abaa969907ec98:941789bd7fe00db16531c26de8bf3c5c985242a5-0' }"
+        'https://depot.galaxyproject.org/singularity/gnu-wget:1.18--h36e9172_9':
+        'quay.io/biocontainers/gnu-wget:1.18--h36e9172_9' }"
 
     input:
     val accno
@@ -26,15 +26,33 @@ process COLLECTGENOMES {
 
     if grep -q $accno $genomeinfo; then
         echo "The string is present in the file."
-        ln -s "\$(grep "$accno" $genomeinfo | cut -d "," -f 2)" .
-        ln -s "\$(grep "$accno" $genomeinfo | cut -d "," -f 3)" .
+        link_2="\$(grep "$accno" $genomeinfo | cut -d "," -f 2)"
+        link_3="\$(grep "$accno" $genomeinfo | cut -d "," -f 3)"
+
+        # Check whether link_2 is a web link ("http" or "https")
+        if [[ \$link_2 == http* || \$link_2 == https* ]]; then
+            echo "Downloading \$link_2"
+            wget "\$link_2"
+        else
+            echo "Creating symlink for \$link_2"
+            ln -s "\$link_2" .
+        fi
+
+        # Check whether link_3 is a web link ("http" or "https")
+        if [[ \$link_3 == http* || \$link_3 == https* ]]; then
+            echo "Downloading \$link_3"
+            wget "\$link_3"
+        else
+            echo "Creating symlink for \$link_3"
+            ln -s "\$link_3" .
+        fi
     else
         echo "The string is not present in the file."
     fi
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        pigz: \$( pigz --version 2>&1 | sed 's/^pigz //' )
+        wget: \$(wget --version | grep 'GNU Wget' | sed 's/GNU Wget \\([0-9.]\\+\\) .*/\\1/')
     END_VERSIONS
     """
 }
