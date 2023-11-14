@@ -336,7 +336,7 @@
     ],
     "properties": {
         "sourmash": {
-            "type": "string",
+            "type": "boolean",
             "default": "false"
         },
         "schema_ignore_params": {
