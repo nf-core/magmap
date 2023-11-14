@@ -35,7 +35,7 @@
                     },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "bba7e362e4afead70653f84d8700588ea28d0f9e",
                         "installed_by": [
                             "modules"
                         ]
@@ -56,7 +56,7 @@
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "bba7e362e4afead70653f84d8700588ea28d0f9e",
                         "installed_by": [
                             "modules"
                         ]
