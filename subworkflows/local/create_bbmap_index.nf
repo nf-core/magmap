@@ -24,6 +24,6 @@ workflow CREATE_BBMAP_INDEX {
 
     emit:
     index         = BBMAP_INDEX.out.index
-    genomes_fnas  = SECOND_CAT.out.file_out.map{ it[1]}
+    genomes_fnas  = SECOND_CAT.out.file_out
     versions      = ch_versions
 }

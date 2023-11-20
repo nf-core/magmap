@@ -166,28 +166,35 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Use SOURMASH on samples reads and genomes to reduce the number of the latter
     //
-    SOURMASH(ch_genomeinfo_fnas_unfiltered, ch_clean_reads, ch_indexes, ch_genomeinfo_unfiltered)
-    ch_versions = ch_versions.mix(SOURMASH.out.versions)
+    if ( params.sourmash ) {
+        SOURMASH(ch_genomeinfo_fnas_unfiltered, ch_clean_reads, ch_indexes, ch_genomeinfo_unfiltered)
+        ch_versions = ch_versions.mix(SOURMASH.out.versions)
+
+        def i = 0
+
+        SOURMASH.out.fnas
+            .map{ it[1] }
+            .flatten()
+            .collate(1000)
+            .map{ [ [ id: "all_references${i++}" ], it[0] ] }
+            .set { ch_genomes_fnas }
+        SOURMASH.out.gffs
+            .set { ch_genomes_gff }
+    } else {
+        ch_genomes_fnas = ch_genomeinfo_fnas_unfiltered
+        ch_genomes_gff  = ch_genomeinfo_unfiltered.map{ [ it[0], it[2] ] }
+    }
 
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
-    def i = 0
-
-    SOURMASH.out.fnas
-        .map{ it[1] }
-        .flatten()
-        .collate(1000)
-        .map{ [ [ id: "all_references${i++}" ], it[0] ] }
-        .set { ch_genomeinfo_fnas_filtered }
-
-    CREATE_BBMAP_INDEX ( ch_genomeinfo_fnas_filtered )
+    CREATE_BBMAP_INDEX ( ch_genomes_fnas )
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
     //
     // SUBWORKFLOW: Concatenate gff files
     //
-    CAT_GFFS ( SOURMASH.out.gffs )
+    CAT_GFFS ( ch_genomes_gff )
     ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
 
     //

@@ -333,5 +333,15 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ]
+    ],
+    "properties": {
+        "sourmash": {
+            "type": "boolean",
+            "default": false
+        },
+        "schema_ignore_params": {
+            "type": "string",
+            "default": "genomes"
+        }
+    }
 }
