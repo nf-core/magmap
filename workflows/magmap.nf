@@ -51,6 +51,7 @@ include { COLLECTGENOMES        } from '../modules/local/collectgenomes'
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { CHECKM_QC   } from '../subworkflows/local/checkm_qc'
 
 //
 // SUBWORKFLOW: Local
@@ -75,8 +76,6 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS            } from '../modules/nf-core/cust
 include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk/main'
 include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align/main'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts/main'
-include { CHECKM_LINEAGEWF                       } from '../modules/nf-core/checkm/lineagewf/main' 
-include { CHECKM_QA                              } from '../modules/nf-core/checkm/qa/main'     
 
 //
 // SUBWORKFLOWS: Installed directly from nf-core/modules
