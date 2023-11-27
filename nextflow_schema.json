@@ -377,7 +377,7 @@
             "default": "./results/pipeline_info"
         },
         "show_hidden_params": {
-            "type": "string",
+            "type": "boolean",
             "default": "false"
         }
     }
