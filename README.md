@@ -71,10 +71,13 @@ CONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
 Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
 
 -->
+
 Now, you can run the pipeline using:
-   ```bash
-   nextflow run nf-core/magmap --input samplesheet.csv --reference_csv reference_genomes.csv --outdir <OUTDIR> -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
-   ```
+
+```bash
+nextflow run nf-core/magmap --input samplesheet.csv --reference_csv reference_genomes.csv --outdir <OUTDIR> -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>
+```
+
 :::warning
 Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those
 provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_;
