@@ -76,7 +76,7 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS            } from '../modules/nf-core/cust
 include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk/main'
 include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align/main'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts/main'
-include { ARIA2 as ARIA2_UNTAR                   } from '../modules/nf-core/aria2/main'
+include { CHECKM_LINEAGEWF                       } from '../modules/nf-core/checkm/lineagewf/main' 
 
 //
 // SUBWORKFLOWS: Installed directly from nf-core/modules
@@ -99,14 +99,6 @@ def multiqc_report = []
 workflow MAGMAP {
 
     ch_versions = Channel.empty()
-
-    // Get checkM database if not supplied
-    if ( !params.skip_binqc && params.binqc_tool == 'checkm' && !params.checkm_db ) {
-        ARIA2_UNTAR (params.checkm_download_url)
-        ch_checkm_db = ARIA2_UNTAR.out.downloaded_file
-    }
-
-    ch_checkm_summary           = Channel.empty()
 
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
@@ -214,29 +206,11 @@ workflow MAGMAP {
     CREATE_BBMAP_INDEX ( ch_genomes_fnas )
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
-    /*
-    * Bin QC subworkflows: for checking bin completeness with either BUSCO, CHECKM, and/or GUNC
-    */
-    if (!params.skip_binqc && params.binqc_tool == 'checkm'){
-        /*
-        * CheckM subworkflow: Quantitative measures for the assessment of genome assembly
-        */
-
-        ch_input_bins_for_checkm = ch_input_bins_for_qc
-            .filter { meta, bins ->
-                meta.domain != "eukarya"
-            }
-
-        CHECKM_QC (
-            ch_input_bins_for_checkm.groupTuple(),
-            ch_checkm_db
-        )
-        ch_checkm_summary = CHECKM_QC.out.summary
-
-        ch_versions = ch_versions.mix(CHECKM_QC.out.versions)
-
-    }
-
+    //
+    // CheckM
+    //
+    CHECKM_LINEAGEWF(ch_genomes_fnas, "fna.gz", [])
+    
     //
     // SUBWORKFLOW: Concatenate gff files
     //
@@ -265,7 +239,6 @@ workflow MAGMAP {
 
     //
     // MODULE: FeatureCounts
-    //
 
     FEATURECOUNTS ( ch_featurecounts )
     ch_versions = ch_versions.mix(FEATURECOUNTS.out.versions)

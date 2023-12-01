@@ -19,7 +19,7 @@ workflow CHECKM_QC {
                                     .multiMap {
                                         meta, fa ->
                                             reads: [ meta, fa ]
-                                            ext: fa.extension.unique().join("") // we set this in the pipeline to always `.fa` so this should be fine
+                                            ext: "fna.gz" // we set this in the pipeline to always `.fa` so this should be fine
                                     }
 
     CHECKM_LINEAGEWF ( ch_bins_for_checkmlineagewf.reads, ch_bins_for_checkmlineagewf.ext, checkm_db )
