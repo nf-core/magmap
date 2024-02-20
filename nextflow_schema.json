@@ -22,9 +22,11 @@
                     "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/magmap/usage#samplesheet-input).",
                     "fa_icon": "fas fa-file-csv"
                 },
+                "genome": {
+                    "type": "string"
+                },
                 "genomeinfo": {
                     "type": "string",
-                    "default": "None",
                     "description": "Path to comma-separated file containing information about the location of genome files (contigs and gff files)"
                 },
                 "outdir": {
@@ -53,9 +55,11 @@
             "description": "Parameters for Sourmash identification of genomes",
             "default": "",
             "properties": {
+                "sourmash": {
+                    "type": "boolean"
+                },
                 "indexes": {
                     "type": "string",
-                    "default": "None",
                     "description": "Sourmash index files",
                     "help_text": "These typically have a `.sbt.zip` suffix. Files can either be created by the user or downloaded from e.g. https://sourmash.readthedocs.io/en/latest/databases.html#gtdb-r07-rs207-dna-databases."
                 },
@@ -121,7 +125,6 @@
             "properties": {
                 "sequence_filter": {
                     "type": "string",
-                    "default": "None",
                     "description": "Use BBduk to remove specific sequences"
                 },
                 "save_bam": {
@@ -348,27 +351,5 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ],
-    "properties": {
-        "sourmash": {
-            "type": "boolean",
-            "default": false
-        },
-        "schema_ignore_params": {
-            "type": "string",
-            "default": "genomes"
-        },
-        "genome": {
-            "type": "string",
-            "default": null
-        },
-        "tracedir": {
-            "type": "string",
-            "default": "./results/pipeline_info"
-        },
-        "show_hidden_params": {
-            "type": "boolean",
-            "default": "false"
-        }
-    }
+    ]
 }
