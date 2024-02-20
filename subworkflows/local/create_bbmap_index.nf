@@ -13,6 +13,7 @@ workflow CREATE_BBMAP_INDEX {
     main:
         ch_versions = Channel.empty()
         FIRST_CAT   (ch_genome_fnas)
+        ch_versions = ch_versions.mix(FIRST_CAT.out.versions)
 
         SECOND_CAT  (FIRST_CAT.out.file_out
                         .collect{ it[1] }

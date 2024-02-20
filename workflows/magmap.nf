@@ -15,13 +15,6 @@ log.info logo + paramsSummaryLog(workflow) + citation
 
 WorkflowMagmap.initialise(params, log)
 
-// Check input path parameters to see if they exist
-def checkPathParamList = [ params.input, params.multiqc_config ]
-for (param in checkPathParamList) { if (param) { file(param, checkIfExists: true) } }
-
-// Check mandatory parameters
-if (params.input) { ch_input = file(params.input) } else { exit 1, 'Input samplesheet not specified!' }
-
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     CONFIG FILES
@@ -45,7 +38,6 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 include { COLLECT_FEATURECOUNTS } from '../modules/local/collect_featurecounts'
 include { COLLECT_STATS         } from '../modules/local/collect_stats'
 include { FILTER_GENOMES        } from '../modules/local/filter_genomes'
-include { COLLECTGENOMES        } from '../modules/local/collectgenomes'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -101,9 +93,6 @@ workflow MAGMAP {
         file(params.input)
     )
     ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
-    // TODO: OPTIONAL, you can use nf-validation plugin to create an input channel from the samplesheet with Channel.fromSamplesheet("input")
-    // See the documentation https://nextflow-io.github.io/nf-validation/samplesheets/fromSamplesheet/
-    // ! There is currently no tooling to help you write a sample sheet schema
 
     //
     // INPUT: if user provides, populate ch_genomeinfo with a table that provides the genomes to filter with sourmash
@@ -300,6 +289,13 @@ workflow.onComplete {
     NfcoreTemplate.summary(workflow, params, log)
     if (params.hook_url) {
         NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
+    }
+}
+
+workflow.onError {
+    if (workflow.errorReport.contains("Process requirement exceeds available memory")) {
+        println("🛑 Default resources exceed availability 🛑 ")
+        println("💡 See here on how to configure pipeline: https://nf-co.re/docs/usage/configuration#tuning-workflow-resources 💡")
     }
 }
 

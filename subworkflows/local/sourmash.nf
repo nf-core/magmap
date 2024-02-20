@@ -5,8 +5,6 @@
 include { SOURMASH_GATHER                   } from '../../modules/nf-core/sourmash/gather/main'
 include { SOURMASH_SKETCH as GENOMES_SKETCH } from '../../modules/nf-core/sourmash/sketch/main'
 include { SOURMASH_SKETCH as SAMPLES_SKETCH } from '../../modules/nf-core/sourmash/sketch/main'
-include { FILTER_ACCNO                      } from '../../modules/local/create_accno_list'
-include { COLLECTGENOMES                    } from '../../modules/local/collectgenomes'
 
 workflow SOURMASH {
     take:
@@ -59,7 +57,7 @@ workflow SOURMASH {
     emit:
         gindex        = GENOMES_SKETCH.out.signatures
         sindex        = SAMPLES_SKETCH.out.signatures
-        fnas          = ch_filtered_genomes.map { [ it[0], it[1] ] } 
+        fnas          = ch_filtered_genomes.map { [ it[0], it[1] ] }
         gffs          = ch_filtered_genomes.map { [ it[0], it[2] ] }
         versions      = ch_versions
 }
