@@ -38,7 +38,6 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 include { COLLECT_FEATURECOUNTS } from '../modules/local/collect_featurecounts'
 include { COLLECT_STATS         } from '../modules/local/collect_stats'
 include { FILTER_GENOMES        } from '../modules/local/filter_genomes'
-include { COLLECTGENOMES        } from '../modules/local/collectgenomes'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
