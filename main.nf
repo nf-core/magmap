@@ -39,11 +39,6 @@ if (params.help) {
     System.exit(0)
 }
 
-// Validate input parameters
-if (params.validate_params) {
-    validateParameters()
-}
-
 WorkflowMain.initialise(workflow, params, log, args)
 
 /*
