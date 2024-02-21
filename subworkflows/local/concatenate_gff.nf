@@ -27,7 +27,10 @@ workflow CAT_GFFS {
         ch_versions = ch_versions.mix(SECOND_CAT.out.versions)
 
         GENOMEINDEX(ch_genome_gffs.collect{ it[1] })
+        ch_versions = ch_versions.mix(GENOMEINDEX.out.versions)
+
         GINDEX_CAT(GENOMEINDEX.out.genomes2id.collect().map { [ [id: 'genomes_index'], it ] })
+        ch_versions = ch_versions.mix(GINDEX_CAT.out.versions)
 
     emit:
     gff      = SECOND_CAT.out.file_out
