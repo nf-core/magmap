@@ -93,8 +93,10 @@ workflow MAGMAP {
 
     if ( !params.skip_binqc && !params.checkm_db ) {
         ARIA2 ([ [id:"download_checkm_db"] , params.checkm_download_url])
+        ch_versions = ch_versions.mix(ARIA2.out.versions)
         UNTAR(ARIA2.out.downloaded_file)
         ch_checkm_db = UNTAR.out.downloaded_file
+        ch_versions = ch_versions.mix(UNTAR.out.versions)
     }
 
     ch_versions = Channel.empty()
@@ -210,6 +212,7 @@ workflow MAGMAP {
             ch_genomes_fnas.groupTuple(),
             ch_checkm_db
         )
+        ch_versions = ch_versions.mix(CHECKM_QC.out.versions)
     }
 
     //

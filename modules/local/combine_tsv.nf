@@ -1,4 +1,6 @@
 process COMBINE_TSV {
+    tag "$meta.id"
+    label 'process_high'
 
     // Using bioawk as already use that for CONVERT_DEPTHS and does same thing
     conda "bioconda::bioawk=1.0"
@@ -12,6 +14,9 @@ process COMBINE_TSV {
     output:
     path("*.tsv")      , emit: combined
     path "versions.yml", emit: versions
+
+    when:
+    task.ext.when == null || task.ext.when
 
     script:
     def prefix = task.ext.prefix ?: "bin_depths_summary_combined"
