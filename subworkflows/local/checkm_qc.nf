@@ -15,14 +15,8 @@ workflow CHECKM_QC {
     ch_versions = Channel.empty()
 
     ch_input_checkmdb = checkm_db ? checkm_db : []
-    ch_bins_for_checkmlineagewf = bins
-                                    .multiMap {
-                                        meta, fa ->
-                                            reads: [ meta, fa ]
-                                            ext: "fna.gz" // we set this in the pipeline to always `.fa` so this should be fine
-                                    }
 
-    CHECKM_LINEAGEWF ( ch_bins_for_checkmlineagewf.reads, ch_bins_for_checkmlineagewf.ext, checkm_db )
+    CHECKM_LINEAGEWF ( bins, "fna.gz", checkm_db )
     ch_versions = ch_versions.mix(CHECKM_LINEAGEWF.out.versions.first())
 
     ch_checkmqa_input = CHECKM_LINEAGEWF.out.checkm_output
