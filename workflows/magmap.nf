@@ -91,7 +91,7 @@ def multiqc_report = []
 
 workflow MAGMAP {
 
-    if ( !params.skip_binqc && params.binqc_tool == 'checkm' && !params.checkm_db ) {
+    if ( !params.skip_binqc && !params.checkm_db ) {
         ARIA2 ([ [id:"download_checkm_db"] , params.checkm_download_url])
         UNTAR(ARIA2.out.downloaded_file)
         ch_checkm_db = UNTAR.out.downloaded_file
@@ -206,10 +206,12 @@ workflow MAGMAP {
     // CheckM
     //
 
-    CHECKM_QC (
-                ch_genomes_fnas.groupTuple(),
-                ch_checkm_db
-            )
+    if (!params.skip_binqc){
+        CHECKM_QC (
+            ch_genomes_fnas.groupTuple(),
+            ch_checkm_db
+        )
+    }
 
     //
     // SUBWORKFLOW: Concatenate gff files
