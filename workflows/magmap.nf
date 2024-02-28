@@ -205,7 +205,6 @@ workflow MAGMAP {
     //
     // CheckM
     //
-
     if (!params.skip_binqc){
         CHECKM_QC (
             ch_genomes_fnas.groupTuple(),
