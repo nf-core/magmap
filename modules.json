@@ -27,7 +27,7 @@
                     },
                     "cat/cat": {
                         "branch": "master",
-                        "git_sha": "81f27e75847087865299cc46605deb3b09b4e0a2",
+                        "git_sha": "9437e6053dccf4aafa022bfd6e7e9de67e625af8",
                         "installed_by": ["modules"]
                     },
                     "checkm/lineagewf": {
@@ -102,7 +102,7 @@
                     },
                     "subread/featurecounts": {
                         "branch": "master",
-                        "git_sha": "d062b356938ea98d29b298691adf0620d3c3bdf0",
+                        "git_sha": "e5265c217dcfbff7731c40623aaf07538fdd3e1c",
                         "installed_by": ["modules"]
                     },
                     "trimgalore": {
