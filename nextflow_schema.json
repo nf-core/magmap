@@ -98,7 +98,8 @@
             "default": "",
             "properties": {
                 "sourmash": {
-                    "type": "boolean"
+                    "type": "boolean",
+                    "description": "Enable sourmash module"
                 },
                 "indexes": {
                     "type": "string",
