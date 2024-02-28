@@ -30,6 +30,7 @@ workflow CHECKM_QC {
     ch_versions = ch_versions.mix(CHECKM_QA.out.versions.first())
 
     COMBINE_CHECKM_TSV ( CHECKM_QA.out.output.map{it[1]}.collect() )
+    ch_versions = ch_versions.mix(COMBINE_CHECKM_TSV.out.versions.first())
 
     emit:
     summary    = COMBINE_CHECKM_TSV.out.combined
