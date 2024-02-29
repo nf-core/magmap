@@ -52,6 +52,7 @@ include { FASTQC_TRIMGALORE   } from '../subworkflows/local/fastqc_trimgalore'
 include { CAT_GFFS            } from '../subworkflows/local/concatenate_gff'
 include { CREATE_BBMAP_INDEX  } from '../subworkflows/local/create_bbmap_index'
 include { SOURMASH            } from '../subworkflows/local/sourmash'
+include { ARIA2_UNTAR         } from '../subworkflows/local/aria2_untar'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,8 +69,8 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS            } from '../modules/nf-core/cust
 include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk/main'
 include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align/main'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts/main'
-include { ARIA2                                  } from '../modules/nf-core/aria2/main'
-include { UNTAR                                  } from '../modules/nf-core/untar/main'
+//include { ARIA2                                  } from '../modules/nf-core/aria2/main'
+//include { UNTAR                                  } from '../modules/nf-core/untar/main'
 
 //
 // SUBWORKFLOWS: Installed directly from nf-core/modules
@@ -82,9 +83,9 @@ include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-if(params.checkm_db) {
-    ch_checkm_db = file(params.checkm_db, checkIfExists: true)
-}
+//if(params.checkm_db) {
+//    ch_checkm_db = file(params.checkm_db, checkIfExists: true)
+//}
 
 // Info required for completion email and summary
 def multiqc_report = []
@@ -93,12 +94,10 @@ workflow MAGMAP {
 
     ch_versions = Channel.empty()
 
-    if ( !params.skip_binqc && !params.checkm_db ) {
-        ARIA2 ([ [id:"download_checkm_db"] , params.checkm_download_url])
-        ch_versions = ch_versions.mix(ARIA2.out.versions)
-        UNTAR(ARIA2.out.downloaded_file)
-        ch_checkm_db = UNTAR.out.untar
-        ch_versions = ch_versions.mix(UNTAR.out.versions)
+    if ( !params.skip_binqc ) {
+        ARIA2_UNTAR()
+        ch_checkm_db = ARIA2_UNTAR.out.checkm_db
+        ch_versions  = ARIA2_UNTAR.out.versions
     }
 
     //
