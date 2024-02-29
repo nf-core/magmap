@@ -38,7 +38,6 @@ ch_multiqc_custom_methods_description = params.multiqc_methods_description ? fil
 include { COLLECT_FEATURECOUNTS } from '../modules/local/collect_featurecounts'
 include { COLLECT_STATS         } from '../modules/local/collect_stats'
 include { FILTER_GENOMES        } from '../modules/local/filter_genomes'
-include { UNTAR                 } from '../modules/local/untar.nf'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -70,6 +69,7 @@ include { BBMAP_BBDUK                            } from '../modules/nf-core/bbma
 include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align/main'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts/main'
 include { ARIA2                                  } from '../modules/nf-core/aria2/main'
+include { UNTAR                                  } from '../modules/nf-core/untar/main'
 
 //
 // SUBWORKFLOWS: Installed directly from nf-core/modules
@@ -91,15 +91,15 @@ def multiqc_report = []
 
 workflow MAGMAP {
 
+    ch_versions = Channel.empty()
+
     if ( !params.skip_binqc && !params.checkm_db ) {
         ARIA2 ([ [id:"download_checkm_db"] , params.checkm_download_url])
         ch_versions = ch_versions.mix(ARIA2.out.versions)
         UNTAR(ARIA2.out.downloaded_file)
-        ch_checkm_db = UNTAR.out.downloaded_file
+        ch_checkm_db = UNTAR.out.untar
         ch_versions = ch_versions.mix(UNTAR.out.versions)
     }
-
-    ch_versions = Channel.empty()
 
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
@@ -210,7 +210,7 @@ workflow MAGMAP {
     if (!params.skip_binqc){
         CHECKM_QC (
             ch_genomes_fnas.groupTuple(),
-            ch_checkm_db
+            ch_checkm_db.map { meta, db -> db }
         )
         ch_versions = ch_versions.mix(CHECKM_QC.out.versions)
     }
