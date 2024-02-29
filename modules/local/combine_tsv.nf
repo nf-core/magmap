@@ -2,7 +2,7 @@ process COMBINE_TSV {
     tag "$meta.id"
     label 'process_high'
 
-    // Using bioawk as already use that for CONVERT_DEPTHS and does same thing
+    // Using bioawk as we already use that for CONVERT_DEPTHS and does same thing
     conda "bioconda::bioawk=1.0"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://depot.galaxyproject.org/singularity/bioawk:1.0--hed695b0_5' :
