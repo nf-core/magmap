@@ -1,7 +1,7 @@
-name: multiqc
+name: checkm_qa
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - bioconda::multiqc=1.21
+  - bioconda::checkm-genome=1.2.2

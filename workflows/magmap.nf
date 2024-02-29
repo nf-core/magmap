@@ -43,6 +43,7 @@ include { FILTER_GENOMES        } from '../modules/local/filter_genomes'
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
 include { INPUT_CHECK } from '../subworkflows/local/input_check'
+include { CHECKM_QC   } from '../subworkflows/local/checkm_qc'
 
 //
 // SUBWORKFLOW: Local
@@ -51,6 +52,7 @@ include { FASTQC_TRIMGALORE   } from '../subworkflows/local/fastqc_trimgalore'
 include { CAT_GFFS            } from '../subworkflows/local/concatenate_gff'
 include { CREATE_BBMAP_INDEX  } from '../subworkflows/local/create_bbmap_index'
 include { SOURMASH            } from '../subworkflows/local/sourmash'
+include { ARIA2_UNTAR         } from '../subworkflows/local/aria2_untar'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -67,6 +69,8 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS            } from '../modules/nf-core/cust
 include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk/main'
 include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align/main'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts/main'
+//include { ARIA2                                  } from '../modules/nf-core/aria2/main'
+//include { UNTAR                                  } from '../modules/nf-core/untar/main'
 
 //
 // SUBWORKFLOWS: Installed directly from nf-core/modules
@@ -79,12 +83,22 @@ include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+//if(params.checkm_db) {
+//    ch_checkm_db = file(params.checkm_db, checkIfExists: true)
+//}
+
 // Info required for completion email and summary
 def multiqc_report = []
 
 workflow MAGMAP {
 
     ch_versions = Channel.empty()
+
+    if ( !params.skip_binqc ) {
+        ARIA2_UNTAR()
+        ch_checkm_db = ARIA2_UNTAR.out.checkm_db
+        ch_versions  = ARIA2_UNTAR.out.versions
+    }
 
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
@@ -190,6 +204,17 @@ workflow MAGMAP {
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
     //
+    // CheckM
+    //
+    if (!params.skip_binqc){
+        CHECKM_QC (
+            ch_genomes_fnas.groupTuple(),
+            ch_checkm_db.map { meta, db -> db }
+        )
+        ch_versions = ch_versions.mix(CHECKM_QC.out.versions)
+    }
+
+    //
     // SUBWORKFLOW: Concatenate gff files
     //
     CAT_GFFS ( ch_genomes_gff )
@@ -217,7 +242,6 @@ workflow MAGMAP {
 
     //
     // MODULE: FeatureCounts
-    //
 
     FEATURECOUNTS ( ch_featurecounts )
     ch_versions = ch_versions.mix(FEATURECOUNTS.out.versions)

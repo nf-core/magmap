@@ -46,22 +46,6 @@
                 }
             }
         },
-        "sourmash_options": {
-            "title": "Sourmash options",
-            "type": "object",
-            "description": "Parameters for Sourmash identification of genomes",
-            "default": "",
-            "properties": {
-                "sourmash": {
-                    "type": "boolean"
-                },
-                "indexes": {
-                    "type": "string",
-                    "description": "Sourmash index files",
-                    "help_text": "These typically have a `.sbt.zip` suffix. Files can either be created by the user or downloaded from e.g. https://sourmash.readthedocs.io/en/latest/databases.html#gtdb-r07-rs207-dna-databases."
-                }
-            }
-        },
         "trimming": {
             "title": "Trimming",
             "type": "object",
@@ -104,6 +88,48 @@
                 "skip_fastqc": {
                     "type": "boolean",
                     "description": "Skip FastQC."
+                }
+            }
+        },
+        "sourmash_options": {
+            "title": "Sourmash options",
+            "type": "object",
+            "description": "Parameters for Sourmash identification of genomes",
+            "default": "",
+            "properties": {
+                "sourmash": {
+                    "type": "boolean",
+                    "description": "Enable sourmash module"
+                },
+                "indexes": {
+                    "type": "string",
+                    "description": "Sourmash index files",
+                    "help_text": "These typically have a `.sbt.zip` suffix. Files can either be created by the user or downloaded from e.g. https://sourmash.readthedocs.io/en/latest/databases.html#gtdb-r07-rs207-dna-databases."
+                }
+            }
+        },
+        "checkm": {
+            "title": "CheckM",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "skip_binqc": {
+                    "type": "boolean",
+                    "description": "Skip bin quality check"
+                },
+                "checkm_download_url": {
+                    "type": "string",
+                    "default": "https://data.ace.uq.edu.au/public/CheckM_databases/checkm_data_2015_01_16.tar.gz",
+                    "description": "Download CheckM database"
+                },
+                "checkm_db": {
+                    "type": "string",
+                    "description": "CheckM database path"
+                },
+                "save_checkm_data": {
+                    "type": "boolean",
+                    "description": "Save checkM database"
                 }
             }
         },
@@ -324,10 +350,13 @@
             "$ref": "#/definitions/input_output_options"
         },
         {
+            "$ref": "#/definitions/trimming"
+        },
+        {
             "$ref": "#/definitions/sourmash_options"
         },
         {
-            "$ref": "#/definitions/trimming"
+            "$ref": "#/definitions/checkm"
         },
         {
             "$ref": "#/definitions/bbmap_options"

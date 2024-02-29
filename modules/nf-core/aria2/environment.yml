@@ -1,7 +1,7 @@
-name: multiqc
+name: aria2
 channels:
   - conda-forge
   - bioconda
   - defaults
 dependencies:
-  - bioconda::multiqc=1.21
+  - conda-forge::aria2=1.36.0
