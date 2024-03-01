@@ -84,9 +84,14 @@ include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-//if(params.checkm_db) {
-//    ch_checkm_db = file(params.checkm_db, checkIfExists: true)
-//}
+gtdb = ( params.skip_binqc || params.skip_gtdbtk ) ? false : params.gtdb_db
+
+if (gtdb) {
+    gtdb = file( "${gtdb}", checkIfExists: true)
+    gtdb_mash = params.gtdb_mash ? file("${params.gtdb_mash}", checkIfExists: true) : []
+} else {
+    gtdb = []
+}
 
 // Info required for completion email and summary
 def multiqc_report = []
@@ -216,6 +221,31 @@ workflow MAGMAP {
     }
 
     //
+    // GTDB-tk: taxonomic classifications using GTDB reference
+    //
+    if ( !params.skip_gtdbtk ) {
+        ch_gtdbtk_summary = Channel.empty()
+        if ( gtdb ){
+            ch_gtdb_bins = ch_input_for_postbinning_bins_unbins
+                .filter { meta, bins ->
+                    meta.domain != "eukarya"
+                }
+
+            GTDBTK (
+                ch_gtdb_bins,
+                ch_busco_summary,
+                ch_checkm_summary,
+                gtdb,
+                gtdb_mash
+            )
+            ch_versions = ch_versions.mix(GTDBTK.out.versions.first())
+            ch_gtdbtk_summary = GTDBTK.out.summary
+        }
+    } else {
+        ch_gtdbtk_summary = Channel.empty()
+    }
+
+    //
     // SUBWORKFLOW: Concatenate gff files
     //
     CAT_GFFS ( ch_genomes_gff )
@@ -243,14 +273,13 @@ workflow MAGMAP {
 
     //
     // MODULE: FeatureCounts
-
+    //
     FEATURECOUNTS ( ch_featurecounts )
     ch_versions = ch_versions.mix(FEATURECOUNTS.out.versions)
 
     //
     // MODULE: Collect featurecounts output counts in one table
     //
-
     FEATURECOUNTS.out.counts
         .collect() { it[1] }
         .map { [ [ id:'all_samples'], it ] }
