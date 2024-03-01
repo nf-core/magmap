@@ -1,6 +1,6 @@
-/*
- * GTDB-Tk bin classification, using BUSCO QC to filter bins
- */
+//
+// GTDB-Tk bin classification, using BUSCO QC to filter bins
+//
 
 include { GTDBTK_DB_PREPARATION } from '../../modules/local/gtdbtk_db_preparation'
 include { GTDBTK_CLASSIFYWF     } from '../../modules/nf-core/gtdbtk/classifywf/main'

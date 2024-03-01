@@ -217,7 +217,8 @@ workflow MAGMAP {
             ch_genomes_fnas.groupTuple(),
             ch_checkm_db.map { meta, db -> db }
         )
-        ch_versions = ch_versions.mix(CHECKM_QC.out.versions)
+        ch_checkm_summary = CHECKM_QC.out.summary
+        ch_versions       = ch_versions.mix(CHECKM_QC.out.versions)
     }
 
     //
@@ -226,14 +227,8 @@ workflow MAGMAP {
     if ( !params.skip_gtdbtk ) {
         ch_gtdbtk_summary = Channel.empty()
         if ( gtdb ){
-            ch_gtdb_bins = ch_input_for_postbinning_bins_unbins
-                .filter { meta, bins ->
-                    meta.domain != "eukarya"
-                }
-
             GTDBTK (
-                ch_gtdb_bins,
-                ch_busco_summary,
+                ch_genomes_fnas,
                 ch_checkm_summary,
                 gtdb,
                 gtdb_mash
