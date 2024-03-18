@@ -4,6 +4,7 @@
 
 include { SOURMASH_GATHER                   } from '../../modules/nf-core/sourmash/gather/main'
 include { SOURMASH_SKETCH as GENOMES_SKETCH } from '../../modules/nf-core/sourmash/sketch/main'
+include { SOURMASH_INDEX as GENOMES_INDEX   } from '../../modules/nf-core/sourmash/index/main'
 include { SOURMASH_SKETCH as SAMPLES_SKETCH } from '../../modules/nf-core/sourmash/sketch/main'
 
 workflow SOURMASH {
@@ -36,18 +37,26 @@ workflow SOURMASH {
             .set { ch_sample_sigs }
 
         GENOMES_SKETCH.out.signatures
-            .collect()
-            .map { it[1] }
-            .mix(indexes)
+            .collect{ meta, sig -> [ sig ] }
+            .map{ sig -> [ [id: 'signatures'], sig ] }
             .set { ch_genome_sigs }
 
-        SOURMASH_GATHER ( ch_sample_sigs, ch_genome_sigs, save_unassigned, save_matches_sig, save_prefetch, save_prefetch_csv )
+        GENOMES_INDEX(ch_genome_sigs)
+
+        GENOMES_INDEX.out.signature_index
+            .map{ meta, sig -> sig }
+            .mix(indexes)
+            .collect()
+            .set{ ch_database }
+
+        SOURMASH_GATHER ( SAMPLES_SKETCH.out.signatures, ch_database, save_unassigned, save_matches_sig, save_prefetch, save_prefetch_csv )
         ch_versions = ch_versions.mix(SOURMASH_GATHER.out.versions)
 
         SOURMASH_GATHER.out.result
-            .map{ it[1] }
+            .map{ meta, csv -> csv }
             .splitCsv( sep: ',', header: true, quote: '"')
-            .map { [ id:it.name.replaceFirst(' .*', '') ] }
+            .map { it.name }
+            .unique()
             .set { ch_accnos }
 
         ch_accnos
