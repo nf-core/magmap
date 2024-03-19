@@ -183,6 +183,7 @@ workflow MAGMAP {
     if ( params.sourmash ) {
         SOURMASH(ch_clean_reads, ch_indexes, ch_genomeinfo, params.ncbi_genome_infos)
         ch_versions = ch_versions.mix(SOURMASH.out.versions)
+        ch_genomes = SOURMASH.out.filtered_genomes
 
         def i = 0
 
@@ -198,6 +199,10 @@ workflow MAGMAP {
         ch_genomes_fnas = ch_genomeinfo_fnas_unfiltered
         ch_genomes_gff  = ch_genomeinfo_unfiltered.map{ [ it[0], it[2] ] }
     }
+
+    //
+    // MODULE: Prokka
+    //
 
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index

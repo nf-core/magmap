@@ -78,17 +78,23 @@ workflow SOURMASH {
         ch_accnos
             .join(ch_user_genomeinfo.map { [ it.accno, [ it ] ]} )
             .map { it[1][0] }
-            .set{ ch_filtered_genomes }
+            .set{ ch_matching_user_genomes }
 
         ch_accnos
-            .join(ch_filtered_genomes.map { [ it.accno ] }, remainder: false)
+            .join(ch_matching_user_genomes.map { [ it.accno, [ it ] ]}, remainder: true)
+            .filter{ !it[1] }
+            .map{ it[0] }
+            .join( ch_ncbi_genomeinfo.map { [ it.accno, [ it ] ] } )
+            .map { it[1][0] }
+            .mix(ch_matching_user_genomes)
+            .set { ch_filtered_genomes }
+
         // Add entries from NCBI for the ones missing in ch_filtered_genomes
 
 
     emit:
-        gindex        = GENOMES_SKETCH.out.signatures
-        sindex        = SAMPLES_SKETCH.out.signatures
-        fnas          = ch_filtered_genomes.map { [ it[0], it[1] ] }
-        gffs          = ch_filtered_genomes.map { [ it[0], it[2] ] }
-        versions      = ch_versions
+        gindex           = GENOMES_SKETCH.out.signatures
+        sindex           = SAMPLES_SKETCH.out.signatures
+        filtered_genomes = ch_filtered_genomes.map { [ it[0], it[1] ] }
+        versions         = ch_versions
 }
