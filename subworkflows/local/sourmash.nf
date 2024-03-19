@@ -9,10 +9,10 @@ include { SOURMASH_SKETCH as SAMPLES_SKETCH } from '../../modules/nf-core/sourma
 
 workflow SOURMASH {
     take:
-        reference_genomes
         samples_reads
         indexes
-        genomeinfo
+        ch_user_genomeinfo
+        ncbi_genomeinfo_files
 
     main:
         // I like that you create named variables for these, but they look more like config file
@@ -25,7 +25,21 @@ workflow SOURMASH {
 
         ch_versions = Channel.empty()
 
-        GENOMES_SKETCH(reference_genomes)
+        Channel
+                .fromPath( ncbi_genomeinfo_files )
+                .splitCsv(sep: '\t')
+                .map { file(it[0]) }
+                .splitCsv(skip: 1, header: true, sep: '\t')
+                .map {
+                    [
+                        accno: it["#assembly_accession"],
+                        genome_fna: "${it.ftp_path}/${it["#assembly_accession"]}${it.ftp_path - ~/\/$/ - ~/.*\//}_genomic.fna.gz",
+                        genome_gff: ""
+                    ]
+                }
+                .set { ch_ncbi_genomeinfo }
+
+        GENOMES_SKETCH(ch_user_genomeinfo.map { [ [ id: it.accno ], it.genome_fna ] })
         ch_versions = ch_versions.mix(GENOMES_SKETCH.out.versions)
 
         SAMPLES_SKETCH(samples_reads)
@@ -59,8 +73,12 @@ workflow SOURMASH {
             .unique()
             .set { ch_accnos }
 
+        // Subset the two genome info channels to only contain those that Sourmash identified
+
+        // The user supplied channel takes precedence, so start with that
         ch_accnos
-            .join(genomeinfo)
+            .join(ch_user_genomeinfo.map { [ it.accno, [ it ] ]} )
+            .map { it[1][0] }
             .set{ ch_filtered_genomes }
 
     emit:

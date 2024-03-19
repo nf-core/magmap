@@ -120,30 +120,9 @@ workflow MAGMAP {
     if ( params.genomeinfo) {
         Channel
             .fromPath( params.genomeinfo )
-            .splitCsv( sep: ',', skip: 1 )
-            .map { [ [id: it[0]], it[1], it[2] ] }
-            .set { ch_genomeinfo_unfiltered }
-        ch_genomeinfo_unfiltered
-            .map { [ it[0], it[1] ] }
-            .set { ch_genomeinfo_fnas_unfiltered}
-    } else {
-        ch_genomeinfo_unfiltered      = Channel.empty()
-        ch_genomeinfo_fnas_unfiltered = Channel.empty()
+            .splitCsv( sep: ',', header: true )
+            .set { ch_genomeinfo }
     }
-
-    //
-    // INPUT: path to ncbi genomes
-    //
-    // This channels has two entries, a genome ID and a fasta path.
-    // In further steps we will need to get a channel with three entries, same + gff that can be obtained with Prokka
-    Channel
-            .fromPath( params.ncbi_genome_infos )
-            .splitCsv(sep: '\t')
-            .map { file(it[0]) }
-            .splitCsv(skip: 1, header: true, sep: '\t')
-            .map { [ id: it["#assembly_accession"], genome_fna: "${it.ftp_path}/${it["#assembly_accession"]}${it.ftp_path - ~/\/$/ - ~/.*\//}_genomic.fna.gz"]}
-            .map { meta -> [ meta.id, meta.genome_fna ] }
-            .set { ch_ncbi_genome_infos }
 
     //
     // INPUT: if user provides, populate ch_indexes
@@ -198,8 +177,10 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Use SOURMASH on samples reads and genomes to reduce the number of the latter
     //
+    // we create a channel for ncbi genomes only when sourmash is called
+
     if ( params.sourmash ) {
-        SOURMASH(ch_genomeinfo_fnas_unfiltered, ch_clean_reads, ch_indexes, ch_genomeinfo_unfiltered)
+        SOURMASH(ch_clean_reads, ch_indexes, ch_genomeinfo, params.ncbi_genome_infos)
         ch_versions = ch_versions.mix(SOURMASH.out.versions)
 
         def i = 0
