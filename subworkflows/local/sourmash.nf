@@ -74,12 +74,16 @@ workflow SOURMASH {
             .set { ch_accnos }
 
         // Subset the two genome info channels to only contain those that Sourmash identified
-
         // The user supplied channel takes precedence, so start with that
         ch_accnos
             .join(ch_user_genomeinfo.map { [ it.accno, [ it ] ]} )
             .map { it[1][0] }
             .set{ ch_filtered_genomes }
+
+        ch_accnos
+            .join(ch_filtered_genomes.map { [ it.accno ] }, remainder: false)
+        // Add entries from NCBI for the ones missing in ch_filtered_genomes
+
 
     emit:
         gindex        = GENOMES_SKETCH.out.signatures

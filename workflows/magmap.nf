@@ -134,6 +134,7 @@ workflow MAGMAP {
             .fromPath( params.indexes )
             .set { ch_indexes }
     }
+
     //
     // SUBWORKFLOW: Read QC and trim adapters
     //
