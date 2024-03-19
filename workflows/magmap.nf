@@ -185,115 +185,115 @@ workflow MAGMAP {
         ch_versions = ch_versions.mix(SOURMASH.out.versions)
         ch_genomes = SOURMASH.out.filtered_genomes
 
-        def i = 0
+        //def i = 0
 
-        SOURMASH.out.fnas
-            .map{ it[1] }
-            .flatten()
-            .collate(1000)
-            .map{ [ [ id: "all_references${i++}" ], it[0] ] }
-            .set { ch_genomes_fnas }
-        SOURMASH.out.gffs
-            .set { ch_genomes_gff }
-    } else {
-        ch_genomes_fnas = ch_genomeinfo_fnas_unfiltered
-        ch_genomes_gff  = ch_genomeinfo_unfiltered.map{ [ it[0], it[2] ] }
+        //SOURMASH.out.fnas
+        //    .map{ it[1] }
+        //    .flatten()
+        //    .collate(1000)
+        //    .map{ [ [ id: "all_references${i++}" ], it[0] ] }
+        //    .set { ch_genomes_fnas }
+        //SOURMASH.out.gffs
+        //    .set { ch_genomes_gff }
     }
 
     //
     // MODULE: Prokka
     //
 
+    // To avoid the pipeline to crush until we get prokka. I commented everything
+    //
+
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
-    CREATE_BBMAP_INDEX ( ch_genomes_fnas )
-    ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
+    //CREATE_BBMAP_INDEX ( ch_genomes_fnas )
+    //ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
     //
     // CheckM
     //
-    if (!params.skip_binqc){
-        CHECKM_QC (
-            ch_genomes_fnas.groupTuple(),
-            ch_checkm_db.map { meta, db -> db }
-        )
-        ch_checkm_summary = CHECKM_QC.out.summary
-        ch_versions       = ch_versions.mix(CHECKM_QC.out.versions)
-    }
+    //if (!params.skip_binqc){
+    //    CHECKM_QC (
+    //        ch_genomes_fnas.groupTuple(),
+    //        ch_checkm_db.map { meta, db -> db }
+    //    )
+    //    ch_checkm_summary = CHECKM_QC.out.summary
+    //    ch_versions       = ch_versions.mix(CHECKM_QC.out.versions)
+    //}
 
     //
     // GTDB-tk: taxonomic classifications using GTDB reference
     //
-    if ( !params.skip_gtdbtk ) {
-        ch_gtdbtk_summary = Channel.empty()
-        if ( gtdb ){
-            GTDBTK (
-                ch_genomes_fnas,
-                ch_checkm_summary,
-                gtdb,
-                gtdb_mash
-            )
-            ch_versions = ch_versions.mix(GTDBTK.out.versions.first())
-            ch_gtdbtk_summary = GTDBTK.out.summary
-        }
-    } else {
-        ch_gtdbtk_summary = Channel.empty()
-    }
+    //if ( !params.skip_gtdbtk ) {
+    //    ch_gtdbtk_summary = Channel.empty()
+    //    if ( gtdb ){
+    //        GTDBTK (
+    //            ch_genomes_fnas,
+    //            ch_checkm_summary,
+    //            gtdb,
+    //            gtdb_mash
+    //        )
+    //        ch_versions = ch_versions.mix(GTDBTK.out.versions.first())
+    //        ch_gtdbtk_summary = GTDBTK.out.summary
+    //    }
+    //} else {
+    //    ch_gtdbtk_summary = Channel.empty()
+    //}
 
     //
     // SUBWORKFLOW: Concatenate gff files
     //
-    CAT_GFFS ( ch_genomes_gff )
-    ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
+    //CAT_GFFS ( ch_genomes_gff )
+    //ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
 
     //
     // BBMAP ALIGN. Call BBMap with the index once per sample
     //
-    BBMAP_ALIGN ( ch_clean_reads, CREATE_BBMAP_INDEX.out.index )
-    ch_versions = ch_versions.mix(BBMAP_ALIGN.out.versions)
+    //BBMAP_ALIGN ( ch_clean_reads, CREATE_BBMAP_INDEX.out.index )
+    //ch_versions = ch_versions.mix(BBMAP_ALIGN.out.versions)
 
     //
     // SUBWORKFLOW: sort bam file and produce statistics
     //
-    BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genomes_fnas )
-    ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
+    //BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genomes_fnas )
+    //ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
-    BAM_SORT_STATS_SAMTOOLS.out.bam
-        .combine(CAT_GFFS.out.gff.map { it[1] })
-        .set { ch_featurecounts }
+    //BAM_SORT_STATS_SAMTOOLS.out.bam
+    //    .combine(CAT_GFFS.out.gff.map { it[1] })
+    //    .set { ch_featurecounts }
 
-    ch_collect_stats
-        .combine(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect { it[1]}.map { [ it ] })
-        .set { ch_collect_stats }
+    //ch_collect_stats
+    //    .combine(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect { it[1]}.map { [ it ] })
+    //    .set { ch_collect_stats }
 
     //
     // MODULE: FeatureCounts
     //
-    FEATURECOUNTS ( ch_featurecounts )
-    ch_versions = ch_versions.mix(FEATURECOUNTS.out.versions)
+    //FEATURECOUNTS ( ch_featurecounts )
+    //ch_versions = ch_versions.mix(FEATURECOUNTS.out.versions)
 
     //
     // MODULE: Collect featurecounts output counts in one table
     //
-    FEATURECOUNTS.out.counts
-        .collect() { it[1] }
-        .map { [ [ id:'all_samples'], it ] }
-        .set { ch_collect_feature }
+    //FEATURECOUNTS.out.counts
+    //    .collect() { it[1] }
+    //    .map { [ [ id:'all_samples'], it ] }
+    //    .set { ch_collect_feature }
 
-    COLLECT_FEATURECOUNTS ( ch_collect_feature )
-    ch_versions           = ch_versions.mix(COLLECT_FEATURECOUNTS.out.versions)
-    ch_fcs_for_stats      = COLLECT_FEATURECOUNTS.out.counts.collect { it[1]}.map { [ it ] }
-    ch_fcs_for_summary    = COLLECT_FEATURECOUNTS.out.counts.map { it[1]}
-    ch_collect_stats
-        .combine(ch_fcs_for_stats)
-        .set { ch_collect_stats }
+    //COLLECT_FEATURECOUNTS ( ch_collect_feature )
+    //ch_versions           = ch_versions.mix(COLLECT_FEATURECOUNTS.out.versions)
+    //ch_fcs_for_stats      = COLLECT_FEATURECOUNTS.out.counts.collect { it[1]}.map { [ it ] }
+    //ch_fcs_for_summary    = COLLECT_FEATURECOUNTS.out.counts.map { it[1]}
+    //ch_collect_stats
+    //    .combine(ch_fcs_for_stats)
+    //    .set { ch_collect_stats }
 
     //
     // Collect statistics from the pipeline
     //
-    COLLECT_STATS(ch_collect_stats)
-    ch_versions     = ch_versions.mix(COLLECT_STATS.out.versions)
+    //COLLECT_STATS(ch_collect_stats)
+    //ch_versions     = ch_versions.mix(COLLECT_STATS.out.versions)
 
     //
     // MODULE: custom dump software versions
