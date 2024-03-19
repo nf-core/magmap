@@ -33,7 +33,7 @@ workflow SOURMASH {
                 .map {
                     [
                         accno: it["#assembly_accession"],
-                        genome_fna: "${it.ftp_path}/${it["#assembly_accession"]}${it.ftp_path - ~/\/$/ - ~/.*\//}_genomic.fna.gz",
+                        genome_fna: "${it.ftp_path}/${it.ftp_path - ~/\/$/ - ~/.*\//}_genomic.fna.gz",
                         genome_gff: ""
                     ]
                 }
@@ -86,15 +86,15 @@ workflow SOURMASH {
             .map{ it[0] }
             .join( ch_ncbi_genomeinfo.map { [ it.accno, [ it ] ] } )
             .map { it[1][0] }
+            .map { [ accno: it.accno, genome_fna: file(it.genome_fna), genome_gff: ''] }
             .mix(ch_matching_user_genomes)
             .set { ch_filtered_genomes }
 
         // Add entries from NCBI for the ones missing in ch_filtered_genomes
 
-
     emit:
         gindex           = GENOMES_SKETCH.out.signatures
         sindex           = SAMPLES_SKETCH.out.signatures
-        filtered_genomes = ch_filtered_genomes.map { [ it[0], it[1] ] }
+        filtered_genomes = ch_filtered_genomes
         versions         = ch_versions
 }

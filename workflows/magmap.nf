@@ -70,6 +70,8 @@ include { CUSTOM_DUMPSOFTWAREVERSIONS            } from '../modules/nf-core/cust
 include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk/main'
 include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align/main'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts/main'
+include { GUNZIP                                 } from '../modules/nf-core/gunzip/main'
+include { PROKKA                                 } from '../modules/nf-core/prokka/main'
 //include { ARIA2                                  } from '../modules/nf-core/aria2/main'
 //include { UNTAR                                  } from '../modules/nf-core/untar/main'
 
@@ -200,9 +202,22 @@ workflow MAGMAP {
     //
     // MODULE: Prokka
     //
+    ch_genomes
+        .filter{ !it.genome_gff }
+        .map{ [ [id: it.accno ] , it.genome_fna ] }
+        .set { ch_no_gff }
 
-    // To avoid the pipeline to crush until we get prokka. I commented everything
-    //
+    GUNZIP(ch_no_gff)
+
+    PROKKA(GUNZIP.out.gunzip, [], [])
+    PROKKA.out.gff
+        .map{ meta, gff -> [ meta.id  , [ meta.id, gff ] ] }
+        .join(ch_no_gff.map { meta, fna -> [ meta.id , [ meta.id, fna ] ] } )
+        .map{ meta, gff, fna -> [ accno: gff[0], genome_fna: fna[1], genome_gff: gff[1] ] }
+        .mix( ch_genomes
+            .filter{ it.genome_gff }
+        )
+        .set{ ch_ready_genomes }
 
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
