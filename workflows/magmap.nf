@@ -132,6 +132,19 @@ workflow MAGMAP {
     }
 
     //
+    // INPUT: path to ncbi genomes
+    //
+    Channel
+            .fromPath( params.ncbi_genome_infos )
+            .splitCsv(sep: '\t')
+            .map { file(it[0]) }
+            .splitCsv(skip: 1, header: true, sep: '\t')
+            .map { [ id: it["#assembly_accession"], genome_fna: "${it.ftp_path}/${it["#assembly_accession"]}*_genomic.fna.gz"]}
+            .set { ch_ncbi_genome_infos }
+    ch_ncbi_genome_infos.first()
+        .map { file(it) }
+        .view()
+    //
     // INPUT: if user provides, populate ch_indexes
     //
     ch_indexes = Channel.empty()
