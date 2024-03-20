@@ -53,7 +53,7 @@ include { CAT_GFFS            } from '../subworkflows/local/concatenate_gff'
 include { CREATE_BBMAP_INDEX  } from '../subworkflows/local/create_bbmap_index'
 include { SOURMASH            } from '../subworkflows/local/sourmash'
 include { ARIA2_UNTAR         } from '../subworkflows/local/aria2_untar'
-include { GTDBTK              } from '../subworkflows/local/gtdbtk'
+//include { GTDBTK              } from '../subworkflows/local/gtdbtk'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -87,14 +87,14 @@ include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-gtdb = ( params.skip_binqc || params.skip_gtdbtk ) ? false : params.gtdb_db
+// gtdb = ( params.skip_binqc || params.skip_gtdbtk ) ? false : params.gtdb_db
 
-if (gtdb) {
-    gtdb = file( "${gtdb}", checkIfExists: true)
-    gtdb_mash = params.gtdb_mash ? file("${params.gtdb_mash}", checkIfExists: true) : []
-} else {
-    gtdb = []
-}
+// if (gtdb) {
+//     gtdb = file( "${gtdb}", checkIfExists: true)
+//     gtdb_mash = params.gtdb_mash ? file("${params.gtdb_mash}", checkIfExists: true) : []
+// } else {
+//     gtdb = []
+// }
 
 // Info required for completion email and summary
 def multiqc_report = []
@@ -271,22 +271,22 @@ workflow MAGMAP {
     //
     // GTDB-tk: taxonomic classifications using GTDB reference
     //
-    if ( !params.skip_gtdbtk ) {
-        ch_gtdbtk_summary = Channel.empty()
-        if ( gtdb ){
-            GTDBTK (
-            ch_genomes_fnas,
-            ch_checkm_summary,
-            gtdb,
-            gtdb_mash
-            )
-        ch_versions = ch_versions.mix(GTDBTK.out.versions.first())
-        ch_gtdbtk_summary = GTDBTK.out.summary
-        }
-    } else {
-        ch_gtdbtk_summary = Channel.empty()
-    }
-
+    // if ( !params.skip_gtdbtk ) {
+    //     ch_gtdbtk_summary = Channel.empty()
+    //     if ( gtdb ){
+    //         GTDBTK (
+    //         ch_genomes_fnas,
+    //         ch_checkm_summary,
+    //         gtdb,
+    //         gtdb_mash
+    //         )
+    //     ch_versions = ch_versions.mix(GTDBTK.out.versions.first())
+    //     ch_gtdbtk_summary = GTDBTK.out.summary
+    //     }
+    // } else {
+    //     ch_gtdbtk_summary = Channel.empty()
+    // }
+s
     //
     // SUBWORKFLOW: Concatenate gff files
     //
