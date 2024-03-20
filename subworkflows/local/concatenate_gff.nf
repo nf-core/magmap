@@ -18,7 +18,6 @@ workflow CAT_GFFS {
             .flatten()
             .collate(1000)
             .map{ [ [ id: "all_references${i++}" ], it ] }
-            .view()
             .set { ch_reference_gffs }
         FIRST_CAT   (ch_reference_gffs)
         ch_versions = ch_versions.mix(FIRST_CAT.out.versions)
@@ -32,7 +31,6 @@ workflow CAT_GFFS {
         GINDEX_CAT(GENOMEINDEX.out.genomes2id.collect().map { [ [id: 'genomes_index'], it ] })
         ch_versions = ch_versions.mix(GINDEX_CAT.out.versions)
 
-    GINDEX_CAT.out.file_out.view()
     emit:
     gff      = SECOND_CAT.out.file_out
     gindex   = GINDEX_CAT.out.file_out

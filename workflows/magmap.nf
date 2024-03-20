@@ -197,7 +197,13 @@ workflow MAGMAP {
         ch_versions = ch_versions.mix(SOURMASH.out.versions)
         ch_genomes = SOURMASH.out.filtered_genomes
     } else {
-        ch_genomes = ch_genomeinfo
+        ch_genomeinfo
+            .map { [
+                accno: it.accno,
+                genome_fna: file(it.genome_fna),
+                genome_gff: file(it.genome_gff)
+                ] }
+            .set{ ch_genomes }
     }
 
     //
@@ -211,7 +217,7 @@ workflow MAGMAP {
     // GUNZIP gff files provided by the user
     ch_genomes
         .filter{ it.genome_gff }
-        .map { [ [id: it.accno], it.genome_gff ] }
+        .map { [ [id: it.accno], file(it.genome_gff) ] }
         .set{ gff_to_gunzip }
 
      GUNZIP_GFFS(gff_to_gunzip)
@@ -228,11 +234,11 @@ workflow MAGMAP {
     PROKKA(GUNZIP.out.gunzip, [], [])
 
     ch_genomes_gunzipped_gff
-        .mix(PROKKA.out.gff
-            .ifEmpty([])
-            .map{ meta, gff -> [ meta.id  , [ meta.id, gff ] ] }
-            .join(ch_no_gff.map { meta, fna -> [ meta.id , [ meta.id, fna ] ] } )
-            .map{ meta, gff, fna -> [ accno: gff[0], genome_fna: fna[1], genome_gff: gff[1] ] })
+        //.mix(PROKKA.out.gff
+        //    .ifEmpty([])
+        //    .map{ meta, gff -> [ meta.id  , [ meta.id, gff ] ] }
+        //    .join(ch_no_gff.map { meta, fna -> [ meta.id , [ meta.id, fna ] ] } )
+        //    .map{ meta, gff, fna -> [ accno: gff[0], genome_fna: fna[1], genome_gff: gff[1] ] })
         .set{ ch_ready_genomes }
 
     //
@@ -241,11 +247,11 @@ workflow MAGMAP {
     def i = 0
 
     ch_ready_genomes
-    .map{ it.genome_fna }
-    .flatten()
-    .collate(1000)
-    .map{ [ [ id: "all_references${i++}" ], it ] }
-    .set { ch_genomes_fnas }
+        .map{ it.genome_fna }
+        .flatten()
+        .collate(1000)
+        .map{ [ [ id: "all_references${i++}" ], it ] }
+        .set { ch_genomes_fnas }
 
     CREATE_BBMAP_INDEX ( ch_genomes_fnas )
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
