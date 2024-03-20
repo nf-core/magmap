@@ -4,7 +4,7 @@
 
 include { SOURMASH_GATHER                   } from '../../modules/nf-core/sourmash/gather/main'
 include { SOURMASH_SKETCH as GENOMES_SKETCH } from '../../modules/nf-core/sourmash/sketch/main'
-include { SOURMASH_INDEX as GENOMES_INDEX   } from '../../modules/nf-core/sourmash/index/main'
+include { SOURMASH_INDEX  as GENOMES_INDEX  } from '../../modules/nf-core/sourmash/index/main'
 include { SOURMASH_SKETCH as SAMPLES_SKETCH } from '../../modules/nf-core/sourmash/sketch/main'
 
 workflow SOURMASH {
