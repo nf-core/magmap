@@ -17,9 +17,8 @@ workflow CAT_GFFS {
             .map{ it[1] }
             .flatten()
             .collate(1000)
-            .map{ [ [ id: "all_references${i++}" ], it[0] ] }
+            .map{ [ [ id: "all_references${i++}" ], it ] }
             .set { ch_reference_gffs }
-
         FIRST_CAT   (ch_reference_gffs)
         ch_versions = ch_versions.mix(FIRST_CAT.out.versions)
 

@@ -21,9 +21,13 @@ process GENOMEINDEX {
     cpus        = Math.floor(task.cpus/2).toInteger()
 
     """
-    echo "genome\tID" | gzip -c > ${outfilename}
+    echo "accno\tgenome\tID" | gzip -c > ${outfilename}
     for f in ${gffs}; do
-        gunzip -c \$f | grep -o 'ID=[A-Z0-9_]\\+' | sed "s/^/\$f\\t/; s/ID=//; s/.gff.gz//" | gzip -c >> ${outfilename}
+        fn=\$(basename \$f .gff)
+        ac=\$(echo \$fn | sed 's/\\(G.._[0-9.]\\+\\)_.*/\\1/')
+        cat \$f | \
+            grep -o 'ID=[A-Z0-9_]\\+' | \
+            sed "s/^/\$ac\\t\$fn\\t/; s/ID=//" | gzip -c >> ${outfilename}
     done
 
     cat <<-END_VERSIONS > versions.yml
