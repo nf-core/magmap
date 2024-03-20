@@ -187,11 +187,7 @@ workflow MAGMAP {
                     checkm_completeness: it.Completeness,
                     checkm_contamination: it.Contamination,
                     checkm_strain_heterogeneity: it["Strain heterogeneity"],
-                    contig_count: "",
-                    genome_size: it["Genome size (bp)"],
-                    gtdb_genome_representative: "",
-                    gtdb_representative: "",
-                    gtdb_taxonomy: ""
+                    genome_size: it["Genome size (bp)"]
                 ]
             }
             .set { ch_checkm_metadata }
