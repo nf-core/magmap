@@ -148,6 +148,56 @@ workflow MAGMAP {
     }
 
     //
+    // INPUT: if user provides, populate ch_metadata
+    //
+    ch_metadata = Channel.empty()
+
+    if ( params.gtdb_metadata) {
+        Channel
+            .of(params.gtdb_metadata.split(','))
+            .map { file(it) }
+            .splitCsv( sep: '\t', header: true)
+            .map {
+                [
+                    accno: it.accession - ~/^[A-Z][A-Z]_/,
+                    checkm_completeness: it.checkm_completeness,
+                    checkm_contamination: it.checkm_contamination,
+                    checkm_strain_heterogeneity: it.checkm_strain_heterogeneity,
+                    contig_count: it.contig_count,
+                    genome_size: it.genome_size,
+                    gtdb_genome_representative: it.gtdb_genome_representative,
+                    gtdb_representative: it.gtdb_representative,
+                    gtdb_taxonomy: it.gtdb_taxonomy
+                ]
+            }
+            .set { ch_gtdb_metadata }
+      }
+
+    //
+    // INPUT: CheckM metadata
+    //
+    if ( params.checkm_metadata) {
+        Channel
+            .of(params.checkm_metadata.split(','))
+            .map { file(it) }
+            .splitCsv( sep: '\t', header: true)
+            .map {
+                [
+                    accno: it["Bin Id"],
+                    checkm_completeness: it.Completeness,
+                    checkm_contamination: it.Contamination,
+                    checkm_strain_heterogeneity: it["Strain heterogeneity"],
+                    contig_count: "",
+                    genome_size: it["Genome size (bp)"],
+                    gtdb_genome_representative: "",
+                    gtdb_representative: "",
+                    gtdb_taxonomy: ""
+                ]
+            }
+            .set { ch_checkm_metadata }
+      }
+
+    //
     // SUBWORKFLOW: Read QC and trim adapters
     //
     FASTQC_TRIMGALORE (
@@ -286,7 +336,7 @@ workflow MAGMAP {
     // } else {
     //     ch_gtdbtk_summary = Channel.empty()
     // }
-s
+
     //
     // SUBWORKFLOW: Concatenate gff files
     //
