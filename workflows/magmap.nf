@@ -87,15 +87,6 @@ include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-// gtdb = ( params.skip_binqc || params.skip_gtdbtk ) ? false : params.gtdb_db
-
-// if (gtdb) {
-//     gtdb = file( "${gtdb}", checkIfExists: true)
-//     gtdb_mash = params.gtdb_mash ? file("${params.gtdb_mash}", checkIfExists: true) : []
-// } else {
-//     gtdb = []
-// }
-
 // Info required for completion email and summary
 def multiqc_report = []
 
@@ -150,7 +141,7 @@ workflow MAGMAP {
     //
     // INPUT: if user provides, populate ch_metadata
     //
-    ch_metadata = Channel.empty()
+    ch_gtdb_metadata = Channel.empty()
 
     if ( params.gtdb_metadata) {
         Channel
@@ -176,6 +167,7 @@ workflow MAGMAP {
     //
     // INPUT: CheckM metadata
     //
+    ch_checkm_metadata = Channel.empty()
     if ( params.checkm_metadata) {
         Channel
             .of(params.checkm_metadata.split(','))
@@ -186,11 +178,32 @@ workflow MAGMAP {
                     accno: it["Bin Id"],
                     checkm_completeness: it.Completeness,
                     checkm_contamination: it.Contamination,
+                    contig_count: it["# contigs"],
                     checkm_strain_heterogeneity: it["Strain heterogeneity"],
                     genome_size: it["Genome size (bp)"]
                 ]
             }
             .set { ch_checkm_metadata }
+      }
+
+    //
+    // INPUT: GTDB-Tk metadata
+    //
+    ch_gtdbtk_metadata = Channel.empty()
+    if ( params.gtdbtk_metadata) {
+        Channel
+            .of(params.checkm_metadata.split(','))
+            .map { file(it) }
+            .splitCsv( sep: '\t', header: true)
+            .map {
+                [
+                    accno: it.user_genome,
+                    gtdb_genome_representative: it.gtdb_genome_representative,
+                    gtdb_representative: "f",
+                    gtdb_taxonomy: ""
+                ]
+            }
+            .set { ch_gtdbtk_metadata }
       }
 
     //
