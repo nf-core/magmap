@@ -25,8 +25,7 @@ workflow SOURMASH {
 
         ch_versions = Channel.empty()
 
-        Channel
-                .fromPath( ncbi_genomeinfo_files )
+        ncbi_genomeinfo_files
                 .splitCsv(sep: '\t')
                 .map { file(it[0]) }
                 .splitCsv(skip: 1, header: true, sep: '\t')

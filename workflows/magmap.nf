@@ -71,6 +71,7 @@ include { BBMAP_BBDUK                            } from '../modules/nf-core/bbma
 include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align/main'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts/main'
 include { GUNZIP                                 } from '../modules/nf-core/gunzip/main'
+include { GUNZIP as GUNZIP_GFFS                  } from '../modules/nf-core/gunzip/main'
 include { PROKKA                                 } from '../modules/nf-core/prokka/main'
 //include { ARIA2                                  } from '../modules/nf-core/aria2/main'
 //include { UNTAR                                  } from '../modules/nf-core/untar/main'
@@ -124,6 +125,15 @@ workflow MAGMAP {
             .fromPath( params.genomeinfo )
             .splitCsv( sep: ',', header: true )
             .set { ch_genomeinfo }
+    }
+
+    //
+    // INPUT: genome info from ncbi
+    //
+    if ( params.ncbi_genome_infos) {
+        Channel
+            .fromPath( params.ncbi_genome_infos )
+            .set { ch_genome_infos }
     }
 
     //
@@ -183,132 +193,147 @@ workflow MAGMAP {
     // we create a channel for ncbi genomes only when sourmash is called
 
     if ( params.sourmash ) {
-        SOURMASH(ch_clean_reads, ch_indexes, ch_genomeinfo, params.ncbi_genome_infos)
+        SOURMASH(ch_clean_reads, ch_indexes, ch_genomeinfo, ch_genome_infos)
         ch_versions = ch_versions.mix(SOURMASH.out.versions)
         ch_genomes = SOURMASH.out.filtered_genomes
-
-        //def i = 0
-
-        //SOURMASH.out.fnas
-        //    .map{ it[1] }
-        //    .flatten()
-        //    .collate(1000)
-        //    .map{ [ [ id: "all_references${i++}" ], it[0] ] }
-        //    .set { ch_genomes_fnas }
-        //SOURMASH.out.gffs
-        //    .set { ch_genomes_gff }
+    } else {
+        ch_genomes = ch_genomeinfo
     }
 
     //
-    // MODULE: Prokka
+    // MODULE: Prokka - get gff for all genomes that lack of it
     //
     ch_genomes
         .filter{ !it.genome_gff }
         .map{ [ [id: it.accno ] , it.genome_fna ] }
         .set { ch_no_gff }
 
+    // GUNZIP gff files provided by the user
+    ch_genomes
+        .filter{ it.genome_gff }
+        .map { [ [id: it.accno], it.genome_gff ] }
+        .set{ gff_to_gunzip }
+
+     GUNZIP_GFFS(gff_to_gunzip)
+     GUNZIP_GFFS.out.gunzip
+         .map{ meta, gff -> [ [id: meta.id], gff ] }
+         .join(ch_genomes
+             .filter{ it.genome_gff }
+             .map { [ [id:it.accno], it.genome_fna ] })
+         .map{ meta, gff, fna -> [ accno: meta.id, genome_fna: fna, genome_gff: gff ] }
+         .set { ch_genomes_gunzipped_gff }
+
     GUNZIP(ch_no_gff)
 
     PROKKA(GUNZIP.out.gunzip, [], [])
-    PROKKA.out.gff
-        .map{ meta, gff -> [ meta.id  , [ meta.id, gff ] ] }
-        .join(ch_no_gff.map { meta, fna -> [ meta.id , [ meta.id, fna ] ] } )
-        .map{ meta, gff, fna -> [ accno: gff[0], genome_fna: fna[1], genome_gff: gff[1] ] }
-        .mix( ch_genomes
-            .filter{ it.genome_gff }
-        )
+
+    ch_genomes_gunzipped_gff
+        .mix(PROKKA.out.gff
+            .ifEmpty([])
+            .map{ meta, gff -> [ meta.id  , [ meta.id, gff ] ] }
+            .join(ch_no_gff.map { meta, fna -> [ meta.id , [ meta.id, fna ] ] } )
+            .map{ meta, gff, fna -> [ accno: gff[0], genome_fna: fna[1], genome_gff: gff[1] ] })
         .set{ ch_ready_genomes }
 
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
-    //CREATE_BBMAP_INDEX ( ch_genomes_fnas )
-    //ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
+    def i = 0
+
+    ch_ready_genomes
+    .map{ it.genome_fna }
+    .flatten()
+    .collate(1000)
+    .map{ [ [ id: "all_references${i++}" ], it ] }
+    .set { ch_genomes_fnas }
+
+    CREATE_BBMAP_INDEX ( ch_genomes_fnas )
+    ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
     //
     // CheckM
     //
-    //if (!params.skip_binqc){
-    //    CHECKM_QC (
-    //        ch_genomes_fnas.groupTuple(),
-    //        ch_checkm_db.map { meta, db -> db }
-    //    )
-    //    ch_checkm_summary = CHECKM_QC.out.summary
-    //    ch_versions       = ch_versions.mix(CHECKM_QC.out.versions)
-    //}
+    if (!params.skip_binqc){
+        CHECKM_QC (
+           ch_genomes_fnas.groupTuple(),
+           ch_checkm_db.map { meta, db -> db }
+        )
+        ch_checkm_summary = CHECKM_QC.out.summary
+       ch_versions       = ch_versions.mix(CHECKM_QC.out.versions)
+    }
 
     //
     // GTDB-tk: taxonomic classifications using GTDB reference
     //
-    //if ( !params.skip_gtdbtk ) {
-    //    ch_gtdbtk_summary = Channel.empty()
-    //    if ( gtdb ){
-    //        GTDBTK (
-    //            ch_genomes_fnas,
-    //            ch_checkm_summary,
-    //            gtdb,
-    //            gtdb_mash
-    //        )
-    //        ch_versions = ch_versions.mix(GTDBTK.out.versions.first())
-    //        ch_gtdbtk_summary = GTDBTK.out.summary
-    //    }
-    //} else {
-    //    ch_gtdbtk_summary = Channel.empty()
-    //}
+    if ( !params.skip_gtdbtk ) {
+        ch_gtdbtk_summary = Channel.empty()
+        if ( gtdb ){
+            GTDBTK (
+            ch_genomes_fnas,
+            ch_checkm_summary,
+            gtdb,
+            gtdb_mash
+            )
+        ch_versions = ch_versions.mix(GTDBTK.out.versions.first())
+        ch_gtdbtk_summary = GTDBTK.out.summary
+        }
+    } else {
+        ch_gtdbtk_summary = Channel.empty()
+    }
 
     //
     // SUBWORKFLOW: Concatenate gff files
     //
-    //CAT_GFFS ( ch_genomes_gff )
-    //ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
+    CAT_GFFS ( ch_ready_genomes.map{ [ [id: "gffs"], it.genome_gff ] } )
+    ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
 
     //
     // BBMAP ALIGN. Call BBMap with the index once per sample
     //
-    //BBMAP_ALIGN ( ch_clean_reads, CREATE_BBMAP_INDEX.out.index )
-    //ch_versions = ch_versions.mix(BBMAP_ALIGN.out.versions)
+    BBMAP_ALIGN ( ch_clean_reads, CREATE_BBMAP_INDEX.out.index )
+    ch_versions = ch_versions.mix(BBMAP_ALIGN.out.versions)
 
-    //
-    // SUBWORKFLOW: sort bam file and produce statistics
-    //
-    //BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genomes_fnas )
-    //ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
+    // //
+    // // SUBWORKFLOW: sort bam file and produce statistics
+    // //
+    // BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genomes_fnas )
+    // ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
-    //BAM_SORT_STATS_SAMTOOLS.out.bam
-    //    .combine(CAT_GFFS.out.gff.map { it[1] })
-    //    .set { ch_featurecounts }
+    // BAM_SORT_STATS_SAMTOOLS.out.bam
+    //     .combine(CAT_GFFS.out.gff.map { it[1] })
+    //     .set { ch_featurecounts }
 
-    //ch_collect_stats
-    //    .combine(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect { it[1]}.map { [ it ] })
-    //    .set { ch_collect_stats }
+    // ch_collect_stats
+    //     .combine(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect { it[1]}.map { [ it ] })
+    //     .set { ch_collect_stats }
 
-    //
-    // MODULE: FeatureCounts
-    //
-    //FEATURECOUNTS ( ch_featurecounts )
-    //ch_versions = ch_versions.mix(FEATURECOUNTS.out.versions)
+    // //
+    // // MODULE: FeatureCounts
+    // //
+    // FEATURECOUNTS ( ch_featurecounts )
+    // ch_versions = ch_versions.mix(FEATURECOUNTS.out.versions)
 
-    //
-    // MODULE: Collect featurecounts output counts in one table
-    //
-    //FEATURECOUNTS.out.counts
-    //    .collect() { it[1] }
-    //    .map { [ [ id:'all_samples'], it ] }
-    //    .set { ch_collect_feature }
+    // //
+    // // MODULE: Collect featurecounts output counts in one table
+    // //
+    // FEATURECOUNTS.out.counts
+    //     .collect() { it[1] }
+    //     .map { [ [ id:'all_samples'], it ] }
+    //     .set { ch_collect_feature }
 
-    //COLLECT_FEATURECOUNTS ( ch_collect_feature )
-    //ch_versions           = ch_versions.mix(COLLECT_FEATURECOUNTS.out.versions)
-    //ch_fcs_for_stats      = COLLECT_FEATURECOUNTS.out.counts.collect { it[1]}.map { [ it ] }
-    //ch_fcs_for_summary    = COLLECT_FEATURECOUNTS.out.counts.map { it[1]}
-    //ch_collect_stats
-    //    .combine(ch_fcs_for_stats)
-    //    .set { ch_collect_stats }
+    // COLLECT_FEATURECOUNTS ( ch_collect_feature )
+    // ch_versions           = ch_versions.mix(COLLECT_FEATURECOUNTS.out.versions)
+    // ch_fcs_for_stats      = COLLECT_FEATURECOUNTS.out.counts.collect { it[1]}.map { [ it ] }
+    // ch_fcs_for_summary    = COLLECT_FEATURECOUNTS.out.counts.map { it[1]}
+    // ch_collect_stats
+    //     .combine(ch_fcs_for_stats)
+    //     .set { ch_collect_stats }
 
-    //
-    // Collect statistics from the pipeline
-    //
-    //COLLECT_STATS(ch_collect_stats)
-    //ch_versions     = ch_versions.mix(COLLECT_STATS.out.versions)
+    // //
+    // // Collect statistics from the pipeline
+    // //
+    // COLLECT_STATS(ch_collect_stats)
+    // ch_versions     = ch_versions.mix(COLLECT_STATS.out.versions)
 
     //
     // MODULE: custom dump software versions
