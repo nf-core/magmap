@@ -315,25 +315,6 @@ workflow MAGMAP {
     }
 
     //
-    // GTDB-tk: taxonomic classifications using GTDB reference
-    //
-    // if ( !params.skip_gtdbtk ) {
-    //     ch_gtdbtk_summary = Channel.empty()
-    //     if ( gtdb ){
-    //         GTDBTK (
-    //         ch_genomes_fnas,
-    //         ch_checkm_summary,
-    //         gtdb,
-    //         gtdb_mash
-    //         )
-    //     ch_versions = ch_versions.mix(GTDBTK.out.versions.first())
-    //     ch_gtdbtk_summary = GTDBTK.out.summary
-    //     }
-    // } else {
-    //     ch_gtdbtk_summary = Channel.empty()
-    // }
-
-    //
     // SUBWORKFLOW: Concatenate gff files
     //
     CAT_GFFS ( ch_ready_genomes.map{ [ [id: "gffs"], it.genome_gff ] } )
