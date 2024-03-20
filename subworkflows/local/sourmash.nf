@@ -9,10 +9,10 @@ include { SOURMASH_SKETCH as SAMPLES_SKETCH } from '../../modules/nf-core/sourma
 
 workflow SOURMASH {
     take:
-        samples_reads
-        indexes
+        ch_samples_reads
+        ch_indexes
         ch_user_genomeinfo
-        ncbi_genomeinfo_files
+        ch_ncbi_genomeinfo_files
 
     main:
         // I like that you create named variables for these, but they look more like config file
@@ -25,7 +25,7 @@ workflow SOURMASH {
 
         ch_versions = Channel.empty()
 
-        ncbi_genomeinfo_files
+        ch_ncbi_genomeinfo_files
                 .splitCsv(sep: '\t')
                 .map { file(it[0]) }
                 .splitCsv(skip: 1, header: true, sep: '\t')
@@ -41,7 +41,7 @@ workflow SOURMASH {
         GENOMES_SKETCH(ch_user_genomeinfo.map { [ [ id: it.accno ], it.genome_fna ] })
         ch_versions = ch_versions.mix(GENOMES_SKETCH.out.versions)
 
-        SAMPLES_SKETCH(samples_reads)
+        SAMPLES_SKETCH(ch_samples_reads)
         ch_versions = ch_versions.mix(SAMPLES_SKETCH.out.versions)
 
         SAMPLES_SKETCH.out.signatures
@@ -58,7 +58,7 @@ workflow SOURMASH {
 
         GENOMES_INDEX.out.signature_index
             .map{ meta, sig -> sig }
-            .mix(indexes)
+            .mix(ch_indexes)
             .collect()
             .set{ ch_database }
 
