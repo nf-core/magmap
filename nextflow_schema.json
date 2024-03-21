@@ -41,6 +41,10 @@
                     "description": "Comma-separated list of  CheckM tsv files",
                     "help_text": "This should be the file produced by the `checkm qa --tab_table` command."
                 },
+                "gtdbtk_metadata": {
+                    "type": "string",
+                    "description": "Comma-separated list of gtdb-tk tsv files"
+                },
                 "outdir": {
                     "type": "string",
                     "format": "directory-path",

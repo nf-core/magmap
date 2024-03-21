@@ -73,8 +73,6 @@ include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subr
 include { GUNZIP                                 } from '../modules/nf-core/gunzip/main'
 include { GUNZIP as GUNZIP_GFFS                  } from '../modules/nf-core/gunzip/main'
 include { PROKKA                                 } from '../modules/nf-core/prokka/main'
-//include { ARIA2                                  } from '../modules/nf-core/aria2/main'
-//include { UNTAR                                  } from '../modules/nf-core/untar/main'
 
 //
 // SUBWORKFLOWS: Installed directly from nf-core/modules
