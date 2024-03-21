@@ -173,15 +173,14 @@ workflow MAGMAP {
             .of(params.checkm_metadata.split(','))
             .map { file(it) }
             .splitCsv( sep: '\t', header: true)
-            .map {
+            .map { [ [ it["Bin Id"] ],
                 [
-                    accno: it["Bin Id"],
                     checkm_completeness: it.Completeness,
                     checkm_contamination: it.Contamination,
                     contig_count: it["# contigs"],
                     checkm_strain_heterogeneity: it["Strain heterogeneity"],
                     genome_size: it["Genome size (bp)"]
-                ]
+                ] ]
             }
             .set { ch_checkm_metadata }
       }
@@ -192,19 +191,45 @@ workflow MAGMAP {
     ch_gtdbtk_metadata = Channel.empty()
     if ( params.gtdbtk_metadata) {
         Channel
-            .of(params.checkm_metadata.split(','))
+            .of(params.gtdbtk_metadata.split(','))
             .map { file(it) }
             .splitCsv( sep: '\t', header: true)
-            .map {
+            .map { [ [it.user_genome],
                 [
-                    accno: it.user_genome,
-                    gtdb_genome_representative: it.gtdb_genome_representative,
+                    gtdb_genome_representative: it.classification,
                     gtdb_representative: "f",
                     gtdb_taxonomy: ""
-                ]
+                ] ]
             }
             .set { ch_gtdbtk_metadata }
       }
+
+    //
+    // gtdbtk_metadata and checkm_metadata need to be joined
+    //
+    if ( params.gtdbtk_metadata || params.checkm_metadata) {
+        ch_gtdbtk_metadata
+            .map{ accno, gtdbtk -> [ accno, gtdbtk ]}
+            .join( ch_checkm_metadata
+                .map{ accno, checkm -> [ accno, checkm ] }
+                )
+            .map { accno, gtdbtk, checkm ->
+                [
+                    accno: accno[0],
+                    checkm_completeness: checkm.checkm_completeness,
+                    checkm_contamination: checkm.checkm_contamination,
+                    checkm_strain_heterogeneity: checkm.checkm_strain_heterogeneity,
+                    contig_count: checkm.contig_count,
+                    genome_size: checkm.genome_size,
+                    gtdb_genome_representative: gtdbtk.gtdb_genome_representative,
+                    gtdb_representative: gtdbtk.gtdb_representative,
+                    gtdb_taxonomy: gtdbtk.gtdb_taxonomy
+                ]
+            }
+            .filter{ it[0] != ch_gtdb_metadata.map{it[0]} }
+            .mix( ch_gtdb_metadata)
+            .set{ ch_metadata }
+    }
 
     //
     // SUBWORKFLOW: Read QC and trim adapters
@@ -264,6 +289,24 @@ workflow MAGMAP {
                 ] }
             .set{ ch_genomes }
     }
+
+    // filter the genomes for the metadata and save it in results/summary_tables directory
+    ch_metadata
+            .map { [ it.accno, it ] }
+            .join( ch_genomes
+                .map{it.accno}
+                )
+            .map{ it[1] }
+            .view()
+            .map {
+                "$it.accno\t$it.checkm_completeness\t \
+                $it.checkm_contamination\t$it.checkm_strain_heterogeneity\t \
+                $it.contig_count\t$it.genome_size\t \
+                $it.gtdb_genome_representative\t$it.gtdb_representative\t \
+                $it.gtdb_taxonomy" }
+            .collectFile(name: "summary_table.taxonomy.tsv",
+                newLine: true,
+                storeDir: "${params.outdir}/summary_tables")
 
     //
     // MODULE: Prokka - get gff for all genomes that lack of it
