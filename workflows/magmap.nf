@@ -289,22 +289,26 @@ workflow MAGMAP {
     }
 
     // filter the genomes for the metadata and save it in results/summary_tables directory
-    ch_metadata
+    Channel
+        .of( "accno\tcheckm_contamination\t \
+            contig_count\tcontig_count\t \
+            gtdb_genome_representative\tgtdb_taxonomy")
+        .concat(ch_metadata
             .map { [ it.accno, it ] }
             .join( ch_genomes
                 .map{it.accno}
                 )
             .map{ it[1] }
-            .view()
             .map {
                 "$it.accno\t$it.checkm_completeness\t \
                 $it.checkm_contamination\t$it.checkm_strain_heterogeneity\t \
                 $it.contig_count\t$it.genome_size\t \
                 $it.gtdb_genome_representative\t$it.gtdb_representative\t \
                 $it.gtdb_taxonomy" }
-            .collectFile(name: "summary_table.taxonomy.tsv",
-                newLine: true,
-                storeDir: "${params.outdir}/summary_tables")
+        )
+        .collectFile(name: "summary_table.taxonomy.tsv",
+            newLine: true,
+            storeDir: "${params.outdir}/summary_tables")
 
     //
     // MODULE: Prokka - get gff for all genomes that lack of it
