@@ -53,7 +53,6 @@ include { CAT_GFFS            } from '../subworkflows/local/concatenate_gff'
 include { CREATE_BBMAP_INDEX  } from '../subworkflows/local/create_bbmap_index'
 include { SOURMASH            } from '../subworkflows/local/sourmash'
 include { ARIA2_UNTAR         } from '../subworkflows/local/aria2_untar'
-//include { GTDBTK              } from '../subworkflows/local/gtdbtk'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
