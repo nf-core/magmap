@@ -43,7 +43,8 @@
                 },
                 "gtdbtk_metadata": {
                     "type": "string",
-                    "description": "Comma-separated list of gtdb-tk tsv files"
+                    "description": "Comma-separated list of gtdb-tk tsv files",
+                    "help_text": "This should be the file(s) called e.g. `classify/gtdbtk.bac120.summary.tsv` in the output directory from a GTDB-Tk run."
                 },
                 "outdir": {
                     "type": "string",
