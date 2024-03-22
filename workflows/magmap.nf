@@ -296,8 +296,12 @@ workflow MAGMAP {
             $it.contig_count\t$it.genome_size\t \
             $it.gtdb_genome_representative\t$it.gtdb_representative\t \
             $it.gtdb_taxonomy" }
-    .concat( ch_header )
-    .collectFile(name: "summary_table.taxonomy.tsv",
+    .set { ch_metadata }
+
+    ch_header
+        .concat( ch_metadata )
+        .collectFile(name: "summary_table.taxonomy.tsv",
+        keepHeader: true,
         newLine: true,
         storeDir: "${params.outdir}/summary_tables")
 
