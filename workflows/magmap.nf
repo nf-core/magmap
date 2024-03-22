@@ -218,6 +218,8 @@ workflow MAGMAP {
             .filter{ it[0] != ch_gtdb_metadata.map{it[0]} }
             .mix( ch_gtdb_metadata)
             .set{ ch_metadata }
+    } else {
+        ch_metadata = ch_gtdb_metadata
     }
 
     //
