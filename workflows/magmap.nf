@@ -354,7 +354,43 @@ workflow MAGMAP {
     } else if( !params.gtdbtk_metadata && !params.checkm_metadata && !params.gtdb_metadata) {
         ch_metadata = Channel.empty()
     } else if( !params.gtdbtk_metadata && params.checkm_metadata && !params.gtdb_metadata) {
-
+        ch_checkm_metadata
+            .map{ accno, checkm -> [
+                    accno,
+                    [
+                    accno: accno[0],
+                    checkm_completeness: checkm.checkm_completeness,
+                    checkm_contamination: checkm.checkm_contamination,
+                    checkm_strain_heterogeneity: checkm.checkm_strain_heterogeneity,
+                    contig_count: checkm.contig_count,
+                    genome_size: checkm.genome_size,
+                    gtdb_genome_representative: "",
+                    gtdb_representative: "",
+                    gtdb_taxonomy: ""
+                    ]
+                ]
+            }
+            .set { ch_metadata }
+    } else if( params.gtdbtk_metadata && !params.checkm_metadata && !params.gtdb_metadata) {
+        ch_gtdbtk_metadata
+        .map{ accno, gtdbtk -> [ accno, gtdbtk ] }
+        .map { accno, gtdbtk ->
+                [
+                    accno,
+                    [
+                    accno: accno[0],
+                    checkm_completeness: "",
+                    checkm_contamination: "",
+                    checkm_strain_heterogeneity: "",
+                    contig_count: "",
+                    genome_size: "",
+                    gtdb_genome_representative: gtdbtk.gtdb_genome_representative,
+                    gtdb_representative: gtdbtk.gtdb_representative,
+                    gtdb_taxonomy: gtdbtk.gtdb_taxonomy
+                    ]
+                ]
+            }
+        .set { ch_metadata }
     } else if( !params.gtdbtk_metadata && !params.checkm_metadata && params.gtdb_metadata) {
         ch_metadata = ch_gtdb_metadata
     }
