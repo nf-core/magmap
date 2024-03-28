@@ -253,6 +253,10 @@ workflow MAGMAP {
     } else if ( !params.gtdbtk_metadata && params.checkm_metadata ) {
         ch_checkm_metadata
             .map{ accno, checkm -> [
+                [
+                    accno
+                ],
+                    [
                     accno: accno[0],
                     checkm_completeness: checkm.checkm_completeness,
                     checkm_contamination: checkm.checkm_contamination,
@@ -262,11 +266,27 @@ workflow MAGMAP {
                     gtdb_genome_representative: "",
                     gtdb_representative: "",
                     gtdb_taxonomy: ""
+                    ]
                 ]
             }
-            .filter{ it.accno != ch_gtdb_metadata.map{it.accno} }
-            .mix( ch_gtdb_metadata)
-            .set{ ch_metadata }
+            .set { ch_checkm_metadata }
+
+        ch_checkm_metadata
+            .map {
+                accno, checkm -> accno[0]
+            }
+            .join(
+                ch_gtdb_metadata.map { it -> [ it.accno, 1 ] }, remainder: true
+            )
+            .filter{ 1 in it }
+            .map{ it[0] }
+            .join(
+                ch_gtdb_metadata.map { gtdb -> [ gtdb.accno, gtdb ] }
+            )
+            .map{ it[1]}
+            .mix(ch_checkm_metadata)
+            .view()
+        .set{ ch_metadata }
     } else if( !params.gtdb_metadata) {
         ch_metadata = ch_gtdb_metadata
     }
