@@ -249,7 +249,8 @@ workflow MAGMAP {
             )
             .map{ it[1]}
             .mix(ch_gtdbtk_checkm_filtered)
-        .set{ ch_metadata }
+            .set{ ch_metadata }
+
     } else if ( !params.gtdbtk_metadata && params.checkm_metadata && params.gtdb_metadata) {
         ch_checkm_metadata
             .map{ accno, checkm -> [
@@ -299,6 +300,7 @@ workflow MAGMAP {
             .map{ it[1] }
             .mix(ch_checkm_filtered)
         .set{ ch_metadata }
+
     } else if( params.gtdbtk_metadata && !params.checkm_metadata && params.gtdb_metadata) {
         ch_gtdbtk_metadata
         .map{ accno, gtdbtk -> [ accno, gtdbtk ] }
@@ -349,8 +351,27 @@ workflow MAGMAP {
             )
             .map{ it[1]}
             .mix(ch_gtdbtk_filtered)
-            .view()
         .set{ ch_metadata }
+    } else if( params.gtdbtk_metadata && params.checkm_metadata && !params.gtdb_metadata) {
+        ch_gtdbtk_metadata
+            .map{ accno, gtdbtk -> [ accno, gtdbtk ] }
+            .join( ch_checkm_metadata
+            .map{ accno, checkm -> [ accno, checkm ] }
+            )
+            .map { accno, gtdbtk, checkm ->
+                    [
+                    accno: accno[0],
+                    checkm_completeness: checkm.checkm_completeness,
+                    checkm_contamination: checkm.checkm_contamination,
+                    checkm_strain_heterogeneity: checkm.checkm_strain_heterogeneity,
+                    contig_count: checkm.contig_count,
+                    genome_size: checkm.genome_size,
+                    gtdb_genome_representative: gtdbtk.gtdb_genome_representative,
+                    gtdb_representative: gtdbtk.gtdb_representative,
+                    gtdb_taxonomy: gtdbtk.gtdb_taxonomy
+                    ]
+            }
+        .set { ch_metadata }
     } else if( !params.gtdbtk_metadata && !params.checkm_metadata && !params.gtdb_metadata) {
         ch_metadata = Channel.empty()
     } else if( !params.gtdbtk_metadata && params.checkm_metadata && !params.gtdb_metadata) {
@@ -394,6 +415,8 @@ workflow MAGMAP {
     } else if( !params.gtdbtk_metadata && !params.checkm_metadata && params.gtdb_metadata) {
         ch_metadata = ch_gtdb_metadata
     }
+
+    ch_metadata.view()
     //
     // SUBWORKFLOW: Read QC and trim adapters
     //
