@@ -196,14 +196,16 @@ workflow MAGMAP {
     //
     // gtdbtk_metadata and checkm_metadata need to be joined
     //
-    if ( params.gtdbtk_metadata || params.checkm_metadata) {
+    if ( params.gtdbtk_metadata && params.checkm_metadata) {
         ch_gtdbtk_metadata
-            .map{ accno, gtdbtk -> [ accno, gtdbtk ]}
-            .join( ch_checkm_metadata
-                .map{ accno, checkm -> [ accno, checkm ] }
-                )
-            .map { accno, gtdbtk, checkm ->
+        .map{ accno, gtdbtk -> [ accno, gtdbtk ]}
+        .join( ch_checkm_metadata
+            .map{ accno, checkm -> [ accno, checkm ] }
+        )
+        .map { accno, gtdbtk, checkm ->
                 [
+                    accno,
+                    [
                     accno: accno[0],
                     checkm_completeness: checkm.checkm_completeness,
                     checkm_contamination: checkm.checkm_contamination,
@@ -213,12 +215,59 @@ workflow MAGMAP {
                     gtdb_genome_representative: gtdbtk.gtdb_genome_representative,
                     gtdb_representative: gtdbtk.gtdb_representative,
                     gtdb_taxonomy: gtdbtk.gtdb_taxonomy
+                    ]
                 ]
             }
-            .filter{ it[0] != ch_gtdb_metadata.map{it[0]} }
+        .set { ch_checkm_gtdb_metadata }
+
+    ch_checkm_gtdb_metadata
+            .map {
+                accno, gtdbtk_checkm -> accno[0]
+            }
+            .join(
+                ch_gtdb_metadata.map { it -> [ it.accno, 1 ] }, remainder: true
+            )
+            .filter{ 1 !in it }
+            .map{ it[0] }
+            .join(
+                ch_checkm_gtdb_metadata.map { accno, gtdbtk_checkm -> [ gtdbtk_checkm.accno, gtdbtk_checkm ] }
+            )
+            .map{ it[1]}
+        .set{ ch_gtdbtk_checkm_filtered }
+
+        ch_checkm_gtdb_metadata
+            .map {
+                accno, gtdbtk_checkm -> accno[0]
+            }
+            .join(
+                ch_gtdb_metadata.map { it -> [ it.accno, 1 ] }, remainder: true
+            )
+            .filter{ 1 in it }
+            .map{ it[0] }
+            .join(
+                ch_gtdb_metadata.map { gtdb -> [ gtdb.accno, gtdb ] }
+            )
+            .map{ it[1]}
+            .mix(ch_gtdbtk_checkm_filtered)
+        .set{ ch_metadata }
+    } else if ( !params.gtdbtk_metadata && params.checkm_metadata ) {
+        ch_checkm_metadata
+            .map{ accno, checkm -> [
+                    accno: accno[0],
+                    checkm_completeness: checkm.checkm_completeness,
+                    checkm_contamination: checkm.checkm_contamination,
+                    checkm_strain_heterogeneity: checkm.checkm_strain_heterogeneity,
+                    contig_count: checkm.contig_count,
+                    genome_size: checkm.genome_size,
+                    gtdb_genome_representative: "",
+                    gtdb_representative: "",
+                    gtdb_taxonomy: ""
+                ]
+            }
+            .filter{ it.accno != ch_gtdb_metadata.map{it.accno} }
             .mix( ch_gtdb_metadata)
             .set{ ch_metadata }
-    } else {
+    } else if( !params.gtdb_metadata) {
         ch_metadata = ch_gtdb_metadata
     }
 
@@ -286,26 +335,25 @@ workflow MAGMAP {
             contig_count\tcontig_count\t \
             gtdb_genome_representative\tgtdb_taxonomy")
 
-    ch_metadata
-        .map { [ it.accno, it ] }
-        .join( ch_genomes
-            .map{it.accno}
-            )
-        .map{ it[1] }
-        .map {
-            "$it.accno\t$it.checkm_completeness\t \
-            $it.checkm_contamination\t$it.checkm_strain_heterogeneity\t \
-            $it.contig_count\t$it.genome_size\t \
-            $it.gtdb_genome_representative\t$it.gtdb_representative\t \
-            $it.gtdb_taxonomy" }
-    .set { ch_metadata }
+    // ch_metadata
+    //     .map { [ it.accno, it ] }
+    //     .join( ch_genomes
+    //         .map{it.accno}
+    //         )
+    //     .map{ it[1] }
+    //     .map {
+    //         "$it.accno\t$it.checkm_completeness\t \
+    //         $it.checkm_contamination\t$it.checkm_strain_heterogeneity\t \
+    //         $it.contig_count\t$it.genome_size\t \
+    //         $it.gtdb_genome_representative\t$it.gtdb_representative\t \
+    //         $it.gtdb_taxonomy" }
+    // .set { ch_metadata }
 
-    ch_header
-        .concat( ch_metadata )
-        .collectFile(name: "summary_table.taxonomy.tsv",
-        keepHeader: true,
-        newLine: true,
-        storeDir: "${params.outdir}/summary_tables")
+    // ch_header
+    //     .concat( ch_metadata )
+    //     .collectFile(name: "summary_table.taxonomy.tsv",
+    //     newLine: true,
+    //     storeDir: "${params.outdir}/summary_tables")
 
     //
     // MODULE: Prokka - get gff for all genomes that lack of it
@@ -397,19 +445,19 @@ workflow MAGMAP {
         .map { [ [ id:'all_samples'], it ] }
         .set { ch_collect_feature }
 
-    COLLECT_FEATURECOUNTS ( ch_collect_feature )
-    ch_versions           = ch_versions.mix(COLLECT_FEATURECOUNTS.out.versions)
-    ch_fcs_for_stats      = COLLECT_FEATURECOUNTS.out.counts.collect { it[1]}.map { [ it ] }
-    ch_fcs_for_summary    = COLLECT_FEATURECOUNTS.out.counts.map { it[1]}
-    ch_collect_stats
-        .combine(ch_fcs_for_stats)
-        .set { ch_collect_stats }
+    // COLLECT_FEATURECOUNTS ( ch_collect_feature )
+    // ch_versions           = ch_versions.mix(COLLECT_FEATURECOUNTS.out.versions)
+    // ch_fcs_for_stats      = COLLECT_FEATURECOUNTS.out.counts.collect { it[1]}.map { [ it ] }
+    // ch_fcs_for_summary    = COLLECT_FEATURECOUNTS.out.counts.map { it[1]}
+    // ch_collect_stats
+    //     .combine(ch_fcs_for_stats)
+    //     .set { ch_collect_stats }
 
     //
     // Collect statistics from the pipeline
     //
-    COLLECT_STATS(ch_collect_stats)
-    ch_versions     = ch_versions.mix(COLLECT_STATS.out.versions)
+    // COLLECT_STATS(ch_collect_stats)
+    // ch_versions     = ch_versions.mix(COLLECT_STATS.out.versions)
 
     //
     // MODULE: custom dump software versions
@@ -432,13 +480,13 @@ workflow MAGMAP {
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
 
-    MULTIQC (
-        ch_multiqc_files.collect(),
-        ch_multiqc_config.toList(),
-        ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList()
-    )
-    multiqc_report = MULTIQC.out.report.toList()
+    // MULTIQC (
+    //     ch_multiqc_files.collect(),
+    //     ch_multiqc_config.toList(),
+    //     ch_multiqc_custom_config.toList(),
+    //     ch_multiqc_logo.toList()
+    // )
+    // multiqc_report = MULTIQC.out.report.toList()
 }
 
 /*
