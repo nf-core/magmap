@@ -196,7 +196,7 @@ workflow MAGMAP {
     //
     // gtdbtk_metadata and checkm_metadata need to be joined
     //
-    if ( params.gtdbtk_metadata && params.checkm_metadata) {
+    if ( params.gtdbtk_metadata && params.checkm_metadata && params.gtdb_metadata) {
         ch_gtdbtk_metadata
         .map{ accno, gtdbtk -> [ accno, gtdbtk ]}
         .join( ch_checkm_metadata
@@ -250,12 +250,10 @@ workflow MAGMAP {
             .map{ it[1]}
             .mix(ch_gtdbtk_checkm_filtered)
         .set{ ch_metadata }
-    } else if ( !params.gtdbtk_metadata && params.checkm_metadata ) {
+    } else if ( !params.gtdbtk_metadata && params.checkm_metadata && params.gtdb_metadata) {
         ch_checkm_metadata
             .map{ accno, checkm -> [
-                [
-                    accno
-                ],
+                    accno,
                     [
                     accno: accno[0],
                     checkm_completeness: checkm.checkm_completeness,
@@ -278,18 +276,35 @@ workflow MAGMAP {
             .join(
                 ch_gtdb_metadata.map { it -> [ it.accno, 1 ] }, remainder: true
             )
+            .filter{ 1 !in it }
+            .map{ it[0] }
+            .join(
+                ch_checkm_metadata.map { accno, gtdbtk_checkm -> [ gtdbtk_checkm.accno, gtdbtk_checkm ] }
+            )
+            .map{ it[1]}
+        .set{ ch_checkm_filtered }
+
+        ch_checkm_metadata
+            .map {
+                accno, checkm -> accno[0]
+            }
+            .join(
+                ch_gtdb_metadata.map { it -> [ it.accno, 1 ] }, remainder: true
+            )
             .filter{ 1 in it }
             .map{ it[0] }
             .join(
                 ch_gtdb_metadata.map { gtdb -> [ gtdb.accno, gtdb ] }
             )
-            .map{ it[1]}
-            .mix(ch_checkm_metadata)
+            .map{ it[1] }
+            .mix(ch_checkm_filtered)
             .view()
         .set{ ch_metadata }
-    } else if( !params.gtdb_metadata) {
+    } else if( !params.gtdbtk_metadata && !params.checkm_metadata && params.gtdb_metadata) {
         ch_metadata = ch_gtdb_metadata
-    }
+    } else if( !params.gtdbtk_metadata && !params.checkm_metadata && !params.gtdb_metadata) {
+        ch_metadata = Channel.empty()
+    } else if( !params.gtdbtk_metadata && params.checkm_metadata && !params.gtdb_metadata)
 
     //
     // SUBWORKFLOW: Read QC and trim adapters
