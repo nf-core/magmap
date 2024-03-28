@@ -185,9 +185,9 @@ workflow MAGMAP {
             .splitCsv( sep: '\t', header: true)
             .map { [ [it.user_genome],
                 [
-                    gtdb_genome_representative: it.classification,
+                    gtdb_genome_representative: it.user_genome,
                     gtdb_representative: "f",
-                    gtdb_taxonomy: ""
+                    gtdb_taxonomy: it.classification
                 ] ]
             }
             .set { ch_gtdbtk_metadata }
@@ -279,7 +279,7 @@ workflow MAGMAP {
             .filter{ 1 !in it }
             .map{ it[0] }
             .join(
-                ch_checkm_metadata.map { accno, gtdbtk_checkm -> [ gtdbtk_checkm.accno, gtdbtk_checkm ] }
+                ch_checkm_metadata.map { accno, checkm -> [ checkm.accno, checkm ] }
             )
             .map{ it[1]}
         .set{ ch_checkm_filtered }
@@ -298,7 +298,6 @@ workflow MAGMAP {
             )
             .map{ it[1] }
             .mix(ch_checkm_filtered)
-            .view()
         .set{ ch_metadata }
     } else if( params.gtdbtk_metadata && !params.checkm_metadata && params.gtdb_metadata) {
         ch_gtdbtk_metadata
@@ -308,22 +307,22 @@ workflow MAGMAP {
                     accno,
                     [
                     accno: accno[0],
-                    checkm_completeness: checkm.checkm_completeness,
-                    checkm_contamination: checkm.checkm_contamination,
-                    checkm_strain_heterogeneity: checkm.checkm_strain_heterogeneity,
-                    contig_count: checkm.contig_count,
-                    genome_size: checkm.genome_size,
+                    checkm_completeness: "",
+                    checkm_contamination: "",
+                    checkm_strain_heterogeneity: "",
+                    contig_count: "",
+                    genome_size: "",
                     gtdb_genome_representative: gtdbtk.gtdb_genome_representative,
                     gtdb_representative: gtdbtk.gtdb_representative,
                     gtdb_taxonomy: gtdbtk.gtdb_taxonomy
                     ]
                 ]
             }
-        .set { ch_gtdb_metadata }
+        .set { ch_gtdbtk_metadata }
 
-    ch_gtdb_metadata
+    ch_gtdbtk_metadata
             .map {
-                accno, gtdbtk_checkm -> accno[0]
+                accno, gtdbtk -> accno[0]
             }
             .join(
                 ch_gtdb_metadata.map { it -> [ it.accno, 1 ] }, remainder: true
@@ -331,14 +330,14 @@ workflow MAGMAP {
             .filter{ 1 !in it }
             .map{ it[0] }
             .join(
-                ch_gtdb_metadata.map { accno, gtdbtk_checkm -> [ gtdbtk_checkm.accno, gtdbtk_checkm ] }
+                ch_gtdbtk_metadata.map { accno, gtdbtk -> [ gtdbtk.accno, gtdbtk ] }
             )
             .map{ it[1]}
         .set{ ch_gtdbtk_filtered }
 
-        ch_gtdb_metadata
+        ch_gtdbtk_metadata
             .map {
-                accno, gtdbtk_checkm -> accno[0]
+                accno, gtdbtk -> accno[0]
             }
             .join(
                 ch_gtdb_metadata.map { it -> [ it.accno, 1 ] }, remainder: true
@@ -350,6 +349,7 @@ workflow MAGMAP {
             )
             .map{ it[1]}
             .mix(ch_gtdbtk_filtered)
+            .view()
         .set{ ch_metadata }
     } else if( !params.gtdbtk_metadata && !params.checkm_metadata && !params.gtdb_metadata) {
         ch_metadata = Channel.empty()
