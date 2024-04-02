@@ -472,9 +472,9 @@ workflow MAGMAP {
     // filter the genomes for the metadata and save it in results/summary_tables directory
     if( params.gtdbtk_metadata || params.checkm_metadata || params.gtdb_metadata) {
         ch_header = Channel
-            .of( "accno\tcheckm_contamination\t \
-            contig_count\tcontig_count\t \
-            gtdb_genome_representative\tgtdb_taxonomy")
+            .of( "accno\tcheckm_completeness\tcheckm_contamination\t \
+            checkm_strain_heterogeneity\tcontig_count\tgenome_size\t \
+            gtdb_genome_representative\tgtdb_representative\tgtdb_taxonomy")
 
         ch_metadata
             .map { [ it.accno, it ] }
@@ -525,11 +525,11 @@ workflow MAGMAP {
     PROKKA(GUNZIP.out.gunzip, [], [])
 
     ch_genomes_gunzipped_gff
-        //.mix(PROKKA.out.gff
-        //    .ifEmpty([])
-        //    .map{ meta, gff -> [ meta.id  , [ meta.id, gff ] ] }
-        //    .join(ch_no_gff.map { meta, fna -> [ meta.id , [ meta.id, fna ] ] } )
-        //    .map{ meta, gff, fna -> [ accno: gff[0], genome_fna: fna[1], genome_gff: gff[1] ] })
+        .mix(PROKKA.out.gff
+           .ifEmpty([])
+           .map{ meta, gff -> [ meta.id  , [ meta.id, gff ] ] }
+           .join(ch_no_gff.map { meta, fna -> [ meta.id , [ meta.id, fna ] ] } )
+           .map{ meta, gff, fna -> [ accno: gff[0], genome_fna: fna[1], genome_gff: gff[1] ] })
         .set{ ch_ready_genomes }
 
     //
@@ -587,19 +587,19 @@ workflow MAGMAP {
         .map { [ [ id:'all_samples'], it ] }
         .set { ch_collect_feature }
 
-    // COLLECT_FEATURECOUNTS ( ch_collect_feature )
-    // ch_versions           = ch_versions.mix(COLLECT_FEATURECOUNTS.out.versions)
-    // ch_fcs_for_stats      = COLLECT_FEATURECOUNTS.out.counts.collect { it[1]}.map { [ it ] }
-    // ch_fcs_for_summary    = COLLECT_FEATURECOUNTS.out.counts.map { it[1]}
-    // ch_collect_stats
-    //     .combine(ch_fcs_for_stats)
-    //     .set { ch_collect_stats }
+    COLLECT_FEATURECOUNTS ( ch_collect_feature )
+    ch_versions           = ch_versions.mix(COLLECT_FEATURECOUNTS.out.versions)
+    ch_fcs_for_stats      = COLLECT_FEATURECOUNTS.out.counts.collect { it[1]}.map { [ it ] }
+    ch_fcs_for_summary    = COLLECT_FEATURECOUNTS.out.counts.map { it[1]}
+    ch_collect_stats
+        .combine(ch_fcs_for_stats)
+        .set { ch_collect_stats }
 
-    //
+
     // Collect statistics from the pipeline
-    //
-    // COLLECT_STATS(ch_collect_stats)
-    // ch_versions     = ch_versions.mix(COLLECT_STATS.out.versions)
+
+    COLLECT_STATS(ch_collect_stats)
+    ch_versions     = ch_versions.mix(COLLECT_STATS.out.versions)
 
     //
     // MODULE: custom dump software versions
@@ -622,13 +622,13 @@ workflow MAGMAP {
     ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
 
-    // MULTIQC (
-    //     ch_multiqc_files.collect(),
-    //     ch_multiqc_config.toList(),
-    //     ch_multiqc_custom_config.toList(),
-    //     ch_multiqc_logo.toList()
-    // )
-    // multiqc_report = MULTIQC.out.report.toList()
+    MULTIQC (
+        ch_multiqc_files.collect(),
+        ch_multiqc_config.toList(),
+        ch_multiqc_custom_config.toList(),
+        ch_multiqc_logo.toList()
+    )
+    multiqc_report = MULTIQC.out.report.toList()
 }
 
 /*
