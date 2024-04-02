@@ -133,33 +133,6 @@
                 }
             }
         },
-        "checkm": {
-            "title": "CheckM",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "skip_binqc": {
-                    "type": "boolean",
-                    "description": "Skip bin quality check",
-                    "default": true
-                },
-                "checkm_download_url": {
-                    "type": "string",
-                    "default": "https://data.ace.uq.edu.au/public/CheckM_databases/checkm_data_2015_01_16.tar.gz",
-                    "description": "Download CheckM database"
-                },
-                "checkm_db": {
-                    "type": "string",
-                    "description": "CheckM database path",
-                    "default": "./checkM_db"
-                },
-                "save_checkm_data": {
-                    "type": "boolean",
-                    "description": "Save checkM database"
-                }
-            }
-        },
         "bbmap_options": {
             "title": "BBmap options",
             "type": "object",
@@ -381,9 +354,6 @@
         },
         {
             "$ref": "#/definitions/sourmash_options"
-        },
-        {
-            "$ref": "#/definitions/checkm"
         },
         {
             "$ref": "#/definitions/bbmap_options"
