@@ -129,13 +129,13 @@ workflow MAGMAP {
         .map {
             meta, fastq_1, fastq_2 ->
                 if (!fastq_2) {
-                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
+                    return [ meta + [ single_end:true ], [ fastq_1 ] ]
                 } else {
-                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
+                    return [ meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
                 }
         }
         .set { ch_fastq }
-    ch_fastq.view()
+
     //
     // SUBWORKFLOW: Read QC and trim adapters
     //
