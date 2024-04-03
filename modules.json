@@ -52,7 +52,7 @@
                     },
                     "gtdbtk/classifywf": {
                         "branch": "master",
-                        "git_sha": "9bbc6a88ce3004ae4bc9f84cef762484dc2c95e5",
+                        "git_sha": "0735b6d2b509cbb5cf71d15fda819cd7392722fe",
                         "installed_by": ["modules"]
                     },
                     "gunzip": {
@@ -87,7 +87,7 @@
                     },
                     "samtools/sort": {
                         "branch": "master",
-                        "git_sha": "f4596fe0bdc096cf53ec4497e83defdb3a94ff62",
+                        "git_sha": "4352dbdb09ec40db71e9b172b97a01dcf5622c26",
                         "installed_by": ["bam_sort_stats_samtools"]
                     },
                     "samtools/stats": {
@@ -117,7 +117,7 @@
                     },
                     "trimgalore": {
                         "branch": "master",
-                        "git_sha": "2e6c468e0ad43b23df71d7a7f130d5c0e0aa89e3",
+                        "git_sha": "a98418419ae6c9df3cf6cf108d1e1aba71037d5a",
                         "installed_by": ["modules"]
                     },
                     "untar": {
@@ -131,7 +131,7 @@
                 "nf-core": {
                     "bam_sort_stats_samtools": {
                         "branch": "master",
-                        "git_sha": "f4596fe0bdc096cf53ec4497e83defdb3a94ff62",
+                        "git_sha": "4352dbdb09ec40db71e9b172b97a01dcf5622c26",
                         "installed_by": ["subworkflows"]
                     },
                     "bam_stats_samtools": {
