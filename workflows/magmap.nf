@@ -526,7 +526,7 @@ workflow MAGMAP {
 
     ch_genomes_gunzipped_gff
         .mix(PROKKA.out.gff
-           .ifEmpty([])
+           //.ifEmpty([])
            .map{ meta, gff -> [ meta.id  , [ meta.id, gff ] ] }
            .join(ch_no_gff.map { meta, fna -> [ meta.id , [ meta.id, fna ] ] } )
            .map{ meta, gff, fna -> [ accno: gff[0], genome_fna: fna[1], genome_gff: gff[1] ] })
