@@ -117,7 +117,8 @@
             "properties": {
                 "skip_binqc": {
                     "type": "boolean",
-                    "description": "Skip bin quality check"
+                    "description": "Skip bin quality check",
+                    "default": true
                 },
                 "checkm_download_url": {
                     "type": "string",
@@ -126,7 +127,8 @@
                 },
                 "checkm_db": {
                     "type": "string",
-                    "description": "CheckM database path"
+                    "description": "CheckM database path",
+                    "default": "./checkM_db"
                 },
                 "save_checkm_data": {
                     "type": "boolean",
@@ -371,5 +373,33 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ]
+    ],
+    "properties": {
+        "ncbi_genome_infos": {
+            "type": "string",
+            "default": "./assets/ncbi_genome_infos.csv"
+        },
+        "ksize": {
+            "type": "integer",
+            "default": 21
+        },
+        "skip_gtdbtk": {
+            "type": "boolean"
+        },
+        "gtdb_db": {
+            "type": "string",
+            "default": "https://data.ace.uq.edu.au/public/gtdb/data/releases/release214/214.1/auxillary_files/gtdbtk_r214_data.tar.gz"
+        },
+        "gtdb_mash": {
+            "type": "string"
+        },
+        "gtdbtk_min_completeness": {
+            "type": "integer",
+            "default": 50
+        },
+        "gtdbtk_max_contamination": {
+            "type": "integer",
+            "default": 10
+        }
+    }
 }
