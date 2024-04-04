@@ -209,14 +209,14 @@ workflow MAGMAP {
         .map { [ [id: it.accno], file(it.genome_gff) ] }
         .set{ gff_to_gunzip }
 
-     GUNZIP_GFFS(gff_to_gunzip)
-     GUNZIP_GFFS.out.gunzip
-         .map{ meta, gff -> [ [id: meta.id], gff ] }
-         .join(ch_genomes
-             .filter{ it.genome_gff }
-             .map { [ [id:it.accno], it.genome_fna ] })
-         .map{ meta, gff, fna -> [ accno: meta.id, genome_fna: fna, genome_gff: gff ] }
-         .set { ch_genomes_gunzipped_gff }
+    GUNZIP_GFFS(gff_to_gunzip)
+    GUNZIP_GFFS.out.gunzip
+        .map{ meta, gff -> [ [id: meta.id], gff ] }
+        .join(ch_genomes
+            .filter{ it.genome_gff }
+            .map { [ [id:it.accno], it.genome_fna ] })
+        .map{ meta, gff, fna -> [ accno: meta.id, genome_fna: fna, genome_gff: gff ] }
+        .set { ch_genomes_gunzipped_gff }
 
     GUNZIP(ch_no_gff)
 
@@ -250,11 +250,11 @@ workflow MAGMAP {
     //
     if (!params.skip_binqc){
         CHECKM_QC (
-           ch_genomes_fnas.groupTuple(),
-           ch_checkm_db.map { meta, db -> db }
+            ch_genomes_fnas.groupTuple(),
+            ch_checkm_db.map { meta, db -> db }
         )
         ch_checkm_summary = CHECKM_QC.out.summary
-       ch_versions       = ch_versions.mix(CHECKM_QC.out.versions)
+        ch_versions       = ch_versions.mix(CHECKM_QC.out.versions)
     }
 
     //
