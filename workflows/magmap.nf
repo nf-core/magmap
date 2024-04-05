@@ -126,7 +126,7 @@ workflow MAGMAP {
                 ]
             }
             .set { ch_gtdb_metadata }
-      }
+    }
 
     //
     // INPUT: CheckM metadata
@@ -147,7 +147,7 @@ workflow MAGMAP {
                 ] ]
             }
             .set { ch_checkm_metadata }
-      }
+    }
 
     //
     // INPUT: GTDB-Tk metadata
@@ -166,7 +166,7 @@ workflow MAGMAP {
                 ] ]
             }
             .set { ch_gtdbtk_metadata }
-      }
+    }
 
     //
     // gtdbtk_metadata and checkm_metadata need to be joined
@@ -516,10 +516,9 @@ workflow MAGMAP {
 
     ch_genomes_gunzipped_gff
         .mix(PROKKA.out.gff
-           //.ifEmpty([])
-           .map{ meta, gff -> [ meta.id  , [ meta.id, gff ] ] }
-           .join(ch_no_gff.map { meta, fna -> [ meta.id , [ meta.id, fna ] ] } )
-           .map{ meta, gff, fna -> [ accno: gff[0], genome_fna: fna[1], genome_gff: gff[1] ] })
+            .map{ meta, gff -> [ meta.id  , [ meta.id, gff ] ] }
+            .join(ch_no_gff.map { meta, fna -> [ meta.id , [ meta.id, fna ] ] } )
+            .map{ meta, gff, fna -> [ accno: gff[0], genome_fna: fna[1], genome_gff: gff[1] ] })
         .set{ ch_ready_genomes }
 
     //
