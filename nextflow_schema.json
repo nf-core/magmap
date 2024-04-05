@@ -16,6 +16,7 @@
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
+                    "schema": "assets/schema_input.json",
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
@@ -137,11 +138,15 @@
             "title": "BBmap options",
             "type": "object",
             "default": "",
-            "help_text": "It has to be a fasta file",
             "properties": {
                 "sequence_filter": {
                     "type": "string",
-                    "description": "Use BBduk to remove specific sequences"
+                    "description": "Fasta file with sequences to remove with BBduk"
+                },
+                "bbmap_minid": {
+                    "description": "Minimum identity for BBMap mappings. Not used for BBDuk.",
+                    "type": "number",
+                    "default": 0.9
                 },
                 "save_bam": {
                     "type": "boolean",
@@ -367,5 +372,15 @@
         {
             "$ref": "#/definitions/generic_options"
         }
-    ]
+    ],
+    "properties": {
+        "ncbi_genome_infos": {
+            "type": "string",
+            "default": "./assets/ncbi_genome_infos.csv"
+        },
+        "ksize": {
+            "type": "integer",
+            "default": 21
+        }
+    }
 }
