@@ -1,33 +1,5 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    PRINT PARAMS SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-include { paramsSummaryLog; paramsSummaryMap } from 'plugin/nf-validation'
-
-def logo = NfcoreTemplate.logo(workflow, params.monochrome_logs)
-def citation = '\n' + WorkflowMain.citation(workflow) + '\n'
-def summary_params = paramsSummaryMap(workflow)
-
-// Print parameter summary log to screen
-log.info logo + paramsSummaryLog(workflow) + citation
-
-WorkflowMagmap.initialise(params, log)
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    CONFIG FILES
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
-ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
-ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT LOCAL MODULES/SUBWORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
@@ -42,18 +14,19 @@ include { FILTER_GENOMES        } from '../modules/local/filter_genomes'
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
 //
-include { INPUT_CHECK } from '../subworkflows/local/input_check'
-include { CHECKM_QC   } from '../subworkflows/local/checkm_qc'
+include { validateInputSamplesheet       } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 
 //
 // SUBWORKFLOW: Local
 //
-include { FASTQC_TRIMGALORE   } from '../subworkflows/local/fastqc_trimgalore'
-include { CAT_GFFS            } from '../subworkflows/local/concatenate_gff'
-include { CREATE_BBMAP_INDEX  } from '../subworkflows/local/create_bbmap_index'
-include { SOURMASH            } from '../subworkflows/local/sourmash'
-include { ARIA2_UNTAR         } from '../subworkflows/local/aria2_untar'
-include { GTDBTK              } from '../subworkflows/local/gtdbtk'
+include { FASTQC_TRIMGALORE       } from '../subworkflows/local/fastqc_trimgalore'
+include { CAT_GFFS                } from '../subworkflows/local/concatenate_gff'
+include { CREATE_BBMAP_INDEX      } from '../subworkflows/local/create_bbmap_index'
+include { SOURMASH                } from '../subworkflows/local/sourmash'
+include { ARIA2_UNTAR             } from '../subworkflows/local/aria2_untar'
+include { GTDBTK                  } from '../subworkflows/local/gtdbtk'
+include { PIPELINE_INITIALISATION } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
+include { PIPELINE_COMPLETION     } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -66,26 +39,33 @@ include { GTDBTK              } from '../subworkflows/local/gtdbtk'
 //
 include { FASTQC                                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                                } from '../modules/nf-core/multiqc/main'
-include { CUSTOM_DUMPSOFTWAREVERSIONS            } from '../modules/nf-core/custom/dumpsoftwareversions/main'
 include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk/main'
 include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align/main'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts/main'
 include { GUNZIP                                 } from '../modules/nf-core/gunzip/main'
 include { GUNZIP as GUNZIP_GFFS                  } from '../modules/nf-core/gunzip/main'
 include { PROKKA                                 } from '../modules/nf-core/prokka/main'
-//include { ARIA2                                  } from '../modules/nf-core/aria2/main'
-//include { UNTAR                                  } from '../modules/nf-core/untar/main'
 
 //
 // SUBWORKFLOWS: Installed directly from nf-core/modules
 //
+include { paramsSummaryMap                       } from 'plugin/nf-validation'
+include { fromSamplesheet                        } from 'plugin/nf-validation'
+include { paramsSummaryMultiqc                   } from '../subworkflows/nf-core/utils_nfcore_pipeline/'
+include { softwareVersionsToYAML                 } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core/bam_sort_stats_samtools/main'
+include { UTILS_NEXTFLOW_PIPELINE                } from '../subworkflows/nf-core/utils_nextflow_pipeline/main'
+include { UTILS_NFCORE_PIPELINE                  } from '../subworkflows/nf-core/utils_nfcore_pipeline/main'
+include { UTILS_NFVALIDATION_PLUGIN              } from '../subworkflows/nf-core/utils_nfvalidation_plugin/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     RUN MAIN WORKFLOW
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
+
+// set an empty multiqc channel
+ch_multiqc_files = Channel.empty()
 
 gtdb = ( params.skip_binqc || params.skip_gtdbtk ) ? false : params.gtdb_db
 
@@ -96,11 +76,13 @@ if (gtdb) {
     gtdb = []
 }
 
-// Info required for completion email and summary
-def multiqc_report = []
-
 workflow MAGMAP {
 
+    take:
+    ch_samplesheet       // channel: path(sample_sheet.csv)
+    ch_versions          // channel: [ path(versions.yml) ]
+
+    main:
     ch_versions = Channel.empty()
 
     if ( !params.skip_binqc ) {
@@ -108,14 +90,6 @@ workflow MAGMAP {
         ch_checkm_db = ARIA2_UNTAR.out.checkm_db
         ch_versions  = ARIA2_UNTAR.out.versions
     }
-
-    //
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
-    //
-    INPUT_CHECK (
-        file(params.input)
-    )
-    ch_versions = ch_versions.mix(INPUT_CHECK.out.versions)
 
     //
     // INPUT: if user provides, populate ch_genomeinfo with a table that provides the genomes to filter with sourmash
@@ -148,16 +122,31 @@ workflow MAGMAP {
     }
 
     //
+    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
+    //
+    Channel
+        .fromSamplesheet("input")
+        .map {
+            meta, fastq_1, fastq_2 ->
+                if (!fastq_2) {
+                    return [ meta + [ single_end:true ], [ fastq_1 ] ]
+                } else {
+                    return [ meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
+                }
+        }
+        .set { ch_fastq }
+
+    //
     // SUBWORKFLOW: Read QC and trim adapters
     //
     FASTQC_TRIMGALORE (
-        INPUT_CHECK.out.reads,
+        ch_fastq,
         params.skip_fastqc || params.skip_qc,
         params.skip_trimming
     )
     ch_versions = ch_versions.mix(FASTQC_TRIMGALORE.out.versions)
 
-    ch_collect_stats = INPUT_CHECK.out.reads.collect { it[0].id }.map { [ [ id: "magmap" ], it ] }
+    ch_collect_stats = ch_fastq.collect { it[0].id }.map { [ [ id: "magmap" ], it ] }
     if ( params.skip_trimming ) {
         ch_collect_stats
             .map { [ it[0], it[1], [] ] }
@@ -220,14 +209,14 @@ workflow MAGMAP {
         .map { [ [id: it.accno], file(it.genome_gff) ] }
         .set{ gff_to_gunzip }
 
-     GUNZIP_GFFS(gff_to_gunzip)
-     GUNZIP_GFFS.out.gunzip
-         .map{ meta, gff -> [ [id: meta.id], gff ] }
-         .join(ch_genomes
-             .filter{ it.genome_gff }
-             .map { [ [id:it.accno], it.genome_fna ] })
-         .map{ meta, gff, fna -> [ accno: meta.id, genome_fna: fna, genome_gff: gff ] }
-         .set { ch_genomes_gunzipped_gff }
+    GUNZIP_GFFS(gff_to_gunzip)
+    GUNZIP_GFFS.out.gunzip
+        .map{ meta, gff -> [ [id: meta.id], gff ] }
+        .join(ch_genomes
+            .filter{ it.genome_gff }
+            .map { [ [id:it.accno], it.genome_fna ] })
+        .map{ meta, gff, fna -> [ accno: meta.id, genome_fna: fna, genome_gff: gff ] }
+        .set { ch_genomes_gunzipped_gff }
 
     GUNZIP(ch_no_gff)
 
@@ -261,11 +250,11 @@ workflow MAGMAP {
     //
     if (!params.skip_binqc){
         CHECKM_QC (
-           ch_genomes_fnas.groupTuple(),
-           ch_checkm_db.map { meta, db -> db }
+            ch_genomes_fnas.groupTuple(),
+            ch_checkm_db.map { meta, db -> db }
         )
         ch_checkm_summary = CHECKM_QC.out.summary
-       ch_versions       = ch_versions.mix(CHECKM_QC.out.versions)
+        ch_versions       = ch_versions.mix(CHECKM_QC.out.versions)
     }
 
     //
@@ -299,68 +288,71 @@ workflow MAGMAP {
     BBMAP_ALIGN ( ch_clean_reads, CREATE_BBMAP_INDEX.out.index )
     ch_versions = ch_versions.mix(BBMAP_ALIGN.out.versions)
 
-    // //
-    // // SUBWORKFLOW: sort bam file and produce statistics
-    // //
-    // BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genomes_fnas )
-    // ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
+    //
+    // SUBWORKFLOW: sort bam file and produce statistics
+    //
+    BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genomes_fnas )
+    ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
-    // BAM_SORT_STATS_SAMTOOLS.out.bam
-    //     .combine(CAT_GFFS.out.gff.map { it[1] })
-    //     .set { ch_featurecounts }
+    BAM_SORT_STATS_SAMTOOLS.out.bam
+        .combine(CAT_GFFS.out.gff.map { it[1] })
+        .set { ch_featurecounts }
 
-    // ch_collect_stats
-    //     .combine(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect { it[1]}.map { [ it ] })
-    //     .set { ch_collect_stats }
-
-    // //
-    // // MODULE: FeatureCounts
-    // //
-    // FEATURECOUNTS ( ch_featurecounts )
-    // ch_versions = ch_versions.mix(FEATURECOUNTS.out.versions)
-
-    // //
-    // // MODULE: Collect featurecounts output counts in one table
-    // //
-    // FEATURECOUNTS.out.counts
-    //     .collect() { it[1] }
-    //     .map { [ [ id:'all_samples'], it ] }
-    //     .set { ch_collect_feature }
-
-    // COLLECT_FEATURECOUNTS ( ch_collect_feature )
-    // ch_versions           = ch_versions.mix(COLLECT_FEATURECOUNTS.out.versions)
-    // ch_fcs_for_stats      = COLLECT_FEATURECOUNTS.out.counts.collect { it[1]}.map { [ it ] }
-    // ch_fcs_for_summary    = COLLECT_FEATURECOUNTS.out.counts.map { it[1]}
-    // ch_collect_stats
-    //     .combine(ch_fcs_for_stats)
-    //     .set { ch_collect_stats }
-
-    // //
-    // // Collect statistics from the pipeline
-    // //
-    // COLLECT_STATS(ch_collect_stats)
-    // ch_versions     = ch_versions.mix(COLLECT_STATS.out.versions)
+    ch_collect_stats
+        .combine(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect { it[1]}.map { [ it ] })
+        .set { ch_collect_stats }
 
     //
-    // MODULE: custom dump software versions
+    // MODULE: FeatureCounts
     //
-    CUSTOM_DUMPSOFTWAREVERSIONS (
-        ch_versions.unique().collectFile(name: 'collated_versions.yml')
-    )
+    FEATURECOUNTS ( ch_featurecounts )
+    ch_versions = ch_versions.mix(FEATURECOUNTS.out.versions)
+
+    //
+    // MODULE: Collect featurecounts output counts in one table
+    //
+    FEATURECOUNTS.out.counts
+        .collect() { it[1] }
+        .map { [ [ id:'all_samples'], it ] }
+        .set { ch_collect_feature }
+
+    COLLECT_FEATURECOUNTS ( ch_collect_feature )
+    ch_versions           = ch_versions.mix(COLLECT_FEATURECOUNTS.out.versions)
+    ch_fcs_for_stats      = COLLECT_FEATURECOUNTS.out.counts.collect { it[1]}.map { [ it ] }
+    ch_fcs_for_summary    = COLLECT_FEATURECOUNTS.out.counts.map { it[1]}
+    ch_collect_stats
+        .combine(ch_fcs_for_stats)
+        .set { ch_collect_stats }
+
+    //
+    // Collect statistics from the pipeline
+    //
+    COLLECT_STATS(ch_collect_stats)
+    ch_versions     = ch_versions.mix(COLLECT_STATS.out.versions)
+
+    //
+    // Collate and save software versions
+    //
+    softwareVersionsToYAML(ch_versions)
+        .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_magmap_software_mqc_versions.yml', sort: true, newLine: true)
+        .set { ch_collated_versions }
 
     //
     // MODULE: MultiQC
     //
-    workflow_summary    = WorkflowMagmap.paramsSummaryMultiqc(workflow, summary_params)
-    ch_workflow_summary = Channel.value(workflow_summary)
-
-    methods_description    = WorkflowMagmap.methodsDescriptionText(workflow, ch_multiqc_custom_methods_description, params)
-    ch_methods_description = Channel.value(methods_description)
-
-    ch_multiqc_files = Channel.empty()
+    ch_multiqc_report = Channel.empty()
+    ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+    ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
+    ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
+    ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+    summary_params           = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    ch_workflow_summary      = Channel.value(paramsSummaryMultiqc(summary_params))
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_methods_description.collectFile(name: 'methods_description_mqc.yaml'))
-    ch_multiqc_files = ch_multiqc_files.mix(CUSTOM_DUMPSOFTWAREVERSIONS.out.mqc_yml.collect())
+    ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_TRIMGALORE.out.trim_zip.collect{ meta, zip -> zip })
+    ch_multiqc_files = ch_multiqc_files.mix(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect{ meta, idxstats -> idxstats })
+    ch_multiqc_files = ch_multiqc_files.mix(FEATURECOUNTS.out.summary.collect{ meta, summary -> summary })
+
 
     MULTIQC (
         ch_multiqc_files.collect(),
@@ -368,31 +360,11 @@ workflow MAGMAP {
         ch_multiqc_custom_config.toList(),
         ch_multiqc_logo.toList()
     )
-    multiqc_report = MULTIQC.out.report.toList()
-}
+    ch_multiqc_report = MULTIQC.out.report.toList()
 
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    COMPLETION EMAIL AND SUMMARY
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-workflow.onComplete {
-    if (params.email || params.email_on_fail) {
-        NfcoreTemplate.email(workflow, params, summary_params, projectDir, log, multiqc_report)
-    }
-    NfcoreTemplate.dump_parameters(workflow, params)
-    NfcoreTemplate.summary(workflow, params, log)
-    if (params.hook_url) {
-        NfcoreTemplate.IM_notification(workflow, params, summary_params, projectDir, log)
-    }
-}
-
-workflow.onError {
-    if (workflow.errorReport.contains("Process requirement exceeds available memory")) {
-        println("🛑 Default resources exceed availability 🛑 ")
-        println("💡 See here on how to configure pipeline: https://nf-co.re/docs/usage/configuration#tuning-workflow-resources 💡")
-    }
+    emit:
+    multiqc_report = ch_multiqc_report // channel: /path/to/multiqc_report.html
+    versions       = ch_versions       // channel: [ path(versions.yml) ]
 }
 
 /*
