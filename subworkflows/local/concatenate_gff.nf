@@ -6,6 +6,7 @@ include { CAT_CAT as FIRST_CAT  } from '../../modules/nf-core/cat/cat'
 include { CAT_CAT as SECOND_CAT } from '../../modules/nf-core/cat/cat'
 include { GENOMEINDEX           } from '../../modules/local/genomeindex'
 include { CAT_CAT as GINDEX_CAT } from '../../modules/nf-core/cat/cat'
+include { PROKKAGFF2TSV         } from '../../modules/local/prokkagff2tsv'
 
 workflow CAT_GFFS {
     take: ch_genome_gffs
@@ -31,8 +32,12 @@ workflow CAT_GFFS {
         GINDEX_CAT(GENOMEINDEX.out.genomes2id.collect().map { [ [id: 'genomes_index'], it ] })
         ch_versions = ch_versions.mix(GINDEX_CAT.out.versions)
 
+        PROKKAGFF2TSV(SECOND_CAT.out.file_out)
+        ch_versions = ch_versions.mix(PROKKAGFF2TSV.out.versions)
+
     emit:
     gff      = SECOND_CAT.out.file_out
     gindex   = GINDEX_CAT.out.file_out
+    gfftsv   = PROKKAGFF2TSV.out.tsv
     versions = ch_versions
 }
