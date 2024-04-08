@@ -20,12 +20,8 @@
                     "mimetype": "text/csv",
                     "pattern": "^\\S+\\.csv$",
                     "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/magmap/usage#samplesheet-input).",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
                     "fa_icon": "fas fa-file-csv"
-                },
-                "genomeinfo": {
-                    "type": "string",
-                    "description": "Path to comma-separated file containing information about the location of genome files (contigs and gff files)"
                 },
                 "outdir": {
                     "type": "string",
@@ -46,116 +42,6 @@
                     "fa_icon": "fas fa-file-signature"
                 }
             }
-        },
-        "trimming": {
-            "title": "Trimming",
-            "type": "object",
-            "description": "Parameters for Trim Galore!",
-            "default": "",
-            "fa_icon": "fas fa-cut",
-            "properties": {
-                "clip_r1": {
-                    "type": "string",
-                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 1 (or single-end reads)."
-                },
-                "clip_r2": {
-                    "type": "string",
-                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 2 (paired-end reads only)."
-                },
-                "three_prime_clip_r1": {
-                    "type": "string",
-                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 1 AFTER adapter/quality trimming has been performed."
-                },
-                "three_prime_clip_r2": {
-                    "type": "string",
-                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 2 AFTER adapter/quality trimming has been performed."
-                },
-                "trim_nextseq": {
-                    "type": "string",
-                    "description": "Instructs Trim Galore to apply the --nextseq=X option, to trim based on quality after removing poly-G tails."
-                },
-                "save_trimmed": {
-                    "type": "boolean",
-                    "description": "Save the trimmed FastQ files in the results directory."
-                },
-                "skip_trimming": {
-                    "type": "boolean",
-                    "description": "Skip the adapter trimming step."
-                },
-                "skip_qc": {
-                    "type": "boolean",
-                    "description": "Skip all QC steps except for MultiQC."
-                },
-                "skip_fastqc": {
-                    "type": "boolean",
-                    "description": "Skip FastQC."
-                }
-            }
-        },
-        "sourmash_options": {
-            "title": "Sourmash options",
-            "type": "object",
-            "description": "Parameters for Sourmash identification of genomes",
-            "default": "",
-            "properties": {
-                "sourmash": {
-                    "type": "boolean",
-                    "description": "Enable sourmash module"
-                },
-                "indexes": {
-                    "type": "string",
-                    "description": "Sourmash index files",
-                    "help_text": "These typically have a `.sbt.zip` suffix. Files can either be created by the user or downloaded from e.g. https://sourmash.readthedocs.io/en/latest/databases.html#gtdb-r07-rs207-dna-databases."
-                }
-            }
-        },
-        "checkm": {
-            "title": "CheckM",
-            "type": "object",
-            "description": "",
-            "default": "",
-            "properties": {
-                "skip_binqc": {
-                    "type": "boolean",
-                    "description": "Skip bin quality check",
-                    "default": true
-                },
-                "checkm_download_url": {
-                    "type": "string",
-                    "default": "https://data.ace.uq.edu.au/public/CheckM_databases/checkm_data_2015_01_16.tar.gz",
-                    "description": "Download CheckM database"
-                },
-                "checkm_db": {
-                    "type": "string",
-                    "description": "CheckM database path",
-                    "default": "./checkM_db"
-                },
-                "save_checkm_data": {
-                    "type": "boolean",
-                    "description": "Save checkM database"
-                }
-            }
-        },
-        "bbmap_options": {
-            "title": "BBmap options",
-            "type": "object",
-            "default": "",
-            "properties": {
-                "sequence_filter": {
-                    "type": "string",
-                    "description": "Fasta file with sequences to remove with BBduk"
-                },
-                "bbmap_minid": {
-                    "description": "Minimum identity for BBMap mappings. Not used for BBDuk.",
-                    "type": "number",
-                    "default": 0.9
-                },
-                "save_bam": {
-                    "type": "boolean",
-                    "description": "save bam files in output directory"
-                }
-            },
-            "description": "Options for BBmap modules"
         },
         "institutional_config_options": {
             "title": "Institutional config options",
@@ -357,18 +243,6 @@
             "$ref": "#/definitions/input_output_options"
         },
         {
-            "$ref": "#/definitions/trimming"
-        },
-        {
-            "$ref": "#/definitions/sourmash_options"
-        },
-        {
-            "$ref": "#/definitions/checkm"
-        },
-        {
-            "$ref": "#/definitions/bbmap_options"
-        },
-        {
             "$ref": "#/definitions/institutional_config_options"
         },
         {
@@ -379,31 +253,68 @@
         }
     ],
     "properties": {
+        "genomeinfo": {
+            "type": "string"
+        },
+        "indexes": {
+            "type": "string"
+        },
         "ncbi_genome_infos": {
             "type": "string",
             "default": "./assets/ncbi_genome_infos.csv"
+        },
+        "gtdb_metadata": {
+            "type": "string"
+        },
+        "checkm_metadata": {
+            "type": "string"
+        },
+        "gtdbtk_metadata": {
+            "type": "string"
+        },
+        "clip_r1": {
+            "type": "string"
+        },
+        "clip_r2": {
+            "type": "string"
+        },
+        "three_prime_clip_r1": {
+            "type": "string"
+        },
+        "three_prime_clip_r2": {
+            "type": "string"
+        },
+        "trim_nextseq": {
+            "type": "string"
+        },
+        "save_trimmed": {
+            "type": "boolean"
+        },
+        "skip_trimming": {
+            "type": "boolean"
+        },
+        "skip_qc": {
+            "type": "boolean"
+        },
+        "skip_fastqc": {
+            "type": "boolean"
+        },
+        "sourmash": {
+            "type": "boolean"
         },
         "ksize": {
             "type": "integer",
             "default": 21
         },
-        "skip_gtdbtk": {
-            "type": "boolean"
+        "bbmap_minid": {
+            "type": "number",
+            "default": 0.9
         },
-        "gtdb_db": {
-            "type": "string",
-            "default": "https://data.ace.uq.edu.au/public/gtdb/data/releases/release214/214.1/auxillary_files/gtdbtk_r214_data.tar.gz"
-        },
-        "gtdb_mash": {
+        "sequence_filter": {
             "type": "string"
         },
-        "gtdbtk_min_completeness": {
-            "type": "integer",
-            "default": 50
-        },
-        "gtdbtk_max_contamination": {
-            "type": "integer",
-            "default": 10
+        "save_bam": {
+            "type": "boolean"
         }
     }
 }
