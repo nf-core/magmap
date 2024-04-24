@@ -27,7 +27,9 @@ process COLLECT_STATS {
             d = map(
                 sample,
                 function(s) {
-                    fread(cmd = sprintf("grep 'Reads written (passing filters)' %s*trimming_report.txt | sed 's/.*: *//' | sed 's/ .*//' | sed 's/,//g'", s)) %>%
+                    fread(
+                        cmd = sprintf("grep 'Reads written (passing filters)' %s*trimming_report.txt | sed 's/.*: *//' | sed 's/ .*//' | sed 's/,//g'", s)
+                    ) %>%
                         as_tibble()
                 }
             )
@@ -60,10 +62,15 @@ process COLLECT_STATS {
             i = map(
                 sample,
                 function(s) {
-                    fread(cmd = sprintf("grep -v '^*' %s*idxstats", s), sep = '\\t', col.names = c('chr', 'length', 'idxs_n_mapped', 'idxs_n_unmapped')) %>%
-                    lazy_dt() %>%
-                    summarise(idxs_n_mapped = sum(idxs_n_mapped), idxs_n_unmapped = sum(idxs_n_unmapped)) %>%
-                    as_tibble()
+                    fread(
+                        cmd = sprintf("grep -v '^*' %s*idxstats", s), 
+                        sep = '\\t', 
+                        col.names = c('chr', 'length', 'idxs_n_mapped', 'idxs_n_unmapped'),
+                        colClasses = list(character = 1, integer = 2, double = 3:4)
+                    ) %>%
+                        lazy_dt() %>%
+                        summarise(idxs_n_mapped = sum(idxs_n_mapped), idxs_n_unmapped = sum(idxs_n_unmapped)) %>%
+                        as_tibble()
                 }
             )
         ) %>%
@@ -72,7 +79,16 @@ process COLLECT_STATS {
             union(
             # Total observation after featureCounts
                 tibble(file = Sys.glob('*_counts.tsv.gz')) %>%
-                mutate(d = map(file, function(f) fread(cmd = sprintf("gunzip -c %s", f), sep = '\\t'))) %>%
+                mutate(
+                    d = map(
+                        file, 
+                        function(f) fread(
+                            cmd = sprintf("gunzip -c %s", f), 
+                            colClasses = list(character = c('orf', 'chr', 'strand', 'sample'), integer = c('start', 'end', 'count'), double = c('length', 'tpm')),
+                            sep = '\\t'
+                        )
+                    )
+                ) %>%
                 as_tibble() %>%
                 unnest(d) %>%
                 group_by(sample) %>% summarise(n_feature_count = sum(count), .groups = 'drop') %>%
@@ -80,14 +96,18 @@ process COLLECT_STATS {
             )
 
     # Add in stats from BBDuk, if present
-    for ( f in Sys.glob('*.bbduk.log') ) {
-        s = str_remove(f, '.bbduk.log')
-        t <- t %>% union(
-            fread(cmd = sprintf("grep 'Result:' %s | sed 's/Result:[ \\t]*//; s/ reads.*//'", f), col.names = c('v')) %>%
-            as_tibble() %>%
-            mutate(sample = s, m = 'n_non_contaminated')
-        )
-    }
+    # DL: I don't think this works, and we don't seem to have a bbduk parameter, so I'm commenting out
+###     for ( f in Sys.glob('*.bbduk.log') ) {
+###         s = str_remove(f, '.bbduk.log')
+###         t <- t %>% union(
+###             fread(
+###                 cmd = sprintf("grep 'Result:' %s | sed 's/Result:[ \\t]*//; s/ reads.*//'", f), 
+###                 col.names = c('v')
+###             ) %>%
+###             as_tibble() %>%
+###             mutate(sample = s, m = 'n_non_contaminated')
+###         )
+###     }
 
     # Write the table in wide format
     t %>%
