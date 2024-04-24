@@ -429,13 +429,13 @@ workflow MAGMAP {
     // SUBWORKFLOW: Read QC and trim adapters
     //
     FASTQC_TRIMGALORE (
-        ch_fastq,
+        ch_cat_fastq,
         params.skip_fastqc || params.skip_qc,
         params.skip_trimming
     )
     ch_versions = ch_versions.mix(FASTQC_TRIMGALORE.out.versions)
 
-    ch_collect_stats = ch_fastq.collect { it[0].id }.map { [ [ id: "magmap" ], it ] }
+    ch_collect_stats = ch_cat_fastq.collect { it[0].id }.map { [ [ id: "magmap" ], it ] }
     if ( params.skip_trimming ) {
         ch_collect_stats
             .map { [ it[0], it[1], [] ] }

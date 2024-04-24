@@ -45,8 +45,8 @@ workflow NFCORE_MAGMAP {
     )
 
     emit:
-    multiqc_report = MAGMAP.out.multiqc_report // channel: /path/to/multiqc_report.html
-    versions       = ch_versions                    // channel: [version1, version2, ...]
+    multiqc_report = MAGMAP.out.multiqc_report  // channel: /path/to/multiqc_report.html
+    versions       = ch_versions                // channel: [version1, version2, ...]
 }
 
 /*
