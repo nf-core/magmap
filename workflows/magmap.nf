@@ -44,6 +44,7 @@ include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subr
 include { GUNZIP                                 } from '../modules/nf-core/gunzip/main'
 include { GUNZIP as GUNZIP_GFFS                  } from '../modules/nf-core/gunzip/main'
 include { PROKKA                                 } from '../modules/nf-core/prokka/main'
+include { CAT_FASTQ            	                 } from '../modules/nf-core/cat/fastq/main'
 
 //
 // SUBWORKFLOWS: Installed directly from nf-core/modules
@@ -394,12 +395,35 @@ workflow MAGMAP {
         .map {
             meta, fastq_1, fastq_2 ->
                 if (!fastq_2) {
-                    return [ meta + [ single_end:true ], [ fastq_1 ] ]
+                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
                 } else {
-                    return [ meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
+                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
                 }
         }
+        .groupTuple()
+        .map {
+            validateInputSamplesheet(it)
+        }
+        .branch {
+            meta, fastqs ->
+                single  : fastqs.size() == 1
+                    return [ meta, fastqs.flatten() ]
+                multiple: fastqs.size() > 1
+                    return [ meta, fastqs.flatten() ]
+        }
         .set { ch_fastq }
+
+    //
+    // MODULE: Concatenate FastQ files from same sample if required
+    //
+    CAT_FASTQ (
+        ch_fastq.multiple
+    )
+    .reads
+    .mix(ch_fastq.single)
+    .set { ch_cat_fastq }
+
+    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first())
 
     //
     // SUBWORKFLOW: Read QC and trim adapters
