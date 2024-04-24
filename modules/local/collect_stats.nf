@@ -63,8 +63,8 @@ process COLLECT_STATS {
                 sample,
                 function(s) {
                     fread(
-                        cmd = sprintf("grep -v '^*' %s*idxstats", s), 
-                        sep = '\\t', 
+                        cmd = sprintf("grep -v '^*' %s*idxstats", s),
+                        sep = '\\t',
                         col.names = c('chr', 'length', 'idxs_n_mapped', 'idxs_n_unmapped'),
                         colClasses = list(character = 1, integer = 2, double = 3:4)
                     ) %>%
@@ -81,9 +81,9 @@ process COLLECT_STATS {
                 tibble(file = Sys.glob('*_counts.tsv.gz')) %>%
                 mutate(
                     d = map(
-                        file, 
+                        file,
                         function(f) fread(
-                            cmd = sprintf("gunzip -c %s", f), 
+                            cmd = sprintf("gunzip -c %s", f),
                             colClasses = list(character = c('orf', 'chr', 'strand', 'sample'), integer = c('start', 'end', 'count'), double = c('length', 'tpm')),
                             sep = '\\t'
                         )
@@ -101,7 +101,7 @@ process COLLECT_STATS {
 ###         s = str_remove(f, '.bbduk.log')
 ###         t <- t %>% union(
 ###             fread(
-###                 cmd = sprintf("grep 'Result:' %s | sed 's/Result:[ \\t]*//; s/ reads.*//'", f), 
+###                 cmd = sprintf("grep 'Result:' %s | sed 's/Result:[ \\t]*//; s/ reads.*//'", f),
 ###                 col.names = c('v')
 ###             ) %>%
 ###             as_tibble() %>%
