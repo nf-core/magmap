@@ -117,12 +117,9 @@ Filenames start with assembly program and ORF caller, to allow reruns of the pip
 <summary>Output files</summary>
 
 - `summary_tables/`
-  - `{assembler}.{orf_caller}.overall_stats.tsv.gz`: overall statistics from the pipeline, e.g. number of reads, number of called ORFs, number of reads mapping back to contigs/ORFs etc.
-  - `{assembler}.{orf_caller}.counts.tsv.gz`: read counts per ORF and sample.
-  - `{assembler}.{orf_caller}.emapper.tsv.gz`: reformatted output from EggNOG-mapper.
-  - `{assembler}.{orf_caller}.{db}_eukulele.tsv.gz`: taxonomic annotation per ORF for specific database.
-  - `{assembler}.{orf_caller}.prokka-annotations.tsv.gz`: reformatted annotation output from Prokka.
-  - `{assembler}.{orf_caller}.hmmrank.tsv.gz`: ranked summary table from HMMER results.
+  - `magmap.overall_stats.tsv.gz`: overall statistics from the pipeline, e.g. number of reads, number of called ORFs, number of reads mapping back to contigs/ORFs etc.
+  - `magmap.counts.tsv.gz`: read counts per ORF and sample.
+  - `summary_table.taxonomy.tsv.gz`: for each genomes this tsv file provides metrics and taxonomy.
 
 </details>
 
