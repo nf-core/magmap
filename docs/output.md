@@ -17,7 +17,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
     - [MultiQC](#multiqc) - Aggregate report describing results
     - [BBduk](#bbduk) - Filter out sequences from samples that matches sequences in a user-provided fasta file (optional)
   - [Filtering genomes](#filter-genomes-step) - Generate a list of genomes that will be used for the mapping
-    - [Sourmash](#sourmash) - Output from Megahit assembly (default)
+    - [Sourmash](#sourmash) - Output from Sourmash filtering of genomes.
   - [ORF Caller step](#orf-caller-step) - Identify protein-coding genes (ORFs) with an ORF caller
     - [Prokka](#prokka) - Output from Prokka (optional)
   - [Mapping step](#mapping-reads-to-genomes) - Predict the function and the taxonomy of ORFs
