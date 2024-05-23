@@ -7,7 +7,7 @@
 ## Introduction
 
 Magmap is a workflow designed for mapping metatranscriptomic and metagenomic reads onto a group of genomes.
-The collection of genomes can either be specified directly using a table (see the `--genomeinfo` parameter) or be the result of filtering with Sourmash. 
+The collection of genomes can either be specified directly using a table (see the `--genomeinfo` parameter) or be the result of filtering with Sourmash.
 The latter can use either the genomes specified by `--genomeinfo`, a "sketch index" pointing to genomes available for instance at NCBI (see the `--indexes` parameter) or a combination, to identify a smaller set to map to.
 Genome files provided with `--genominfo` must include contigs in fasta format and optionally gff files (Prokka format).
 Any genome for which a gff file is missing will be annotated with Prokka.
