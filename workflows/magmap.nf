@@ -57,7 +57,6 @@ include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core
 include { UTILS_NEXTFLOW_PIPELINE                } from '../subworkflows/nf-core/utils_nextflow_pipeline/main'
 include { UTILS_NFCORE_PIPELINE                  } from '../subworkflows/nf-core/utils_nfcore_pipeline/main'
 include { UTILS_NFVALIDATION_PLUGIN              } from '../subworkflows/nf-core/utils_nfvalidation_plugin/main'
-include { methodsDescriptionText                  } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,7 +67,8 @@ include { methodsDescriptionText                  } from '../subworkflows/local/
 workflow MAGMAP {
 
     take:
-    ch_samplesheet // channel: samplesheet read in from --input
+    ch_samplesheet  // channel: samplesheet read in from --input
+    ch_versions     // channel: [ path(versions.yml) ]
 
     main:
 
@@ -651,20 +651,12 @@ workflow MAGMAP {
     summary_params           = paramsSummaryMap(
         workflow, parameters_schema: "nextflow_schema.json"
         )
-    ch_methods_description                = Channel.value(
-        methodsDescriptionText(ch_multiqc_custom_methods_description))
     ch_workflow_summary      = Channel.value(paramsSummaryMultiqc(summary_params))
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC_TRIMGALORE.out.trim_zip.collect{ meta, zip -> zip })
     ch_multiqc_files = ch_multiqc_files.mix(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect{ meta, idxstats -> idxstats })
     ch_multiqc_files = ch_multiqc_files.mix(FEATURECOUNTS.out.summary.collect{ meta, summary -> summary })
-    ch_multiqc_files = ch_multiqc_files.mix(
-        ch_methods_description.collectFile(
-            name: 'methods_description_mqc.yaml',
-            sort: true
-        )
-    )
 
     MULTIQC (
         ch_multiqc_files.collect(),
