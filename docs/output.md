@@ -92,7 +92,7 @@ BBduk is built-in tool from BBmap.
 
 #### Prokka
 
-You can use [Prokka](https://github.com/tseemann/prokka) to identify ORFs in the genomes.
+You can use [Prokka](https://github.com/tseemann/prokka) to identify ORFs in any genomes for which a gff file is not provided.
 In addition to calling ORFs (done with Prodigal) Prokka will filter ORFs to only retain quality ORFs and will functionally annotate the ORFs.
 
 <details markdown="1">
