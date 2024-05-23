@@ -21,6 +21,7 @@
                 "errorMessage": "FastQ file for reads 1 must be provided, cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
             },
             "fastq_2": {
+<<<<<<< HEAD
                 "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'",
                 "type": "string",
                 "format": "file-path",
@@ -35,6 +36,13 @@
                         "maxLength": 0
                     }
                 ]
+=======
+                "type": "string",
+                "format": "file-path",
+                "exists": true,
+                "pattern": "^\\S+\\.f(ast)?q\\.gz$",
+                "errorMessage": "FastQ file for reads 2 cannot contain spaces and must have extension '.fq.gz' or '.fastq.gz'"
+>>>>>>> TEMPLATE
             }
         },
         "required": ["sample", "fastq_1"]
