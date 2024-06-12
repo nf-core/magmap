@@ -366,16 +366,16 @@
             "$ref": "#/definitions/input_output_options"
         },
         {
-            "$ref": "#/definitions/new_group_4"
+            "$ref": "#/definitions/Quality control options"
         },
         {
-            "$ref": "#/definitions/trimming"
+            "$ref": "#/definitions/Trimming options"
         },
         {
-            "$ref": "#/definitions/new_group_2"
+            "$ref": "#/definitions/BBtools options"
         },
         {
-            "$ref": "#/definitions/new_group_3"
+            "$ref": "#/definitions/Sourmash options"
         },
         {
             "$ref": "#/definitions/institutional_config_options"
