@@ -34,7 +34,7 @@ workflow PIPELINE_INITIALISATION {
     help              // boolean: Display help text
     validate_params   // boolean: Boolean whether to validate parameters against the schema at runtime
     monochrome_logs   // boolean: Do not use coloured log outputs
-    nextflow_cli_args  //   array: List of positional nextflow CLI args
+    nextflow_cli_args //   array: List of positional nextflow CLI args
     outdir            //  string: The output directory where the results will be saved
 
     main:
@@ -57,7 +57,6 @@ workflow PIPELINE_INITIALISATION {
     pre_help_text = nfCoreLogo(monochrome_logs)
     post_help_text = '\n' + workflowCitation() + '\n' + dashedLine(monochrome_logs)
     def String workflow_command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> --input samplesheet.csv --outdir <OUTDIR>"
-
     UTILS_NFVALIDATION_PLUGIN (
         help,
         workflow_command,
@@ -73,9 +72,7 @@ workflow PIPELINE_INITIALISATION {
     UTILS_NFCORE_PIPELINE (
         nextflow_cli_args
     )
-
 }
-
 /*
 ========================================================================================
     SUBWORKFLOW FOR PIPELINE COMPLETION
@@ -115,7 +112,6 @@ workflow PIPELINE_COMPLETION {
     workflow.onError {
         log.error "Pipeline failed. Please refer to troubleshooting docs: https://nf-co.re/docs/usage/troubleshooting"
     }
-
 }
 
 /*

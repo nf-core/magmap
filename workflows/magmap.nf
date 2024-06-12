@@ -67,11 +67,13 @@ include { UTILS_NFVALIDATION_PLUGIN              } from '../subworkflows/nf-core
 workflow MAGMAP {
 
     take:
-    ch_samplesheet       // channel: path(sample_sheet.csv)
-    ch_versions          // channel: [ path(versions.yml) ]
+    ch_samplesheet  // channel: samplesheet read in from --input
+    ch_versions     // channel: [ path(versions.yml) ]
 
     main:
+
     ch_versions = Channel.empty()
+    ch_multiqc_files = Channel.empty()
 
     //
     // INPUT: if user provides, populate ch_genomeinfo with a table that provides the genomes to filter with sourmash
@@ -478,7 +480,7 @@ workflow MAGMAP {
             .map { [
                 accno: it.accno,
                 genome_fna: file(it.genome_fna),
-                genome_gff: file(it.genome_gff)
+                genome_gff: it.genome_gff ? file(it.genome_gff) : ''
                 ] }
             .set{ ch_genomes }
     }
@@ -618,19 +620,37 @@ workflow MAGMAP {
     // Collate and save software versions
     //
     softwareVersionsToYAML(ch_versions)
-        .collectFile(storeDir: "${params.outdir}/pipeline_info", name: 'nf_core_magmap_software_mqc_versions.yml', sort: true, newLine: true)
-        .set { ch_collated_versions }
+        .collectFile(
+            storeDir: "${params.outdir}/pipeline_info",
+            name: 'nf_core_pipeline_software_mqc_versions.yml',
+            sort: true,
+            newLine: true
+        ).set { ch_collated_versions }
 
     //
     // MODULE: MultiQC
     //
     ch_multiqc_files  = Channel.empty()
     ch_multiqc_report = Channel.empty()
-    ch_multiqc_config          = Channel.fromPath("$projectDir/assets/multiqc_config.yml", checkIfExists: true)
-    ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath( params.multiqc_config, checkIfExists: true ) : Channel.empty()
-    ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath( params.multiqc_logo, checkIfExists: true ) : Channel.empty()
-    ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(params.multiqc_methods_description, checkIfExists: true) : file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
-    summary_params           = paramsSummaryMap(workflow, parameters_schema: "nextflow_schema.json")
+    ch_multiqc_config          = Channel.fromPath(
+        "$projectDir/assets/multiqc_config.yml",
+        checkIfExists: true
+        )
+    ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath(
+        params.multiqc_config,
+        checkIfExists: true
+        ) : Channel.empty()
+    ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath(
+        params.multiqc_logo,
+        checkIfExists: true
+        ) : Channel.empty()
+    ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(
+        params.multiqc_methods_description, checkIfExists: true
+        ) : file("$projectDir/assets/methods_description_template.yml",
+        checkIfExists: true)
+    summary_params           = paramsSummaryMap(
+        workflow, parameters_schema: "nextflow_schema.json"
+        )
     ch_workflow_summary      = Channel.value(paramsSummaryMultiqc(summary_params))
     ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
@@ -638,18 +658,16 @@ workflow MAGMAP {
     ch_multiqc_files = ch_multiqc_files.mix(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect{ meta, idxstats -> idxstats })
     ch_multiqc_files = ch_multiqc_files.mix(FEATURECOUNTS.out.summary.collect{ meta, summary -> summary })
 
-
     MULTIQC (
         ch_multiqc_files.collect(),
         ch_multiqc_config.toList(),
         ch_multiqc_custom_config.toList(),
         ch_multiqc_logo.toList()
     )
-    ch_multiqc_report = MULTIQC.out.report.toList()
 
     emit:
-    multiqc_report = ch_multiqc_report // channel: /path/to/multiqc_report.html
-    versions       = ch_versions       // channel: [ path(versions.yml) ]
+    multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    versions       = ch_versions                 // channel: [ path(versions.yml) ]
 }
 
 /*
