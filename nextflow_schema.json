@@ -69,7 +69,7 @@
                 }
             }
         },
-        "Quality control options": {
+        "Quality_control_options": {
             "title": "Quality control options",
             "type": "object",
             "description": "Option for QC steps",
@@ -85,7 +85,7 @@
                 }
             }
         },
-        "Trimming options": {
+        "Trimming_options": {
             "title": "Trimming options",
             "type": "object",
             "description": "All the trim option are listed below",
@@ -121,7 +121,7 @@
                 }
             }
         },
-        "BBtools options": {
+        "BBtools_options": {
             "title": "BBtools options",
             "type": "object",
             "description": "All the options you can use for BBmap or BBduk)",
@@ -142,7 +142,7 @@
                 }
             }
         },
-        "Sourmash options": {
+        "Sourmash_options": {
             "title": "Sourmash",
             "type": "object",
             "description": "All the options available for Sourmash",
@@ -366,16 +366,16 @@
             "$ref": "#/definitions/input_output_options"
         },
         {
-            "$ref": "#/definitions/Quality control options"
+            "$ref": "#/definitions/Quality_control_options"
         },
         {
-            "$ref": "#/definitions/Trimming options"
+            "$ref": "#/definitions/Trimming_options"
         },
         {
-            "$ref": "#/definitions/BBtools options"
+            "$ref": "#/definitions/BBtools_options"
         },
         {
-            "$ref": "#/definitions/Sourmash options"
+            "$ref": "#/definitions/Sourmash_options"
         },
         {
             "$ref": "#/definitions/institutional_config_options"
