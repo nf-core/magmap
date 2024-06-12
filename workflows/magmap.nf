@@ -480,7 +480,7 @@ workflow MAGMAP {
             .map { [
                 accno: it.accno,
                 genome_fna: file(it.genome_fna),
-                genome_gff: file(it.genome_gff)
+                genome_gff: it.genome_gff ? file(it.genome_gff) : ''
                 ] }
             .set{ ch_genomes }
     }
