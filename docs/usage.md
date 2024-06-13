@@ -21,7 +21,7 @@ Note that the pipeline can map to any collection of genomes, including single ge
 A typical command for running the workflow is:
 
 ```bash
-nextflow run nf-core/metatdenovo -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv
+nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv
 ```
 
 ### Samplesheet input
@@ -122,7 +122,7 @@ Specify a fasta file, gzipped or not, with the --sequence_filter sequences.fasta
 For further documentation, see the [BBduk official website](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbduk-guide/).
 
 ```bash
-nextflow run nf-core/metatdenovo -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --sequence_filter path/to/file
+nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --sequence_filter path/to/file
 ```
 
 ### Sourmash (optional)
@@ -130,7 +130,7 @@ nextflow run nf-core/metatdenovo -profile docker --outdir results/ --input sampl
 with [Sourmash](https://sourmash.readthedocs.io/en/latest/index.html) you can filter the genomes to be used by magmap in the mapping step. This function is optional but can speed up the process and let you get a better genomes /reads mapping ratio since you are removing all the genomes that are not passing the threshold (that you can select).
 
 ```bash
-nextflow run nf-core/metatdenovo -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --sourmash true
+nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --sourmash true
 ```
 
 ### ORF caller option
