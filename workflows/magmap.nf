@@ -508,7 +508,7 @@ workflow MAGMAP {
 
         ch_header
             .concat( ch_metadata )
-            .collectFile(name: "summary_table.taxonomy.tsv",
+            .collectFile(name: "magmap.summary_table.taxonomy.tsv",
             newLine: true,
             storeDir: "${params.outdir}/summary_tables")
     }

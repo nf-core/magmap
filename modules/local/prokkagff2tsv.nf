@@ -44,7 +44,7 @@ process PROKKAGFF2TSV {
         relocate(sort(colnames(.)[8:ncol(.)]), .after = 7) %>%
         relocate(orf) %>%
         as.data.table() %>%
-        write_tsv("${prefix}.prokka-annotations.tsv.gz")
+        write_tsv("magmap.${prefix}.prokka-annotations.tsv.gz")
 
     writeLines(
         c(
