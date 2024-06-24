@@ -28,7 +28,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 On release, automated continuous integration tests run the pipeline on a full-sized dataset on the AWS cloud infrastructure. This ensures that the pipeline runs on AWS, has sensible resource allocation defaults set to run on real-world datasets, and permits the persistent storage of results to benchmark between pipeline releases and other analysis sources.The results obtained from the full-sized test can be viewed on the [nf-core website](https://nf-co.re/magmap/results).
 
 ## Pipeline summary
-
+![nf-core/magmap-metro-map](docs/images/metromap-magmap-v2.svg)
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
 3. Quality trimming and adapters removal for raw reads ([`Trimm Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
@@ -38,11 +38,7 @@ On release, automated continuous integration tests run the pipeline on a full-si
    1. generate index of assembly ([`BBmap index`](https://sourceforge.net/projects/bbmap/))
    2. Mapping cleaned reads to the assembly for quantification ([`BBmap`](https://sourceforge.net/projects/bbmap/))
    3. Get raw counts per each gene present in the genomes ([`Featurecounts`](http://subread.sourceforge.net)) -> TSV table with collected featurecounts output
-7. Choice of functional annotation:
-   1. [`Eggnog-mapper`](http://eggnog-mapper.embl.de)
-   2. [`kofamscan`](https://github.com/takaram/kofam_scan)
-   3. [`Hmmsearch`](https://www.ebi.ac.uk/Tools/hmmer/search/hmmsearch). Besides searching the ORFs, each ORF's hits will be ranked.
-8. Summary statistics table. Collect_stats.R
+7. Summary statistics table. Collect_stats.R
 
 ## Usage
 
