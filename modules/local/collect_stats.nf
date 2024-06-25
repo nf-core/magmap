@@ -2,17 +2,17 @@ process COLLECT_STATS {
     tag "$meta.id"
     label 'process_low'
 
-    conda "conda-forge::r-tidyverse=1.3.1 conda-forge::r-data.table=1.14.0 conda-forge::r-dtplyr=1.1.0"
+    conda "conda-forge::r-tidyverse=2.0.0 conda-forge::r-dtplyr=1.3.1 conda-forge::r-data.table=1.14.8"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/mulled-v2-508c9bc5e929a77a9708902b1deca248c0c84689:0bb5bee2557136d28549f41d3faa08485e967aa1-0' :
-        'biocontainers/mulled-v2-508c9bc5e929a77a9708902b1deca248c0c84689:0bb5bee2557136d28549f41d3faa08485e967aa1-0' } "
+        'https://depot.galaxyproject.org/singularity/mulled-v2-b2ec1fea5791d428eebb8c8ea7409c350d31dada:a447f6b7a6afde38352b24c30ae9cd6e39df95c4-1' :
+        'biocontainers/mulled-v2-b2ec1fea5791d428eebb8c8ea7409c350d31dada:a447f6b7a6afde38352b24c30ae9cd6e39df95c4-1' }"
 
     input:
     tuple val(meta), val(samples), path(trimlogs), path(bblogs), path(idxstats), path(fcs)
 
     output:
-    path "${meta.id}_overall_stats.tsv", emit: overall_stats
-    path "versions.yml"     , emit: versions
+    path "${meta.id}.overall_stats.tsv.gz", emit: overall_stats
+    path "versions.yml"                   , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -28,7 +28,8 @@ process COLLECT_STATS {
                 sample,
                 function(s) {
                     fread(
-                        cmd = sprintf("grep 'Reads written (passing filters)' %s*trimming_report.txt | sed 's/.*: *//' | sed 's/ .*//' | sed 's/,//g'", s)
+                        cmd = sprintf("grep 'Reads written (passing filters)' %s*trimming_report.txt | sed 's/.*: *//' | sed 's/ .*//' | sed 's/,//g'",
+                        s)
                     ) %>%
                         as_tibble()
                 }
@@ -57,7 +58,7 @@ process COLLECT_STATS {
 
     # Collect stats for each sample, create a table in long format that can be appended to
     t <- tibble(sample = c("${samples.join('", "')}")) ${read_trimlogs}
-    # add samtools idxstats output
+        # add samtools idxstats output
         mutate(
             i = map(
                 sample,
@@ -65,9 +66,8 @@ process COLLECT_STATS {
                     fread(
                         cmd = sprintf("grep -v '^*' %s*idxstats", s),
                         sep = '\\t',
-                        col.names = c('chr', 'length', 'idxs_n_mapped', 'idxs_n_unmapped'),
-                        colClasses = list(character = 1, integer = 2, double = 3:4)
-                    ) %>%
+                        col.names = c('chr', 'length', 'idxs_n_mapped', 'idxs_n_unmapped')
+                        ) %>%
                         lazy_dt() %>%
                         summarise(idxs_n_mapped = sum(idxs_n_mapped), idxs_n_unmapped = sum(idxs_n_unmapped)) %>%
                         as_tibble()
@@ -75,50 +75,58 @@ process COLLECT_STATS {
             )
         ) %>%
         unnest(i) %>%
-            pivot_longer(2:ncol(.), names_to = 'm', values_to = 'v') %>%
-            union(
+        pivot_longer(2:ncol(.), names_to = 'm', values_to = 'v') %>%
+        union(
             # Total observation after featureCounts
-                tibble(file = Sys.glob('*_counts.tsv.gz')) %>%
+            tibble(file = Sys.glob('*.counts.tsv.gz')) %>%
                 mutate(
                     d = map(
                         file,
-                        function(f) fread(
-                            cmd = sprintf("gunzip -c %s", f),
-                            colClasses = list(character = c('orf', 'chr', 'strand', 'sample'), integer = c('start', 'end', 'count'), double = c('length', 'tpm')),
-                            sep = '\\t'
+                        function(f) fread(cmd = sprintf("gunzip -c %s", f),
+                        sep = '\\t'
                         )
                     )
                 ) %>%
                 as_tibble() %>%
                 unnest(d) %>%
+                mutate(sample = as.character(sample)) %>%
                 group_by(sample) %>% summarise(n_feature_count = sum(count), .groups = 'drop') %>%
                 pivot_longer(2:ncol(.), names_to = 'm', values_to = 'v')
-            )
+        )
 
     # Add in stats from BBDuk, if present
-    # DL: I don't think this works, and we don't seem to have a bbduk parameter, so I'm commenting out
-###     for ( f in Sys.glob('*.bbduk.log') ) {
-###         s = str_remove(f, '.bbduk.log')
-###         t <- t %>% union(
-###             fread(
-###                 cmd = sprintf("grep 'Result:' %s | sed 's/Result:[ \\t]*//; s/ reads.*//'", f),
-###                 col.names = c('v')
-###             ) %>%
-###             as_tibble() %>%
-###             mutate(sample = s, m = 'n_non_contaminated')
-###         )
-###     }
+    for ( f in Sys.glob('*.bbduk.log') ) {
+        s = str_remove(f, '.bbduk.log')
+        t <- t %>% union(
+            fread(
+                cmd = sprintf("grep 'Result:' %s | sed 's/Result:[ \\t]*//; s/ reads.*//'", f),
+                col.names = c('v')
+                ) %>%
+                as_tibble() %>%
+                mutate(sample = s, m = 'n_non_contaminated')
+        )
+    }
 
     # Write the table in wide format
     t %>%
         mutate(m = parse_factor(m, levels = TYPE_ORDER, ordered = TRUE)) %>%
         arrange(sample, m) %>%
         pivot_wider(names_from = m, values_from = v) %>%
-        write_tsv('${prefix}_overall_stats.tsv')
+        write_tsv('${prefix}.overall_stats.tsv.gz')
 
-        writeLines(c("\\"${task.process}\\":", paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")), paste0("    dplyr: ", packageVersion('dplyr')),
-            paste0("    dtplyr: ", packageVersion('dtplyr')), paste0("    data.table: ", packageVersion('data.table')), paste0("    readr: ", packageVersion('readr')),
-            paste0("    purrr: ", packageVersion('purrr')), paste0("    tidyr: ", packageVersion('tidyr')), paste0("    stringr: ", packageVersion('stringr')) ),
-            "versions.yml")
+    writeLines(
+        c(
+            "\\"${task.process}\\":",
+            paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),
+            paste0("    dplyr: ", packageVersion('dplyr')),
+            paste0("    dtplyr: ", packageVersion('dtplyr')),
+            paste0("    data.table: ", packageVersion('data.table')),
+            paste0("    readr: ", packageVersion('readr')),
+            paste0("    purrr: ", packageVersion('purrr')),
+            paste0("    tidyr: ", packageVersion('tidyr')),
+            paste0("    stringr: ", packageVersion('stringr'))
+        ),
+        "versions.yml"
+    )
     """
 }
