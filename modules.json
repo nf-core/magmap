@@ -17,7 +17,7 @@
                     },
                     "bbmap/bbduk": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "9c769a7902405e7c799b215610b33bffdd087aad",
                         "installed_by": ["modules"]
                     },
                     "bbmap/index": {
@@ -47,7 +47,7 @@
                     },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
-                        "git_sha": "de45447d060b8c8b98575bc637a4a575fd0638e1",
+                        "git_sha": "82024cf6325d2ee194e7f056d841ecad2f6856e9",
                         "installed_by": ["modules"]
                     },
                     "fastqc": {
@@ -67,7 +67,7 @@
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "b7ebe95761cd389603f9cc0e0dc384c0f663815a",
+                        "git_sha": "8f2062e7b4185590fb9f43c275381a31a6544fc0",
                         "installed_by": ["modules"]
                     },
                     "prokka": {
@@ -77,7 +77,7 @@
                     },
                     "samtools/flagstat": {
                         "branch": "master",
-                        "git_sha": "f4596fe0bdc096cf53ec4497e83defdb3a94ff62",
+                        "git_sha": "04fbbc7c43cebc0b95d5b126f6d9fe4effa33519",
                         "installed_by": ["bam_stats_samtools"]
                     },
                     "samtools/idxstats": {
@@ -87,7 +87,7 @@
                     },
                     "samtools/index": {
                         "branch": "master",
-                        "git_sha": "f4596fe0bdc096cf53ec4497e83defdb3a94ff62",
+                        "git_sha": "04fbbc7c43cebc0b95d5b126f6d9fe4effa33519",
                         "installed_by": ["bam_sort_stats_samtools"]
                     },
                     "samtools/sort": {
@@ -134,6 +134,16 @@
             },
             "subworkflows": {
                 "nf-core": {
+                    "bam_sort_stats_samtools": {
+                        "branch": "master",
+                        "git_sha": "04fbbc7c43cebc0b95d5b126f6d9fe4effa33519",
+                        "installed_by": ["subworkflows"]
+                    },
+                    "bam_stats_samtools": {
+                        "branch": "master",
+                        "git_sha": "04fbbc7c43cebc0b95d5b126f6d9fe4effa33519",
+                        "installed_by": ["bam_sort_stats_samtools", "subworkflows"]
+                    },
                     "utils_nextflow_pipeline": {
                         "branch": "master",
                         "git_sha": "5caf7640a9ef1d18d765d55339be751bb0969dfa",
