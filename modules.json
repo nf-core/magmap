@@ -62,12 +62,12 @@
                     },
                     "gunzip": {
                         "branch": "master",
-                        "git_sha": "3a5fef109d113b4997c9822198664ca5f2716208",
+                        "git_sha": "a7231cbccb86535529e33859e05d19ac93f3ea04",
                         "installed_by": ["modules"]
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "8f2062e7b4185590fb9f43c275381a31a6544fc0",
+                        "git_sha": "314d742bdb357a1df5f9b88427b3b6ac78aa33f7",
                         "installed_by": ["modules"]
                     },
                     "prokka": {
@@ -82,7 +82,7 @@
                     },
                     "samtools/idxstats": {
                         "branch": "master",
-                        "git_sha": "f4596fe0bdc096cf53ec4497e83defdb3a94ff62",
+                        "git_sha": "04fbbc7c43cebc0b95d5b126f6d9fe4effa33519",
                         "installed_by": ["bam_stats_samtools"]
                     },
                     "samtools/index": {
@@ -92,12 +92,12 @@
                     },
                     "samtools/sort": {
                         "branch": "master",
-                        "git_sha": "4352dbdb09ec40db71e9b172b97a01dcf5622c26",
+                        "git_sha": "04fbbc7c43cebc0b95d5b126f6d9fe4effa33519",
                         "installed_by": ["bam_sort_stats_samtools"]
                     },
                     "samtools/stats": {
                         "branch": "master",
-                        "git_sha": "f4596fe0bdc096cf53ec4497e83defdb3a94ff62",
+                        "git_sha": "04fbbc7c43cebc0b95d5b126f6d9fe4effa33519",
                         "installed_by": ["bam_stats_samtools"]
                     },
                     "sourmash/gather": {
@@ -107,7 +107,7 @@
                     },
                     "sourmash/index": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "1c1bd04e617b2b6b50c48cb7c3f2fba039903a83",
                         "installed_by": ["modules"]
                     },
                     "sourmash/sketch": {
