@@ -162,6 +162,20 @@
             },
             "fa_icon": "fas fa-align-justify"
         },
+        "new_group_1": {
+            "title": "New Group 1",
+            "type": "object",
+            "description": "",
+            "default": "",
+            "properties": {
+                "save_prokka": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-file-download",
+                    "description": "Enable to save prokka output. Default: false"
+                }
+            },
+            "fa_icon": "fas fa-phone-alt"
+        },
         "Sourmash_options": {
             "title": "Sourmash",
             "type": "object",
@@ -396,6 +410,9 @@
         },
         {
             "$ref": "#/definitions/BBtools_options"
+        },
+        {
+            "$ref": "#/definitions/new_group_1"
         },
         {
             "$ref": "#/definitions/Sourmash_options"
