@@ -77,7 +77,7 @@ workflow SOURMASH {
                 }
             }
             .set { ch_accnos_ncbi }
-        
+
         SOURMASH_GATHER.out.result
             .map{ meta, csv -> csv }
             .splitCsv( sep: ',', header: true, quote: '"')
@@ -123,8 +123,8 @@ workflow SOURMASH {
             def genomeInfos = tuple[1] // Should be a list or null
             if (genomeInfos == null || genomeInfos.isEmpty()) {
                 return [] // Discard tuples with null or empty genomeInfos
-            } 
-        
+            }
+
             // Extract values from the map
             def genomeFna = genomeInfos.genome_fna ?: ''
             def genomeGff = genomeInfos.genome_gff ?: ''
