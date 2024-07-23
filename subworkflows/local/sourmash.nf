@@ -62,7 +62,7 @@ workflow SOURMASH {
             .collect()
             .set{ ch_database }
 
-        SOURMASH_GATHER ( SAMPLES_SKETCH.out.signatures, ch_database, save_unassigned, save_matches_sig, save_prefetch, save_prefetch_csv )
+        SOURMASH_GATHER ( ch_sample_sigs, ch_database, save_unassigned, save_matches_sig, save_prefetch, save_prefetch_csv )
         ch_versions = ch_versions.mix(SOURMASH_GATHER.out.versions)
 
         SOURMASH_GATHER.out.result
@@ -86,7 +86,6 @@ workflow SOURMASH {
             .filter { name ->
                 !(name =~ /(GCA_[0-9]+\.[0-9]+|GCF_[0-9]+\.[0-9]+)/)
             }
-            .view()
             .set { ch_all_non_ncbi_user_accnos }
 
 
@@ -95,43 +94,34 @@ workflow SOURMASH {
         ch_all_non_ncbi_user_accnos
             .join(ch_user_genomeinfo.map { [ it.accno, [ it ] ]} )
             .map { it[1][0] }
-            .view()
             .set { ch_matching_user_non_ncbi_genomes }
 
         ch_accnos_ncbi
             .join(ch_user_genomeinfo.map { [ it.accno, [ it ] ]} )
             .map { it[1][0] }
             .set { ch_matching_user_ncbi_genomes }
-
         ch_accnos_ncbi
             .map { accno -> [accno, null] } // Initialize the channel with accno and null
-            .join(ch_matching_user_ncbi_genomes.map { [it.accno, it] }, remainder: true) // Perform the join
+            .join(ch_matching_user_ncbi_genomes.map { [it.accno, [ it ] ] }, remainder: true) // Perform the join
             .flatMap { tuple ->
-            //println "Debugging tuple: ${tuple}"
 
                 def accno = tuple[0] // accno from the left channel
                 def matches = tuple[2] // Should be a list or null
 
                 if (matches == null || matches.isEmpty()) {
-                //println "this is how matches looks like: ${matches}"
-                //println "No matches found for accno: ${accno}"
                     return [[accno, null]]
                 } else {
-                //println "Matches found for accno: ${accno}, matches: ${matches}"
                     return matches.collect { match -> [accno, match] }
                 }
             }
             .filter { it[1] == null } // Keep only tuples with null data
             .map { it[0] } // Extract accno
-            .join(ch_ncbi_genomeinfo.map { [it.accno, it] }, remainder: true) // Join with genome info
+            .join(ch_ncbi_genomeinfo.map { [it.accno, it ] }) // Join with genome info
             .flatMap { tuple ->
-            //println "Debugging tuple for genome info: ${tuple}"
 
             def accno = tuple[0] // accno from the left channel
             def genomeInfos = tuple[1] // Should be a list or null
-
             if (genomeInfos == null || genomeInfos.isEmpty()) {
-            //println "No genome info found for accno: ${accno}"
                 return [] // Discard tuples with null or empty genomeInfos
             } 
         
