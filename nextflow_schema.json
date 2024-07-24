@@ -143,6 +143,10 @@
                 "save_bbmap_index": {
                     "type": "boolean",
                     "description": "Save ref folder containing the reference index"
+                },
+                "save_genomes_cat": {
+                    "type": "boolean",
+                    "description": "Save genomes concatenated file"
                 }
             }
         },
@@ -160,6 +164,10 @@
                     "type": "integer",
                     "default": 21,
                     "description": "K-mer size used by Sourmash"
+                },
+                "save_sourmash": {
+                    "type": "boolean",
+                    "description": "Save Sourmash outuput"
                 }
             }
         },
