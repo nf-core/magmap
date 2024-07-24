@@ -147,6 +147,7 @@
                 "save_genomes_cat": {
                     "type": "boolean",
                     "description": "Save genomes concatenated file"
+                    "default": false
                 }
             }
         },
