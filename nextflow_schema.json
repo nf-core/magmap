@@ -139,6 +139,10 @@
                 "save_bam": {
                     "type": "boolean",
                     "description": "Save bam output file"
+                },
+                "save_bbmap_index": {
+                    "type": "boolean",
+                    "description": "Save ref folder containing the reference index"
                 }
             }
         },
