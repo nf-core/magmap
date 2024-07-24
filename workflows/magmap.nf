@@ -472,7 +472,7 @@ workflow MAGMAP {
     //
     // we create a channel for ncbi genomes only when sourmash is called
     if ( params.sourmash ) {
-        SOURMASH(ch_clean_reads, ch_indexes, ch_genomeinfo, ch_genome_infos)
+        SOURMASH(ch_clean_reads, ch_indexes, ch_genomeinfo, ch_genome_infos, params.ksize)
         ch_versions = ch_versions.mix(SOURMASH.out.versions)
         ch_genomes = SOURMASH.out.filtered_genomes
     } else {
@@ -662,7 +662,9 @@ workflow MAGMAP {
         ch_multiqc_files.collect(),
         ch_multiqc_config.toList(),
         ch_multiqc_custom_config.toList(),
-        ch_multiqc_logo.toList()
+        ch_multiqc_logo.toList(),
+        [],
+        []
     )
 
     emit:

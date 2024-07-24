@@ -13,6 +13,7 @@ workflow SOURMASH {
         ch_indexes
         ch_user_genomeinfo
         ch_ncbi_genomeinfo_files
+        ksize
 
     main:
         // I like that you create named variables for these, but they look more like config file
@@ -54,7 +55,7 @@ workflow SOURMASH {
             .map{ sig -> [ [id: 'signatures'], sig ] }
             .set { ch_genome_sigs }
 
-        GENOMES_INDEX(ch_genome_sigs)
+        GENOMES_INDEX(ch_genome_sigs, ksize)
 
         GENOMES_INDEX.out.signature_index
             .map{ meta, sig -> sig }
