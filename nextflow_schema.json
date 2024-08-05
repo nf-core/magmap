@@ -146,7 +146,7 @@
                 },
                 "save_genomes_cat": {
                     "type": "boolean",
-                    "description": "Save genomes concatenated file"
+                    "description": "Save genomes concatenated file",
                     "default": false
                 }
             }
@@ -168,7 +168,7 @@
                 },
                 "save_sourmash": {
                     "type": "boolean",
-                    "description": "Save Sourmash outuput"
+                    "description": "Save Sourmash outuput",
                     "default": false
                 }
             }
