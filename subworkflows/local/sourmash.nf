@@ -56,6 +56,7 @@ workflow SOURMASH {
             .set { ch_genome_sigs }
 
         GENOMES_INDEX(ch_genome_sigs, ksize)
+        ch_versions = ch_versions.mix(GENOMES_INDEX.out.versions)
 
         GENOMES_INDEX.out.signature_index
             .map{ meta, sig -> sig }
