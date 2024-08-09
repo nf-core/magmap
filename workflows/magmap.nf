@@ -93,7 +93,7 @@ workflow MAGMAP {
             .fromPath( params.ncbi_genome_infos )
             .set { ch_genome_infos }
     }
- 
+
     //
     // INPUT: if user provides, populate ch_indexes
     //
