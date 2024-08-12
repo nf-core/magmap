@@ -58,12 +58,14 @@ CONTROL_REP2,AEG588A1_S2_L002_R1_001.fastq.gz,AEG588A1_S2_L002_R2_001.fastq.gz
 Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
 
 `genomeinfo.csv`:
+
 ```csv
 accno,genome_fna,genome_gff
 genome1,path/to/fna.gz,path/to/gff.gz
 genome2,path/to/fna.gz,path/to/gff.gz
 genome3,path/to/fna.gz,path/to/gff.gz
 ```
+
 Each row represents a genome file with or without the paired gff
 
 Now, you can run the pipeline using:
