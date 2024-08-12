@@ -157,7 +157,17 @@
                 "save_bam": {
                     "type": "boolean",
                     "description": "Save bam output file",
-                    "fa_icon": "fas fa-save"
+                    "fa_icon": "fas fa-save",
+                    "description": "Save bam output file"
+                },
+                "save_bbmap_index": {
+                    "type": "boolean",
+                    "description": "Save ref folder containing the reference index"
+                },
+                "save_genomes_cat": {
+                    "type": "boolean",
+                    "description": "Save genomes concatenated file",
+                    "default": false
                 }
             },
             "fa_icon": "fas fa-align-justify"
@@ -191,7 +201,13 @@
                     "type": "integer",
                     "default": 21,
                     "description": "K-mer size used by Sourmash",
-                    "fa_icon": "fas fa-arrows-alt-h"
+                    "fa_icon": "fas fa-arrows-alt-h",
+                    "description": "K-mer size used by Sourmash"
+                },
+                "save_sourmash": {
+                    "type": "boolean",
+                    "description": "Save Sourmash outuput",
+                    "default": false
                 }
             },
             "fa_icon": "fas fa-filter"
