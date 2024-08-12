@@ -444,7 +444,7 @@ workflow MAGMAP {
             .set { ch_collect_stats }
     } else {
         ch_collect_stats
-            .combine(FASTQC_TRIMGALORE.out.trim_log.collect { it[1][0] }.map { [ it ] })
+            .combine(FASTQC_TRIMGALORE.out.trim_log.collect { it[1] })
             .set { ch_collect_stats }
     }
 
