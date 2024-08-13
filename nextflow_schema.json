@@ -157,8 +157,7 @@
                 "save_bam": {
                     "type": "boolean",
                     "description": "Save bam output file",
-                    "fa_icon": "fas fa-save",
-                    "description": "Save bam output file"
+                    "fa_icon": "fas fa-save"
                 },
                 "save_bbmap_index": {
                     "type": "boolean",
@@ -201,8 +200,7 @@
                     "type": "integer",
                     "default": 21,
                     "description": "K-mer size used by Sourmash",
-                    "fa_icon": "fas fa-arrows-alt-h",
-                    "description": "K-mer size used by Sourmash"
+                    "fa_icon": "fas fa-arrows-alt-h"
                 },
                 "save_sourmash": {
                     "type": "boolean",
