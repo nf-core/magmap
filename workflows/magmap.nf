@@ -561,7 +561,7 @@ workflow MAGMAP {
     ch_ready_genomes
         .map{ it.genome_fna }
         .flatten()
-        .collate(1)
+        .collate(1000)
         .map{ [ [ id: "all_references${i++}" ], it ] }
         .set { ch_genomes_fnas }
 

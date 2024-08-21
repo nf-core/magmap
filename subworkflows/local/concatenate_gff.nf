@@ -17,7 +17,7 @@ workflow CAT_GFFS {
         ch_genome_gffs
             .map{ it[1] }
             .flatten()
-            .collate(1)
+            .collate(1000)
             .map{ [ [ id: "all_references${i++}" ], it ] }
             .set { ch_reference_gffs }
         FIRST_CAT   (ch_reference_gffs)
