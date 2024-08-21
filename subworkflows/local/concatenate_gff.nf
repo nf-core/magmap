@@ -17,13 +17,16 @@ workflow CAT_GFFS {
         ch_genome_gffs
             .map{ it[1] }
             .flatten()
-            .collate(1000)
+            .collate(1)
             .map{ [ [ id: "all_references${i++}" ], it ] }
             .set { ch_reference_gffs }
         FIRST_CAT   (ch_reference_gffs)
         ch_versions = ch_versions.mix(FIRST_CAT.out.versions)
 
-        SECOND_CAT  (FIRST_CAT.out.file_out.map{ [ [ id:'reference_gffs' ], it[1] ] })
+        SECOND_CAT  (FIRST_CAT.out.file_out
+                        .collect{ it[1] }
+                        .map{ [ [ id:'reference_gffs' ], it ] }
+                    )
         ch_versions = ch_versions.mix(SECOND_CAT.out.versions)
 
         GENOMEINDEX(ch_genome_gffs.collect{ it[1] })
