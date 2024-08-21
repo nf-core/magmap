@@ -57,6 +57,8 @@ CONTROL_REP2,AEG588A1_S2_L002_R1_001.fastq.gz,AEG588A1_S2_L002_R2_001.fastq.gz
 
 Each row represents a fastq file (single-end) or a pair of fastq files (paired end).
 
+And, if you want to map to a set of your own genomes, a genome information file looking like this:
+
 `genomeinfo.csv`:
 
 ```csv
