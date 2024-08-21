@@ -437,15 +437,22 @@ workflow MAGMAP {
     )
     ch_versions = ch_versions.mix(FASTQC_TRIMGALORE.out.versions)
 
-    ch_collect_stats = ch_cat_fastq.collect { it[0].id }.map { [ [ id: "magmap" ], it ] }
+    ch_collect_stats = ch_cat_fastq.collect { meta, fasta -> meta.id }.map { [ [ id:"magmap" ], it ] }
     if ( params.skip_trimming ) {
         ch_collect_stats
-            .map { [ it[0], it[1], [] ] }
+            .map { meta, samples -> [ meta, samples, [] ] }
             .set { ch_collect_stats }
+
     } else {
-        ch_collect_stats
-            .combine(FASTQC_TRIMGALORE.out.trim_log.collect { it[1] })
-            .set { ch_collect_stats }
+        if ( params.se_reads ) {
+            ch_collect_stats
+                .combine(FASTQC_TRIMGALORE.out.trim_log.collect { meta, report -> report }.map { [ it ] })
+                .set { ch_collect_stats }
+        } else {
+            ch_collect_stats
+                .combine(FASTQC_TRIMGALORE.out.trim_log.collect { meta, report -> report[0] }.map { [ it ] })
+                .set { ch_collect_stats }
+        }
     }
 
     //
@@ -600,9 +607,9 @@ workflow MAGMAP {
     FEATURECOUNTS.out.counts
         .collect() { it[1] }
         .map { [ [ id:'all_samples'], it ] }
-        .set { ch_collect_feature }
+        .set { ch_collect_features }
 
-    COLLECT_FEATURECOUNTS ( ch_collect_feature )
+    COLLECT_FEATURECOUNTS ( ch_collect_features )
     ch_versions           = ch_versions.mix(COLLECT_FEATURECOUNTS.out.versions)
     ch_fcs_for_stats      = COLLECT_FEATURECOUNTS.out.counts.collect { it[1]}.map { [ it ] }
     ch_fcs_for_summary    = COLLECT_FEATURECOUNTS.out.counts.map { it[1]}

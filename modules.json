@@ -17,7 +17,7 @@
                     },
                     "bbmap/bbduk": {
                         "branch": "master",
-                        "git_sha": "9c769a7902405e7c799b215610b33bffdd087aad",
+                        "git_sha": "90b63cde0f838ca4da3a88a37a5309888cae97b9",
                         "installed_by": ["modules"]
                     },
                     "bbmap/index": {
@@ -37,7 +37,7 @@
                     },
                     "checkm/lineagewf": {
                         "branch": "master",
-                        "git_sha": "5238da4ecaf3df6f8f0c3785fdeeaf264b55b8ec",
+                        "git_sha": "90b63cde0f838ca4da3a88a37a5309888cae97b9",
                         "installed_by": ["modules"]
                     },
                     "checkm/qa": {
@@ -67,7 +67,7 @@
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "b80f5fd12ff7c43938f424dd76392a2704fa2396",
+                        "git_sha": "878d2adbb911aa6e15c06a4d1e93d01bd6f26c74",
                         "installed_by": ["modules"]
                     },
                     "prokka": {
@@ -97,7 +97,7 @@
                     },
                     "samtools/stats": {
                         "branch": "master",
-                        "git_sha": "46eca555142d6e597729fcb682adcc791796f514",
+                        "git_sha": "1fe379cf6e6c1e6fa5e32bcbeefea0f1e874dac6",
                         "installed_by": ["bam_stats_samtools"]
                     },
                     "sourmash/gather": {

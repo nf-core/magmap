@@ -54,6 +54,11 @@
                     "description": "Path to comma-separated file containing the output from CheckM.",
                     "fa_icon": "fas fa-table"
                 },
+                "se_reads": {
+                    "type": "boolean",
+                    "description": "Activate when you work with single ends reads.",
+                    "fa_icon": "fas fa-arrows-alt-h"
+                },
                 "email": {
                     "type": "string",
                     "description": "Email address for completion summary.",
@@ -165,8 +170,7 @@
                 },
                 "save_genomes_cat": {
                     "type": "boolean",
-                    "description": "Save genomes concatenated file",
-                    "default": false
+                    "description": "Save genomes concatenated file"
                 }
             },
             "fa_icon": "fas fa-align-justify"
@@ -204,8 +208,7 @@
                 },
                 "save_sourmash": {
                     "type": "boolean",
-                    "description": "Save Sourmash outuput",
-                    "default": false
+                    "description": "Save Sourmash outuput"
                 }
             },
             "fa_icon": "fas fa-filter"
