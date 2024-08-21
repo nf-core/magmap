@@ -452,7 +452,6 @@ workflow MAGMAP {
             ch_collect_stats
                 .combine(FASTQC_TRIMGALORE.out.trim_log.collect { meta, report -> report[0] }.map { [ it ] })
                 .set { ch_collect_stats }
-        
         }
     }
 
