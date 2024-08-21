@@ -436,6 +436,7 @@ workflow MAGMAP {
         params.skip_trimming
     )
     ch_versions = ch_versions.mix(FASTQC_TRIMGALORE.out.versions)
+
     ch_collect_stats = ch_cat_fastq.collect { meta, fasta -> meta.id }.map { [ [ id:"magmap" ], it ] }
     if ( params.skip_trimming ) {
         ch_collect_stats
@@ -451,6 +452,7 @@ workflow MAGMAP {
             ch_collect_stats
                 .combine(FASTQC_TRIMGALORE.out.trim_log.collect { meta, report -> report[0] }.map { [ it ] })
                 .set { ch_collect_stats }
+        
         }
     }
 
