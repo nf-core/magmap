@@ -171,10 +171,10 @@
             },
             "fa_icon": "fas fa-align-justify"
         },
-        "new_group_1": {
-            "title": "New Group 1",
+        "prokka_option": {
+            "title": "Prokka option",
             "type": "object",
-            "description": "",
+            "description": "Prokka option",
             "default": "",
             "properties": {
                 "save_prokka": {
@@ -426,7 +426,7 @@
             "$ref": "#/definitions/BBtools_options"
         },
         {
-            "$ref": "#/definitions/new_group_1"
+            "$ref": "#/definitions/prokka_option"
         },
         {
             "$ref": "#/definitions/Sourmash_options"
