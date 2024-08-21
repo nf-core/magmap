@@ -109,7 +109,7 @@ In addition to calling ORFs (done with Prodigal) Prokka will filter ORFs to only
 
 ### Summary tables
 
-Consistently named and formated output tables in tsv format ready for further analysis.
+Consistently named and formatted output tables in tsv format ready for further analysis.
 Filenames start with assembly program and ORF caller, to allow reruns of the pipeline with different parameter settings without overwriting output files.
 
 <details markdown="1">

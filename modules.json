@@ -72,7 +72,7 @@
                     },
                     "prokka": {
                         "branch": "master",
-                        "git_sha": "49ebda931c36c2b282f7958d00e1236b751f1031",
+                        "git_sha": "697d97d46d56b12ff46a1a848a36849527cea0b8",
                         "installed_by": ["modules"]
                     },
                     "samtools/flagstat": {
@@ -107,12 +107,12 @@
                     },
                     "sourmash/index": {
                         "branch": "master",
-                        "git_sha": "1c1bd04e617b2b6b50c48cb7c3f2fba039903a83",
+                        "git_sha": "b34fb117e397e72a070cde8adf21b758670c90f5",
                         "installed_by": ["modules"]
                     },
                     "sourmash/sketch": {
                         "branch": "master",
-                        "git_sha": "3f5420aa22e00bd030a2556dfdffc9e164ec0ec5",
+                        "git_sha": "b34fb117e397e72a070cde8adf21b758670c90f5",
                         "installed_by": ["modules"]
                     },
                     "subread/featurecounts": {

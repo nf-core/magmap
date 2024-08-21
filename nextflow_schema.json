@@ -30,24 +30,29 @@
                 },
                 "gtdbtk_metadata": {
                     "type": "string",
-                    "description": "Path to comma-separated file containing the output from gtdbtk."
+                    "description": "Path to comma-separated file containing the output from GTDB-Tk.",
+                    "fa_icon": "fas fa-bacteria"
                 },
                 "ncbi_genome_infos": {
                     "type": "string",
                     "default": "./assets/ncbi_genome_infos.csv",
-                    "description": "Path to txt file with information about genomes in nbci."
+                    "description": "Path to txt file with information about genomes in NCBI.",
+                    "fa_icon": "fas fa-network-wired"
                 },
                 "indexes": {
                     "type": "string",
-                    "description": "Path to .sbt file."
+                    "description": "Path to .sbt file.",
+                    "fa_icon": "far fa-address-book"
                 },
                 "gtdb_metadata": {
                     "type": "string",
-                    "description": "Path to comma-separated file containing information from gtdb."
+                    "description": "Path to comma-separated file containing information from GTDB.",
+                    "fa_icon": "fas fa-table"
                 },
                 "checkm_metadata": {
                     "type": "string",
-                    "description": "Path to comma-separated file containing the output from CheckM."
+                    "description": "Path to comma-separated file containing the output from CheckM.",
+                    "fa_icon": "fas fa-table"
                 },
                 "email": {
                     "type": "string",
@@ -77,13 +82,16 @@
             "properties": {
                 "skip_qc": {
                     "type": "boolean",
-                    "description": "Skip all QC steps except for MultiQC."
+                    "description": "Skip all QC steps except for MultiQC.",
+                    "fa_icon": "fas fa-forward"
                 },
                 "skip_fastqc": {
                     "type": "boolean",
-                    "description": "Skip FastQC."
+                    "description": "Skip FastQC.",
+                    "fa_icon": "fas fa-forward"
                 }
-            }
+            },
+            "fa_icon": "fas fa-check-circle"
         },
         "Trimming_options": {
             "title": "Trimming options",
@@ -93,33 +101,41 @@
             "properties": {
                 "clip_r1": {
                     "type": "string",
-                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 1 (or single-end reads)."
+                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 1 (or single-end reads).",
+                    "fa_icon": "fas fa-hand-scissors"
                 },
                 "clip_r2": {
                     "type": "string",
-                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 2 (or single-end reads)."
+                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 2 (or single-end reads).",
+                    "fa_icon": "fas fa-hand-scissors"
                 },
                 "three_prime_clip_r1": {
                     "type": "string",
-                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 1 AFTER adapter/quality trimming has been performed."
+                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 1 AFTER adapter/quality trimming has been performed.",
+                    "fa_icon": "far fa-hand-scissors"
                 },
                 "three_prime_clip_r2": {
                     "type": "string",
-                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 2 AFTER adapter/quality trimming has been performed."
+                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 2 AFTER adapter/quality trimming has been performed.",
+                    "fa_icon": "far fa-hand-scissors"
                 },
                 "trim_nextseq": {
                     "type": "string",
-                    "description": "Instructs Trim Galore to apply the --nextseq=X option, to trim based on quality after removing poly-G tails."
+                    "description": "Instructs Trim Galore to apply the --nextseq=X option, to trim based on quality after removing poly-G tails.",
+                    "fa_icon": "fab fa-cuttlefish"
                 },
                 "save_trimmed": {
                     "type": "boolean",
-                    "description": "Save the trimmed FastQ files in the results directory."
+                    "description": "Save the trimmed FastQ files in the results directory.",
+                    "fa_icon": "fab fa-cuttlefish"
                 },
                 "skip_trimming": {
                     "type": "boolean",
-                    "description": "Skip the adapter trimming step."
+                    "description": "Skip the adapter trimming step.",
+                    "fa_icon": "fas fa-forward"
                 }
-            }
+            },
+            "fa_icon": "fas fa-cut"
         },
         "BBtools_options": {
             "title": "BBtools options",
@@ -129,16 +145,19 @@
             "properties": {
                 "sequence_filter": {
                     "type": "string",
-                    "description": "Instructs BBduk to use a fasta file to filter away sequences before running further analysis."
+                    "description": "Instructs BBduk to use a fasta file to filter away sequences before running further analysis.",
+                    "fa_icon": "fas fa-filter"
                 },
                 "bbmap_minid": {
                     "type": "number",
                     "default": 0.9,
-                    "description": "Minimal identity for BBmap"
+                    "description": "Minimal identity for BBmap",
+                    "fa_icon": "fas fa-search-minus"
                 },
                 "save_bam": {
                     "type": "boolean",
-                    "description": "Save bam output file"
+                    "description": "Save bam output file",
+                    "fa_icon": "fas fa-save"
                 },
                 "save_bbmap_index": {
                     "type": "boolean",
@@ -149,7 +168,22 @@
                     "description": "Save genomes concatenated file",
                     "default": false
                 }
-            }
+            },
+            "fa_icon": "fas fa-align-justify"
+        },
+        "prokka_option": {
+            "title": "Prokka option",
+            "type": "object",
+            "description": "Prokka option",
+            "default": "",
+            "properties": {
+                "save_prokka": {
+                    "type": "boolean",
+                    "fa_icon": "fas fa-file-download",
+                    "description": "Enable to save prokka output. Default: false"
+                }
+            },
+            "fa_icon": "fas fa-phone-alt"
         },
         "Sourmash_options": {
             "title": "Sourmash",
@@ -159,19 +193,22 @@
             "properties": {
                 "sourmash": {
                     "type": "boolean",
-                    "description": "Activate Sourmash"
+                    "description": "Activate Sourmash",
+                    "fa_icon": "fas fa-play-circle"
                 },
                 "ksize": {
                     "type": "integer",
                     "default": 21,
-                    "description": "K-mer size used by Sourmash"
+                    "description": "K-mer size used by Sourmash",
+                    "fa_icon": "fas fa-arrows-alt-h"
                 },
                 "save_sourmash": {
                     "type": "boolean",
                     "description": "Save Sourmash outuput",
                     "default": false
                 }
-            }
+            },
+            "fa_icon": "fas fa-filter"
         },
         "institutional_config_options": {
             "title": "Institutional config options",
@@ -315,7 +352,7 @@
                 "hook_url": {
                     "type": "string",
                     "description": "Incoming hook URL for messaging service",
-                    "fa_icon": "fas fa-people-group",
+                    "fa_icon": "fas fa-globe",
                     "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
                     "hidden": true
                 },
@@ -356,7 +393,7 @@
                     "fa_icon": "far fa-check-circle",
                     "description": "Validation of parameters fails when an unrecognised parameter is found.",
                     "hidden": true,
-                    "help_text": "By default, when an unrecognised parameter is found, it returns a warinig."
+                    "help_text": "By default, when an unrecognised parameter is found, it returns a warning."
                 },
                 "validationLenientMode": {
                     "type": "boolean",
@@ -387,6 +424,9 @@
         },
         {
             "$ref": "#/definitions/BBtools_options"
+        },
+        {
+            "$ref": "#/definitions/prokka_option"
         },
         {
             "$ref": "#/definitions/Sourmash_options"
