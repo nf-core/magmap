@@ -21,7 +21,7 @@
                 "meta": ["genome_fna"]
             },
             "genome_gff": {
-                "errorMessage": "Gff file cannot contain spaces and must have extension '.gz'",
+                "errorMessage": "The name of the gff file cannot contain spaces and must have extension '.gz'",
                 "type": "string",
                 "format": "file-path",
                 "pattern": "^\\S+\\.gz$",
