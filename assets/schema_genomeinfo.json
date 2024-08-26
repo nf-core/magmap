@@ -17,7 +17,7 @@
                 "type": "string",
                 "format": "file-path",
                 "pattern": "^\\S+\\.gz$",
-                "errorMessage": "Fasta file must be provided, cannot contain spaces and must have extension '.gz'",
+                "errorMessage": "Fasta file must be provided, the name cannot contain spaces and must have extension '.gz'",
                 "meta": ["genome_fna"]
             },
             "genome_gff": {
