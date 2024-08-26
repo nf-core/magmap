@@ -82,16 +82,9 @@ workflow MAGMAP {
         Channel
             .fromPath( params.genomeinfo )
             .splitCsv( sep: ',', header: true )
-            // RIPARTI DA QUI - CREA MODULE GZIP E PROVA A GZIPPARE TUTTI I FILE CHE NON LO SONO
-            .map { 
-                [
-                    accno: it.accno,
-                    genome_fna: it.genome_fna.endsWith('.gz') ? file(it.genome_fna) : GZIP_FASTA ( [ [:], it.genome_fna ] ).gzip.map { it[1] },
-                    genome_gff: it.genome_gff.endsWith('.gz') ? file(it.genome_gff) : GZIP_GFF ( [ [:], it.genome_gff ] ).gzip.map { it[1] }
-                ] 
-            }
             .set { ch_genomeinfo }
     }
+
     //
     // INPUT: genome info from ncbi
     //
