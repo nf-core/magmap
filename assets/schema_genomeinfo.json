@@ -1,0 +1,33 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema",
+    "$id": "https://raw.githubusercontent.com/nf-core/magmap/master/assets/schema_genomeinfo.json",
+    "title": "nf-core/magmap pipeline - params.genomeinfo schema",
+    "description": "Schema for the file provided with params.genomeinfo",
+    "type": "array",
+    "items": {
+        "type": "object",
+        "properties": {
+            "accno": {
+                "type": "string",
+                "pattern": "^\\S+$",
+                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "meta": ["accno"]
+            },
+            "genome_fna": {
+                "type": "string",
+                "format": "file-path",
+                "pattern": "^\\S+\\.gz$",
+                "errorMessage": "Fasta file must be provided, the name cannot contain spaces and must have extension '.gz'",
+                "meta": ["genome_fna"]
+            },
+            "genome_gff": {
+                "errorMessage": "The name of the gff file cannot contain spaces and must have extension '.gz'",
+                "type": "string",
+                "format": "file-path",
+                "pattern": "^\\S+\\.gz$",
+                "meta": ["genome_gff"]
+            }
+        },
+        "required": ["accno", "genome_fna"]
+    }
+}
