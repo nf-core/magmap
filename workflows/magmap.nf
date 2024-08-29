@@ -10,6 +10,7 @@
 include { COLLECT_FEATURECOUNTS } from '../modules/local/collect_featurecounts'
 include { COLLECT_STATS         } from '../modules/local/collect_stats'
 include { FILTER_GENOMES        } from '../modules/local/filter_genomes'
+include { CHECK_DUPLICATES      } from '../modules/local/check_duplicates'
 
 //
 // SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
@@ -85,6 +86,7 @@ workflow MAGMAP {
             .set { ch_genomeinfo }
     }
 
+    CHECK_DUPLICATES( ch_genomeinfo.map{ it.genome_fna }.collect() )
     //
     // INPUT: genome info from ncbi
     //
