@@ -565,7 +565,7 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Concatenate gff files
     //
-    CAT_GFFS ( ch_ready_genomes.map{ [ [id: "cat.gff"], it.genome_gff ] } )
+    CAT_GFFS ( ch_ready_genomes.map{ it.genome_gff } )
     ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
 
     //

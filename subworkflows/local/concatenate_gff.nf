@@ -13,10 +13,10 @@ workflow CAT_GFFS {
     main:
         ch_versions = Channel.empty()
 
-        LOCAL_CAT_GFF(ch_genome_gffs.map{ it[0]}, ch_genome_gffs.map{ it[1]})
+        LOCAL_CAT_GFF( [id:'cat.gff'], ch_genome_gffs.collect() )
         ch_versions = ch_versions.mix(LOCAL_CAT_GFF.out.versions)
 
-        GENOMEINDEX(ch_genome_gffs.collect{ it[1] })
+        GENOMEINDEX(ch_genome_gffs.collect())
         ch_versions = ch_versions.mix(GENOMEINDEX.out.versions)
 
         GINDEX_CAT(GENOMEINDEX.out.genomes2id.collect().map { [ [id: 'genomes_index'], it ] })
