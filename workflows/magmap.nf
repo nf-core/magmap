@@ -559,22 +559,13 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
-    def i = 0
-
-    ch_ready_genomes
-        .map{ it.genome_fna }
-        .flatten()
-        .collate(1000)
-        .map{ [ [ id: "all_references${i++}" ], it ] }
-        .set { ch_genomes_fnas }
-
-    CREATE_BBMAP_INDEX ( ch_genomes_fnas )
+    CREATE_BBMAP_INDEX ( ch_ready_genomes.map{ it.genome_fna } )
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
     //
     // SUBWORKFLOW: Concatenate gff files
     //
-    CAT_GFFS ( ch_ready_genomes.map{ [ [id: "gffs"], it.genome_gff ] } )
+    CAT_GFFS ( ch_ready_genomes.map{ [ [id: "cat.gff"], it.genome_gff ] } )
     ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
 
     //
@@ -586,7 +577,7 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: sort bam file and produce statistics
     //
-    BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genomes_fnas )
+    BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genomes_fnas)
     ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
     BAM_SORT_STATS_SAMTOOLS.out.bam
