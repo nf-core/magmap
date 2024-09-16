@@ -538,23 +538,13 @@ workflow MAGMAP {
     // GUNZIP gff files provided by the user
     ch_genomes
         .filter{ it.genome_gff }
-        .map { [ [id: it.accno], file(it.genome_gff) ] }
-        .set{ gff_to_gunzip }
-
-    GUNZIP_GFFS(gff_to_gunzip)
-    GUNZIP_GFFS.out.gunzip
-        .map{ meta, gff -> [ [id: meta.id], gff ] }
-        .join(ch_genomes
-            .filter{ it.genome_gff }
-            .map { [ [id:it.accno], it.genome_fna ] })
-        .map{ meta, gff, fna -> [ accno: meta.id, genome_fna: fna, genome_gff: gff ] }
-        .set { ch_genomes_gunzipped_gff }
+        .set{ ch_genomes_with_gff }
 
     GUNZIP(ch_no_gff)
 
     PROKKA(GUNZIP.out.gunzip, [], [])
 
-    ch_genomes_gunzipped_gff
+    ch_genomes_with_gff
         .mix(PROKKA.out.gff
             .map{ meta, gff -> [ meta.id  , [ meta.id, gff ] ] }
             .join(ch_no_gff.map { meta, fna -> [ meta.id , [ meta.id, fna ] ] } )
