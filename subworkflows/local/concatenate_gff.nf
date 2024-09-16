@@ -2,10 +2,10 @@
 // Create a concatenated set of gff files. Handles large number of input files by concatenating in two passes.
 //
 
-include { CAT_MANY as CAT_GFF  } from '../../modules/local/cat_many'
-include { GENOMEINDEX                 } from '../../modules/local/genomeindex'
-include { CAT_CAT_MANY as GINDEX_CAT       } from '../../modules/nf-core/cat/cat'
-include { PROKKAGFF2TSV               } from '../../modules/local/prokkagff2tsv'
+include { CAT_MANY as CAT_GFF        } from '../../modules/local/cat_many'
+include { GENOMEINDEX                } from '../../modules/local/genomeindex'
+include { CAT_CAT_MANY as GINDEX_CAT } from '../../modules/nf-core/cat/cat'
+include { PROKKAGFF2TSV              } from '../../modules/local/prokkagff2tsv'
 
 workflow CAT_GFFS {
     take: ch_genome_gffs
