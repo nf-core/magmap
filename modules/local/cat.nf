@@ -1,4 +1,4 @@
-process LOCAL_CAT {
+process CAT_MANY {
     label 'process_long'
 
     conda "conda-forge::pigz=2.6"
