@@ -20,7 +20,6 @@ process CAT_MANY {
     script:
     def prefix  = task.ext.prefix ?: "${meta.id}"
     def args    = task.ext.args   ?: ''
-    def checkgz = file2cat.toString() =~ /\.gz$/ ? "zcat" : "cat"
 
     """
     find ./input/* -name '*' | xargs ${checkgz} | gzip -c >> ${prefix}.gz
