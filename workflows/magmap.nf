@@ -90,7 +90,7 @@ workflow MAGMAP {
     // Check presence of duplicates contigs in the local genome collection
     //
     CHECK_DUPLICATES( ch_genomeinfo.map{ it.genome_fna }.collect() )
-    // ch_versions = ch_versions.mix(CHECK_DUPLICATES.out.versions)
+    ch_versions = ch_versions.mix(CHECK_DUPLICATES.out.versions)
 
     //
     // INPUT: genome info from ncbi
