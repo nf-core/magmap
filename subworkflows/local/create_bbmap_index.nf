@@ -1,8 +1,8 @@
 //
 // Create a BBMap index out of a set of fasta nucleotide files.
 //
-include { LOCAL_CAT as CAT_FNA  } from '../../modules/local/cat_many'
-include { BBMAP_INDEX           } from '../../modules/nf-core/bbmap/index/main'
+include { CAT_MANY as CAT_FNA } from '../../modules/local/cat_many'
+include { BBMAP_INDEX         } from '../../modules/nf-core/bbmap/index/main'
 
 workflow CREATE_BBMAP_INDEX {
     take:

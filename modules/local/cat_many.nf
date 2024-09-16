@@ -12,7 +12,7 @@ process CAT_MANY {
 
     output:
     tuple val(meta), path("${meta.id}.gz"), emit: concatenated_files
-    path "versions.yml"                       , emit: versions
+    path "versions.yml"                   , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
