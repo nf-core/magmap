@@ -22,7 +22,7 @@ process CAT_MANY {
     def args    = task.ext.args   ?: ''
 
     """
-    find ./input/* -name '*' | xargs ${checkgz} | gzip -c >> ${prefix}.gz
+    find ./input/ -type f | xargs cat >> ${prefix}.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
