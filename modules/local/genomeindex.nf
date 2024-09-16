@@ -23,9 +23,9 @@ process GENOMEINDEX {
     """
     echo "accno\tgenome\tID" | gzip -c > ${outfilename}
     for f in ${gffs}; do
-        fn=\$(basename \$f .gff)
+        fn=\$(basename \$f .gff.gz)
         ac=\$(echo \$fn | sed 's/\\(G.._[0-9.]\\+\\)_.*/\\1/')
-        cat \$f | \
+        zcat \$f | \
             grep -o 'ID=[A-Z0-9_]\\+' | \
             sed "s/^/\$ac\\t\$fn\\t/; s/ID=//" | gzip -c >> ${outfilename}
     done
