@@ -8,7 +8,7 @@ process CAT_MANY {
 
     input:
     val(meta)
-    path(file2cat), stageAs: 'input/*'
+    path(files2cat), stageAs: 'input/*'
 
     output:
     tuple val(meta), path("${meta.id}.gz"), emit: concatenated_files
