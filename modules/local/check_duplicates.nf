@@ -31,7 +31,7 @@ process CHECK_DUPLICATES {
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
-        pigz: \$( pigz --version 2>&1 | sed 's/^pigz //' )
+        zgrep: \$( zgrep --version | sed 's/.*/1.5/' | head -n 1 )
     END_VERSIONS
     """
 }

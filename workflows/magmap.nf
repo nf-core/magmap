@@ -86,7 +86,12 @@ workflow MAGMAP {
             .set { ch_genomeinfo }
     }
 
+    //
+    // Check presence of duplicates contigs in the local genome collection
+    //
     CHECK_DUPLICATES( ch_genomeinfo.map{ it.genome_fna }.collect() )
+    ch_versions = ch_versions.mix(CHECK_DUPLICATES.out.versions)
+
     //
     // INPUT: genome info from ncbi
     //
@@ -533,23 +538,13 @@ workflow MAGMAP {
     // GUNZIP gff files provided by the user
     ch_genomes
         .filter{ it.genome_gff }
-        .map { [ [id: it.accno], file(it.genome_gff) ] }
-        .set{ gff_to_gunzip }
-
-    GUNZIP_GFFS(gff_to_gunzip)
-    GUNZIP_GFFS.out.gunzip
-        .map{ meta, gff -> [ [id: meta.id], gff ] }
-        .join(ch_genomes
-            .filter{ it.genome_gff }
-            .map { [ [id:it.accno], it.genome_fna ] })
-        .map{ meta, gff, fna -> [ accno: meta.id, genome_fna: fna, genome_gff: gff ] }
-        .set { ch_genomes_gunzipped_gff }
+        .set{ ch_genomes_with_gff }
 
     GUNZIP(ch_no_gff)
 
     PROKKA(GUNZIP.out.gunzip, [], [])
 
-    ch_genomes_gunzipped_gff
+    ch_genomes_with_gff
         .mix(PROKKA.out.gff
             .map{ meta, gff -> [ meta.id  , [ meta.id, gff ] ] }
             .join(ch_no_gff.map { meta, fna -> [ meta.id , [ meta.id, fna ] ] } )
@@ -559,22 +554,13 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
-    def i = 0
-
-    ch_ready_genomes
-        .map{ it.genome_fna }
-        .flatten()
-        .collate(1000)
-        .map{ [ [ id: "all_references${i++}" ], it ] }
-        .set { ch_genomes_fnas }
-
-    CREATE_BBMAP_INDEX ( ch_genomes_fnas )
+    CREATE_BBMAP_INDEX ( ch_ready_genomes.map{ it.genome_fna } )
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
     //
     // SUBWORKFLOW: Concatenate gff files
     //
-    CAT_GFFS ( ch_ready_genomes.map{ [ [id: "gffs"], it.genome_gff ] } )
+    CAT_GFFS ( ch_ready_genomes.map{ it.genome_gff } )
     ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
 
     //
@@ -586,7 +572,7 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: sort bam file and produce statistics
     //
-    BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genomes_fnas )
+    BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genomes_fnas)
     ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
     BAM_SORT_STATS_SAMTOOLS.out.bam
