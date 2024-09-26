@@ -73,7 +73,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 
 ### Genomes input
 
-Magmap needs two mandatory input to run. One, the samplesheet, was explained above while the second, genome input needs to be specified with the option `--genomeinfo`. The file is a `.csv` file and it requires three columns: accno, genome_fna, genome_gff. it looks as follow:
+The second mandatory input is the genome input sheet, which needs to be specified with the option `--genomeinfo`. The file is a `.csv` file and it requires three columns: accno, genome_fna, genome_gff. it looks as follow:
 
 ```csv title="samplesheet.csv"
 accno,genome_fna,genome_gff
