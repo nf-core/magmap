@@ -45,7 +45,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
 
 #### Trim galore!
 
-[Trimgalore](https://github.com/FelixKrueger/TrimGalore) is trimming primer sequences from sequencing reads. Primer sequences are non-biological sequences that often introduce point mutations that do not reflect sample sequences. This is especially true for degenerated PCR primers.
+[Trim galore!](https://github.com/FelixKrueger/TrimGalore) is trimming primer sequences from sequencing reads. Primer sequences are non-biological sequences that often introduce point mutations that do not reflect sample sequences. This is especially true for degenerated PCR primers.
 
 <details markdown="1">
 <summary>Output files</summary>
