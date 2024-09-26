@@ -89,7 +89,7 @@ Magmap can handle several types of input that can be used for different purpose.
 
 #### Indexes input
 
-The indexes input is used by Sourmash to select genomes that can downloaded in a second step and added to the pipeline.
+The indexes input is used by Sourmash to select genomes that can be downloaded in a second step and added to the pipeline.
 It is provided with the `--indexes` parameter and it is a path (local or remote).
 
 ```
