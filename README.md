@@ -31,7 +31,7 @@ On release, automated continuous integration tests run the pipeline on a full-si
 
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
 2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
-3. Quality trimming and adapters removal for raw reads ([`Trimm Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
+3. Quality trimming and adapters removal for raw reads ([`Trim Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
 4. Filter reads with [`BBduk`](https://sourceforge.net/projects/bbmap/)
 5. Select reference genomes based on k-mer signatures in reads with [`SOURMASH`](https://sourmash.readthedocs.io/en/latest/)
 6. Quantification of genes identified in selected reference genomes:
