@@ -117,7 +117,7 @@ This file contains several information that can be obtained as checkM output. Yo
 
 ### Check duplicates
 
-The pipeline is checking if there are any duplicate names among the genomes that the user provides. If there are duplicates, the pipeline will stop and return a file with the contig names that needs to be changed in their name in order to work. This is done to avoid overlapping in the following steps (e.g. same prokka output for the protein sequences and the gffs).
+The pipeline will perform validation checks to see if there are any duplicate names among the genomes that the user provides. If there are duplicates, the pipeline will stop and return a file with the contig names that needs to be changed in their name in order to work. This is done to avoid overlapping in the following steps (e.g. same prokka output for the protein sequences and the gffs).
 
 ### Filter/remove sequences from the samples (e.g. rRNA sequences with SILVA database)
 
