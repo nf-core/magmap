@@ -122,7 +122,7 @@ The pipeline will perform validation checks to see if there are any duplicate na
 ### Filter/remove sequences from the samples (e.g. rRNA sequences with SILVA database)
 
 The pipeline can remove potential contaminants using the BBduk program.
-Specify a fasta file, gzipped or not, with the --sequence_filter sequences.fasta parameter.
+Specify a fasta file, gzipped or not, with the `--sequence_filter <sequences>.fasta` parameter.
 For further documentation, see the [BBduk official website](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbduk-guide/).
 
 ```bash
