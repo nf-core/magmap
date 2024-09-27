@@ -99,7 +99,7 @@ https://github.com/nf-core/test-datasets/raw/magmap/testdata/sourmash_test.index
 N.B.: the sbt files can be generated with sourmash (check it [here](https://sourmash.readthedocs.io/en/latest/index.html)) or some can be found in sourmash documentation website.
 E.g. "sourmash gtdb sbt" you will find the indexes for gtdb.
 
-#### metadata input
+#### Metadata input
 
 Magmap accepts several metadata as `.csv` files that provides information about the genomes that you will use in the pipeline.
 
