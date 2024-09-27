@@ -22,7 +22,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
     - [Prokka](#prokka) - Output from Prokka (optional)
   - [Mapping step](#mapping-reads-to-genomes) - Predict the function and the taxonomy of ORFs
     - [BBmap](#bbmap) - Output from BBmap
-    - [Featurecounts](#featurecounts) - Output from FeatureCounts
+    - [FeatureCounts](#featureCounts) - Output from FeatureCounts
 - [Custom magmap output](#magmap-output)
   - [Summary tables folder](#summary-tables) - Tab separated tables ready for further analysis in tools like R and Python
   - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
