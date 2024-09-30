@@ -107,7 +107,7 @@ E.g. "sourmash gtdb sbt" you will find the indexes for gtdb.
 
 #### Metadata input
 
-Magmap accepts several metadata as `.csv` files that provides information about the genomes that you will use in the pipeline. Each metadata can be used to get different information about you genomes as their quality (CheckM) or the taxonomy (gtdb). Magmap will merge all these tables and create a new one: each row will correspond to a genome (based on its accno) followed by several columns.
+Magmap accepts several types of metadata as `.csv` files that provides information about the genomes that you will use in the pipeline. Each type of metadata can be used to get different information about you genomes as their quality (CheckM) or the taxonomy (gtdb). Magmap will merge all these tables and create a new one: each row will correspond to a genome (based on its accno) followed by several columns.
 
 ##### gtdb_metadata
 
