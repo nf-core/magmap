@@ -111,7 +111,7 @@ Magmap accepts several types of metadata as `.csv` files that provides informati
 
 ##### gtdb_metadata
 
-This file contains several information that can be found in gtdb metadata on the official [website](https://data.ace.uq.edu.au/public/gtdb/data/releases/release220/220.0/bac120_metadata_r220.tsv.gz). You can either use directly the same file found there or you can make a custom one.
+With this parameter, you can supply a file like the GTDB metadata files provided on their official [website](https://gtdb.ecogenomic.org/), e.g. [`bac120_metadata_r220.tsv.gz`](https://data.ace.uq.edu.au/public/gtdb/data/releases/release220/220.0/bac120_metadata_r220.tsv.gz). You can either use their files directly or make a custom one. We're using these fields: `A`, `B` etc.
 
 ##### gtdb-tk metadata
 
