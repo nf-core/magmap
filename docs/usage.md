@@ -115,7 +115,7 @@ This file contains several information that can be found in gtdb metadata on the
 
 ##### gtdb-tk metadata
 
-This file contains several information that can be obtained as gtdb-tk output, [see](https://ecogenomics.github.io/GTDBTk/files/markers_summary.tsv.html). You can either use directly the output file or you can make a custom one.
+This file should be formatted like the GTDB-Tk output, [see](https://ecogenomics.github.io/GTDBTk/files/summary.tsv.html).
 
 ##### checkM metadata
 
