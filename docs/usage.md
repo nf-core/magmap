@@ -105,13 +105,13 @@ nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.cs
 N.B.: the sbt files can be generated with sourmash (check it [here](https://sourmash.readthedocs.io/en/latest/index.html)) or some can be found in sourmash documentation website.
 E.g. "sourmash gtdb sbt" you will find the indexes for gtdb.
 
-#### Metadata input
+#### Genomes metadata input
 
-Magmap accepts several types of metadata as `.csv` files that provides information about the genomes that you will use in the pipeline. Each type of metadata can be used to get different information about you genomes as their quality (CheckM) or the taxonomy (gtdb). Magmap will merge all these tables and create a new one: each row will correspond to a genome (based on its accno) followed by several columns.
+Magmap accepts several types of metadata as `.csv` files that provides information about the genomes that you will use in the pipeline. Each type of metadata can be used to get different information about your genomes. At the moment, Magmap can handle output from CheckM/CheckM2 and gtdb-tk. Magmap will merge all these tables and create a new one: each row will correspond to a genome (based on its accno) followed by several columns.
 
 ##### gtdb_metadata
 
-With this parameter, you can supply a file like the GTDB metadata files provided on their official [website](https://gtdb.ecogenomic.org/), e.g. [`bac120_metadata_r220.tsv.gz`](https://data.ace.uq.edu.au/public/gtdb/data/releases/release220/220.0/bac120_metadata_r220.tsv.gz). You can either use their files directly or make a custom one. We're using these fields: `A`, `B` etc.
+With this parameter, you can supply a file like the GTDB metadata files provided on their official [website](https://gtdb.ecogenomic.org/), e.g. [`bac120_metadata_r220.tsv.gz`](https://data.ace.uq.edu.au/public/gtdb/data/releases/release220/220.0/bac120_metadata_r220.tsv.gz). You can either use their files directly or make a custom one. If you want make your own table, fill up the following columns: `accno`, `checkm_completeness`, `checkm_contamination`, `checkm_strain_heterogeneity`, `contig_count`, `genome_size`, `gtdb_genome_representative`,gtdb_representative`, `gtdb_taxonomy`.
 
 ##### gtdb-tk metadata
 
@@ -119,7 +119,7 @@ This file should be formatted like the GTDB-Tk output, [see](https://ecogenomics
 
 ##### checkM metadata
 
-This file should be formatted like the checkM output, [see](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv).
+This file should be formatted like the checkM2 output, [see](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv).
 
 ### Check duplicates
 
