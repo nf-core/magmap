@@ -73,7 +73,7 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 
 ### Genomes input
 
-Magmap needs two mandatory input to run. One, the samplesheet, was explained above while the second, genome input needs to be specified with the option `--genomeinfo`. The file is a `.csv` file and it requires three columns: accno, genome_fna, genome_gff. it looks as follow:
+The second mandatory input is the genome input sheet, which needs to be specified with the option `--genomeinfo`. The file is a `.csv` file and it requires three columns: accno, genome_fna, genome_gff. it looks as follow:
 
 ```csv title="samplesheet.csv"
 accno,genome_fna,genome_gff
@@ -95,7 +95,7 @@ Magmap can handle several types of input that can be used for different purpose.
 
 #### Indexes input
 
-The indexes input is used by Sourmash to select genomes that can downloaded in a second step and added to the pipeline.
+The indexes input is used by Sourmash to select genomes that can be downloaded in a second step and added to the pipeline.
 It is provided with the `--indexes` parameter and it is a path (local or remote).
 
 ```bash
@@ -105,7 +105,7 @@ nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.cs
 N.B.: the sbt files can be generated with sourmash (check it [here](https://sourmash.readthedocs.io/en/latest/index.html)) or some can be found in sourmash documentation website.
 E.g. "sourmash gtdb sbt" you will find the indexes for gtdb.
 
-#### metadata input
+#### Metadata input
 
 Magmap accepts several metadata as `.csv` files that provides information about the genomes that you will use in the pipeline. Each metadata can be used to get different information about you genomes as their quality (CheckM) or the taxonomy (gtdb). Magmap will merge all these tables and create a new one: each row will correspond to a genome (based on its accno) followed by several columns.
 
@@ -123,12 +123,12 @@ This file contains several information that can be obtained as checkM output, [s
 
 ### Check duplicates
 
-The pipeline is checking if there are any duplicate names among the genomes that the user provides. If there are duplicates, the pipeline will stop and return a file with the contig names that needs to be changed in their name in order to work. This is done to avoid overlapping in the following steps (e.g. same prokka output for the protein sequences and the gffs).
+The pipeline will perform validation checks to see if there are any duplicate names among the genomes that the user provides. If there are duplicates, the pipeline will stop and return a file with the contig names that needs to be changed in their name in order to work. This is done to avoid overlapping in the following steps (e.g. same prokka output for the protein sequences and the gffs).
 
 ### Filter/remove sequences from the samples (e.g. rRNA sequences with SILVA database)
 
 The pipeline can remove potential contaminants using the BBduk program.
-Specify a fasta file, gzipped or not, with the --sequence_filter sequences.fasta parameter.
+Specify a fasta file, gzipped or not, with the `--sequence_filter <sequences>.fasta` parameter.
 For further documentation, see the [BBduk official website](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbduk-guide/).
 
 ```bash
@@ -137,7 +137,7 @@ nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.cs
 
 ### Sourmash (optional)
 
-with [Sourmash](https://sourmash.readthedocs.io/en/latest/index.html) you can filter the genomes to be used by magmap in the mapping step. This function is optional but can speed up the process and let you get a better genomes /reads mapping ratio since you are removing all the genomes that are not passing the threshold (that you can select).
+With [Sourmash](https://sourmash.readthedocs.io/en/latest/index.html) you can filter the genomes to be used by magmap in the mapping step. This function is optional but can speed up the process and let you get a better genomes /reads mapping ratio since you are removing all the genomes that are not passing the threshold (that you can select).
 
 ```bash
 nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --sourmash true
