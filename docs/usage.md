@@ -119,7 +119,7 @@ This file should be formatted like the GTDB-Tk output, [see](https://ecogenomics
 
 ##### checkM metadata
 
-This file contains several information that can be obtained as checkM output, [see](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv). You can either use directly the output file found there or you can make a custom one.
+This file should be formatted like the checkM output, [see](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv).
 
 ### Check duplicates
 
