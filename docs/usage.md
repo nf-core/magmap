@@ -117,7 +117,7 @@ With this parameter, you can supply a file like the GTDB metadata files provided
 
 This file should be formatted like the GTDB-Tk output, [see](https://ecogenomics.github.io/GTDBTk/files/summary.tsv.html).
 
-##### checkM metadata
+##### checkM/CheckM2 metadata
 
 This file should be formatted like the checkM2 output, [see](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv).
 
