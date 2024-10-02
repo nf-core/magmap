@@ -127,7 +127,7 @@
                     "description": "Instructs Trim Galore to remove bp from the 3' end of read 2 AFTER adapter/quality trimming has been performed.",
                     "fa_icon": "far fa-hand-scissors"
                 },
-                "trim_nextseq": {
+                "trim_reads": {
                     "type": "string",
                     "description": "Instructs Trim Galore to apply the --nextseq=X option, to trim based on quality after removing poly-G tails.",
                     "fa_icon": "fab fa-cuttlefish"
@@ -171,7 +171,7 @@
                     "type": "boolean",
                     "description": "Save ref folder containing the reference index"
                 },
-                "save_genomes_cat": {
+                "save_concatenated_genomes": {
                     "type": "boolean",
                     "description": "Save genomes concatenated file"
                 }
