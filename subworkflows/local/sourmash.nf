@@ -60,7 +60,7 @@ workflow SOURMASH {
 
         GENOMES_INDEX.out.signature_index
             .map{ meta, sig -> sig }
-            .mix(ch_indexes)
+            .mix( ch_indexes )
             .collect()
             .set{ ch_database }
 
