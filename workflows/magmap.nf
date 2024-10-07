@@ -202,7 +202,7 @@ workflow MAGMAP {
                     ]
                 ]
             }
-        .set { ch_checkm_gtdb_metadata }
+    .set { ch_checkm_gtdb_metadata }
 
     ch_checkm_gtdb_metadata
             .map {
