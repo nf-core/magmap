@@ -122,18 +122,18 @@ workflow SOURMASH {
             .join(ch_ncbi_genomeinfo.map { [it.accno, it ] }) // Join with genome info
             .flatMap { tuple ->
 
-            def accno = tuple[0] // accno from the left channel
-            def genomeInfos = tuple[1] // Should be a list or null
-            if (genomeInfos == null || genomeInfos.isEmpty()) {
-                return [] // Discard tuples with null or empty genomeInfos
-            }
-
-            // Extract values from the map
-            def genomeFna = genomeInfos.genome_fna ?: ''
-            def genomeGff = genomeInfos.genome_gff ?: ''
-
-            // Return the formatted result
-            return [[accno: accno, genome_fna: genomeFna, genome_gff: genomeGff]]
+                    def accno = tuple[0] // accno from the left channel
+                    def genomeInfos = tuple[1] // Should be a list or null
+                    if (genomeInfos == null || genomeInfos.isEmpty()) {
+                        return [] // Discard tuples with null or empty genomeInfos
+                    }
+        
+                    // Extract values from the map
+                    def genomeFna = genomeInfos.genome_fna ?: ''
+                    def genomeGff = genomeInfos.genome_gff ?: ''
+    
+                // Return the formatted result
+                return [[accno: accno, genome_fna: genomeFna, genome_gff: genomeGff]]
             }
             .flatten()
             .mix(ch_matching_user_ncbi_genomes) // Ensure proper mixing with other data
