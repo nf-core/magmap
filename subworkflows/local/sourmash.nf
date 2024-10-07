@@ -102,6 +102,7 @@ workflow SOURMASH {
             .join(ch_user_genomeinfo.map { [ it.accno, [ it ] ]} )
             .map { it[1][0] }
             .set { ch_matching_user_ncbi_genomes }
+
         ch_accnos_ncbi
             .map { accno -> [accno, null] } // Initialize the channel with accno and null
             .join(ch_matching_user_ncbi_genomes.map { [it.accno, [ it ] ] }, remainder: true) // Perform the join
