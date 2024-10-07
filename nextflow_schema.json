@@ -192,7 +192,7 @@
             },
             "fa_icon": "fas fa-phone-alt"
         },
-        "Sourmash_options": {
+        "sourmash_options": {
             "title": "Sourmash",
             "type": "object",
             "description": "All the options available for Sourmash",
