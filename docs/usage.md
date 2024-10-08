@@ -92,19 +92,25 @@ Any genome used by the pipeline for which a gff file is not found will be annota
 
 ### Other inputs (optional)
 
-Magmap can handle several types of input that can be used for different purpose.
+Magmap can handle several types of input that can be used for different purposes.
 
 #### Indexes input
 
+In addition, or instead of, providing a genome file with genomes to map to, you can provide a [Sourmash](https://sourmash.readthedocs.io/en/latest/)
+index file that points to genomes.
+Sourmash will be run using the index files and matching genomes will be downloaded, annotated with Prokka and mapped to by the pipeline.
+For this to work, entries in the Sourmash index need to point to NCBI assemblies with accessions in the format: `GC[A-Z]_[0-9]+\.[0-9]+`.
 The indexes input is used by Sourmash to select genomes that can be downloaded in a second step and added to the pipeline.
 It is provided with the `--indexes` parameter and it is a path (local or remote).
 
+Particular examples of Sourmash index files are those prepared by the authors of Sourmash, which can be found
+[here](https://sourmash.readthedocs.io/en/latest/databases.html).
+
 ```bash
-nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --indexes 'https://github.com/nf-core/test-datasets/raw/magmap/testdata/sourmash_test.index.sbt.zip'
+nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --indexes 'https://farm.cse.ucdavis.edu/~ctbrown/sourmash-db/gtdb-rs214/gtdb-rs214-reps.k21.sbt.zip'
 ```
 
-N.B.: the sbt files can be generated with sourmash (check it [here](https://sourmash.readthedocs.io/en/latest/index.html)) or some can be found in sourmash documentation website.
-E.g. "sourmash gtdb sbt" you will find the indexes for gtdb.
+N.B. More than one index file can be provided, separated by commas.
 
 #### Genomes metadata input
 
