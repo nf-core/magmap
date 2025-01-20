@@ -1,41 +1,20 @@
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT LOCAL MODULES/SUBWORKFLOWS
+    IMPORT MODULES / SUBWORKFLOWS / FUNCTIONS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-//
-// MODULE: Local
-//
-include { COLLECT_FEATURECOUNTS } from '../modules/local/collect_featurecounts'
-include { COLLECT_STATS         } from '../modules/local/collect_stats'
-include { FILTER_GENOMES        } from '../modules/local/filter_genomes'
-include { CHECK_DUPLICATES      } from '../modules/local/check_duplicates'
-
-//
-// SUBWORKFLOW: Consisting of a mix of local and nf-core/modules
-//
-include { validateInputSamplesheet       } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
-
-//
-// SUBWORKFLOW: Local
-//
-include { FASTQC_TRIMGALORE       } from '../subworkflows/local/fastqc_trimgalore'
-include { CAT_GFFS                } from '../subworkflows/local/concatenate_gff'
-include { CREATE_BBMAP_INDEX      } from '../subworkflows/local/create_bbmap_index'
-include { SOURMASH                } from '../subworkflows/local/sourmash'
-include { PIPELINE_INITIALISATION } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
-include { PIPELINE_COMPLETION     } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
-
-/*
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-    IMPORT NF-CORE MODULES/SUBWORKFLOWS
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-*/
-
-//
-// MODULE: Installed directly from nf-core/modules
-//
+include { COLLECT_FEATURECOUNTS                  } from '../modules/local/collect_featurecounts'
+include { COLLECT_STATS                          } from '../modules/local/collect_stats'
+include { FILTER_GENOMES                         } from '../modules/local/filter_genomes'
+include { CHECK_DUPLICATES                       } from '../modules/local/check_duplicates'
+include { validateInputSamplesheet               } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
+include { FASTQC_TRIMGALORE                      } from '../subworkflows/local/fastqc_trimgalore'
+include { CAT_GFFS                               } from '../subworkflows/local/concatenate_gff'
+include { CREATE_BBMAP_INDEX                     } from '../subworkflows/local/create_bbmap_index'
+include { SOURMASH                               } from '../subworkflows/local/sourmash'
+include { PIPELINE_INITIALISATION                } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
+include { PIPELINE_COMPLETION                    } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { FASTQC                                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                                } from '../modules/nf-core/multiqc/main'
 include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk/main'
@@ -45,18 +24,13 @@ include { GUNZIP                                 } from '../modules/nf-core/gunz
 include { GUNZIP as GUNZIP_GFFS                  } from '../modules/nf-core/gunzip/main'
 include { PROKKA                                 } from '../modules/nf-core/prokka/main'
 include { CAT_FASTQ            	                 } from '../modules/nf-core/cat/fastq/main'
-
-//
-// SUBWORKFLOWS: Installed directly from nf-core/modules
-//
-include { paramsSummaryMap                       } from 'plugin/nf-validation'
-include { fromSamplesheet                        } from 'plugin/nf-validation'
 include { paramsSummaryMultiqc                   } from '../subworkflows/nf-core/utils_nfcore_pipeline/'
+include { paramsSummaryMap                       } from 'plugin/nf-schema'
+include { methodsDescriptionText                 } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { softwareVersionsToYAML                 } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core/bam_sort_stats_samtools/main'
 include { UTILS_NEXTFLOW_PIPELINE                } from '../subworkflows/nf-core/utils_nextflow_pipeline/main'
 include { UTILS_NFCORE_PIPELINE                  } from '../subworkflows/nf-core/utils_nfcore_pipeline/main'
-include { UTILS_NFVALIDATION_PLUGIN              } from '../subworkflows/nf-core/utils_nfvalidation_plugin/main'
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -68,16 +42,15 @@ workflow MAGMAP {
 
     take:
     ch_samplesheet  // channel: samplesheet read in from --input
-    ch_versions     // channel: [ path(versions.yml) ]
 
     main:
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
-
     //
     // INPUT: if user provides, populate ch_genomeinfo with a table that provides the genomes to filter with sourmash
     //
+    ch_genomeinfo = Channel.empty()
     if ( params.genomeinfo) {
         Channel
             .fromPath( params.genomeinfo )
@@ -398,52 +371,44 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Read in samplesheet, validate and stage input files
     //
-    Channel
-        .fromSamplesheet("input")
-        .map {
-            meta, fastq_1, fastq_2 ->
-                if (!fastq_2) {
-                    return [ meta.id, meta + [ single_end:true ], [ fastq_1 ] ]
-                } else {
-                    return [ meta.id, meta + [ single_end:false ], [ fastq_1, fastq_2 ] ]
-                }
+    ch_short_reads_forcat = ch_samplesheet
+        .map { meta, reads ->
+            def meta_new = meta - meta.subMap('run')
+            [meta_new, reads]
         }
         .groupTuple()
-        .map {
-            validateInputSamplesheet(it)
+            .branch { meta, reads ->
+                cat: reads.size() >= 2
+                skip_cat: true
         }
-        .branch {
-            meta, fastqs ->
-                single  : fastqs.size() == 1
-                    return [ meta, fastqs.flatten() ]
-                multiple: fastqs.size() > 1
-                    return [ meta, fastqs.flatten() ]
-        }
-        .set { ch_fastq }
-
     //
     // MODULE: Concatenate FastQ files from same sample if required
     //
-    CAT_FASTQ (
-        ch_fastq.multiple
-    )
-    .reads
-    .mix(ch_fastq.single)
-    .set { ch_cat_fastq }
+    CAT_FASTQ (ch_short_reads_forcat.cat.map { meta, reads -> [meta, reads.flatten()] })
+    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first())
 
+    // Ensure we don't have nests of nests so that structure is in form expected for assembly
+    ch_short_reads_catskipped = ch_short_reads_forcat.skip_cat.map { meta, reads ->
+        def new_reads = meta.single_end ? reads[0] : reads.flatten()
+            [meta, new_reads]
+    }
+
+    // Combine single run and multi-run-merged data
+    ch_short_reads = Channel.empty()
+    ch_short_reads = CAT_FASTQ.out.reads.mix(ch_short_reads_catskipped)
     ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first())
 
     //
     // SUBWORKFLOW: Read QC and trim adapters
     //
     FASTQC_TRIMGALORE (
-        ch_cat_fastq,
+        ch_short_reads,
         params.skip_fastqc || params.skip_qc,
         params.skip_trimming
     )
     ch_versions = ch_versions.mix(FASTQC_TRIMGALORE.out.versions)
 
-    ch_collect_stats = ch_cat_fastq.collect { meta, fasta -> meta.id }.map { [ [ id:"magmap" ], it ] }
+    ch_collect_stats = ch_short_reads.collect { meta, fasta -> meta.id }.map { [ [ id:"magmap" ], it ] }
     if ( params.skip_trimming ) {
         ch_collect_stats
             .map { meta, samples -> [ meta, samples, [] ] }
@@ -610,47 +575,54 @@ workflow MAGMAP {
     COLLECT_STATS(ch_collect_stats)
     ch_versions     = ch_versions.mix(COLLECT_STATS.out.versions)
 
+    FASTQC (
+        ch_samplesheet
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
+    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
+
     //
     // Collate and save software versions
     //
     softwareVersionsToYAML(ch_versions)
         .collectFile(
             storeDir: "${params.outdir}/pipeline_info",
-            name: 'nf_core_pipeline_software_mqc_versions.yml',
+            name: 'nf_core_'  +  'magmap_software_'  + 'mqc_'  + 'versions.yml',
             sort: true,
             newLine: true
         ).set { ch_collated_versions }
 
+
     //
     // MODULE: MultiQC
     //
-    ch_multiqc_files  = Channel.empty()
-    ch_multiqc_report = Channel.empty()
-    ch_multiqc_config          = Channel.fromPath(
-        "$projectDir/assets/multiqc_config.yml",
-        checkIfExists: true
-        )
-    ch_multiqc_custom_config   = params.multiqc_config ? Channel.fromPath(
-        params.multiqc_config,
-        checkIfExists: true
-        ) : Channel.empty()
-    ch_multiqc_logo            = params.multiqc_logo   ? Channel.fromPath(
-        params.multiqc_logo,
-        checkIfExists: true
-        ) : Channel.empty()
-    ch_multiqc_custom_methods_description = params.multiqc_methods_description ? file(
-        params.multiqc_methods_description, checkIfExists: true
-        ) : file("$projectDir/assets/methods_description_template.yml",
-        checkIfExists: true)
-    summary_params           = paramsSummaryMap(
-        workflow, parameters_schema: "nextflow_schema.json"
-        )
-    ch_workflow_summary      = Channel.value(paramsSummaryMultiqc(summary_params))
-    ch_multiqc_files = ch_multiqc_files.mix(ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_config        = Channel.fromPath(
+        "$projectDir/assets/multiqc_config.yml", checkIfExists: true)
+    ch_multiqc_custom_config = params.multiqc_config ?
+        Channel.fromPath(params.multiqc_config, checkIfExists: true) :
+        Channel.empty()
+    ch_multiqc_logo          = params.multiqc_logo ?
+        Channel.fromPath(params.multiqc_logo, checkIfExists: true) :
+        Channel.empty()
+
+    summary_params      = paramsSummaryMap(
+        workflow, parameters_schema: "nextflow_schema.json")
+    ch_workflow_summary = Channel.value(paramsSummaryMultiqc(summary_params))
+    ch_multiqc_files = ch_multiqc_files.mix(
+        ch_workflow_summary.collectFile(name: 'workflow_summary_mqc.yaml'))
+    ch_multiqc_custom_methods_description = params.multiqc_methods_description ?
+        file(params.multiqc_methods_description, checkIfExists: true) :
+        file("$projectDir/assets/methods_description_template.yml", checkIfExists: true)
+    ch_methods_description                = Channel.value(
+        methodsDescriptionText(ch_multiqc_custom_methods_description))
+
     ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC_TRIMGALORE.out.trim_zip.collect{ meta, zip -> zip })
-    ch_multiqc_files = ch_multiqc_files.mix(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect{ meta, idxstats -> idxstats })
-    ch_multiqc_files = ch_multiqc_files.mix(FEATURECOUNTS.out.summary.collect{ meta, summary -> summary })
+    ch_multiqc_files = ch_multiqc_files.mix(
+        ch_methods_description.collectFile(
+            name: 'methods_description_mqc.yaml',
+            sort: true
+        )
+    )
 
     MULTIQC (
         ch_multiqc_files.collect(),
@@ -661,9 +633,9 @@ workflow MAGMAP {
         []
     )
 
-    emit:
-    multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
+    emit:multiqc_report = MULTIQC.out.report.toList() // channel: /path/to/multiqc_report.html
     versions       = ch_versions                 // channel: [ path(versions.yml) ]
+
 }
 
 /*

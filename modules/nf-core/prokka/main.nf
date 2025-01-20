@@ -13,18 +13,18 @@ process PROKKA {
     path prodigal_tf
 
     output:
-    tuple val(meta), path("${prefix}/*.gff.gz"), emit: gff
-    tuple val(meta), path("${prefix}/*.gbk.gz"), emit: gbk
-    tuple val(meta), path("${prefix}/*.fna.gz"), emit: fna
-    tuple val(meta), path("${prefix}/*.faa.gz"), emit: faa
-    tuple val(meta), path("${prefix}/*.ffn.gz"), emit: ffn
-    tuple val(meta), path("${prefix}/*.sqn.gz"), emit: sqn
-    tuple val(meta), path("${prefix}/*.fsa.gz"), emit: fsa
-    tuple val(meta), path("${prefix}/*.tbl.gz"), emit: tbl
-    tuple val(meta), path("${prefix}/*.err.gz"), emit: err
-    tuple val(meta), path("${prefix}/*.log.gz"), emit: log
-    tuple val(meta), path("${prefix}/*.txt.gz"), emit: txt
-    tuple val(meta), path("${prefix}/*.tsv.gz"), emit: tsv
+    tuple val(meta), path("${prefix}/*.gff"), emit: gff
+    tuple val(meta), path("${prefix}/*.gbk"), emit: gbk
+    tuple val(meta), path("${prefix}/*.fna"), emit: fna
+    tuple val(meta), path("${prefix}/*.faa"), emit: faa
+    tuple val(meta), path("${prefix}/*.ffn"), emit: ffn
+    tuple val(meta), path("${prefix}/*.sqn"), emit: sqn
+    tuple val(meta), path("${prefix}/*.fsa"), emit: fsa
+    tuple val(meta), path("${prefix}/*.tbl"), emit: tbl
+    tuple val(meta), path("${prefix}/*.err"), emit: err
+    tuple val(meta), path("${prefix}/*.log"), emit: log
+    tuple val(meta), path("${prefix}/*.txt"), emit: txt
+    tuple val(meta), path("${prefix}/*.tsv"), emit: tsv
     path "versions.yml" , emit: versions
 
     when:
@@ -43,8 +43,6 @@ process PROKKA {
         $proteins_opt \\
         $prodigal_tf \\
         $fasta
-    
-    gzip $prefix/* 
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

@@ -11,22 +11,45 @@ process CAT_MANY {
     path(files2cat), stageAs: 'input/*'
 
     output:
-    tuple val(meta), path("${meta.id}.gz"), emit: concatenated_files
-    path "versions.yml"                   , emit: versions
+    tuple val(meta), path("${prefix}.gz"), emit: concatenated_files
+    path "versions.yml"                  , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def prefix  = task.ext.prefix ?: "${meta.id}"
-    def args    = task.ext.args   ?: ''
-
+    prefix = task.ext.prefix ?: "${meta.id}"
+    def args = task.ext.args ?: ''
     """
-    find -L ./input/ -type f | xargs cat >> ${prefix}.gz
+    echo "Concatenating files..."
+    for file in ./input/*; do
+        if [ -f "\$file" ]; then
+            if [[ "\$file" == *.gz ]]; then
+                zcat "\$file" >> temp_concatenated
+            else
+                cat "\$file" >> temp_concatenated
+            fi
+        fi
+    done
+
+    echo "Compressing concatenated file..."
+    pigz -c temp_concatenated > ${prefix}.gz
+
+    echo "Cleaning up..."
+    rm temp_concatenated
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
         pigz: \$( pigz --version 2>&1 | sed 's/^pigz //' )
     END_VERSIONS
+    """
+
+    stub:
+    prefix = task.ext.prefix ?: "${meta.id}"
+    """
+    touch ${prefix}.gz
+    echo "${task.process}:" > versions.yml
+    echo "    pigz: 2.6" >> versions.yml
+    echo "    gzip: 1.10" >> versions.yml
     """
 }

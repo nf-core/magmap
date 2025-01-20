@@ -1,5 +1,5 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema",
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/nf-core/magmap/master/assets/schema_genomeinfo.json",
     "title": "nf-core/magmap pipeline - params.genomeinfo schema",
     "description": "Schema for the file provided with params.genomeinfo",

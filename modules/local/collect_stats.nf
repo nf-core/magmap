@@ -78,7 +78,7 @@ process COLLECT_STATS {
         pivot_longer(2:ncol(.), names_to = 'm', values_to = 'v') %>%
         union(
             # Total observation after featureCounts
-            tibble(file = Sys.glob('*.counts.tsv.gz')) %>%
+            tibble(file = Sys.glob('magmap.all_samples.counts.tsv.gz')) %>%
                 mutate(
                     d = map(
                         file,

@@ -4,8 +4,8 @@ process COLLECTGENOMES {
 
     conda "conda-forge::wget=1.18"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/gnu-wget:1.18--h36e9172_9':
-        'biocontainers/gnu-wget:1.18--h36e9172_9' }"
+        'https://depot.galaxyproject.org/singularity/gnu-wget:1.18--hed695b0_4':
+        'biocontainers/gnu-wget:1.18--hed695b0_4' }"
 
     input:
     val accno
