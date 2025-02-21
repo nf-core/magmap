@@ -7,7 +7,7 @@
                 "nf-core": {
                     "bbmap/align": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "49780ab7ba87906103c8810044008a042748fd4f",
                         "installed_by": ["modules"]
                     },
                     "bbmap/bbduk": {
@@ -17,7 +17,7 @@
                     },
                     "bbmap/index": {
                         "branch": "master",
-                        "git_sha": "a1abf90966a2a4016d3c3e41e228bfcbd4811ccc",
+                        "git_sha": "49780ab7ba87906103c8810044008a042748fd4f",
                         "installed_by": ["modules"]
                     },
                     "cat/cat": {
@@ -27,7 +27,7 @@
                     },
                     "cat/fastq": {
                         "branch": "master",
-                        "git_sha": "a1abf90966a2a4016d3c3e41e228bfcbd4811ccc",
+                        "git_sha": "0e9cb409c32d3ec4f0d3804588e4778971c09b7e",
                         "installed_by": ["modules"]
                     },
                     "custom/dumpsoftwareversions": {
@@ -42,17 +42,17 @@
                     },
                     "gunzip": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "ce35ce92566b3328b405253543b9b2b4d4e5f4f7",
                         "installed_by": ["modules"]
                     },
                     "multiqc": {
                         "branch": "master",
-                        "git_sha": "cf17ca47590cc578dfb47db1c2a44ef86f89976d",
+                        "git_sha": "f0719ae309075ae4a291533883847c3f7c441dad",
                         "installed_by": ["modules"]
                     },
                     "prokka": {
                         "branch": "master",
-                        "git_sha": "666652151335353eef2fcd58880bcef5bc2928e1",
+                        "git_sha": "bcfb2f7efd4444ab442ffc8a248afbd62bca5ae7",
                         "installed_by": ["modules"]
                     },
                     "samtools/flagstat": {
@@ -102,7 +102,7 @@
                     },
                     "trimgalore": {
                         "branch": "master",
-                        "git_sha": "4c2d06a5e79abf08ba7f04c58e39c7dad75f094d",
+                        "git_sha": "8d3e71002c5008e3f68a691ad8cd32c346356258",
                         "installed_by": ["modules"]
                     }
                 }

@@ -41,8 +41,7 @@ include { UTILS_NFCORE_PIPELINE                  } from '../subworkflows/nf-core
 workflow MAGMAP {
 
     take:
-    ch_samplesheet  // channel: samplesheet read in from --input
-
+    ch_samplesheet // channel: samplesheet read in from --input
     main:
 
     ch_versions = Channel.empty()
