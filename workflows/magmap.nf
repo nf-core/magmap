@@ -538,6 +538,7 @@ workflow MAGMAP {
     BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genomes_fnas)
     ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
+    CAT_GFFS.out.gff.map { it[1] }
     BAM_SORT_STATS_SAMTOOLS.out.bam
         .combine(CAT_GFFS.out.gff.map { it[1] })
         .set { ch_featurecounts }

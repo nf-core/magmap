@@ -21,7 +21,7 @@ process GENOMEINDEX {
     cpus        = Math.floor(task.cpus/2).toInteger()
 
     """
-    echo -e "accno\tgenome\tID" | gzip -c > ${outfilename}
+    echo -e "accno\tgenome\torf" | gzip -c > ${outfilename}
 
     for f in ${gffs}; do
         fn=\$(basename \$f .gff.gz)
@@ -33,7 +33,7 @@ process GENOMEINDEX {
         else
             cat "\$f"
         fi | grep -o 'ID=[A-Z0-9_]\\+' | \
-            sed "s/^/\$ac\\t\$fn\\t/; s/ID=//" >> ${params.outfile_name}
+            sed "s/^/\$ac\\t\$fn\\t/; s/ID=//" >> ${outfilename}
     done
 
 
