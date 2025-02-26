@@ -1,5 +1,6 @@
 process CHECK_DUPLICATES {
     label 'process_low'
+    tag "${meta.id}"
 
     conda "conda-forge::pigz=2.6"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
@@ -7,27 +8,24 @@ process CHECK_DUPLICATES {
         'biocontainers/ubuntu:24.04' }"
 
     input:
-    path fnas
+    tuple val(meta), path(fnas)
 
     output:
-    path "duplicate-contigs.txt" , emit: duplicate_list, optional: true
-    path "versions.yml"          , emit: versions
+    stdout emit: duplicate_genomes
+    path "${prefix}.genomes_with_duplicates.txt", emit: genomes_with_duplicates
+    path "versions.yml"              , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
+    prefix = task.ext.prefix ?: meta.id
 
     """
-    # Try to find and count duplicate contig headers
-    zgrep -h '>' *.fna.gz | sort | uniq -c | grep -v ' 1 ' > ./duplicate-contigs.txt || true
-
-    # Check if duplicate-contigs.txt has any real content
-    if [ \$(wc -l < ./duplicate-contigs.txt) -gt 0 ]; then
-        echo "You have duplicate contig names"
-        cat ./duplicate-contigs.txt
-        exit 2
-    fi
+    zgrep -H '>' *.fna.gz | sed 's/^[^:]*://' | sort | uniq -d > temp_dupes.txt
+    zgrep -l -F -f temp_dupes.txt *.fna.gz | sort -u > ${prefix}.genomes_with_duplicates.txt || touch ${prefix}.genomes_with_duplicates.txt
+    rm temp_dupes.txt
+    cat ${prefix}.genomes_with_duplicates.txt
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

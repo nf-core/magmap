@@ -8,6 +8,7 @@ include { COLLECT_FEATURECOUNTS                  } from '../modules/local/collec
 include { COLLECT_STATS                          } from '../modules/local/collect_stats'
 include { FILTER_GENOMES                         } from '../modules/local/filter_genomes'
 include { CHECK_DUPLICATES                       } from '../modules/local/check_duplicates'
+include { RENAME_CONTIGS                         } from '../modules/local/rename_contigs'
 include { validateInputSamplesheet               } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { FASTQC_TRIMGALORE                      } from '../subworkflows/local/fastqc_trimgalore'
 include { CAT_GFFS                               } from '../subworkflows/local/concatenate_gff'
@@ -47,6 +48,7 @@ workflow MAGMAP {
 
     ch_versions = Channel.empty()
     ch_multiqc_files = Channel.empty()
+
     //
     // INPUT: if user provides, populate ch_genomeinfo with a table that provides the genomes to filter with sourmash
     //
@@ -61,8 +63,60 @@ workflow MAGMAP {
     //
     // Check presence of duplicates contigs in the local genome collection
     //
-    CHECK_DUPLICATES( ch_genomeinfo.map{ it.genome_fna }.collect() )
+    CHECK_DUPLICATES(ch_genomeinfo.map{ it.genome_fna }.collect().map { [ [id: 'check_duplicates'], it ] } )
     ch_versions = ch_versions.mix(CHECK_DUPLICATES.out.versions)
+
+    ch_duplicates = CHECK_DUPLICATES.out.duplicate_genomes
+        .flatMap { it.tokenize('\n') }
+        .map {
+            [
+                it.replaceAll(/.*\//, '').replaceAll(/\.fna\.gz$/, '')
+            ]
+        }.flatten()
+
+    ch_check_duplicates = ch_genomeinfo.map { row ->
+        def basename = row.genome_fna.replaceAll(/.*\//, '').replaceAll(/\.fna\.gz$/, '')
+        row + [basename: basename]
+    }
+
+    ch_check_duplicates = ch_check_duplicates.map {
+        [it.basename, it.accno, it.genome_fna, it.genome_gff]
+    }
+
+    ch_genomes_to_rename = ch_check_duplicates.
+        join(ch_duplicates)
+
+    ch_non_duplicates = ch_check_duplicates
+        .mix(ch_duplicates.map { dup -> [ dup, 1 ] }) // Add a sentinel value
+        .groupTuple()
+        .filter { 1 !in it[1] } // Keep only non-duplicates
+        .transpose()
+        .map {
+            basename, accno, genome_fna, genome_gff -> [
+                accno: accno,
+                genome_fna: genome_fna,
+                genome_gff: genome_gff
+            ]
+        }
+        .set { ch_genome_no_duplicates }
+
+    RENAME_CONTIGS( ch_genomes_to_rename.map{
+            basename, accno, genome_fna, genome_gff -> [ [ id: accno ], genome_fna ]
+        })
+    ch_versions = ch_versions.mix(RENAME_CONTIGS.out.versions)
+
+    RENAME_CONTIGS.out.renamed_contigs
+        .map {
+            meta, fna ->
+            [
+                accno: meta.id,
+                genome_fna: fna,
+                genome_gff: ''
+            ]
+        }
+        .set { ch_renamed_contigs }
+
+    ch_genomeinfo = ch_genome_no_duplicates.mix(ch_renamed_contigs)
 
     //
     // INPUT: genome info from ncbi
@@ -78,7 +132,7 @@ workflow MAGMAP {
     //
     ch_indexes = Channel.empty()
 
-    if ( params.indexes) {
+    if ( params.indexes ) {
         Channel
             .fromPath( params.indexes )
             .set { ch_indexes }
@@ -89,7 +143,7 @@ workflow MAGMAP {
     //
     ch_gtdb_metadata = Channel.empty()
 
-    if ( params.gtdb_metadata) {
+    if ( params.gtdb_metadata ) {
         Channel
             .of(params.gtdb_metadata.split(','))
             .map { file(it) }
@@ -114,7 +168,7 @@ workflow MAGMAP {
     // INPUT: CheckM metadata
     //
     ch_checkm_metadata = Channel.empty()
-    if ( params.checkm_metadata) {
+    if ( params.checkm_metadata ) {
         Channel
             .of(params.checkm_metadata.split(','))
             .map { file(it) }
@@ -135,7 +189,7 @@ workflow MAGMAP {
     // INPUT: GTDB-Tk metadata
     //
     ch_gtdbtk_metadata = Channel.empty()
-    if ( params.gtdbtk_metadata) {
+    if ( params.gtdbtk_metadata ) {
         Channel
             .of(params.gtdbtk_metadata.split(','))
             .map { file(it) }
@@ -153,7 +207,7 @@ workflow MAGMAP {
     //
     // gtdbtk_metadata and checkm_metadata need to be joined
     //
-    if ( params.gtdbtk_metadata && params.checkm_metadata && params.gtdb_metadata) {
+    if ( params.gtdbtk_metadata && params.checkm_metadata && params.gtdb_metadata ) {
         ch_gtdbtk_metadata
         .map{ accno, gtdbtk -> [ accno, gtdbtk ]}
         .join( ch_checkm_metadata
@@ -506,6 +560,7 @@ workflow MAGMAP {
 
     GUNZIP(ch_no_gff)
 
+    // PROKKA on the genomes that lack of gff
     PROKKA(GUNZIP.out.gunzip, [], [])
 
     ch_genomes_with_gff
