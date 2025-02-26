@@ -216,6 +216,30 @@
             },
             "fa_icon": "fas fa-filter"
         },
+            "featureCounts_option": {
+                "title": "FeatureCounts configuration",
+                "type": "object",
+                "description": "Parameters used to control which features the pipeline should count.",
+                "help_text": "The nf-core/magmap pipeline uses the `featureCounts` tool to count reads mapping to different features in the genome. This tool can count reads mapping to different types of features, such as genes, rRNA, tRNA, etc. You can use these parameters to control which features should be counted.",
+                "properties": {
+                "count_cds": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "count_rrna": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "count_trna": {
+                    "type": "boolean",
+                    "default": true
+                },
+                "count_tmrna": {
+                    "type": "boolean",
+                    "default": true
+                }
+            }
+        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",

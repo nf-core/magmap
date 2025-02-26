@@ -11,7 +11,7 @@ include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_RRNA  } from '../../../
 include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TRNA  } from '../../../modules/local/collect_featurecounts'
 include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TMRNA } from '../../../modules/local/collect_featurecounts'
     
- workflow ALL_FEATURECOUNTS {   
+ workflow FEATURECOUNTS {   
 
     take:
         ch_featurecounts
