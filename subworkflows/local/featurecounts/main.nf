@@ -26,7 +26,7 @@ include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TMRNA } from '../../../
 
         FEATURECOUNTS_CDS.out.counts
         .collect() { it[1] }
-        .map { [ [ id:'all_samples'], it ] }
+        .map { [ [ id:'all_samples_cds'], it ] }
         .set { ch_collect_features_cds }
 
         COLLECT_FEATURECOUNTS_CDS   ( ch_collect_features_cds )
@@ -41,7 +41,7 @@ include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TMRNA } from '../../../
 
         FEATURECOUNTS_RRNA.out.counts
         .collect() { it[1] }
-        .map { [ [ id:'all_samples'], it ] }
+        .map { [ [ id:'all_samples_rrna'], it ] }
         .set { ch_collect_features_rrna }
 
         COLLECT_FEATURECOUNTS_RRNA  ( ch_collect_features_rrna)
@@ -55,7 +55,7 @@ include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TMRNA } from '../../../
 
         FEATURECOUNTS_TRNA.out.counts
         .collect() { it[1] }
-        .map { [ [ id:'all_samples'], it ] }
+        .map { [ [ id:'all_samples_trna'], it ] }
         .set { ch_collect_features_trna }
 
         COLLECT_FEATURECOUNTS_TRNA  ( ch_collect_features_trna )
@@ -69,7 +69,7 @@ include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TMRNA } from '../../../
 
         FEATURECOUNTS_TMRNA.out.counts
         .collect() { it[1] }
-        .map { [ [ id:'all_samples'], it ] }
+        .map { [ [ id:'all_samples_tmrna'], it ] }
         .set { ch_collect_features_tmrna }
 
         COLLECT_FEATURECOUNTS_TMRNA ( ch_collect_features_tmrna )
@@ -83,7 +83,7 @@ include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TMRNA } from '../../../
         ch_rrna_counts,
         ch_trna_counts,
         ch_tmrna_counts
-    ).collect()
+    ).collect { it[1]}.map { [ it ] }
 
     emit:
         collected_features = ch_fcs

@@ -14,14 +14,13 @@ include { FASTQC_TRIMGALORE                      } from '../subworkflows/local/f
 include { CAT_GFFS                               } from '../subworkflows/local/concatenate_gff'
 include { CREATE_BBMAP_INDEX                     } from '../subworkflows/local/create_bbmap_index'
 include { SOURMASH                               } from '../subworkflows/local/sourmash'
-include { ALL_FEATURECOUNTS                      } from '../subworkflows/local/featurecounts'
+include { FEATURECOUNTS                          } from '../subworkflows/local/featurecounts'
 include { PIPELINE_INITIALISATION                } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { PIPELINE_COMPLETION                    } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { FASTQC                                 } from '../modules/nf-core/fastqc/main'
 include { MULTIQC                                } from '../modules/nf-core/multiqc/main'
 include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk/main'
 include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align/main'
-include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts/main' 
 include { GUNZIP                                 } from '../modules/nf-core/gunzip/main'
 include { GUNZIP as GUNZIP_GFFS                  } from '../modules/nf-core/gunzip/main'
 include { PROKKA                                 } from '../modules/nf-core/prokka/main'
@@ -606,28 +605,9 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: All FeatureCounts
     //
-    ALL_FEATURECOUNTS(ch_featurecounts)
-
-    //
-    // MODULE: FeatureCounts
-    //
-    FEATURECOUNTS ( ch_featurecounts )
-    ch_versions = ch_versions.mix(FEATURECOUNTS.out.versions)
-
-    //
-    // MODULE: Collect featurecounts output counts in one table
-    //
-    FEATURECOUNTS.out.counts
-        .collect() { it[1] }
-        .map { [ [ id:'all_samples'], it ] }
-        .set { ch_collect_features }
-
-    COLLECT_FEATURECOUNTS ( ch_collect_features )
-    ch_versions           = ch_versions.mix(COLLECT_FEATURECOUNTS.out.versions)
-    ch_fcs_for_stats      = COLLECT_FEATURECOUNTS.out.counts.collect { it[1]}.map { [ it ] }
-    ch_fcs_for_summary    = COLLECT_FEATURECOUNTS.out.counts.map { it[1]}
+    FEATURECOUNTS(ch_featurecounts)
     ch_collect_stats
-        .combine(ch_fcs_for_stats)
+        .combine(FEATURECOUNTS.out.collected_features)
         .set { ch_collect_stats }
 
     //
