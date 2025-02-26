@@ -549,6 +549,11 @@ workflow MAGMAP {
         .set { ch_collect_stats }
 
     //
+    // SUBWORKFLOW: All FeatureCounts
+    //
+    ALL_FEATURECOUNTS(ch_featurecounts)
+
+    //
     // MODULE: FeatureCounts
     //
     FEATURECOUNTS ( ch_featurecounts )

@@ -6,27 +6,30 @@ include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS_CDS   } from '../../../modules/
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS_RRNA  } from '../../../modules/nf-core/subread/featurecounts/main'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS_TRNA  } from '../../../modules/nf-core/subread/featurecounts/main'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS_TMRNA } from '../../../modules/nf-core/subread/featurecounts/main'
-include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_CDS   } from '../../modules/local/collect_featurecounts'
-include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_RRNA  } from '../../modules/local/collect_featurecounts'
-include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TRNA  } from '../../modules/local/collect_featurecounts'
-include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TMRNA } from '../../modules/local/collect_featurecounts'
+include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_CDS   } from '../../../modules/local/collect_featurecounts'
+include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_RRNA  } from '../../../modules/local/collect_featurecounts'
+include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TRNA  } from '../../../modules/local/collect_featurecounts'
+include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TMRNA } from '../../../modules/local/collect_featurecounts'
     
- workflow FEATURECOUNTS {   
+ workflow ALL_FEATURECOUNTS {   
 
     take:
-        ch_samples_reads
-        ch_indexes
-        ch_user_genomeinfo
-        ch_ncbi_genomeinfo_files
-        ksize
+        ch_featurecounts
 
     main:
+    ch_versions = Channel.empty()
     ch_cds_counts = Channel.empty()
+
     if ( params.count_cds ) {
         FEATURECOUNTS_CDS ( ch_featurecounts )
         ch_versions = ch_versions.mix(FEATURECOUNTS_CDS.out.versions)
 
-        COLLECT_FEATURECOUNTS_CDS   ( FEATURECOUNTS_CDS.out.counts.collect   { it[1] } )
+        FEATURECOUNTS_CDS.out.counts
+        .collect() { it[1] }
+        .map { [ [ id:'all_samples'], it ] }
+        .set { ch_collect_features_cds }
+
+        COLLECT_FEATURECOUNTS_CDS   ( ch_collect_features_cds )
         ch_versions = ch_versions.mix(COLLECT_FEATURECOUNTS_CDS.out.versions)
         ch_cds_counts = COLLECT_FEATURECOUNTS_CDS.out.counts
     }
@@ -36,7 +39,12 @@ include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TMRNA } from '../../mod
         FEATURECOUNTS_RRNA ( ch_featurecounts )
         ch_versions = ch_versions.mix(FEATURECOUNTS_RRNA.out.versions)
 
-        COLLECT_FEATURECOUNTS_RRNA  ( FEATURECOUNTS_RRNA.out.counts.collect  { it[1] } )
+        FEATURECOUNTS_RRNA.out.counts
+        .collect() { it[1] }
+        .map { [ [ id:'all_samples'], it ] }
+        .set { ch_collect_features_rrna }
+
+        COLLECT_FEATURECOUNTS_RRNA  ( ch_collect_features_rrna)
         ch_rrna_counts = COLLECT_FEATURECOUNTS_RRNA.out.counts
     }
 
@@ -45,7 +53,12 @@ include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TMRNA } from '../../mod
         FEATURECOUNTS_TRNA ( ch_featurecounts )
         ch_versions = ch_versions.mix(FEATURECOUNTS_TRNA.out.versions)
 
-        COLLECT_FEATURECOUNTS_TRNA  ( FEATURECOUNTS_TRNA.out.counts.collect  { it[1] } )
+        FEATURECOUNTS_TRNA.out.counts
+        .collect() { it[1] }
+        .map { [ [ id:'all_samples'], it ] }
+        .set { ch_collect_features_trna }
+
+        COLLECT_FEATURECOUNTS_TRNA  ( ch_collect_features_trna )
         ch_trna_counts = COLLECT_FEATURECOUNTS_TRNA.out.counts
     }
 
@@ -54,7 +67,12 @@ include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TMRNA } from '../../mod
         FEATURECOUNTS_TMRNA ( ch_featurecounts )
         ch_versions = ch_versions.mix(FEATURECOUNTS_TMRNA.out.versions)
 
-        COLLECT_FEATURECOUNTS_TMRNA ( FEATURECOUNTS_TMRNA.out.counts.collect { it[1] } )
+        FEATURECOUNTS_TMRNA.out.counts
+        .collect() { it[1] }
+        .map { [ [ id:'all_samples'], it ] }
+        .set { ch_collect_features_tmrna }
+
+        COLLECT_FEATURECOUNTS_TMRNA ( ch_collect_features_tmrna )
         ch_tmrna_counts = COLLECT_FEATURECOUNTS_TMRNA.out.counts
     }
 
@@ -69,6 +87,6 @@ include { COLLECT_FEATURECOUNTS as COLLECT_FEATURECOUNTS_TMRNA } from '../../mod
 
     emit:
         collected_features = ch_fcs
-        versions         = ch_versions
+        versions           = ch_versions
 
  }
