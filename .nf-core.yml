@@ -1,3 +1,7 @@
+lint:
+  files_unchanged:
+    - assets/nf-core-metatdenovo_logo_light.png
+    - docs/images/nf-core-metatdenovo_logo_light.png
 nf_core_version: 3.3.1
 repository_type: pipeline
 template:
