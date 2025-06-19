@@ -40,7 +40,7 @@
                 },
                 "ncbi_genome_infos": {
                     "type": "string",
-                    "default": "./assets/ncbi_genome_infos.csv",
+                    "default": "${pipelineDir}/assets/ncbi_genome_infos.csv",
                     "description": "Path to txt file with information about genomes in NCBI.",
                     "help_text": "You can provide either a file with paths of files containing information about genomes from NCBI (refseq and genebank) or a comma separated paths. These files can be use directly from https://ftp.ncbi.nlm.nih.gov/genomes/genbank/assembly_summary_genbank.txt and ftp://ftp.ncbi.nlm.nih.gov/genomes/refseq/assembly_summary_refseq.txt. You can also modify the file to include only the genomes you are interested in.",
                     "fa_icon": "fas fa-network-wired"
