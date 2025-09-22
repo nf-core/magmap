@@ -205,8 +205,8 @@ workflow MAGMAP {
     //
     FASTQC_TRIMGALORE (
         ch_fastq,
-        params.skip_fastqc || params.skip_qc,
-        params.skip_trimming
+        skip_fastqc || skip_qc,
+        skip_trimming
     )
     ch_versions = ch_versions.mix(FASTQC_TRIMGALORE.out.versions)
 
