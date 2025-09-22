@@ -112,8 +112,8 @@ workflow MAGMAP {
         .map { g -> [ accno: g[0].id, genome_fna: g[1], genome_gff: [] ] }
         .mix(ch_genomes_pre_renaming.names_ok)
 
-        // Form a fastq channel from the samplesheet channel
-    // DL: I'm not sure which parts are still required after nf-schema. The branch { } certainly is needed.
+    // Form a fastq channel from the samplesheet channel
+    // Script taken from nf-core/metatdenovo with minor modifications
     ch_fastq = ch_samplesheet
         .flatMap { meta, fastq_files ->
             if (fastq_files.size() <= 2) {
@@ -123,14 +123,6 @@ workflow MAGMAP {
                 return [[ meta.id, pairs.collect { meta + [id: "${meta.id}_${pairs.indexOf(it) + 1}"] }, fastq_files ]]
             }
         }
-        /** DL: In my testing, this fails as entries come in with single meta, multiple read files when appear for single ends
-        .map { id, metas, fastq_files ->
-            // Ensure single_end is set correctly in meta
-            def updatedMetas = metas
-                .collect { it + [single_end: (fastq_files.size() / metas.size() == 1)] }
-            return [id, updatedMetas, fastq_files]
-        }
-        **/
         .map { validateInputSamplesheet(it) }
         .branch {
             meta, fastqs ->
