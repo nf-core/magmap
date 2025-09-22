@@ -23,6 +23,9 @@ include { KRAKEN2_DOWNLOAD_DB                    } from '../modules/local/kraken
 include { methodsDescriptionText                 } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { MULTIQC                                } from '../modules/nf-core/multiqc/main'
 include { paramsSummaryMap                       } from 'plugin/nf-schema'
+include { PIGZ_COMPRESS as PIGZ_PE_READS_FWD     } from '../modules/nf-core/pigz/compress/main'
+include { PIGZ_COMPRESS as PIGZ_PE_READS_REV     } from '../modules/nf-core/pigz/compress/main'
+include { PIGZ_COMPRESS as PIGZ_SE_READS         } from '../modules/nf-core/pigz/compress/main'
 include { paramsSummaryMultiqc                   } from '../subworkflows/nf-core/utils_nfcore_pipeline/'
 include { PIGZ_UNCOMPRESS as GUNZIP_CONTIGS      } from '../modules/nf-core/pigz/uncompress/main'
 include { PIPELINE_COMPLETION                    } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
@@ -80,12 +83,14 @@ workflow MAGMAP {
         .map { it.genome_fna }
         .collect()
         .map { [ [id: 'genomes'], it ] }
+
     CHECK_DUPLICATES(ch_check_duplicates)
     ch_versions = ch_versions.mix(CHECK_DUPLICATES.out.versions)
 
     ch_duplicates = CHECK_DUPLICATES.out.duplicate_genomes
         .flatMap { it.tokenize('\n') }
         .map { fname -> [ fname.replaceAll(/.*\//, ''), true ] }
+
     ch_genomes_pre_renaming = ch_genomeinfo
         .map { row -> [ row.genome_fna.getName(), row ] }
         .join(ch_duplicates, remainder: true)
@@ -107,87 +112,155 @@ workflow MAGMAP {
         .map { g -> [ accno: g[0].id, genome_fna: g[1], genome_gff: [] ] }
         .mix(ch_genomes_pre_renaming.names_ok)
 
-    //
-    // SUBWORKFLOW: Read in samplesheet, validate and stage input files
-    //
-    ch_short_reads_forcat = ch_samplesheet
-        .map { meta, reads ->
-            def meta_new = meta - meta.subMap('run')
-            [meta_new, reads]
+        // Form a fastq channel from the samplesheet channel
+    // DL: I'm not sure which parts are still required after nf-schema. The branch { } certainly is needed.
+    ch_fastq = ch_samplesheet
+        .flatMap { meta, fastq_files ->
+            if (fastq_files.size() <= 2) {
+                return [[ meta.id, [meta], fastq_files ]]
+            } else {
+                def pairs = fastq_files.collate(2)
+                return [[ meta.id, pairs.collect { meta + [id: "${meta.id}_${pairs.indexOf(it) + 1}"] }, fastq_files ]]
+            }
         }
-        .groupTuple()
-        .branch { meta, reads ->
-            cat: reads.size() >= 2
-            skip_cat: true
+        /** DL: In my testing, this fails as entries come in with single meta, multiple read files when appear for single ends
+        .map { id, metas, fastq_files ->
+            // Ensure single_end is set correctly in meta
+            def updatedMetas = metas
+                .collect { it + [single_end: (fastq_files.size() / metas.size() == 1)] }
+            return [id, updatedMetas, fastq_files]
+        }
+        **/
+        .map { validateInputSamplesheet(it) }
+        .branch {
+            meta, fastqs ->
+                single  : ( meta.single_end && fastqs.size() == 1 ) || ( ! meta.single_end && fastqs.size == 2 )
+                    return [ meta, fastqs ]
+                multiple: true
+                    return [ meta, fastqs ]
         }
 
     //
-    // MODULE: Run FastQC on the raw reads
+    // MODULE: Concatenate FastQ files from the same sample if required
     //
-    FASTQC(ch_samplesheet)
-    ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{it[1]})
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
-
-    //
-    // MODULE: Concatenate FastQ files from same sample if required
-    //
-    CAT_FASTQ (ch_short_reads_forcat.cat.map { meta, reads -> [meta, reads.flatten()] })
+    CAT_FASTQ (
+        ch_fastq.multiple
+    )
     ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first())
 
-    // Ensure we don't have nests of nests so that structure is in form expected for assembly
-    ch_short_reads_catskipped = ch_short_reads_forcat.skip_cat.map { meta, reads ->
-        def new_reads = meta.single_end ? reads[0] : reads.flatten()
-            [meta, new_reads]
-    }
+    //
+    // Gzip unzipped read files
+    //
+    // We're only doing this for samples having a single row in the sample sheet since those with more than one
+    // were gzipped by CAT_FASTQ above.
+    //
 
-    // Combine single run and multi-run-merged data
-    ch_short_reads = Channel.empty()
-    ch_short_reads = CAT_FASTQ.out.reads.mix(ch_short_reads_catskipped)
-    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first())
+    // Paired end, forward
+    fwd = ch_fastq.single
+        .filter { meta, f -> ! meta.single_end }
+        .map { meta, fastqs -> [ meta, fastqs[0] ] }
+        .branch {
+            meta, fastqs ->
+                zipped  : fastqs.name.endsWith('.gz')
+                    return [ meta, fastqs ]
+                unzipped: true
+                    return [ meta, fastqs ]
+        }
+    PIGZ_PE_READS_FWD(fwd.unzipped)
+    ch_versions      = ch_versions.mix(PIGZ_PE_READS_FWD.out.versions)
+
+    // Paired end, reverse
+    rev = ch_fastq.single
+        .filter { meta, f -> ! meta.single_end }
+        .map { meta, fastqs -> [ meta, fastqs[1] ] }
+        .branch {
+            meta, fastqs ->
+                zipped  : fastqs.name.endsWith('.gz')
+                    return [ meta, fastqs ]
+                unzipped: true
+                    return [ meta, fastqs ]
+        }
+    PIGZ_PE_READS_REV(rev.unzipped)
+    ch_versions      = ch_versions.mix(PIGZ_PE_READS_REV.out.versions)
+
+    // Single end
+    se = ch_fastq.single
+        .filter { meta, f -> meta.single_end }
+        .map { meta, fastqs -> [ meta, fastqs[0] ] }
+        .branch {
+            meta, fastqs ->
+                zipped  : fastqs.name.endsWith('.gz')
+                    return [ meta, fastqs ]
+                unzipped: true
+                    return [ meta, fastqs ]
+        }
+    PIGZ_SE_READS(se.unzipped)
+    ch_versions      = ch_versions.mix(PIGZ_SE_READS.out.versions)
+
+    // Join the three channels with the originally zipped to form a new ch_fastq of the same structure as the original
+    ch_fastq = fwd.zipped.concat(PIGZ_PE_READS_FWD.out.archive)
+        .join(rev.zipped.concat(PIGZ_PE_READS_REV.out.archive))
+        .map { meta, fwd, rev -> [ meta, [ fwd, rev ] ] }
+        .concat(
+            se.zipped
+                .concat(PIGZ_SE_READS.out.archive)
+                .map { meta, fastq -> [ meta, [ fastq ] ] }
+        )
+        .concat(CAT_FASTQ.out.reads)
 
     //
     // SUBWORKFLOW: Read QC and trim adapters
     //
     FASTQC_TRIMGALORE (
-        ch_short_reads,
-        skip_fastqc || skip_qc,
-        skip_trimming
+        ch_fastq,
+        params.skip_fastqc || params.skip_qc,
+        params.skip_trimming
     )
     ch_versions = ch_versions.mix(FASTQC_TRIMGALORE.out.versions)
 
-    ch_collect_stats = ch_short_reads.collect { meta, fasta -> meta.id }.map { [ [ id:"magmap" ], it ] }
-    if ( skip_trimming ) {
+
+    ch_collect_stats = ch_fastq
+        .collect { 
+            meta, fasta -> meta.id 
+            }
+        .map {
+            [ [ id:"magmap" ], it ] 
+        }
+
+    if ( params.skip_trimming ) {
         ch_collect_stats = ch_collect_stats
             .map { meta, samples -> [ meta, samples, [] ] }
 
     } else {
-        if ( params.se_reads ) {
-            ch_collect_stats = ch_collect_stats
-                .combine(FASTQC_TRIMGALORE.out.trim_log.collect { meta, report -> report }.map { [ it ] })
-
-        } else {
-            ch_collect_stats = ch_collect_stats
-                .combine(FASTQC_TRIMGALORE.out.trim_log.collect { meta, report -> report[0] }.map { [ it ] })
-
-        }
+        ch_collect_stats = ch_collect_stats
+            .combine(
+                FASTQC_TRIMGALORE.out.trim_log
+                    .collect { meta, report ->
+                        if ( report in List ) {
+                            report[0]
+                        } else {
+                            report
+                        }
+                    }
+                    .map { [ it ] }
+            )
     }
 
     //
-    // MODULE: Run BBDuk to clean out whatever sequences the user supplied via --sequence_filter
+    // MODULE: Run BBDuk to clean out whatever sequences the user supplied via params.sequence_filter
     //
-    if ( sequence_filter ) {
-        BBMAP_BBDUK(FASTQC_TRIMGALORE.out.reads, sequence_filter)
-        ch_versions   = ch_versions.mix(BBMAP_BBDUK.out.versions)
-
-        ch_clean_reads = BBMAP_BBDUK.out.reads
-        ch_bbduk_logs = BBMAP_BBDUK.out.log.collect { it[1] }.map { [ it ] }
-        ch_collect_stats = ch_collect_stats
-            .combine(ch_bbduk_logs)
+    if ( params.sequence_filter ) {
+        BBMAP_BBDUK ( FASTQC_TRIMGALORE.out.reads, Channel.fromPath(params.sequence_filter).first() )
+        ch_clean_reads  = BBMAP_BBDUK.out.reads
+        ch_bbduk_logs = BBMAP_BBDUK.out.log.collect { meta, log ->  log }.map { [ it ] }
+        ch_versions   = ch_versions.mix(BBMAP_BBDUK.out.versions.first())
+        ch_collect_stats = ch_collect_stats.combine(ch_bbduk_logs)
+        ch_multiqc_files = ch_multiqc_files.mix(BBMAP_BBDUK.out.log.collect{ meta, log -> log })
     } else {
-        ch_clean_reads = FASTQC_TRIMGALORE.out.reads
+        ch_clean_reads  = FASTQC_TRIMGALORE.out.reads
         ch_bbduk_logs = Channel.empty()
         ch_collect_stats = ch_collect_stats
-            .map { [ it[0], it[1], it[2], [] ] }
+            .map { meta, samples, report -> [ meta, samples, report, [] ] }
     }
 
     //
