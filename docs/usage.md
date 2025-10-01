@@ -18,7 +18,7 @@
     - [Genome metadata input](#genome-metadata-input)
       - [GTDB metadata](#gtdb_metadata)
       - [GTDB-Tk metadata](#gtdb-tk-metadata)
-      - [checkM/CheckM2 metadata](#checkm/checkm2-metadata)
+      - [CheckM/CheckM2 metadata](#checkm/checkm2-metadata)
   - [Check duplicates](#check-duplicates)
   - [Remove contaminants from the samples] (#remove-contaminants-from-the-samples)
   - [Kraken2 (optional)](#kraken2 (optional))
@@ -38,7 +38,7 @@
 
 ## Introduction
 
-Magmap is a workflow designed for mapping metatranscriptomic and metagenomic reads onto a group of genomes.
+**nf-core/magmap** is a workflow designed for mapping metatranscriptomic and metagenomic reads onto a group of genomes.
 The collection of genomes can either be specified directly using a table (see the `--genomeinfo` parameter) or be the result of filtering with Sourmash.
 The latter can use either the genomes specified by `--genomeinfo`, a "sketch index" pointing to genomes available for instance at NCBI (see the `--indexes` parameter) or a combination, to identify a smaller set to map to.
 Genome files provided with `--genominfo` must include contigs in fasta format and optionally gff files (Prokka format).
@@ -161,20 +161,21 @@ If you create storage directories that you can access from the directories from 
 
 #### Genome metadata input
 
-Magmap accepts several types of metadata files that provides information about the genomes that you will use in the pipeline.
-Each type of metadata can be used to get different information about your genomes.
-At the moment, Magmap can handle output from CheckM/CheckM2 and gtdb-tk as well as standard GTDB metadata files.
-Magmap will merge all these tables and create a new one: each row will correspond to a genome (based on its accno) followed by several columns.
+**nf-core/magmap** accepts three types of metadata files that provides information about the genomes that you will use in the pipeline.
+At the moment, **nf-core/magmap** can handle output from CheckM/CheckM2 and GTDB-Tk as well as standard GTDB metadata files.
+**nf-core/magmap** will merge the tables and summarise the information for easy access.
 
-##### gtdb_metadata
+##### (1) GTDB metadata
 
-With this parameter, you can supply a file like the GTDB metadata files provided on their official [website](https://gtdb.ecogenomic.org/), e.g. [`bac120_metadata_r220.tsv.gz`](https://data.ace.uq.edu.au/public/gtdb/data/releases/release220/220.0/bac120_metadata_r220.tsv.gz). You can either use their files directly or make a custom one. If you want make your own table, fill up the following columns: `accno`, `checkm_completeness`, `checkm_contamination`, `checkm_strain_heterogeneity`, `contig_count`, `genome_size`, `gtdb_genome_representative`,gtdb_representative`, `gtdb_taxonomy`.
+With this parameter, you can supply a file like the GTDB metadata files provided on their official [website](https://gtdb.ecogenomic.org/), e.g. [`bac120_metadata_r220.tsv.gz`](https://data.ace.uq.edu.au/public/gtdb/data/releases/release220/220.0/bac120_metadata_r220.tsv.gz).
+You can either use their files directly or make a custom one.
+If you want make your own table, fill up the following columns: `accno`, `checkm_completeness`, `checkm_contamination`, `checkm_strain_heterogeneity`, `contig_count`, `genome_size`, `gtdb_genome_representative`,gtdb_representative`, `gtdb_taxonomy`.
 
-##### gtdb-tk metadata
+##### (2) GTDB-Tk metadata
 
 This file should be formatted like the GTDB-Tk output, [see](https://ecogenomics.github.io/GTDBTk/files/summary.tsv.html).
 
-##### checkM/CheckM2 metadata
+##### (3) CheckM/CheckM2 metadata
 
 This file should be formatted like the checkM2 output, [see](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv).
 
@@ -186,7 +187,7 @@ This is done to avoid overlapping in the following steps (e.g. same prokka outpu
 
 ### Remove contaminants from the samples
 
-The pipeline can remove potential contaminants, e.g. rRNA sequences with SILVA database, using the BBduk program.
+The pipeline can remove potential contaminants (e.g. rRNA sequences with SILVA database) using BBduk.
 Specify a fasta file, gzipped or not, with the `--sequence_filter <sequences>.fasta` parameter.
 For further documentation, see the [BBduk official website](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbduk-guide/).
 
