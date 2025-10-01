@@ -5,7 +5,7 @@ process TIDYVERSE_JOINMETADATA {
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a0/a04c5424ce6fbf346430d99ae9f72d0bbb90e3a5cf4096df32fc1716f03973a4/data' :
-        'community.wave.seqera.io/library/r-base_r-data.table_r-dplyr_r-dtplyr_pruned:a6608bc81b0e6546"
+        'community.wave.seqera.io/library/r-base_r-data.table_r-dplyr_r-dtplyr_pruned:a6608bc81b0e6546'
     }"
 
     input:
@@ -128,7 +128,10 @@ process TIDYVERSE_JOINMETADATA {
         c(
             "\\"${task.process}\\":",
             paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),
-            paste0("    tidyverse: ", packageVersion('tidyverse'))
+            paste0("    readr: ", packageVersion('readr')),
+            paste0("    dplyr: ", packageVersion('dplyr')),
+            paste0("    tidyr: ", packageVersion('tidyr')),
+            paste0("    stringr: ", packageVersion('stringr'))
         ),
         "versions.yml"
     )
