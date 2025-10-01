@@ -4,6 +4,38 @@
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Running the workflow](#running-the-workflow)
+  - [Quickstart](#quickstart)
+  - [Samplesheet input](#samplesheet-input)
+  - [Multiple runs of the same sample](#multiple-runs-of-the-same-sample)
+  - [Full samplesheet](#full-samplesheet)
+  - [Genome input](#genome-input)
+  - [Other inputs (optional)](#other-inputs (optional))
+    - [Index input](#index-input)
+    - [Genome metadata input](#genome-metadata-input)
+      - [GTDB metadata](#gtdb_metadata)
+      - [GTDB-Tk metadata](#gtdb-tk-metadata)
+      - [checkM/CheckM2 metadata](#checkm/checkm2-metadata)
+  - [Check duplicates](#check-duplicates)
+  - [Remove contaminants from the samples] (#remove-contaminants-from-the-samples)
+  - [Kraken2 (optional)](#kraken2 (optional))
+  - [Sourmash (optional)](#sourmash (optional))
+  - [ORF caller option](#orf-caller-option)
+- [Running the pipeline](#running-the-pipeline)
+  - [Updating the pipeline](#updating-the-pipeline)
+  - [Reproducibility](#reproducibility)
+- [Core Nextflow arguments](#core-nextflow-arguments)
+- [Custom configuration](#custom-configuration)
+  - [Resource requests](#resource-requests)
+  - [Custom Containers](#custom-containers)
+  - [Custom Tool Arguments](#custom-tool-arguments)
+  - [nf-core/configs](#nf-core/configs)
+- [Running in the background](#running-in-the-background)
+- [Nextflow memory requirements](#nextflow-memory-requirements)
+
 ## Introduction
 
 Magmap is a workflow designed for mapping metatranscriptomic and metagenomic reads onto a group of genomes.
@@ -149,9 +181,9 @@ The pipeline will perform validation checks to see if there are any duplicate na
 If there are duplicates, the pipeline will stop and return a file with the contig names that needs to be changed in their name in order to work.
 This is done to avoid overlapping in the following steps (e.g. same prokka output for the protein sequences and the gffs).
 
-### Filter/remove sequences from the samples (e.g. rRNA sequences with SILVA database)
+### Remove contaminants from the samples
 
-The pipeline can remove potential contaminants using the BBduk program.
+The pipeline can remove potential contaminants, e.g. rRNA sequences with SILVA database, using the BBduk program.
 Specify a fasta file, gzipped or not, with the `--sequence_filter <sequences>.fasta` parameter.
 For further documentation, see the [BBduk official website](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbduk-guide/).
 
