@@ -4,8 +4,9 @@ process TIDYVERSE_JOINMETADATA {
 
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/07/07c6b82f970ba651b6273df1378adb205050c131c40bac7f80d9354e088e0865/data':
-        'community.wave.seqera.io/library/r-tidyverse:2.0.0--dd61b4cbf9e28186' }"
+        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a0/a04c5424ce6fbf346430d99ae9f72d0bbb90e3a5cf4096df32fc1716f03973a4/data' :
+        'community.wave.seqera.io/library/r-base_r-data.table_r-dplyr_r-dtplyr_pruned:a6608bc81b0e6546"
+    }"
 
     input:
     path genomes            // Genome accessions to output information for
