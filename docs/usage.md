@@ -16,9 +16,9 @@
   - [Other inputs (optional)](#other-inputs (optional))
     - [Index input](#index-input)
     - [Genome metadata input](#genome-metadata-input)
-      - [GTDB metadata](#gtdb_metadata)
+      - [GTDB metadata](#gtdb-metadata)
       - [GTDB-Tk metadata](#gtdb-tk-metadata)
-      - [CheckM/CheckM2 metadata](#checkm/checkm2-metadata)
+      - [CheckM/CheckM2 metadata](#checkmcheckm2-metadata)
   - [Check duplicates](#check-duplicates)
   - [Remove contaminants from the samples] (#remove-contaminants-from-the-samples)
   - [Kraken2 (optional)](#kraken2 (optional))
@@ -28,6 +28,9 @@
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
 - [Core Nextflow arguments](#core-nextflow-arguments)
+  - [`-profile`](#-profile)
+  - [`-resume`](#-resume)
+  - [`-c`](#-c)
 - [Custom configuration](#custom-configuration)
   - [Resource requests](#resource-requests)
   - [Custom Containers](#custom-containers)
@@ -134,6 +137,8 @@ For this to work, entries in the Sourmash index need to point to NCBI assemblies
 The index input (`--indexes`) is used by Sourmash to select genomes that can be downloaded in a second step and added to the pipeline.
 
 Particular examples of Sourmash index files are those prepared by the authors of Sourmash, which can be found [here](https://sourmash.readthedocs.io/en/latest/databases.html).
+
+##### Remote genome sources
 
 Genomes are by default fetched from NCBI using genome information files provided through the `--remote_genome_sources` parameter.
 This points to a file that contains paths to NCBI-style genome information files, containing at least the columns `#assembly_accession` and `ftp_path`.
