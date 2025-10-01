@@ -28,26 +28,26 @@
                     "format": "file-path",
                     "mimetype": "text/tsv",
                     "fa_icon": "fas fa-dna",
-                    "description": "Path to comma-separated file containing information about the genomes to map to.",
-                    "help_text": "This has to be a comma-separated file with 3 columns, and a header row. Columns are: accno, genome_fna, genome_gff. Please see the documentation for more information.",
+                    "description": "Path to comma-separated file containing information about the genomes to map to, see [usage docs](https://nf-co.re/magmap/usage).",
+                    "help_text": "This has to be a comma-separated file with 3 columns, and a header row. Columns are: accno, genome_fna, genome_gff.",
                     "schema": "assets/schema_genomeinfo.json"
                 },
                 "gtdb_metadata": {
                     "type": "string",
-                    "description": "Comma-separated list of paths to tab-separated files containing information from GTDB. For column description, see docs.",
+                    "description": "Comma-separated list of paths to tab-separated files containing information from GTDB. For column description, see [usage docs](https://nf-co.re/magmap/usage).",
                     "help_text": "Typically, the files are the standard GTDB metadata files, e.g. `bac120_metadata_r226.tsv.gz`. You will need to use or create a file with information about the genomes' taxonomy you want to map to before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 9 columns, and a header row. Columns are: accno, checkm_completeness, checkm_contamination, checkm_strain_heterogeneity, contig_count, genome_size, gtdb_genome_representative, gtdb_representative, gtdb_taxonomy.",
                     "fa_icon": "fas fa-table"
                 },
                 "checkm_metadata": {
                     "type": "string",
-                    "description": "Comma-separated list of path to tab-separated files containing the output from CheckM. For column description, see docs.",
-                    "help_text": "You will need to use or create a file with information about the genomes' statistics you want to map to before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 5 columns, and a header row. Columns are: checkm_completeness, checkm_contamination, contig_count, checkm_strain_heterogeneity, genome_size. Please see the documentation for more information.",
+                    "description": "Comma-separated list of path to tab-separated files containing the output from CheckM. For column description, see [usage docs](https://nf-co.re/magmap/usage).",
+                    "help_text": "You will need to use or create a file with information about the genomes' statistics you want to map to before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 5 columns, and a header row. Columns are: checkm_completeness, checkm_contamination, contig_count, checkm_strain_heterogeneity, genome_size.",
                     "fa_icon": "fas fa-table"
                 },
                 "gtdbtk_metadata": {
                     "type": "string",
-                    "description": "Comma-separated list of aths to tab-separated files containing a .tsv file which has the same columns as the output from GTDB-Tk. (see docs)",
-                    "help_text": "You will need to use or create a file with information about the genomes' taxonomy you want to map to before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. Columns are: gtdb_genome_representative, gtdb_representative, gtdb_taxonomy. Please see the documentation for more information.",
+                    "description": "Comma-separated list of paths to tab-separated files containing a .tsv file which has the same columns as the output from GTDB-Tk, see [usage docs](https://nf-co.re/magmap/usage).",
+                    "help_text": "You will need to use or create a file with information about the genomes' taxonomy you want to map to before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. Columns are: gtdb_genome_representative, gtdb_representative, gtdb_taxonomy.",
                     "fa_icon": "fas fa-bacteria"
                 },
                 "remote_genome_sources": {
