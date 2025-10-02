@@ -13,7 +13,7 @@
   - [Multiple runs of the same sample](#multiple-runs-of-the-same-sample)
   - [Full samplesheet](#full-samplesheet)
   - [Genome input](#genome-input)
-  - [Other inputs (optional)](#other-inputs (optional))
+  - [Other inputs](#other-inputs)
     - [Index input](#index-input)
     - [Genome metadata input](#genome-metadata-input)
       - [GTDB metadata](#gtdb-metadata)
@@ -130,7 +130,7 @@ Any genome used by the pipeline for which a gff file is not found will be annota
 | `genome_fna` | Full path to Fasta file that contains nucleotide sequences of your genome. File can be gzipped and have the extension ".fna.gz" or "fna". |
 | `genome_gff` | Full path to gff file of your genome. File can be gzipped and have the extension ".gff.gz" or ".gff".                                     |
 
-### Other inputs (optional)
+### Other inputs
 
 #### Index input
 
