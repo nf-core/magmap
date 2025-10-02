@@ -42,7 +42,7 @@ workflow NFCORE_MAGMAP {
     skip_kraken2                // boolean: run Kraken2 or not
     kraken2_db                  // string: path to Kraken2 database
     kraken2_db_url              // string: URL to download Kraken2 database
-    sourmash                    // boolean: run Sourmash or not
+    skip_sourmash               // boolean: skip Sourmash or not
     sourmash_ksize              // integer
     sourmash_save_unassigned    // boolean
     sourmash_save_matches_sig   // boolean
@@ -71,7 +71,7 @@ workflow NFCORE_MAGMAP {
         skip_kraken2,
         kraken2_db,
         kraken2_db_url,
-        sourmash,
+        skip_sourmash,
         sourmash_ksize,
         sourmash_save_unassigned,
         sourmash_save_matches_sig,
@@ -132,7 +132,7 @@ workflow {
         params.skip_kraken2,
         params.kraken2_db,
         params.kraken2_db_url,
-        params.sourmash,
+        params.skip_sourmash,
         params.sourmash_ksize,
         params.sourmash_save_unassigned,
         params.sourmash_save_matches_sig,
