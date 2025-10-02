@@ -10,6 +10,7 @@ The directories listed below will be created in the results directory after the 
 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results are organized as follow:
 
+- [Summary tables](#summary-tables) - Tab separated tables ready for further analysis in tools like R and Python
 - [Module output](#module-output)
   - [Preprocessing](#preprocessing)
     - [FastQC](#fastqc) - Read quality control
@@ -19,15 +20,28 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
   - [Community composition](#community-composition) - General analysis of the taxonomic composition of the communities in the samples using the kmer-based Kraken2 tool.
   - [Filtering genomes](#filter-genomes) - Generate a list of genomes that will be used for the mapping
     - [Sourmash](#sourmash) - Output from Sourmash filtering of genomes.
-  - [ORF galling](#orf-calling) - Identify protein-coding genes (ORFs) with an ORF caller
-    - [Prokka](#prokka) - Output from Prokka (optional)
+  - [Prokka](#prokka) - Output from Prokka
   - [Genome fetching](#genome-fetching) - Genomes fetched from remote sources
   - [Quantification of genome features](#quantification-of-genome-features)
     - [BBmap](#bbmap) - Output from BBmap
     - [FeatureCounts](#featureCounts) - Output from FeatureCounts
-- [Custom magmap output](#magmap-output)
-  - [Summary tables folder](#summary-tables) - Tab separated tables ready for further analysis in tools like R and Python
-  - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
+- [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
+
+## Summary tables
+
+Consistently named and formatted output tables in TSV format ready for further analysis.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `summary_tables/`
+  - `magmap.overall_stats.tsv.gz`: Overall statistics from the pipeline, e.g. number of reads, number of called ORFs, number of reads mapping back to contigs/ORFs etc.
+  - `magmap.<FEATURE>.counts.tsv.gz`: Read counts for `FEATURE` per ORF and sample.
+  - `magmap.genome_metadata.tsv.gz`: Genome metadata from GTDB, GTDB-Tk and CheckM/CheckM2 if provided by the user.
+  - `magmap.genomes2orfs.tsv.gz`: Translation table from ORF identifiers to genome identifiers.
+  - `magmap.prokka-annotations.tsv.gz`: Annotation details extracted from GFF files.
+
+</details>
 
 ## Module output
 
@@ -92,7 +106,7 @@ BBduk is built-in tool from BBmap.
 
 ### Community composition
 
-If not skipped with the `--skip_kraken2` parameter, Kraken2 will be called to provide an overview of taxonomic community compositions of the samples.
+If not skipped with the [`--skip_kraken2` parameter](https://nf-co.re/magmap/parameters/#skip_kraken2), Kraken2 will be called to provide an overview of taxonomic community compositions of the samples.
 In addition, the Taxburst program will be called to produce an html file with a "Krona" diagram
 
 - `kraken2/`
@@ -104,19 +118,17 @@ In addition, the Taxburst program will be called to produce an html file with a 
 
 The Sourmash program can be used to prefilter genomes so that only genomes likely to be represented among the reads are passed to mapping.
 In addition, Sourmash can be used to fetch remote genomes, see [usage docs](https://nf-co.re/magmap/usage#genome-input).
-No output from Sourmash is enabled by default.
-Use `--sourmash_save_sourmash` to copy output files.
+No output from Sourmash is enabled by default; the output is only used to select genomes for further processing.
+Use [`--sourmash_save_sourmash`](https://nf-co.re/magmap/parameters/#sourmash_save_sourmash) to copy output files.
 
 - `sourmash/`
   - `*`: Output from Sourmash
 
-### ORF calling
-
-#### Prokka
+### Prokka
 
 [Prokka](https://github.com/tseemann/prokka) will be used to identify ORFs in any genomes for which a gff file is not provided.
 In addition to calling ORFs (done with Prodigal) Prokka will functionally annotate the ORFs.
-To make it easier to reuse already annotated genomes in other projects, output from Prokka is directed to subdirectories of the directory specified with the `--prokka_store_dir` parameter (by default `prokka` in the working directory for the pipeline run).
+To make it easier to reuse already annotated genomes in other projects, output from Prokka is directed to subdirectories of the directory specified with the [`--prokka_store_dir` parameter](https://nf-co.re/magmap/parameters/#prokka_store_dir) (by default `prokka` in the working directory for the pipeline run).
 Genomes already found in the directory specified, will be skipped by the Prokka step.
 
 <details markdown="1">
@@ -124,44 +136,36 @@ Genomes already found in the directory specified, will be skipped by the Prokka 
 
 - `prokka/`
   - `<accno>`
-    - `*.ffn`: nucleotides fasta file output
-    - `*.faa`: amino acids fasta file output
+    - `*.ffn`: nucleotide fasta file output
+    - `*.faa`: amino acid fasta file output
     - `*.gff`: genome feature file output
 
 </details>
 
 ### Genome fetching
 
-When the pipeline is run with `--sourmash` and one or more index files passed to `--indexes`, remote genomes will be identified and downloaded to the directory specified by `--genome_store_dir` (by default `genomes` in the working directory for the pipeline run).
+When the pipeline is run with [`--skip_sourmash false`](https://nf-co.re/magmap/parameters/#skip_sourmash) and one or more index files passed to [`--indexes`](https://nf-co.re/magmap/parameters/#indexes), remote genomes will be identified and downloaded to the directory specified by [`--genome_store_dir`](https://nf-co.re/magmap/parameters/#genome_store_dir) (by default `genomes` in the working directory for the pipeline run).
 
 ### Quantification of genome features
 
-Genome features -- by default CDS, rRNA, tRNA and tmRNA, but that can be controlled with `--features` -- are quantified in a two-step process.
-First, reads are mapped to a concatenated set of genome contigs.
-Second, the mapping output is processed by FeatureCount to produce feature specific count tables.
-
 #### BBmap
+
+Only logs are saved by default from the BBmap step.
+To save the `.bam` files, use `--bbmap_save_bam` and to save the index, use `--bbmap_save_index`.
+
+- `bbmap/`
+  - `bam/`
+    - `<SAMPLE>.bam`: bam file for `SAMPLE`
+  - `logs/`:
+    - `<SAMPLE>.bbmap.log`: BBmap log for `SAMPLE`
 
 #### FeatureCounts
 
-## Magmap output
+- `featurecounts/`
+  - `<SAMPLE>.<FEATURE>.featureCounts.tsv`: Counts for `SAMPLE` and `FEATURE`
+  - `<SAMPLE>.<FEATURE>.featureCounts.tsv.summary`: Summary of counts for `SAMPLE` and `FEATURE`
 
-### Summary tables
-
-Consistently named and formatted output tables in tsv format ready for further analysis.
-Filenames start with assembly program and ORF caller, to allow reruns of the pipeline with different parameter settings without overwriting output files.
-
-<details markdown="1">
-<summary>Output files</summary>
-
-- `summary_tables/`
-  - `magmap.overall_stats.tsv.gz`: overall statistics from the pipeline, e.g. number of reads, number of called ORFs, number of reads mapping back to contigs/ORFs etc.
-  - `magmap.counts.tsv.gz`: read counts per ORF and sample.
-  - `summary_table.taxonomy.tsv.gz`: for each genomes this tsv file provides metrics and taxonomy.
-
-</details>
-
-### Pipeline information
+## Pipeline information
 
 <details markdown="1">
 <summary>Output files</summary>

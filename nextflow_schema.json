@@ -96,7 +96,7 @@
                 }
             }
         },
-        "Quality_control_options": {
+        "quality_control_options": {
             "title": "Quality control options",
             "type": "object",
             "description": "Option for QC steps",
@@ -115,7 +115,7 @@
             },
             "fa_icon": "fas fa-check-circle"
         },
-        "Trimming_options": {
+        "trimming_options": {
             "title": "Trimming options",
             "type": "object",
             "description": "All the trim option are listed below",
@@ -159,8 +159,8 @@
             },
             "fa_icon": "fas fa-cut"
         },
-        "BBtools_options": {
-            "title": "BBtools options",
+        "mapping_options": {
+            "title": "Mapping options",
             "type": "object",
             "description": "All the options you can use for BBmap or BBduk)",
             "default": "",
@@ -176,12 +176,12 @@
                     "description": "Minimal identity for BBmap",
                     "fa_icon": "fas fa-search-minus"
                 },
-                "save_bam": {
+                "bbmap_save_bam": {
                     "type": "boolean",
                     "description": "Save bam output file",
                     "fa_icon": "fas fa-save"
                 },
-                "save_bbmap_index": {
+                "bbmap_save_index": {
                     "type": "boolean",
                     "description": "Save ref folder containing the reference index",
                     "fa_icon": "fas fa-save"
@@ -193,20 +193,6 @@
                 }
             },
             "fa_icon": "fas fa-align-justify"
-        },
-        "prokka_option": {
-            "title": "Prokka option",
-            "type": "object",
-            "description": "Prokka option",
-            "default": "",
-            "properties": {
-                "save_prokka": {
-                    "type": "boolean",
-                    "fa_icon": "fas fa-file-download",
-                    "description": "Enable to save prokka output. Default: false"
-                }
-            },
-            "fa_icon": "fas fa-phone-alt"
         },
         "featurecounts_option": {
             "title": "FeatureCounts option",
@@ -268,9 +254,10 @@
             "description": "All the options available for Sourmash",
             "default": "",
             "properties": {
-                "sourmash": {
+                "skip_sourmash": {
                     "type": "boolean",
                     "description": "Activate Sourmash",
+                    "default": true,
                     "fa_icon": "fas fa-play-circle"
                 },
                 "sourmash_ksize": {
@@ -456,16 +443,13 @@
             "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/$defs/Quality_control_options"
+            "$ref": "#/$defs/quality_control_options"
         },
         {
-            "$ref": "#/$defs/Trimming_options"
+            "$ref": "#/$defs/trimming_options"
         },
         {
-            "$ref": "#/$defs/BBtools_options"
-        },
-        {
-            "$ref": "#/$defs/prokka_option"
+            "$ref": "#/$defs/mapping_options"
         },
         {
             "$ref": "#/$defs/featurecounts_option"

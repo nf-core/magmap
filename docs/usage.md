@@ -43,8 +43,8 @@
 ## Introduction
 
 **nf-core/magmap** is a workflow designed for mapping metatranscriptomic and metagenomic reads onto a group of genomes.
-The collection of genomes can either be specified directly using a table (see the `--genomeinfo` parameter) or be the result of filtering with Sourmash.
-The latter can use either the genomes specified by `--genomeinfo`, a "sketch index" pointing to genomes available for instance at NCBI (see the `--indexes` parameter) or a combination, to identify a smaller set to map to.
+The collection of genomes can either be specified directly using a table (see the [`--genomeinfo` parameter](https://nf-co.re/magmap/parameters/#genomeinfo)) or be the result of filtering with Sourmash.
+The latter can use either the genomes specified by `--genomeinfo`, a "sketch index" pointing to genomes available for instance at NCBI (see the [`--indexes` parameter](https://nf-co.re/magmap/parameters/#indexes) or a combination, to identify a smaller set to map to.
 Genome files provided with `--genominfo` must include contigs in fasta format and optionally gff files (Prokka format).
 Any genome for which a gff file is missing will be annotated with Prokka.
 The pipeline can take output files from CheckM, CheckM2 and GTDB-Tk as input, and will provide processed output from these tools.
@@ -109,7 +109,9 @@ An [example samplesheet](../assets/samplesheet.csv) has been provided with the p
 
 ### Genome input
 
-A second file input is the genome input sheet, which is specified with the option `--genomeinfo`. The file is a `.csv` file and it can contain three columns: `accno`, `genome_fna`, `genome_gff`. The first two are mandatory, while the third, `genome_gff`, is not.
+A second file input is the genome input sheet, which is specified with the option [`--genomeinfo`](https://nf-co.re/magmap/parameters/#genomeinfo).
+This file is a `.csv` file and it can contain three columns: `accno`, `genome_fna`, `genome_gff`.
+The first two are mandatory, while the third, `genome_gff`, is not.
 
 ```csv title="samplesheet.csv"
 accno,genome_fna,genome_gff
@@ -135,14 +137,14 @@ Any genome used by the pipeline for which a gff file is not found will be annota
 In addition to, or instead of, providing a genome file with genomes to map to, you can provide a [Sourmash](https://sourmash.readthedocs.io/en/latest/) index file that points to genomes.
 Sourmash will be run using the index files and matching genomes will be downloaded, annotated with Prokka and mapped to by the pipeline.
 For this to work, entries in the Sourmash index need to point to NCBI assemblies with accessions in the format: `GC[A-Z]_[0-9]+\.[0-9]+`.
-The index input (`--indexes`) is used by Sourmash to select genomes that can be downloaded in a second step and added to the pipeline.
+The index input ([`--indexes`](https://nf-co.re/magmap/parameters/#indexes) is used by Sourmash to select genomes that can be downloaded in a second step and added to the pipeline.
 See also [Sourmash](#sourmash) below.
 
 Particular examples of Sourmash index files are those prepared by the authors of Sourmash, which can be found [here](https://sourmash.readthedocs.io/en/latest/databases.html).
 
 ##### Remote genome sources
 
-Genomes are by default fetched from NCBI using genome information files provided through the `--remote_genome_sources` parameter.
+Genomes are by default fetched from NCBI using genome information files provided through the [`--remote_genome_sources`](https://nf-co.re/magmap/parameters/#remote_genome_sources) parameter.
 This is a comma-separated list of paths to NCBI-style genome information files, containing at least the columns `#assembly_accession` and `ftp_path`.
 The `#assembly_accession` needs to match the identifiers used in the Sourmash indexes.
 By default, two NCBI files are used: `assembly_summary_refseq.txt` and `assembly_summary_genbank.txt`.
@@ -156,8 +158,8 @@ Note, more than one index file can be provided, separated by commas.
 
 ##### Genome data will be directed to a specific directory
 
-All genomes potentially downloaded as part of the Sourmash process, will be output in the directory specified with `--genome_store_dir` (set to `genomes` by default).  
-Similarly, the output from Prokka annotation of genomes will be stored in the directory specified with `--prokka_store_dir` (`prokka` by default).
+All genomes potentially downloaded as part of the Sourmash process, will be output in the directory specified with [`--genome_store_dir`](https://nf-co.re/magmap/parameters/#genome_store_dir) (set to `genomes` by default).  
+Similarly, the output from Prokka annotation of genomes will be stored in the directory specified with [`--prokka_store_dir`](https://nf-co.re/magmap/parameters/#prokka_store_dir) (`prokka` by default).
 On subsequent runs, any genome file or Prokka annotation files found in the specified directories will be skipped from download and/or Prokka annotation.
 Since annotating genomes is computationally relatively expensive, we recommend that you _reuse these directories_ between pipeline runs.
 If you create storage directories that you can access from the directories from which you run the pipeline, just symlink the storage directories to the pipeline run directory or give the full path to the `--genome_store_dir` and `--prokka_store_dir` parameters.
@@ -184,7 +186,7 @@ This file should be formatted like the GTDB-Tk output, [see](https://ecogenomics
 
 ##### (3) CheckM/CheckM2 metadata
 
-This file should be formatted like the checkM2 output, [see](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv).
+This file should be formatted like the CheckM or CheckM2 output, [see](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv).
 
 ### Check duplicates
 
@@ -195,7 +197,7 @@ This is done to avoid overlapping in the following steps (e.g. same prokka outpu
 ### Remove contaminants from the samples
 
 The pipeline can remove potential contaminants (e.g. rRNA sequences with SILVA database) using BBduk.
-Specify a fasta file, gzipped or not, with the `--sequence_filter <sequences>.fasta` parameter.
+Specify a fasta file, gzipped or not, with the [`--sequence_filter](parameters/#sequence_filter <sequences>.fasta` parameter.
 For further documentation, see the [BBduk official website](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbduk-guide/).
 
 ```bash
@@ -207,9 +209,11 @@ nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.cs
 With [Kraken2](https://ccb.jhu.edu/software/kraken2/), you can generate a table listing the taxonomic classification for each sample.
 The pipeline also supports [Taxburst](https://taxburst.github.io/taxburst/) for visualization of Kraken2 results.
 
-`Kraken2`runs as default and it will download a standard [database](https://benlangmead.github.io/aws-indexes/k2). If you don't want to use `kraken2` set the parameter `--skip_kraken2 true`.
+`Kraken2`runs as default and it will download a standard [database](https://benlangmead.github.io/aws-indexes/k2).
+If you don't want to use `kraken2` set the parameter `--skip_kraken2 true`.
 
-You can also provide a custom Kraken2 database using the parameter `--kraken2_db`. For detailed instructions on building a database, please refer to the [Kraken2 documentation](https://ccb.jhu.edu/software/kraken2/).
+You can also provide a custom Kraken2 database using the parameter [`--kraken2_db`](parameters/#kraken2_db).
+For detailed instructions on building a database, please refer to the [Kraken2 documentation](https://ccb.jhu.edu/software/kraken2/).
 
 Example usage:
 
@@ -225,11 +229,11 @@ nextflow run nf-core/magmap \
 ### Sourmash
 
 With [Sourmash](https://sourmash.readthedocs.io/en/latest/index.html) you can filter the genomes to be used by magmap in the mapping step.
-This function is optional but can speed up the process.
-See also [Index input](#index-input) above.
+This function is optional but can speed up the process and is controlled by the [`--skip_sourmash` parameter](parameters/#skip_sourmash) (true by default).
+It can also allow identification of remote genomes that match samples in the run, see [Index input](#index-input) above.
 
 ```bash
-nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --sourmash true
+nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --skip_sourmash false
 ```
 
 ### Feature calling
@@ -237,11 +241,11 @@ nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.cs
 The pipeline uses [Prokka](https://github.com/tseemann/prokka) to call features (genes/ORFs) from the genomes.
 This is suitable for prokaryotes and it provides a gff as output for downstream analysis.
 It also performs functional annotation of ORFs.
-Output from Prokka will be placed in subdirectories under the directory specified with `--prokka_store_dir` (default `prokka`) as described [above](#genome-data-will-be-directed-to-a-specific-directory).
+Output from Prokka will be placed in subdirectories under the directory specified with [`--prokka_store_dir`](parameters/#prokka_store_dir) (default `prokka`) as described [above](#genome-data-will-be-directed-to-a-specific-directory).
 
 ### Feature quantification
 
-Genome features -- by default CDS, rRNA, tRNA and tmRNA, but that can be controlled with `--features` -- are quantified in a two-step process.
+Genome features -- by default CDS, rRNA, tRNA and tmRNA, but that can be controlled with [`--features`](parameters/#features) -- are quantified in a two-step process.
 First, reads are mapped to a concatenated set of genome contigs.
 Second, the mapping output is processed by FeatureCount to produce feature specific count tables.
 

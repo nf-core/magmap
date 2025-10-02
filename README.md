@@ -21,8 +21,9 @@
 ## Introduction
 
 **nf-core/magmap** is a bioinformatics best-practice analysis pipeline that maps reads to a (large) collections of genomes.
-Its main output are tables with quantification of features (genes) in genomes which can be analyzed in R, Python or by other pipelines such as **nf-core/differentialabundance**.
-It is mainly meant for metatranscriptomes, but can be used for any type of samples.
+Its main output are tables with quantification of features (genes) in genomes which can be analyzed in R, Python or by other pipelines such as [**nf-core/differentialabundance**](https://nf-co.re/differentialabundance).
+It is mainly meant for metatranscriptomes and metagenomes, but can be used for other types of samples where mapping to contigs is relevant.
+The [**nf-core/rnaseq**](https://nf-co.re/rnaseq) pipeline is similar in purpose, but meant for single organisms with reference genomes and annotations, in practice eukaryotic model organisms.
 
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
@@ -34,7 +35,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 4. Filter reads with [`BBduk`](https://sourceforge.net/projects/bbmap/)
 5. Select reference genomes based on k-mer signatures in reads with [`sourmash`](https://sourmash.readthedocs.io/en/latest/)
 6. Quantification of genes identified in selected reference genomes:
-   1. generate index of assembly ([`BBmap index`](https://sourceforge.net/projects/bbmap/))
+   1. Generate index of assembly ([`BBmap index`](https://sourceforge.net/projects/bbmap/))
    2. Mapping cleaned reads to the assembly for quantification ([`BBmap`](https://sourceforge.net/projects/bbmap/))
    3. Get raw counts per each gene present in the genomes ([`Featurecounts`](http://subread.sourceforge.net)) -> TSV table with collected featurecounts output
 7. Summary statistics table. Collect_stats.R

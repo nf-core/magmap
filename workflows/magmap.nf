@@ -4,34 +4,34 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
-include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core/bam_sort_stats_samtools/main'
-include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align/main'
-include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk/main'
-include { CAT_FASTQ            	                 } from '../modules/nf-core/cat/fastq/main'
+include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core/bam_sort_stats_samtools'
+include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align'
+include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk'
+include { CAT_FASTQ            	                 } from '../modules/nf-core/cat/fastq'
 include { CAT_GFFS                               } from '../subworkflows/local/concatenate_gff'
 include { CHECK_DUPLICATES                       } from '../modules/local/check_duplicates'
 include { COLLECT_FEATURECOUNTS                  } from '../modules/local/collect/featurecounts'
 include { COLLECT_STATS                          } from '../modules/local/collect/stats'
 include { CREATE_BBMAP_INDEX                     } from '../subworkflows/local/create_bbmap_index'
-include { FASTQC                                 } from '../modules/nf-core/fastqc/main'
+include { FASTQC                                 } from '../modules/nf-core/fastqc'
 include { FASTQC_TRIMGALORE                      } from '../subworkflows/local/fastqc_trimgalore'
-include { FORMAT_KRONA                           } from '../modules/local/format_krona/main'
-include { KRAKEN2_DOWNLOAD_DB                    } from '../modules/local/kraken2/download/main'
-include { KRAKEN2_KRAKEN2                        } from '../modules/nf-core/kraken2/kraken2/main'
-include { KRAKENTOOLS_KREPORT2KRONA              } from '../modules/nf-core/krakentools/kreport2krona/main'
+include { FORMAT_KRONA                           } from '../modules/local/format_krona'
+include { KRAKEN2_DOWNLOAD_DB                    } from '../modules/local/kraken2/download'
+include { KRAKEN2_KRAKEN2                        } from '../modules/nf-core/kraken2/kraken2'
+include { KRAKENTOOLS_KREPORT2KRONA              } from '../modules/nf-core/krakentools/kreport2krona'
 include { methodsDescriptionText                 } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
-include { MULTIQC                                } from '../modules/nf-core/multiqc/main'
+include { MULTIQC                                } from '../modules/nf-core/multiqc'
 include { paramsSummaryMap                       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc                   } from '../subworkflows/nf-core/utils_nfcore_pipeline/'
-include { PIGZ_UNCOMPRESS as GUNZIP_CONTIGS      } from '../modules/nf-core/pigz/uncompress/main'
+include { PIGZ_UNCOMPRESS as GUNZIP_CONTIGS      } from '../modules/nf-core/pigz/uncompress'
 include { PIPELINE_COMPLETION                    } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { PIPELINE_INITIALISATION                } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
-include { PROKKA                                 } from '../modules/nf-core/prokka/main'
-include { RENAME_CONTIGS                         } from '../modules/local/rename_contigs/main'
+include { PROKKA                                 } from '../modules/nf-core/prokka'
+include { RENAME_CONTIGS                         } from '../modules/local/rename_contigs'
 include { softwareVersionsToYAML                 } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { SOURMASH                               } from '../subworkflows/local/sourmash'
-include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts/main'
-include { TAXBURST                               } from '../modules/local/taxburst/main'
+include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts'
+include { TAXBURST                               } from '../modules/local/taxburst'
 include { TIDYVERSE_JOINMETADATA                 } from '../modules/local/tidyverse/joinmetadata/'
 include { validateInputSamplesheet               } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 
@@ -55,7 +55,7 @@ workflow MAGMAP {
     skip_kraken2                // boolean: run Kraken2 or not
     kraken2_db                  // string: path to Kraken2 database
     kraken2_db_url              // string: URL to download Kraken2 database
-    sourmash                    // boolean: run Sourmash or not
+    skip_sourmash               // boolean: run Sourmash or not
     sourmash_ksize              // integer
     sourmash_save_unassigned    // boolean
     sourmash_save_matches_sig   // boolean
@@ -233,7 +233,7 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Use SOURMASH on sample reads and genomes to reduce the number of the latter
     //
-    if ( sourmash ) {
+    if ( ! skip_sourmash ) {
         SOURMASH(
             ch_clean_reads,
             ch_indexes,
