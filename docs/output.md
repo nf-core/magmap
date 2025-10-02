@@ -17,15 +17,12 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
     - [MultiQC](#multiqc) - Aggregate report describing results
     - [BBduk](#bbduk) - Filter out sequences from samples that matches sequences in a user-provided fasta file (optional)
   - [Community composition](#community-composition) - General analysis of the taxonomic composition of the communities in the samples using the kmer-based Kraken2 tool.
-    - [Kraken2](#kraken2) - Output from Kraken2.
-    - [Kraken2_databases](#kraken2-databases) - Output from kraken2_download_db.
-    - [Taxburst](#taxburst) - Output from Taxburst tool for visualisation of taxonomic community in the dataset.
-  - [Filtering genomes](#filter-genomes-step) - Generate a list of genomes that will be used for the mapping
+  - [Filtering genomes](#filter-genomes) - Generate a list of genomes that will be used for the mapping
     - [Sourmash](#sourmash) - Output from Sourmash filtering of genomes.
-  - [ORF Caller step](#orf-caller-step) - Identify protein-coding genes (ORFs) with an ORF caller
+  - [ORF galling](#orf-calling) - Identify protein-coding genes (ORFs) with an ORF caller
     - [Prokka](#prokka) - Output from Prokka (optional)
   - [Genome fetching](#genome-fetching) - Genomes fetched from remote sources
-  - [Mapping step](#mapping-reads-to-genomes) - Predict the function and the taxonomy of ORFs
+  - [Quantification of genome features](#quantification-of-genome-features)
     - [BBmap](#bbmap) - Output from BBmap
     - [FeatureCounts](#featureCounts) - Output from FeatureCounts
 - [Custom magmap output](#magmap-output)
@@ -93,15 +90,34 @@ BBduk is built-in tool from BBmap.
 
 </details>
 
-### ORF caller step
+### Community composition
+
+If not skipped with the `--skip_kraken2` parameter, Kraken2 will be called to provide an overview of taxonomic community compositions of the samples.
+In addition, the Taxburst program will be called to produce an html file with a "Krona" diagram
+
+- `kraken2/`
+  - `*.txt`: Text format Kraken2 output
+- `taxburst/`
+  - `*.html`: Krona diagrams
+
+### Filtering genomes
+
+The Sourmash program can be used to prefilter genomes so that only genomes likely to be represented among the reads are passed to mapping.
+In addition, Sourmash can be used to fetch remote genomes, see [usage docs](https://nf-co.re/magmap/usage#genome-input).
+No output from Sourmash is enabled by default.
+Use `--sourmash_save_sourmash` to copy output files.
+
+- `sourmash/`
+  - `*`: Output from Sourmash
+
+### ORF calling
 
 #### Prokka
 
-You can use [Prokka](https://github.com/tseemann/prokka) to identify ORFs in any genomes for which a gff file is not provided.
-In addition to calling ORFs (done with Prodigal) Prokka will filter ORFs to only retain quality ORFs and will functionally annotate the ORFs.
-Output from Prokka is directed to subdirectories of the directory specified with the `--prokka_store_dir` parameter (default `prokka` in the working directory for the pipeline run).
-Genomes already found as Prokka output, will be skipped by the Prokka step.
-See the usage documentation for more information.
+[Prokka](https://github.com/tseemann/prokka) will be used to identify ORFs in any genomes for which a gff file is not provided.
+In addition to calling ORFs (done with Prodigal) Prokka will functionally annotate the ORFs.
+To make it easier to reuse already annotated genomes in other projects, output from Prokka is directed to subdirectories of the directory specified with the `--prokka_store_dir` parameter (by default `prokka` in the working directory for the pipeline run).
+Genomes already found in the directory specified, will be skipped by the Prokka step.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -115,6 +131,18 @@ See the usage documentation for more information.
 </details>
 
 ### Genome fetching
+
+When the pipeline is run with `--sourmash` and one or more index files passed to `--indexes`, remote genomes will be identified and downloaded to the directory specified by `--genome_store_dir` (by default `genomes` in the working directory for the pipeline run).
+
+### Quantification of genome features
+
+Genome features -- by default CDS, rRNA, tRNA and tmRNA, but that can be controlled with `--features` -- are quantified in a two-step process.
+First, reads are mapped to a concatenated set of genome contigs.
+Second, the mapping output is processed by FeatureCount to produce feature specific count tables.
+
+#### BBmap
+
+#### FeatureCounts
 
 ## Magmap output
 

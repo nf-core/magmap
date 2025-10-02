@@ -21,9 +21,10 @@
       - [CheckM/CheckM2 metadata](#checkmcheckm2-metadata)
   - [Check duplicates](#check-duplicates)
   - [Remove contaminants from the samples] (#remove-contaminants-from-the-samples)
-  - [Kraken2 (optional)](#kraken2 (optional))
-  - [Sourmash (optional)](#sourmash (optional))
-  - [ORF caller option](#orf-caller-option)
+  - [Kraken2](#kraken2)
+  - [Sourmash](#sourmash)
+  - [Feature calling](#feature-calling)
+  - [Feature quantification](#feature-quantification)
 - [Running the pipeline](#running-the-pipeline)
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
@@ -135,6 +136,7 @@ In addition to, or instead of, providing a genome file with genomes to map to, y
 Sourmash will be run using the index files and matching genomes will be downloaded, annotated with Prokka and mapped to by the pipeline.
 For this to work, entries in the Sourmash index need to point to NCBI assemblies with accessions in the format: `GC[A-Z]_[0-9]+\.[0-9]+`.
 The index input (`--indexes`) is used by Sourmash to select genomes that can be downloaded in a second step and added to the pipeline.
+See also [Sourmash](#sourmash) below.
 
 Particular examples of Sourmash index files are those prepared by the authors of Sourmash, which can be found [here](https://sourmash.readthedocs.io/en/latest/databases.html).
 
@@ -144,7 +146,7 @@ Genomes are by default fetched from NCBI using genome information files provided
 This is a comma-separated list of paths to NCBI-style genome information files, containing at least the columns `#assembly_accession` and `ftp_path`.
 The `#assembly_accession` needs to match the identifiers used in the Sourmash indexes.
 By default, two NCBI files are used: `assembly_summary_refseq.txt` and `assembly_summary_genbank.txt`.
-Since the index files mentioned above provided by the [Sourmash people](https://sourmash.readthedocs.io/en/latest/) use NCBI identifiers, the genome information files from NCBI work with them.
+Since the index files mentioned above provided by the [Sourmash authors](https://sourmash.readthedocs.io/en/latest/) use NCBI identifiers, the genome information files from NCBI work with them.
 
 ```bash
 nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --indexes 'https://farm.cse.ucdavis.edu/~ctbrown/sourmash-db/gtdb-rs214/gtdb-rs214-reps.k21.sbt.zip'
@@ -200,7 +202,7 @@ For further documentation, see the [BBduk official website](https://jgi.doe.gov/
 nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --sequence_filter path/to/file
 ```
 
-### Kraken2 (optional)
+### Kraken2
 
 With [Kraken2](https://ccb.jhu.edu/software/kraken2/), you can generate a table listing the taxonomic classification for each sample.
 The pipeline also supports [Taxburst](https://taxburst.github.io/taxburst/) for visualization of Kraken2 results.
@@ -220,21 +222,28 @@ nextflow run nf-core/magmap \
     --skip_kraken2 false \
 ```
 
-### Sourmash (optional)
+### Sourmash
 
 With [Sourmash](https://sourmash.readthedocs.io/en/latest/index.html) you can filter the genomes to be used by magmap in the mapping step.
-This function is optional but can speed up the process and let you get a better genomes /reads mapping ratio since you are removing all the genomes that are not passing the threshold (that you can select).
+This function is optional but can speed up the process.
+See also [Index input](#index-input) above.
 
 ```bash
 nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --sourmash true
 ```
 
-### ORF caller option
+### Feature calling
 
-The pipeline uses [Prokka](https://github.com/tseemann/prokka) to call genes/ORFs from the genomes.
+The pipeline uses [Prokka](https://github.com/tseemann/prokka) to call features (genes/ORFs) from the genomes.
 This is suitable for prokaryotes and it provides a gff as output for downstream analysis.
 It also performs functional annotation of ORFs.
 Output from Prokka will be placed in subdirectories under the directory specified with `--prokka_store_dir` (default `prokka`) as described [above](#genome-data-will-be-directed-to-a-specific-directory).
+
+### Feature quantification
+
+Genome features -- by default CDS, rRNA, tRNA and tmRNA, but that can be controlled with `--features` -- are quantified in a two-step process.
+First, reads are mapped to a concatenated set of genome contigs.
+Second, the mapping output is processed by FeatureCount to produce feature specific count tables.
 
 ## Running the pipeline
 
@@ -252,6 +261,8 @@ Note that the pipeline will create the following files in your working directory
 work                # Directory containing the nextflow working files
 <OUTDIR>            # Finished results in specified location (defined with --outdir)
 .nextflow_log       # Log file from Nextflow
+genomes/            # Directory with downloaded genomes; the name can be changed with `--genome_store_dir`
+prokka/             # Directory with annotated genomes; the name can be changed with `--prokka_store_dir`
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
 
