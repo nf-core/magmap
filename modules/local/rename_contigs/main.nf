@@ -15,10 +15,11 @@ process RENAME_CONTIGS {
     path "versions.yml"                      , emit: versions
 
     script:
-    def prefix = task.ext.prefix ?: meta.id
+    def prefix     = task.ext.prefix ?: meta.id
+    def prefix_md5 = prefix.md5().substring(0,9)
 
     """
-    seqkit replace -p "^" -r "${prefix}_" $contigs | gzip -c > ${prefix}.renamed.fna.gz
+    seqkit replace -p "^" -r "${prefix_md5}_" $contigs | gzip -c > ${prefix}.renamed.fna.gz
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":
