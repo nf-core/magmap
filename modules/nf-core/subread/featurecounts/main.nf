@@ -1,5 +1,5 @@
 process SUBREAD_FEATURECOUNTS {
-    tag "${meta.id}"
+    tag "${meta.id}:${meta.feature}"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
