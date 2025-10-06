@@ -281,17 +281,17 @@ workflow MAGMAP {
     GUNZIP_CONTIGS(ch_no_gff.gzipped)
     ch_versions = ch_versions.mix(GUNZIP_CONTIGS.out.versions)
 
+    // PROKKA on the genomes that lack gff
     PROKKA(GUNZIP_CONTIGS.out.file.mix(ch_no_gff.unzipped), [], [])
     ch_versions = ch_versions.mix(PROKKA.out.versions)
 
-    // PROKKA on the genomes that lack gff
+    // Mix genome entries that were not sent to Prokka with those that were
     ch_finished_genomes = ch_genomes
         .filter { g -> g.genome_gff }
         .mix(
-            PROKKA.out.gff
-                .map{ meta, gff -> [ meta.id  , [ meta.id, gff ] ] }
-                .join(ch_no_gff.gzipped.mix(ch_no_gff.unzipped).map { meta, fna -> [ meta.id , [ meta.id, fna ] ] } )
-                .map{ meta, gff, fna -> [ accno: gff[0], genome_fna: fna[1], genome_gff: gff[1] ] }
+            PROKKA.out.fna
+                .join(PROKKA.out.gff)
+                .map { meta, fna, gff -> [ accno: meta.id  , genome_fna: fna, genome_gff: gff ] }
         )
 
     //
