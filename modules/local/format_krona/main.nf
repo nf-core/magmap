@@ -69,7 +69,10 @@ process FORMAT_KRONA {
         c(
             "\\"${task.process}\\":",
             paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),
-            paste0("    tidyverse: ", packageVersion('tidyverse'))
+            paste0("    readr: ", packageVersion('readr')),
+            paste0("    dplyr: ", packageVersion('dplyr')),
+            paste0("    tidyr: ", packageVersion('tidyr')),
+            paste0("    stringr: ", packageVersion('stringr'))
         ),
         "versions.yml"
     )
