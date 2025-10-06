@@ -264,13 +264,13 @@
                 "accno\tgenome\torf"
             ],
             [
-                "orf\tcontig\tgene_caller\tfeature\tstart\tend\tstrand\tdb_xref\tec_number\tgene\tinference\tlocus_tag\tname\tnote\tproduct\trpt_family\trpt_type\trpt_unit_seq"
+                "orf\tcontig\tgene_caller\tfeature\tstart\tend\tstrand\tdb_xref\tec_number\tgene\tinference\tlocus_tag\tname\tnote\tparent\tproduct\tprotein_id\trpt_family\trpt_type\trpt_unit_seq"
             ]
         ],
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.7"
         },
-        "timestamp": "2025-10-02T19:26:37.970828257"
+        "timestamp": "2025-10-06T12:17:45.124049687"
     }
 }
