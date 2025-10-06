@@ -286,7 +286,7 @@ workflow MAGMAP {
     ch_versions = ch_versions.mix(PROKKA.out.versions)
 
     // Mix genome entries that were not sent to Prokka with those that were
-    ch_finished_genomes = ch_genomes
+    ch_collected_genomes = ch_genomes
         .filter { g -> g.genome_gff }
         .mix(
             PROKKA.out.fna
@@ -297,13 +297,13 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
-    CREATE_BBMAP_INDEX ( ch_finished_genomes.map{ it.genome_fna } )
+    CREATE_BBMAP_INDEX(ch_collected_genomes.map{ it.genome_fna })
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
     //
     // SUBWORKFLOW: Concatenate gff files
     //
-    CAT_GFFS ( ch_finished_genomes.map{ it.genome_gff } )
+    CAT_GFFS(ch_collected_genomes.map{ it.genome_gff })
     ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
 
     //
