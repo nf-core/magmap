@@ -2,9 +2,9 @@
 <!-- Created with Inkscape (http://www.inkscape.org/) -->
 
 <svg
-   width="530.17584mm"
-   height="220.57784mm"
-   viewBox="0 0 530.17584 220.57784"
+   width="536.70959mm"
+   height="226.19798mm"
+   viewBox="0 0 536.70959 226.19799"
    version="1.1"
    id="svg1060"
    inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
@@ -29,8 +29,8 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="0.5366988"
-     inkscape:cx="745.29699"
-     inkscape:cy="408.98172"
+     inkscape:cx="754.6132"
+     inkscape:cy="418.29794"
      inkscape:window-width="1920"
      inkscape:window-height="1032"
      inkscape:window-x="0"
@@ -41,8 +41,8 @@
     <inkscape:grid
        type="xygrid"
        id="grid1764"
-       originx="-1.175505"
-       originy="-0.86879893" />
+       originx="1.1817978"
+       originy="1.444724" />
   </sodipodi:namedview>
   <defs
      id="defs1057" />
@@ -50,7 +50,14 @@
      inkscape:label="Layer 1"
      inkscape:groupmode="layer"
      id="layer1"
-     transform="translate(-1.175506,-0.8688009)">
+     transform="translate(1.1817968,1.444722)">
+    <rect
+       style="fill:#f2f2f2;fill-opacity:1;stroke:#ecdc86;stroke-width:0.499999;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       id="rect3893"
+       width="536.20959"
+       height="225.69798"
+       x="-0.93179733"
+       y="-1.1947225" />
     <path
        style="display:inline;fill:none;stroke:#ecdc86;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
        d="m 75.957641,135.28134 h 3.52777 c 2.18499,0 4.40973,1.7639 7.05556,5.29167 2.64584,3.52779 4.96046,5.29434 7.05556,5.29167 h 3.52778"
@@ -954,7 +961,7 @@
        inkscape:export-xdpi="200"
        inkscape:export-ydpi="200" />
     <path
-       style="display:inline;fill:none;stroke:#24b064;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:5.29165983,2.64582991;stroke-opacity:1;stroke-dashoffset:0"
+       style="display:inline;fill:none;stroke:#24b064;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:5.29166, 2.64583;stroke-dashoffset:0;stroke-opacity:1"
        d="M 298.5186,104.61862 H 272.06025"
        id="path18906"
        sodipodi:nodetypes="cc"
@@ -995,7 +1002,7 @@
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
          x="243.52332"
-         y="120.63309"
+         y="120.63308"
          id="tspan13604">metadata</tspan></text>
     <g
        id="g14425"
@@ -1140,7 +1147,7 @@
        inkscape:label="line_90"
        d="m 358.32565,144.3062 h -5.29166 c -4.85578,0 -14.55206,-4.1193 -14.55208,-14.5521 l -1e-5,-5.29166 m -19.84374,-19.84382 h 5.29166 c 4.85578,0 14.55206,4.11929 14.55208,14.55209 l 1e-5,5.29166" />
     <path
-       style="display:inline;fill:none;stroke:#24b064;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:5.29165983,2.64582991;stroke-opacity:1;stroke-dashoffset:0"
+       style="display:inline;fill:none;stroke:#24b064;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:5.29166, 2.64583;stroke-dashoffset:0;stroke-opacity:1"
        d="M 319.15608,104.61862 H 297.9894"
        id="path16296"
        sodipodi:nodetypes="cc"
@@ -1222,7 +1229,7 @@
        d="m 358.32565,146.92297 h -5.29166 c -4.85578,0 -14.55206,4.1193 -14.55208,14.5521 l -1e-5,5.29166 m -19.84374,19.84383 h 5.29166 c 4.85578,0 14.55206,-4.1193 14.55208,-14.5521 l 1e-5,-5.29166" />
     <path
        id="path18521"
-       style="display:inline;fill:#000000;fill-opacity:0;stroke:#24b064;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:5.29165983,2.64582991;stroke-opacity:1;stroke-dashoffset:0"
+       style="display:inline;fill:#000000;fill-opacity:0;stroke:#24b064;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:5.29166, 2.64583;stroke-dashoffset:0;stroke-opacity:1"
        inkscape:label="line_90"
        d="m 358.32565,144.3062 h -5.29166 c -4.85578,0 -14.55206,-4.1193 -14.55208,-14.5521 l -1e-5,-5.29166 m -19.84374,-19.84382 h 5.29166 c 4.85578,0 14.55206,4.11929 14.55208,14.55209 l 1e-5,5.29166" />
     <path
@@ -1374,7 +1381,7 @@
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
          x="451.95959"
-         y="220.49831"
+         y="220.49829"
          id="tspan24440">MultiQC</tspan></text>
     <path
        style="display:inline;fill:none;stroke:#3d95fd;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -1490,7 +1497,7 @@
          sodipodi:role="line"
          style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
          x="452.01462"
-         y="124.33721"
+         y="124.3372"
          id="tspan23977">counts</tspan></text>
     <path
        style="display:inline;fill:none;stroke:#000000;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
@@ -1791,7 +1798,7 @@
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
            x="492.90143"
-           y="89.412132"
+           y="89.412125"
            id="tspan26035">metadata</tspan></text>
     </g>
     <path
@@ -1878,7 +1885,7 @@
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:center;text-anchor:middle;stroke-width:0.264583"
            x="492.90143"
-           y="52.370457"
+           y="52.370453"
            id="tspan26065">table</tspan></text>
     </g>
     <image
