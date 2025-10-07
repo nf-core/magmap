@@ -20,7 +20,7 @@
 
 ## Introduction
 
-**nf-core/magmap** is a bioinformatics best-practice analysis pipeline that maps reads to a (large) collections of genomes.
+**nf-core/magmap** is a bioinformatics best-practice analysis pipeline that maps reads to (large) collections of genomes.
 Its main output are tables with quantification of features (genes) in genomes which can be analyzed in R, Python or by other pipelines such as [**nf-core/differentialabundance**](https://nf-co.re/differentialabundance).
 It is mainly meant for metatranscriptomes and metagenomes, but can be used for other types of samples where mapping to contigs is relevant.
 The [**nf-core/rnaseq**](https://nf-co.re/rnaseq) pipeline is similar in purpose, but meant for single organisms with reference genomes and annotations, in practice eukaryotic model organisms.
