@@ -58,7 +58,7 @@
                 "genome_store_dir": {
                     "type": "string",
                     "format": "directory-path",
-                    "default": "genomes",
+                    "default": "magmap_genomes",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to a directory where downloaded genome files is stored.",
                     "help_text": "Any genome files downloaded by the pipeline will be stored in this directory for potential later use."
@@ -66,7 +66,7 @@
                 "prokka_store_dir": {
                     "type": "string",
                     "format": "directory-path",
-                    "default": "prokka",
+                    "default": "magmap_prokka",
                     "fa_icon": "fas fa-dna",
                     "description": "Path to a directory where prokka output is stored.",
                     "help_text": "Prokka annotation files created by the pipeline will be stored in this directory for potential later use."
