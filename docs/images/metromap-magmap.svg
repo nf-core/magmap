@@ -9,6 +9,9 @@
    id="svg1060"
    inkscape:version="1.2.2 (b0a8486541, 2022-12-01)"
    sodipodi:docname="metromap-magmap.svg"
+   inkscape:export-filename="metromap-magmap.png"
+   inkscape:export-xdpi="96"
+   inkscape:export-ydpi="96"
    xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
    xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
    xmlns:xlink="http://www.w3.org/1999/xlink"
@@ -26,7 +29,7 @@
      inkscape:document-units="mm"
      showgrid="false"
      inkscape:zoom="0.5366988"
-     inkscape:cx="759.27131"
+     inkscape:cx="745.29699"
      inkscape:cy="408.98172"
      inkscape:window-width="1920"
      inkscape:window-height="1032"
@@ -942,9 +945,27 @@
        inkscape:export-xdpi="200"
        inkscape:export-ydpi="200" />
     <path
-       style="display:inline;fill:none;stroke:#63e5e8;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="display:inline;fill:none;stroke:#ecdc86;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 298.5186,104.61862 H 272.06025"
+       id="path3226"
+       sodipodi:nodetypes="cc"
+       inkscape:label="line_0"
+       inkscape:export-filename="line_0.svg"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="display:inline;fill:none;stroke:#24b064;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:5.29165983,2.64582991;stroke-opacity:1;stroke-dashoffset:0"
        d="M 298.5186,104.61862 H 272.06025"
        id="path18906"
+       sodipodi:nodetypes="cc"
+       inkscape:label="line_0"
+       inkscape:export-filename="line_0.svg"
+       inkscape:export-xdpi="200"
+       inkscape:export-ydpi="200" />
+    <path
+       style="display:inline;fill:none;stroke:#ecdc86;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       d="M 319.15608,104.61862 H 297.9894"
+       id="path3228"
        sodipodi:nodetypes="cc"
        inkscape:label="line_0"
        inkscape:export-filename="line_0.svg"
@@ -1114,7 +1135,12 @@
          y="42.535271"
          id="tspan14437">metadata</tspan></text>
     <path
-       style="display:inline;fill:none;stroke:#63e5e8;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="path3230"
+       style="display:inline;fill:#000000;fill-opacity:0;stroke:#ecdc86;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1"
+       inkscape:label="line_90"
+       d="m 358.32565,144.3062 h -5.29166 c -4.85578,0 -14.55206,-4.1193 -14.55208,-14.5521 l -1e-5,-5.29166 m -19.84374,-19.84382 h 5.29166 c 4.85578,0 14.55206,4.11929 14.55208,14.55209 l 1e-5,5.29166" />
+    <path
+       style="display:inline;fill:none;stroke:#24b064;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:5.29165983,2.64582991;stroke-opacity:1;stroke-dashoffset:0"
        d="M 319.15608,104.61862 H 297.9894"
        id="path16296"
        sodipodi:nodetypes="cc"
@@ -1196,7 +1222,7 @@
        d="m 358.32565,146.92297 h -5.29166 c -4.85578,0 -14.55206,4.1193 -14.55208,14.5521 l -1e-5,5.29166 m -19.84374,19.84383 h 5.29166 c 4.85578,0 14.55206,-4.1193 14.55208,-14.5521 l 1e-5,-5.29166" />
     <path
        id="path18521"
-       style="display:inline;fill:#000000;fill-opacity:0;stroke:#63e5e8;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       style="display:inline;fill:#000000;fill-opacity:0;stroke:#24b064;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:5.29165983,2.64582991;stroke-opacity:1;stroke-dashoffset:0"
        inkscape:label="line_90"
        d="m 358.32565,144.3062 h -5.29166 c -4.85578,0 -14.55206,-4.1193 -14.55208,-14.5521 l -1e-5,-5.29166 m -19.84374,-19.84382 h 5.29166 c 4.85578,0 14.55206,4.11929 14.55208,14.55209 l 1e-5,5.29166" />
     <path
@@ -1866,142 +1892,114 @@
        style="stroke-width:6.52887"
        transform="matrix(0.99999607,-0.00280246,-0.00243307,0.99999704,0,0)" />
     <g
-       id="g31320"
-       transform="translate(-9.6811963,18.474447)">
+       id="g1014"
+       transform="translate(0,5.2916667)">
       <g
-         id="g29521"
-         transform="translate(306.0831,-124.65114)">
-        <g
-           id="g29414"
-           transform="translate(0,-1.4153782)">
-          <path
-             style="display:inline;fill:none;stroke:#24b064;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             d="m 49.808071,217.69479 8.852492,-0.0695"
-             id="path29042"
-             sodipodi:nodetypes="cc"
-             inkscape:label="line_0"
-             inkscape:export-filename="line_0.svg"
-             inkscape:export-xdpi="200"
-             inkscape:export-ydpi="200" />
-          <text
-             xml:space="preserve"
-             style="font-size:5.64444px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;text-align:start;letter-spacing:0px;text-anchor:start;display:inline;stroke-width:0.264583"
+         id="g29414"
+         transform="translate(296.4019,-107.59207)">
+        <path
+           style="display:inline;fill:none;stroke:#24b064;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m 49.808071,217.69479 8.852492,-0.0695"
+           id="path29042"
+           sodipodi:nodetypes="cc"
+           inkscape:label="line_0"
+           inkscape:export-filename="line_0.svg"
+           inkscape:export-xdpi="200"
+           inkscape:export-ydpi="200" />
+        <text
+           xml:space="preserve"
+           style="font-size:5.64444px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;text-align:start;letter-spacing:0px;text-anchor:start;display:inline;stroke-width:0.264583"
+           x="60.818779"
+           y="219.03491"
+           id="text29046"><tspan
+             sodipodi:role="line"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:start;text-anchor:start;stroke-width:0.264583"
              x="60.818779"
              y="219.03491"
-             id="text29046"><tspan
-               sodipodi:role="line"
-               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:start;text-anchor:start;stroke-width:0.264583"
-               x="60.818779"
-               y="219.03491"
-               id="tspan29044">Public genome input</tspan></text>
-        </g>
-        <g
-           id="g29419"
-           transform="translate(0,-1.4153782)">
-          <path
-             style="display:inline;fill:none;stroke:#ecdc86;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             d="m 49.808071,222.98646 8.852492,-0.0695"
-             id="path29048"
-             sodipodi:nodetypes="cc"
-             inkscape:label="line_0"
-             inkscape:export-filename="line_0.svg"
-             inkscape:export-xdpi="200"
-             inkscape:export-ydpi="200" />
-          <text
-             xml:space="preserve"
-             style="font-size:5.64444px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;text-align:start;letter-spacing:0px;text-anchor:start;display:inline;stroke-width:0.264583"
+             id="tspan29044">Public genome input</tspan></text>
+      </g>
+      <g
+         id="g29419"
+         transform="translate(296.4019,-107.59207)">
+        <path
+           style="display:inline;fill:none;stroke:#ecdc86;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m 49.808071,222.98646 8.852492,-0.0695"
+           id="path29048"
+           sodipodi:nodetypes="cc"
+           inkscape:label="line_0"
+           inkscape:export-filename="line_0.svg"
+           inkscape:export-xdpi="200"
+           inkscape:export-ydpi="200" />
+        <text
+           xml:space="preserve"
+           style="font-size:5.64444px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;text-align:start;letter-spacing:0px;text-anchor:start;display:inline;stroke-width:0.264583"
+           x="60.818779"
+           y="224.32658"
+           id="text29052"><tspan
+             sodipodi:role="line"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:start;text-anchor:start;stroke-width:0.264583"
              x="60.818779"
              y="224.32658"
-             id="text29052"><tspan
-               sodipodi:role="line"
-               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:start;text-anchor:start;stroke-width:0.264583"
-               x="60.818779"
-               y="224.32658"
-               id="tspan29050">Local genome input</tspan></text>
-        </g>
-        <g
-           id="g29424"
-           transform="translate(0,3.8762885)">
-          <path
-             style="display:inline;fill:none;stroke:#fa6863;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             d="m 49.808071,228.27813 8.852492,-0.0695"
-             id="path29054"
-             sodipodi:nodetypes="cc"
-             inkscape:label="line_0"
-             inkscape:export-filename="line_0.svg"
-             inkscape:export-xdpi="200"
-             inkscape:export-ydpi="200" />
-          <text
-             xml:space="preserve"
-             style="font-size:5.64444px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;text-align:start;letter-spacing:0px;text-anchor:start;display:inline;stroke-width:0.264583"
+             id="tspan29050">Local genome input</tspan></text>
+      </g>
+      <g
+         id="g29424"
+         transform="translate(296.4019,-107.59207)">
+        <path
+           style="display:inline;fill:none;stroke:#fa6863;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m 49.808071,228.27813 8.852492,-0.0695"
+           id="path29054"
+           sodipodi:nodetypes="cc"
+           inkscape:label="line_0"
+           inkscape:export-filename="line_0.svg"
+           inkscape:export-xdpi="200"
+           inkscape:export-ydpi="200" />
+        <text
+           xml:space="preserve"
+           style="font-size:5.64444px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;text-align:start;letter-spacing:0px;text-anchor:start;display:inline;stroke-width:0.264583"
+           x="60.818779"
+           y="229.61826"
+           id="text29058"><tspan
+             sodipodi:role="line"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:start;text-anchor:start;stroke-width:0.264583"
              x="60.818779"
              y="229.61826"
-             id="text29058"><tspan
-               sodipodi:role="line"
-               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:start;text-anchor:start;stroke-width:0.264583"
-               x="60.818779"
-               y="229.61826"
-               id="tspan29056">Sample sequences</tspan></text>
-        </g>
-        <g
-           id="g29429"
-           transform="translate(0,3.8762885)">
-          <path
-             style="display:inline;fill:none;stroke:#3d95fd;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             d="m 49.808071,233.5698 8.852492,-0.0695"
-             id="path29336"
-             sodipodi:nodetypes="cc"
-             inkscape:label="line_0"
-             inkscape:export-filename="line_0.svg"
-             inkscape:export-xdpi="200"
-             inkscape:export-ydpi="200" />
-          <text
-             xml:space="preserve"
-             style="font-size:5.64444px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;text-align:start;letter-spacing:0px;text-anchor:start;display:inline;stroke-width:0.264583"
+             id="tspan29056">Sample sequences</tspan></text>
+      </g>
+      <g
+         id="g29429"
+         transform="translate(296.4019,-107.59207)">
+        <path
+           style="display:inline;fill:none;stroke:#3d95fd;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+           d="m 49.808071,233.5698 8.852492,-0.0695"
+           id="path29336"
+           sodipodi:nodetypes="cc"
+           inkscape:label="line_0"
+           inkscape:export-filename="line_0.svg"
+           inkscape:export-xdpi="200"
+           inkscape:export-ydpi="200" />
+        <text
+           xml:space="preserve"
+           style="font-size:5.64444px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;text-align:start;letter-spacing:0px;text-anchor:start;display:inline;stroke-width:0.264583"
+           x="60.818779"
+           y="234.90993"
+           id="text29340"><tspan
+             sodipodi:role="line"
+             style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:start;text-anchor:start;stroke-width:0.264583"
              x="60.818779"
              y="234.90993"
-             id="text29340"><tspan
-               sodipodi:role="line"
-               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:start;text-anchor:start;stroke-width:0.264583"
-               x="60.818779"
-               y="234.90993"
-               id="tspan29338">Final outputs</tspan></text>
-        </g>
-        <g
-           id="g29499"
-           transform="translate(0,3.8762885)">
-          <path
-             style="display:inline;fill:none;stroke:#63e5e8;stroke-width:2.64583;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
-             d="m 49.808071,222.98646 8.852492,-0.0695"
-             id="path29493"
-             sodipodi:nodetypes="cc"
-             inkscape:label="line_0"
-             inkscape:export-filename="line_0.svg"
-             inkscape:export-xdpi="200"
-             inkscape:export-ydpi="200" />
-          <text
-             xml:space="preserve"
-             style="font-size:5.64444px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;text-align:start;letter-spacing:0px;text-anchor:start;display:inline;stroke-width:0.264583"
-             x="60.818779"
-             y="224.32658"
-             id="text29497"><tspan
-               sodipodi:role="line"
-               style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:5.64444px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:start;text-anchor:start;stroke-width:0.264583"
-               x="60.818779"
-               y="224.32658"
-               id="tspan29495">Joint genome processes</tspan></text>
-        </g>
+             id="tspan29338">Final outputs</tspan></text>
       </g>
       <text
          xml:space="preserve"
          style="font-size:6.35px;line-height:1.25;font-family:Commissioner;-inkscape-font-specification:Commissioner;text-align:start;letter-spacing:0px;text-anchor:start;display:inline;stroke-width:0.264583"
-         x="355.64584"
-         y="87.378365"
+         x="345.96466"
+         y="105.85281"
          id="text29046-5"><tspan
            sodipodi:role="line"
            style="font-style:normal;font-variant:normal;font-weight:bold;font-stretch:normal;font-size:6.35px;font-family:'Maven Pro';-inkscape-font-specification:'Maven Pro Bold';text-align:start;text-anchor:start;stroke-width:0.264583"
-           x="355.64584"
-           y="87.378365"
+           x="345.96466"
+           y="105.85281"
            id="tspan29044-9">Colour legend</tspan></text>
     </g>
     <g
