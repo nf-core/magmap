@@ -42,7 +42,8 @@ workflow SOURMASH {
         ch_sample_sigs = SAMPLE_SKETCH.out.signatures
 
         ch_genome_sigs = GENOME_SKETCH.out.signatures
-            .collect { meta, sig -> [ [ id: 'local-genomes' ], sig ] }
+            .collect { meta, sig -> sig }
+            .map { sigs -> [ [ id: 'local-genomes' ], sigs ] }
 
         GENOME_INDEX(ch_genome_sigs, ksize)
         ch_versions = ch_versions.mix(GENOME_INDEX.out.versions)
