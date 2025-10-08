@@ -28,7 +28,7 @@ process SOURMASH_GATHER {
 
     script:
     def args = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}_${meta2.id}"
+    def prefix = task.ext.prefix ?: "${meta.id}"
     def unassigned  = save_unassigned   ? "--output-unassigned ${prefix}_unassigned.sig.zip" : ''
     def matches     = save_matches_sig  ? "--save-matches ${prefix}_matches.sig.zip"         : ''
     def prefetch    = save_prefetch     ? "--save-prefetch ${prefix}_prefetch.sig.zip"       : ''
