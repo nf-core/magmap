@@ -1,7 +1,7 @@
 {
     "-profile test_sourmash": {
         "content": [
-            31,
+            29,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18,
@@ -39,9 +39,6 @@
                 },
                 "GENOMES2ORFS": {
                     "sed": 4.9
-                },
-                "GUNZIP_CONTIGS": {
-                    "pigz": 2.8
                 },
                 "PROKKA": {
                     "prokka": "1.14.6"
@@ -225,8 +222,8 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "25.04.7"
+            "nextflow": "25.04.8"
         },
-        "timestamp": "2025-10-06T12:06:50.645880552"
+        "timestamp": "2025-10-07T20:30:41.352634148"
     }
 }

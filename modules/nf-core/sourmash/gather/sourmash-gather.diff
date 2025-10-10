@@ -1,6 +1,4 @@
 Changes in component 'nf-core/sourmash/gather'
-'modules/nf-core/sourmash/gather/environment.yml' is unchanged
-'modules/nf-core/sourmash/gather/meta.yml' is unchanged
 Changes in 'sourmash/gather/main.nf':
 --- modules/nf-core/sourmash/gather/main.nf
 +++ modules/nf-core/sourmash/gather/main.nf
@@ -21,7 +19,9 @@ Changes in 'sourmash/gather/main.nf':
      val save_matches_sig
      val save_prefetch
 
-'modules/nf-core/sourmash/gather/tests/nextflow.config' is unchanged
+'modules/nf-core/sourmash/gather/meta.yml' is unchanged
+'modules/nf-core/sourmash/gather/environment.yml' is unchanged
 'modules/nf-core/sourmash/gather/tests/main.nf.test' is unchanged
 'modules/nf-core/sourmash/gather/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/sourmash/gather/tests/nextflow.config' is unchanged
 ************************************************************

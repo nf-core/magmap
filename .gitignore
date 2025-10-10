@@ -11,4 +11,5 @@ null/
 .nf-test.log
 .Rproj.user
 kraken2_databases/
-genomes
+magmap_genomes
+magmap_prokka

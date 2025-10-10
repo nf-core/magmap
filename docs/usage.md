@@ -24,6 +24,7 @@
   - [Kraken2](#kraken2)
   - [Sourmash](#sourmash)
   - [Feature calling](#feature-calling)
+  - [Multimapping](#Multimapping)
   - [Feature quantification](#feature-quantification)
 - [Running the pipeline](#running-the-pipeline)
   - [Updating the pipeline](#updating-the-pipeline)
@@ -242,6 +243,27 @@ The pipeline uses [Prokka](https://github.com/tseemann/prokka) to call features 
 This is suitable for prokaryotes and it provides a gff as output for downstream analysis.
 It also performs functional annotation of ORFs.
 Output from Prokka will be placed in subdirectories under the directory specified with [`--prokka_store_dir`](parameters/#prokka_store_dir) (default `prokka`) as described [above](#genome-data-will-be-directed-to-a-specific-directory).
+
+### Multimapping
+
+If there are several possible alignments, BBMap align will, by default, assign a read to only one target sequence.
+The pipeline supports all four possible BBMap values for this option:
+
+| bbmap_ambiguous | Behaviour                            |
+| --------------- | ------------------------------------ |
+| best            | Use the first best site              |
+| toss            | Consider unmapped                    |
+| random          | Select one top-scoring site randomly |
+| all             | Retain all top-scoring sites         |
+
+The default is 'best'.
+In the featureCounts step multiple matches are by default counted as fractions.
+If you prefer to count them all individually, set `--featurecounts_fraction false`.
+A typical command line for multiple alignment will then look like:
+
+```bash
+nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --skip_sourmash false --bbmap_ambiguous all
+```
 
 ### Feature quantification
 

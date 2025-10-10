@@ -23,7 +23,6 @@ include { methodsDescriptionText                 } from '../subworkflows/local/u
 include { MULTIQC                                } from '../modules/nf-core/multiqc'
 include { paramsSummaryMap                       } from 'plugin/nf-schema'
 include { paramsSummaryMultiqc                   } from '../subworkflows/nf-core/utils_nfcore_pipeline/'
-include { PIGZ_UNCOMPRESS as GUNZIP_CONTIGS      } from '../modules/nf-core/pigz/uncompress'
 include { PIPELINE_COMPLETION                    } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { PIPELINE_INITIALISATION                } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { PROKKA                                 } from '../modules/nf-core/prokka'
@@ -270,22 +269,15 @@ workflow MAGMAP {
     // MODULE: Prokka - get gff for all genomes that lack it
     //
 
-    // First, contigs need to be gunzipped
+    // Find genomes without gff file, and pass them to Prokka
     ch_no_gff = ch_genomes
         .filter { g -> ! g.genome_gff }
         .map { g -> [ [ id: g.accno ], g.genome_fna ] }
-        .branch { g ->
-            gzipped: g[1] =~ /\.gz$/
-            unzipped: true
-        }
-    GUNZIP_CONTIGS(ch_no_gff.gzipped)
-    ch_versions = ch_versions.mix(GUNZIP_CONTIGS.out.versions)
 
-    // PROKKA on the genomes that lack gff
-    PROKKA(GUNZIP_CONTIGS.out.file.mix(ch_no_gff.unzipped), [], [])
+    PROKKA(ch_no_gff, [], [])
     ch_versions = ch_versions.mix(PROKKA.out.versions)
 
-    // Mix genome entries that were not sent to Prokka with those that were
+    // Mix genome entries that were not sent to Prokka with those that were not
     ch_collected_genomes = ch_genomes
         .filter { g -> g.genome_gff }
         .mix(
@@ -297,13 +289,13 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
-    CREATE_BBMAP_INDEX(ch_collected_genomes.map{ it.genome_fna })
+    CREATE_BBMAP_INDEX(ch_collected_genomes.map { it.genome_fna })
     ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
     //
     // SUBWORKFLOW: Concatenate gff files
     //
-    CAT_GFFS(ch_collected_genomes.map{ it.genome_gff })
+    CAT_GFFS(ch_collected_genomes.map { it.genome_gff })
     ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
 
     //
