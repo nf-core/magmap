@@ -1,4 +1,5 @@
 Changes in component 'nf-core/prokka'
+'modules/nf-core/prokka/meta.yml' is unchanged
 Changes in 'prokka/main.nf':
 --- modules/nf-core/prokka/main.nf
 +++ modules/nf-core/prokka/main.nf
@@ -18,18 +19,18 @@ Changes in 'prokka/main.nf':
 -    tuple val(meta), path("${prefix}/*.log"), emit: log
 -    tuple val(meta), path("${prefix}/*.txt"), emit: txt
 -    tuple val(meta), path("${prefix}/*.tsv"), emit: tsv
-+    tuple val(meta), path("${prefix}/*.gff.gz"), emit: gff
-+    tuple val(meta), path("${prefix}/*.gbk.gz"), emit: gbk
-+    tuple val(meta), path("${prefix}/*.fna.gz"), emit: fna
-+    tuple val(meta), path("${prefix}/*.faa.gz"), emit: faa
-+    tuple val(meta), path("${prefix}/*.ffn.gz"), emit: ffn
-+    tuple val(meta), path("${prefix}/*.sqn.gz"), emit: sqn
-+    tuple val(meta), path("${prefix}/*.fsa.gz"), emit: fsa
-+    tuple val(meta), path("${prefix}/*.tbl.gz"), emit: tbl
-+    tuple val(meta), path("${prefix}/*.err.gz"), emit: err
-+    tuple val(meta), path("${prefix}/*.log.gz"), emit: log
-+    tuple val(meta), path("${prefix}/*.txt.gz"), emit: txt
-+    tuple val(meta), path("${prefix}/*.tsv.gz"), emit: tsv
++    tuple val(meta), path("${prefix}/${prefix}.gff.gz"), emit: gff
++    tuple val(meta), path("${prefix}/${prefix}.gbk.gz"), emit: gbk
++    tuple val(meta), path("${prefix}/${prefix}.fna.gz"), emit: fna
++    tuple val(meta), path("${prefix}/${prefix}.faa.gz"), emit: faa
++    tuple val(meta), path("${prefix}/${prefix}.ffn.gz"), emit: ffn
++    tuple val(meta), path("${prefix}/${prefix}.sqn.gz"), emit: sqn
++    tuple val(meta), path("${prefix}/${prefix}.fsa.gz"), emit: fsa
++    tuple val(meta), path("${prefix}/${prefix}.tbl.gz"), emit: tbl
++    tuple val(meta), path("${prefix}/${prefix}.err.gz"), emit: err
++    tuple val(meta), path("${prefix}/${prefix}.log.gz"), emit: log
++    tuple val(meta), path("${prefix}/${prefix}.txt.gz"), emit: txt
++    tuple val(meta), path("${prefix}/${prefix}.tsv.gz"), emit: tsv
      path "versions.yml" , emit: versions
  
      when:
@@ -43,8 +44,7 @@ Changes in 'prokka/main.nf':
      cat <<-END_VERSIONS > versions.yml
      "${task.process}":
 
-'modules/nf-core/prokka/meta.yml' is unchanged
 'modules/nf-core/prokka/environment.yml' is unchanged
-'modules/nf-core/prokka/tests/main.nf.test' is unchanged
 'modules/nf-core/prokka/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/prokka/tests/main.nf.test' is unchanged
 ************************************************************
