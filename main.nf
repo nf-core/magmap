@@ -35,6 +35,7 @@ workflow NFCORE_MAGMAP {
     genomeinfo                  // channel: genome information sheet read in from --genomeinfo
     remote_genome_sources       // channel: NCBI-style genome summary files read in via --remote_genome_sources
     indexes                     // channel: user-provided Sourmash indexes
+    params_indexes              //  string: value of the indexes param, used for excluding certain processes
     sequence_filter             // channel: fasta file for BBDuk
     gtdb_metadata               // channel: GTDB metadata files
     gtdbtk_metadata             // channel: GTDB-Tk metadata files
@@ -64,6 +65,7 @@ workflow NFCORE_MAGMAP {
         genomeinfo,
         remote_genome_sources,
         indexes,
+        params_indexes,
         sequence_filter,
         gtdb_metadata,
         gtdbtk_metadata,
@@ -125,6 +127,7 @@ workflow {
         PIPELINE_INITIALISATION.out.genomeinfo,
         PIPELINE_INITIALISATION.out.remote_genome_sources,
         PIPELINE_INITIALISATION.out.indexes,
+        params.indexes,
         params.sequence_filter,
         PIPELINE_INITIALISATION.out.gtdb_metadata,
         PIPELINE_INITIALISATION.out.gtdbtk_metadata,
@@ -132,7 +135,7 @@ workflow {
         params.skip_kraken2,
         params.kraken2_db,
         params.kraken2_db_url,
-        params.skip_sourmash,
+        params.genomeinfo ? params.skip_sourmash : true,
         params.sourmash_ksize,
         params.sourmash_save_unassigned,
         params.sourmash_save_matches_sig,

@@ -47,6 +47,7 @@ workflow MAGMAP {
     ch_genomeinfo               // channel: genome information sheet read in from --genomeinfo
     ch_remote_genome_sources    // channel: paths to NCBI-style genome summary files
     ch_indexes                  // channel: user-provided Sourmash indexes
+    params_indexes              //  string: value of the indexes params, used for if clauses in the SOURMASH subworkflow
     sequence_filter             //  string: fasta file for BBDuk
     ch_gtdb_metadata            // channel: GTDB metadata files
     ch_gtdbtk_metadata          // channel: GTDB-Tk metadata files
@@ -232,23 +233,21 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Use SOURMASH on sample reads and genomes to reduce the number of the latter
     //
-    if ( ! skip_sourmash ) {
-        SOURMASH(
-            ch_clean_reads,
-            ch_indexes,
-            ch_genomes_post_renaming,
-            ch_remote_genome_sources,
-            sourmash_ksize,
-            sourmash_save_unassigned,
-            sourmash_save_matches_sig,
-            sourmash_save_prefetch,
-            sourmash_save_prefetch_csv
-        )
-        ch_versions = ch_versions.mix(SOURMASH.out.versions)
-        ch_genomes = SOURMASH.out.filtered_genomes
-    } else {
-        ch_genomes = ch_genomes_post_renaming
-    }
+    SOURMASH(
+        ch_clean_reads,
+        ch_indexes,
+        params_indexes,
+        ch_genomes_post_renaming,
+        ch_remote_genome_sources,
+        sourmash_ksize,
+        sourmash_save_unassigned,
+        sourmash_save_matches_sig,
+        sourmash_save_prefetch,
+        sourmash_save_prefetch_csv,
+        skip_sourmash
+    )
+    ch_versions = ch_versions.mix(SOURMASH.out.versions)
+    ch_genomes = SOURMASH.out.filtered_genomes
 
     //
     // MODULE: Join and filter genome metadata

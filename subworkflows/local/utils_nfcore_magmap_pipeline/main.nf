@@ -32,7 +32,7 @@ workflow PIPELINE_INITIALISATION {
     nextflow_cli_args       //   array: List of positional nextflow CLI args
     outdir                  //  string: The output directory where the results will be saved
     input                   //  string: Path to input samplesheet
-    genomeinfo              //  string: Path to genomeinfo sheet
+    genomeinfo              //  string: Path to user-provided genome sheet
     remote_genome_sources   //  string: Comma-separated list of NCBI-style genome summary files
     kraken2_store_dir       //  string: Path to Kraken2 database location
     genome_store_dir        //  string: Path to a directory where genome annotation files will be stored
