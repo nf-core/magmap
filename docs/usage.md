@@ -233,6 +233,9 @@ With [Sourmash](https://sourmash.readthedocs.io/en/latest/index.html) you can fi
 This function is optional but can speed up the process and is controlled by the [`--skip_sourmash` parameter](parameters/#skip_sourmash) (true by default).
 It can also allow identification of remote genomes that match samples in the run, see [Index input](#index-input) above.
 
+> [!NOTE]
+> `--skip_sourmash` only affects filtering of user-provided genomes. One or more provided indexes will always be evaluated with Sourmash.
+
 ```bash
 nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --skip_sourmash false
 ```

@@ -267,7 +267,7 @@
             "properties": {
                 "skip_sourmash": {
                     "type": "boolean",
-                    "description": "Activate Sourmash",
+                    "description": "Skip Sourmash filtering for user-provided genomes",
                     "default": true,
                     "fa_icon": "fas fa-play-circle"
                 },
