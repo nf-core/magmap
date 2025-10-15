@@ -11,8 +11,8 @@ process WGET {
     tuple val(meta), val(url)
 
     output:
-    tuple val(meta), path("${url.substring( url.lastIndexOf('/')+1, url.length() )}"), emit: outfile
-    path "versions.yml"                         , emit: versions
+    tuple val(meta), path("${url.substring(url.lastIndexOf('/')+1, url.length())}"), emit: outfile
+    path "versions.yml"                                                            , emit: versions
 
     when:
     task.ext.when == null || task.ext.when
