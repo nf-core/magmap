@@ -30,15 +30,15 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 ![nf-core/magmap-metro-map](docs/images/metromap-magmap.png)
 
 1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))
-2. Present QC for raw reads ([`MultiQC`](http://multiqc.info/))
-3. Quality trimming and adapters removal for raw reads ([`Trim Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
-4. Filter reads with [`BBduk`](https://sourceforge.net/projects/bbmap/)
-5. Select reference genomes based on k-mer signatures in reads with [`sourmash`](https://sourmash.readthedocs.io/en/latest/)
-6. Quantification of genes identified in selected reference genomes:
+2. Quality trimming and adapters removal for raw reads ([`Trim Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
+3. Filter reads with [`BBduk`](https://sourceforge.net/projects/bbmap/)
+4. Select reference genomes based on k-mer signatures in reads with [`sourmash`](https://sourmash.readthedocs.io/en/latest/)
+5. Quantification of genes identified in selected reference genomes:
    1. Generate index of assembly ([`BBmap index`](https://sourceforge.net/projects/bbmap/))
    2. Mapping cleaned reads to the assembly for quantification ([`BBmap`](https://sourceforge.net/projects/bbmap/))
    3. Get raw counts per each gene present in the genomes ([`Featurecounts`](http://subread.sourceforge.net)) -> TSV table with collected featurecounts output
-7. Summary statistics table. Collect_stats.R
+6. Summary statistics table. Collect_stats.R
+7. Overall summary of tools output, including QC for reads before and after trimming ([`MultiQC`](http://multiqc.info/))
 
 ## Quick Start
 
