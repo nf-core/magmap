@@ -267,8 +267,8 @@ Note that the pipeline will create the following files in your working directory
 work                # Directory containing the nextflow working files
 <OUTDIR>            # Finished results in specified location (defined with --outdir)
 .nextflow_log       # Log file from Nextflow
-genomes/            # Directory with downloaded genomes; the name can be changed with `--genome_store_dir`
-prokka/             # Directory with annotated genomes; the name can be changed with `--prokka_store_dir`
+magmap_genomes/     # Directory with downloaded genomes; the path can be changed with `--genome_store_dir`
+magmap_prokka/      # Directory with annotated genomes; the path can be changed with `--prokka_store_dir`
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
 
