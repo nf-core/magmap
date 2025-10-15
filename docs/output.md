@@ -16,7 +16,6 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
     - [FastQC](#fastqc) - Read quality control
     - [Trim galore!](#trim-galore) - Primer trimming
     - [BBduk](#bbduk) - Filter out sequences from samples that matches sequences in a user-provided fasta file (optional)
-  - [Community composition](#community-composition) - General analysis of the taxonomic composition of the communities in the samples using the kmer-based Kraken2 tool.
   - [Filtering genomes](#filter-genomes) - Generate a list of genomes that will be used for the mapping
     - [Sourmash](#sourmash) - Output from Sourmash filtering of genomes.
   - [Prokka](#prokka) - Output from Prokka
@@ -83,16 +82,6 @@ BBduk is built-in tool from BBmap.
   - `*.bbduk.log`: a text file with the results from BBduk analysis. Number of filtered reads can be seen in this log.
 
 </details>
-
-### Community composition
-
-If not skipped with the [`--skip_kraken2` parameter](https://nf-co.re/magmap/parameters/#skip_kraken2), Kraken2 will be called to provide an overview of taxonomic community compositions of the samples.
-In addition, the Taxburst program will be called to produce an html file with a "Krona" diagram
-
-- `kraken2/`
-  - `*.txt`: Text format Kraken2 output
-- `taxburst/`
-  - `*.html`: Krona diagrams
 
 ### Filtering genomes
 

@@ -219,46 +219,6 @@
                 }
             }
         },
-        "kraken2_options": {
-            "title": "Kraken2 taxonomic profiling options",
-            "type": "object",
-            "description": "Options for Kraken2 taxonomic classification",
-            "properties": {
-                "skip_kraken2": {
-                    "type": "boolean",
-                    "description": "Skip Kraken2 taxonomic profiling"
-                },
-                "kraken2_store_dir": {
-                    "type": "string",
-                    "description": "Select a path where to store the downloaded db for kraken2.",
-                    "default": "kraken2_databases"
-                },
-                "kraken2_db": {
-                    "type": "string",
-                    "format": "directory-path",
-                    "description": "Path to Kraken2 database",
-                    "help_text": "Path to a Kraken2 database directory. Path needs to be a folder with \".k2d\" files"
-                },
-                "kraken2_db_url": {
-                    "type": "string",
-                    "default": "https://genome-idx.s3.amazonaws.com/kraken/k2_standard_20250714.tar.gz",
-                    "description": "Path to Kraken2 database to download and use.",
-                    "help_text": "You can select which database you prefer from:\nhttps://benlangmead.github.io/aws-indexes/k2\nwe recommend to use the standard (as default) if your aim is to know the community composition of the samples"
-                },
-                "kraken2_save_output": {
-                    "type": "boolean",
-                    "description": "Save Kraken2 all output files. This includes the report and the FastQ reads with assigned taxonomy."
-                },
-                "kraken2_save_reads": {
-                    "type": "boolean",
-                    "description": "Save classified and unclassified reads in FastQ format."
-                },
-                "kraken2_memory_mapping": {
-                    "type": "boolean",
-                    "description": "Use memory mapping to avoid loading database into RAM"
-                }
-            }
-        },
         "sourmash_options": {
             "title": "Sourmash",
             "type": "object",
@@ -464,9 +424,6 @@
         },
         {
             "$ref": "#/$defs/featurecounts_option"
-        },
-        {
-            "$ref": "#/$defs/kraken2_options"
         },
         {
             "$ref": "#/$defs/sourmash_options"

@@ -1,9 +1,0 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/environment-schema.json
-name: kraken2_download_db
-channels:
-  - conda-forge
-  - bioconda
-  - defaults
-dependencies:
-  - wget=1.21.4
-  - gzip

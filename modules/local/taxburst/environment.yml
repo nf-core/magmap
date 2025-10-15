@@ -1,8 +1,0 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/environment-schema.json
-name: taxburst
-channels:
-  - conda-forge
-  - bioconda
-  - defaults
-dependencies:
-  - taxburst=0.3.2

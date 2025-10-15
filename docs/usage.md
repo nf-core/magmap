@@ -21,7 +21,6 @@
       - [CheckM/CheckM2 metadata](#checkmcheckm2-metadata)
   - [Check duplicates](#check-duplicates)
   - [Remove contaminants from the samples] (#remove-contaminants-from-the-samples)
-  - [Kraken2](#kraken2)
   - [Sourmash](#sourmash)
   - [Feature calling](#feature-calling)
   - [Multimapping](#Multimapping)
@@ -203,28 +202,6 @@ For further documentation, see the [BBduk official website](https://jgi.doe.gov/
 
 ```bash
 nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --sequence_filter path/to/file
-```
-
-### Kraken2
-
-With [Kraken2](https://ccb.jhu.edu/software/kraken2/), you can generate a table listing the taxonomic classification for each sample.
-The pipeline also supports [Taxburst](https://taxburst.github.io/taxburst/) for visualization of Kraken2 results.
-
-`Kraken2`runs as default and it will download a standard [database](https://benlangmead.github.io/aws-indexes/k2).
-If you don't want to use `kraken2` set the parameter `--skip_kraken2 true`.
-
-You can also provide a custom Kraken2 database using the parameter [`--kraken2_db`](parameters/#kraken2_db).
-For detailed instructions on building a database, please refer to the [Kraken2 documentation](https://ccb.jhu.edu/software/kraken2/).
-
-Example usage:
-
-```bash
-nextflow run nf-core/magmap \
-    -profile docker \
-    --outdir results/ \
-    --input samples.csv \
-    --genomeinfo localgenomes.csv \
-    --skip_kraken2 false \
 ```
 
 ### Sourmash
