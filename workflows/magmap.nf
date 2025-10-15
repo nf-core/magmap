@@ -47,7 +47,7 @@ workflow MAGMAP {
     ch_genomeinfo               // channel: genome information sheet read in from --genomeinfo
     ch_remote_genome_sources    // channel: paths to NCBI-style genome summary files
     ch_indexes                  // channel: user-provided Sourmash indexes
-    params_indexes              //  string: value of the indexes params, used for if clauses in the SOURMASH subworkflow
+    index_list                  //  string: value of the indexes params, used for if clauses in the SOURMASH subworkflow
     sequence_filter             //  string: fasta file for BBDuk
     ch_gtdb_metadata            // channel: GTDB metadata files
     ch_gtdbtk_metadata          // channel: GTDB-Tk metadata files
@@ -236,7 +236,7 @@ workflow MAGMAP {
     SOURMASH(
         ch_clean_reads,
         ch_indexes,
-        params_indexes,
+        index_list,
         ch_genomes_post_renaming,
         ch_remote_genome_sources,
         sourmash_ksize,

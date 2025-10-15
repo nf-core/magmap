@@ -13,7 +13,7 @@ workflow SOURMASH {
     take:
         ch_sample_reads             // Fastq files with reads for each sample [ val(meta), [ path(reads) ] ]
         ch_indexes                  // List of Sourmash indexs [ path(index) ]
-        params_indexes              // Value of the indexes param, used for if clauses
+        index_list                  // Value of the indexes param, used for if clauses
         ch_user_genomeinfo          // User provided genomes [ path(genome) ]
         ch_remote_genome_sources    // Paths to genome information in NCBI format, i.e. containing at least the assembly_accession and ftp_path fields: path(csvfile)
         ksize                       // K-mere size to use: val(odd_int)
@@ -37,7 +37,7 @@ workflow SOURMASH {
                 }
 
         ch_sample_sigs = Channel.empty()
-        if ( params_indexes || ! skip_sourmash ) {
+        if ( index_list || ! skip_sourmash ) {
             SAMPLE_SKETCH(ch_sample_reads)
             ch_versions = ch_versions.mix(SAMPLE_SKETCH.out.versions)
 
@@ -76,7 +76,7 @@ workflow SOURMASH {
         }
 
         ch_filtered_genomes = ch_selected_user_genomes
-        if ( params_indexes ) {
+        if ( index_list ) {
             // To make sure that all combinations of sample signatures and indexes are gathered below,
             // combine the two channels.
             // (In theory, this should not be required as the command supposedly can take multiple samples

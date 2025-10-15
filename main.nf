@@ -35,7 +35,7 @@ workflow NFCORE_MAGMAP {
     genomeinfo                  // channel: genome information sheet read in from --genomeinfo
     remote_genome_sources       // channel: NCBI-style genome summary files read in via --remote_genome_sources
     indexes                     // channel: user-provided Sourmash indexes
-    params_indexes              //  string: value of the indexes param, used for excluding certain processes
+    index_list                  //  string: value of the indexes param, used for excluding certain processes
     sequence_filter             // channel: fasta file for BBDuk
     gtdb_metadata               // channel: GTDB metadata files
     gtdbtk_metadata             // channel: GTDB-Tk metadata files
@@ -65,7 +65,7 @@ workflow NFCORE_MAGMAP {
         genomeinfo,
         remote_genome_sources,
         indexes,
-        params_indexes,
+        index_list,
         sequence_filter,
         gtdb_metadata,
         gtdbtk_metadata,
