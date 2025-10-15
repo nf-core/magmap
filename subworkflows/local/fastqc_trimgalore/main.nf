@@ -2,11 +2,8 @@
 // Read QC, UMI extraction and trimming
 //
 
-params.fastqc_options     = [:]
-params.trimgalore_options = [:]
-
-include { FASTQC           } from '../../../modules/nf-core/fastqc/main'           addParams( options: params.fastqc_options     )
-include { TRIMGALORE       } from '../../../modules/nf-core/trimgalore/main'       addParams( options: params.trimgalore_options )
+include { FASTQC           } from '../../../modules/nf-core/fastqc/'
+include { TRIMGALORE       } from '../../../modules/nf-core/trimgalore/'
 
 workflow FASTQC_TRIMGALORE {
     take:
