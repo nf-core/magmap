@@ -50,8 +50,10 @@ process CAT_MANY {
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.gz
-    echo "${task.process}:" > versions.yml
-    echo "    pigz: 2.6" >> versions.yml
-    echo "    gzip: 1.10" >> versions.yml
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        pigz: \$( pigz --version 2>&1 | sed 's/^pigz //' )
+    END_VERSIONS
     """
 }
