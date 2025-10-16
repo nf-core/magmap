@@ -90,8 +90,13 @@ In addition, Sourmash can be used to fetch remote genomes, see [usage docs](http
 No output from Sourmash is enabled by default; the output is only used to select genomes for further processing.
 Use [`--sourmash_save_sourmash`](https://nf-co.re/magmap/parameters/#sourmash_save_sourmash) to copy output files.
 
+<details markdown="1">
+<summary>Output files</summary>
+
 - `sourmash/`
   - `*`: Output from Sourmash
+
+</details>
 
 ### Prokka
 
@@ -122,17 +127,28 @@ When the pipeline is run with [`--skip_sourmash false`](https://nf-co.re/magmap/
 Only logs are saved by default from the BBmap step.
 To save the `.bam` files, use `--bbmap_save_bam` and to save the index, use `--bbmap_save_index`.
 
+<details markdown="1">
+<summary>Output files</summary>
+
 - `bbmap/`
   - `bam/`
     - `<SAMPLE>.bam`: bam file for `SAMPLE`
   - `logs/`:
     - `<SAMPLE>.bbmap.log`: BBmap log for `SAMPLE`
 
+<details markdown="1">
+<summary>Output files</summary>
+
 #### FeatureCounts
+
+<details markdown="1">
+<summary>Output files</summary>
 
 - `featurecounts/`
   - `<SAMPLE>.<FEATURE>.featureCounts.tsv`: Counts for `SAMPLE` and `FEATURE`
   - `<SAMPLE>.<FEATURE>.featureCounts.tsv.summary`: Summary of counts for `SAMPLE` and `FEATURE`
+
+<details markdown="1">
 
 ## Pipeline information
 
