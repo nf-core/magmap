@@ -26,6 +26,8 @@ Its main output are tables with quantification of features (genes) in genomes wh
 It is mainly meant for metatranscriptomes and metagenomes, but can be used for other types of samples where mapping to contigs is relevant.
 The [**nf-core/rnaseq**](https://nf-co.re/rnaseq) pipeline is similar in purpose, but meant for single organisms with reference genomes and annotations, in practice eukaryotic model organisms.
 
+Before running this pipeline, consider running [**nf-core/taxprofiler**](https://nf-co.re/taxprofiler) to get a view of whether the community composition in your samples fit **nf-core/magmap** and its focus on prokaryotic genomes.
+
 The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!
 
 ![nf-core/magmap-metro-map](docs/images/metromap-magmap.png)
