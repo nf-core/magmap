@@ -40,7 +40,7 @@ process CATPROKKATSVS {
     outfile = "${prefix}.prokka-annotations.tsv"
     """
     echo $args
-    
+
     touch ${outfile}
     pigz ${outfile}
 
