@@ -22,9 +22,9 @@ process CATPROKKATSVS {
     def prefix = task.ext.prefix ?: "${meta.id}"
     outfile = "${prefix}.prokka-annotations.tsv"
     """
-    echo "orf   ftype   length  gene    ec_number       cog     product" > ${outfile}
+    echo "orf\tftype\tlength\tgene\tec_number\tcog\tproduct" > ${outfile}
 
-    find tsvs -name "*.tsv.gz" | xargs unpigz -c | grep -v '^locus_tag' >> ${outfile}
+    find tsvs -name "*.tsv.gz" | xargs unpigz -c | grep -v '^locus_tag' | grep -v '\tgene\t' >> ${outfile}
 
     pigz ${outfile}
 

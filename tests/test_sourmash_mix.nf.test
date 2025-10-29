@@ -41,6 +41,7 @@ nextflow_pipeline {
                     path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('ecoli') },
                     path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
                     path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
+                    path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('\tgene\t') }.size(),
                 ).match() },
                 { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.size() > 1100 },
                 { assert path("${params.outdir}/summary_tables/magmap.tRNA.counts.tsv.gz").linesGzip.size() > 2 },
@@ -48,6 +49,7 @@ nextflow_pipeline {
                 { assert path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.size() > 24000 },
                 { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.size() == 7 },
                 { assert path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.size() > 24000 },
+                { assert path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('CDS') }.size() > 23000 },
             )
         }
     }

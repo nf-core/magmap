@@ -38,7 +38,7 @@ Consistently named and formatted output tables in TSV format ready for further a
   - `magmap.<FEATURE>.counts.tsv.gz`: Read counts for `FEATURE` per ORF and sample.
   - `magmap.genome_metadata.tsv.gz`: Genome metadata from GTDB, GTDB-Tk and CheckM/CheckM2 if provided by the user.
   - `magmap.genomes2orfs.tsv.gz`: Translation table from ORF identifiers to genome identifiers.
-  - `magmap.prokka-annotations.tsv.gz`: Annotation details extracted from GFF files. _Note_, only genomes annotated by Prokka by the pipeline.
+  - `magmap.prokka-annotations.tsv.gz`: Annotation details extracted from GFF files.
 
 </details>
 

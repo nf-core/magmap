@@ -23,6 +23,7 @@ include { paramsSummaryMultiqc                   } from '../subworkflows/nf-core
 include { PIPELINE_COMPLETION                    } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { PIPELINE_INITIALISATION                } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { PROKKA                                 } from '../modules/nf-core/prokka'
+include { PROKKAGFF2TSV                          } from '../modules/local/prokkagff2tsv'
 include { RENAME_CONTIGS                         } from '../modules/local/rename_contigs'
 include { softwareVersionsToYAML                 } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { SOURMASH                               } from '../subworkflows/local/sourmash'
@@ -236,8 +237,19 @@ workflow MAGMAP {
     ch_versions = ch_versions.mix(PROKKA.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(PROKKA.out.log.collect{ meta, log -> log })
 
+    PROKKAGFF2TSV(
+        ch_genomes.filter { g -> g.genome_gff }.map { g -> [ [ id: g.accno ], g.genome_gff ] }
+    )
+    ch_versions = ch_versions.mix(PROKKAGFF2TSV.out.versions)
+
     CATPROKKATSVS(
-        PROKKA.out.tsv.collect { t -> t[1] }.map { t -> [ [ id: 'magmap' ], t ] }
+        PROKKA.out.tsv
+            .map { t -> t[1] }
+            .mix(
+                PROKKAGFF2TSV.out.tsv.map { t -> t[1] }
+            )
+            .collect()
+            .map { t -> [ [ id: 'magmap' ], t ] }
     )
     ch_versions = ch_versions.mix(CATPROKKATSVS.out.versions)
 

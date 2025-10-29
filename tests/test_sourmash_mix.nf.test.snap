@@ -269,13 +269,14 @@
                 "accno\tgenome\torf"
             ],
             [
-                "orf   ftype   length  gene    ec_number       cog     product"
-            ]
+                "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
+            ],
+            1
         ],
         "meta": {
             "nf-test": "0.9.2",
             "nextflow": "25.04.8"
         },
-        "timestamp": "2025-10-29T15:02:49.474147254"
+        "timestamp": "2025-10-29T17:11:48.142831268"
     }
 }

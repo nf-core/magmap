@@ -1,0 +1,56 @@
+name: "prokkagff2tsv"
+description: Convert Prokka GFF annotation files to TSV format
+keywords:
+  - prokka
+  - gff
+  - tsv
+  - annotation
+  - conversion
+tools:
+  - "r-tidyverse":
+      description: "Easily Install and Load the 'Tidyverse'"
+      homepage: "https://www.tidyverse.org"
+      documentation: "https://tidyverse.tidyverse.org"
+      tool_dev_url: "https://github.com/tidyverse/tidyverse"
+      licence: ["MIT"]
+  - "r-dtplyr":
+      description: "Data Table Back-End for 'dplyr'"
+      homepage: "https://dtplyr.tidyverse.org"
+      documentation: "https://dtplyr.tidyverse.org"
+      tool_dev_url: "https://github.com/tidyverse/dtplyr"
+      licence: ["MIT"]
+  - "r-data.table":
+      description: "Extension of `data.frame`"
+      homepage: "https://r-datatable.com"
+      documentation: "https://rdatatable.gitlab.io/data.table"
+      tool_dev_url: "https://github.com/Rdatatable/data.table"
+      licence: ["MPL-2.0"]
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - gff:
+      type: file
+      description: Prokka GFF annotation file
+      pattern: "*.{gff,gff.gz}"
+
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+  - tsv:
+      type: file
+      description: TSV file containing prokka annotations in tabular format
+      pattern: "*.prokka-annotations.tsv.gz"
+
+authors:
+  - "@erikrikarddaniel"
