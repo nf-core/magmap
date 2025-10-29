@@ -4,9 +4,8 @@
 
 include { CAT_MANY as CAT_GFF   } from '../../../modules/local/cat/many/main'
 include { GENOMES2ORFS          } from '../../../modules/local/genomes_2_orfs'
-include { PROKKAGFF2TSV         } from '../../../modules/local/prokka_gff_2_tsv/main'
 
-workflow CAT_GFFS {
+workflow CONCATENATE_GFFS {
     take:
     ch_genome_gffs
 
@@ -19,12 +18,8 @@ workflow CAT_GFFS {
         GENOMES2ORFS(ch_genome_gffs.collect().map { gffs -> [ [ id: 'genomes' ], gffs ] })
         ch_versions = ch_versions.mix(GENOMES2ORFS.out.versions)
 
-        PROKKAGFF2TSV(CAT_GFF.out.concatenated_files)
-        ch_versions = ch_versions.mix(PROKKAGFF2TSV.out.versions)
-
     emit:
     gff          = CAT_GFF.out.concatenated_files
     genomes2orfs = GENOMES2ORFS.out.genomes2orfs
-    gfftsv       = PROKKAGFF2TSV.out.tsv
     versions     = ch_versions
 }

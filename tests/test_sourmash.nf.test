@@ -38,7 +38,7 @@ nextflow_pipeline {
                     path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
                     path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('GCA') },
                     path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
-                    path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('gene_caller') },
+                    path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
                 ).match() },
                 { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.size() > 400 },
                 { assert path("${params.outdir}/summary_tables/magmap.tRNA.counts.tsv.gz").linesGzip.size() > 1 },

@@ -8,7 +8,8 @@ include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core
 include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align'
 include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk'
 include { CAT_FASTQ            	                 } from '../modules/nf-core/cat/fastq'
-include { CAT_GFFS                               } from '../subworkflows/local/concatenate_gff'
+include { CATPROKKATSVS        	                 } from '../modules/local/catprokkatsvs'
+include { CONCATENATE_GFFS                       } from '../subworkflows/local/concatenate_gffs'
 include { CHECK_DUPLICATES                       } from '../modules/local/check_duplicates'
 include { COLLECT_FEATURECOUNTS                  } from '../modules/local/collect/featurecounts'
 include { COLLECT_STATS                          } from '../modules/local/collect/stats'
@@ -235,6 +236,11 @@ workflow MAGMAP {
     ch_versions = ch_versions.mix(PROKKA.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(PROKKA.out.log.collect{ meta, log -> log })
 
+    CATPROKKATSVS(
+        PROKKA.out.tsv.collect { t -> t[1] }.map { t -> [ [ id: 'magmap' ], t ] }
+    )
+    ch_versions = ch_versions.mix(CATPROKKATSVS.out.versions)
+
     // Mix genome entries that were not sent to Prokka with those that were not
     ch_collected_genomes = ch_genomes
         .filter { g -> g.genome_gff }
@@ -253,8 +259,8 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Concatenate gff files
     //
-    CAT_GFFS(ch_collected_genomes.map { it.genome_gff })
-    ch_versions = ch_versions.mix(CAT_GFFS.out.versions)
+    CONCATENATE_GFFS(ch_collected_genomes.map { it.genome_gff })
+    ch_versions = ch_versions.mix(CONCATENATE_GFFS.out.versions)
 
     //
     // BBMAP ALIGN. Call BBMap with the index once per sample
@@ -270,7 +276,7 @@ workflow MAGMAP {
     ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
     ch_stage_counts = BAM_SORT_STATS_SAMTOOLS.out.bam
-        .combine(CAT_GFFS.out.gff.map { it[1] })
+        .combine(CONCATENATE_GFFS.out.gff.map { it[1] })
 
     ch_collect_stats = ch_collect_stats
         .combine(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect { it[1]}.map { [ it ] })
