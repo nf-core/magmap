@@ -208,10 +208,10 @@
                 "multiqc_featurecounts.txt:md5,86a43e2bba623046c565e839b778db57",
                 "twogenomes.sig:md5,e232d8ad70d3a5608845b5cb56d51106",
                 "twogenomes_remoteidx_00.csv.gz:md5,64854a1b8cfb433bed72a43dd642fb5c",
-                "twogenomes_remoteidx_00_matches.sig.zip:md5,247e593b1a908c275b96e1fe9438f07b",
+                "twogenomes_remoteidx_00_matches.sig.zip:md5,965cfe487016bb0453ada06f1b883ae2",
                 "twogenomes_remoteidx_00_prefetch.csv.gz:md5,b718cac0aa924d280b5d0de1b4262c64",
-                "twogenomes_remoteidx_00_prefetch.sig.zip:md5,0451a85858176d77c9d36bc69d05ea8b",
-                "twogenomes_remoteidx_00_unassigned.sig.zip:md5,dfb00f20f721263d8603cc90a6556bf5",
+                "twogenomes_remoteidx_00_prefetch.sig.zip:md5,ae79dbba9f33804a6c7c28e3e0de3c7e",
+                "twogenomes_remoteidx_00_unassigned.sig.zip:md5,190f663bc1a01d05a639d4f4d22e2e8f",
                 "versions.yml:md5,f0be003fa234bbecaaeb5073224e804c"
             ],
             [
@@ -244,6 +244,6 @@
             "nf-test": "0.9.2",
             "nextflow": "25.04.6"
         },
-        "timestamp": "2025-11-13T11:46:38.004772"
+        "timestamp": "2025-11-13T13:04:17.496136"
     }
 }

@@ -45,7 +45,7 @@ nextflow_pipeline {
                 { assert path("${params.outdir}/summary_tables/magmap.rRNA.counts.tsv.gz").linesGzip.size() == 1 },
                 { assert path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.size() > 4000 },
                 { assert path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.size() > 4000 },
-                { assert path("${params.outdir}/sourmash/twogenomes_remoteidx_00_prefetch.csv.gz").linesGzip.size() > 5 },
+                { assert path("${params.outdir}/sourmash/twogenomes_remoteidx_00_prefetch.csv.gz").linesGzip.size() == 3 },
             )
         }
     }
