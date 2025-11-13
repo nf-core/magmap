@@ -25,4 +25,4 @@ samtools/*.stats
 summary_tables/*.tsv.gz
 trimgalore/fastqc/*_fastqc.{html,zip}
 trimgalore/*trimming_report.txt
-sourmass/*sig.zip
+sourmash/*sig.zip
