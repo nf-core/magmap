@@ -17,10 +17,6 @@ workflow SOURMASH {
         ch_user_genomeinfo          // User provided genomes [ path(genome) ]
         ch_remote_genome_sources    // Paths to genome information in NCBI format, i.e. containing at least the assembly_accession and ftp_path fields: path(csvfile)
         ksize                       // K-mere size to use: val(odd_int)
-        save_unassigned             // Boolean value passed to sourmash/gather
-        save_matches_sig            // Boolean value passed to sourmash/gather
-        save_prefetch               // Boolean value passed to sourmash/gather
-        save_prefetch_csv           // Boolean value passed to sourmash/gather
         skip_sourmash               // Boolean that controls whether user-provided genomes are sketched, indexed and used in gathering genomes
 
     main:
@@ -59,7 +55,7 @@ workflow SOURMASH {
 
             ch_user_genome_index = GENOME_INDEX.out.signature_index
 
-            GATHER_USER_GENOMES(ch_sample_sigs, ch_genome_sigs, save_unassigned, save_matches_sig, save_prefetch, save_prefetch_csv)
+            GATHER_USER_GENOMES(ch_sample_sigs, ch_genome_sigs, true, true, true, true)
             ch_versions = ch_versions.mix(GATHER_USER_GENOMES.out.versions)
 
             // Collect matching user genomes
@@ -89,7 +85,7 @@ workflow SOURMASH {
             GATHER_REMOTE_GENOMES(
                 ch_gather.map { it -> [ it[0], it[1] ] },
                 ch_gather.map { it -> [ it[2], it[3] ] },
-                save_unassigned, save_matches_sig, save_prefetch, save_prefetch_csv
+                true, true, true, true
             )
             ch_versions = ch_versions.mix(GATHER_REMOTE_GENOMES.out.versions)
 

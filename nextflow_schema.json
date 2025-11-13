@@ -240,25 +240,6 @@
                 "sourmash_save_sourmash": {
                     "type": "boolean",
                     "description": "Save Sourmash output"
-                },
-                "sourmash_save_unassigned": {
-                    "type": "boolean",
-                    "description": "Saves query sequences that do not have a match in the database, allowing further analysis of unclassified data.",
-                    "default": true
-                },
-                "sourmash_save_matches_sig": {
-                    "type": "boolean",
-                    "description": "Stores all database signatures that matched the query, enabling reuse without re-running the search.",
-                    "default": true
-                },
-                "sourmash_save_prefetch": {
-                    "type": "boolean",
-                    "description": "Saves prefetched signatures, which are database entries that share similarity with the query but may not be full matches, for further inspection.",
-                    "default": true
-                },
-                "sourmash_save_prefetch_csv": {
-                    "type": "boolean",
-                    "description": "Outputs a CSV file summarizing the prefetched results, including metadata about retrieved signatures."
                 }
             },
             "fa_icon": "fas fa-filter"

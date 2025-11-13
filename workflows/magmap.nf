@@ -51,10 +51,6 @@ workflow MAGMAP {
     ch_checkm_metadata          // channel: CheckM/CheckM2 metadata files
     skip_sourmash               // boolean: run Sourmash or not
     sourmash_ksize              // integer
-    sourmash_save_unassigned    // boolean
-    sourmash_save_matches_sig   // boolean
-    sourmash_save_prefetch      // boolean
-    sourmash_save_prefetch_csv  // boolean
     ch_features                 // channel: list of feature types to call
     skip_fastqc                 // boolean
     skip_qc                     // boolean
@@ -201,10 +197,6 @@ workflow MAGMAP {
         ch_genomes_post_renaming,
         ch_remote_genome_sources,
         sourmash_ksize,
-        sourmash_save_unassigned,
-        sourmash_save_matches_sig,
-        sourmash_save_prefetch,
-        sourmash_save_prefetch_csv,
         skip_sourmash
     )
     ch_versions = ch_versions.mix(SOURMASH.out.versions)

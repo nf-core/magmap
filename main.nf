@@ -42,10 +42,6 @@ workflow NFCORE_MAGMAP {
     checkm_metadata             // channel: CheckM/CheckM2 metadata files
     skip_sourmash               // boolean: skip Sourmash or not
     sourmash_ksize              // integer
-    sourmash_save_unassigned    // boolean
-    sourmash_save_matches_sig   // boolean
-    sourmash_save_prefetch      // boolean
-    sourmash_save_prefetch_csv  // boolean
     features                    // channel: types of features to call
     skip_fastqc                 // boolean
     skip_qc                     // boolean
@@ -69,10 +65,6 @@ workflow NFCORE_MAGMAP {
         checkm_metadata,
         skip_sourmash,
         sourmash_ksize,
-        sourmash_save_unassigned,
-        sourmash_save_matches_sig,
-        sourmash_save_prefetch,
-        sourmash_save_prefetch_csv,
         features,
         skip_fastqc,
         skip_qc,
@@ -130,10 +122,6 @@ workflow {
         PIPELINE_INITIALISATION.out.checkm_metadata,
         params.skip_sourmash,
         params.sourmash_ksize,
-        params.sourmash_save_unassigned,
-        params.sourmash_save_matches_sig,
-        params.sourmash_save_prefetch,
-        params.sourmash_save_prefetch_csv,
         PIPELINE_INITIALISATION.out.features,
         params.skip_fastqc,
         params.skip_qc,

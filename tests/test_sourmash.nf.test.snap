@@ -169,6 +169,14 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_magmap_software_mqc_versions.yml",
+                "sourmash",
+                "sourmash/twogenomes.sig",
+                "sourmash/twogenomes_remoteidx_00.csv.gz",
+                "sourmash/twogenomes_remoteidx_00_matches.sig.zip",
+                "sourmash/twogenomes_remoteidx_00_prefetch.csv.gz",
+                "sourmash/twogenomes_remoteidx_00_prefetch.sig.zip",
+                "sourmash/twogenomes_remoteidx_00_unassigned.sig.zip",
+                "sourmash/versions.yml",
                 "summary_tables",
                 "summary_tables/magmap.CDS.counts.tsv.gz",
                 "summary_tables/magmap.genome_metadata.tsv.gz",
@@ -197,7 +205,14 @@
                 "featureCounts_assignment_plot.txt:md5,cb01ab87a740612879569eac68010610",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
                 "multiqc_fastqc.txt:md5,eea16e7b30fc1eb5d23ee84e07789332",
-                "multiqc_featurecounts.txt:md5,86a43e2bba623046c565e839b778db57"
+                "multiqc_featurecounts.txt:md5,86a43e2bba623046c565e839b778db57",
+                "twogenomes.sig:md5,e232d8ad70d3a5608845b5cb56d51106",
+                "twogenomes_remoteidx_00.csv.gz:md5,64854a1b8cfb433bed72a43dd642fb5c",
+                "twogenomes_remoteidx_00_matches.sig.zip:md5,247e593b1a908c275b96e1fe9438f07b",
+                "twogenomes_remoteidx_00_prefetch.csv.gz:md5,b718cac0aa924d280b5d0de1b4262c64",
+                "twogenomes_remoteidx_00_prefetch.sig.zip:md5,0451a85858176d77c9d36bc69d05ea8b",
+                "twogenomes_remoteidx_00_unassigned.sig.zip:md5,dfb00f20f721263d8603cc90a6556bf5",
+                "versions.yml:md5,f0be003fa234bbecaaeb5073224e804c"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\ttRNA"
@@ -227,8 +242,8 @@
         ],
         "meta": {
             "nf-test": "0.9.2",
-            "nextflow": "25.04.8"
+            "nextflow": "25.04.6"
         },
-        "timestamp": "2025-10-29T16:37:39.100790027"
+        "timestamp": "2025-11-13T11:46:38.004772"
     }
 }
