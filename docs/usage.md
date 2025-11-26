@@ -204,6 +204,11 @@ For further documentation, see the [BBduk official website](https://jgi.doe.gov/
 nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --sequence_filter path/to/file
 ```
 
+> [!NOTE]
+> In our experience, removing rRNA and other abundant non-mRNA sequences from samples prior to mapping is more important than one might think.
+> Even if in theory, rRNA reads should map to rRNA genes, be properly quantified and not influence quantification of CDS features, we have observed
+> that this assumption not always holds.
+
 ### Sourmash
 
 With [Sourmash](https://sourmash.readthedocs.io/en/latest/index.html) you can filter the genomes to be used by magmap in the mapping step.
