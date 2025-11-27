@@ -1,0 +1,45 @@
+name: "CAT_MANY"
+description: Concatenate multiple files and compress the output using pigz
+keywords:
+  - concatenate
+  - compress
+  - pigz
+  - gzip
+tools:
+  - "pigz":
+      description: "A parallel implementation of gzip for modern multi-processor, multi-core machines"
+      homepage: "https://zlib.net/pigz/"
+      documentation: "https://zlib.net/pigz/pigz.pdf"
+      tool_dev_url: "https://github.com/madler/pigz"
+      licence: "['Zlib']"
+
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - files2cat:
+      type: file
+      description: List of files to concatenate (can be compressed or uncompressed)
+      pattern: "*"
+
+output:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing sample information
+        e.g. [ id:'test', single_end:false ]
+  - concatenated_files:
+      type: file
+      description: Concatenated and compressed output file
+      pattern: "*.gz"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"

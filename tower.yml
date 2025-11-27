@@ -3,3 +3,13 @@ reports:
     display: "MultiQC HTML report"
   samplesheet.csv:
     display: "Auto-created samplesheet with collated metadata and FASTQ paths"
+  "**/summary_tables/magmap.overall_stats.tsv.gz":
+    display: "Overall statistics for the pipeline run"
+  "**/summary_tables/magmap.*.counts.tsv.gz":
+    display: "Counts and TPMs for quantified features"
+  "**/summary_tables/magmap.genome_metadata.tsv.gz":
+    display: "Genome statistics and taxonomy from user-provided CheckM(2) and GTDB-Tk data for selected genomes"
+  "**/summary_tables/magmap.genomes2orfs.tsv.gz":
+    display: "Map between ORF names and genome identifiers"
+  "**/summary_tables/magmap.prokka-annotations.tsv.gz":
+    display: "Prokka GFF in TSV format, concatenated for all genomes"

@@ -1,0 +1,28 @@
+Changes in component 'nf-core/bbmap/align'
+Changes in 'bbmap/align/main.nf':
+--- modules/nf-core/bbmap/align/main.nf
++++ modules/nf-core/bbmap/align/main.nf
+@@ -1,6 +1,6 @@
+ process BBMAP_ALIGN {
+     tag "$meta.id"
+-    label 'process_medium'
++    label 'process_high'
+ 
+     conda "${moduleDir}/environment.yml"
+     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+
+'modules/nf-core/bbmap/align/meta.yml' is unchanged
+Changes in 'bbmap/align/environment.yml':
+--- modules/nf-core/bbmap/align/environment.yml
++++ modules/nf-core/bbmap/align/environment.yml
+@@ -5,4 +5,5 @@
+   - bioconda
+ dependencies:
+   - bioconda::bbmap=39.18
++  - bioconda::samtools=1.21
+   - pigz=2.8
+
+'modules/nf-core/bbmap/align/tests/main.nf.test' is unchanged
+'modules/nf-core/bbmap/align/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/bbmap/align/tests/nextflow.config' is unchanged
+************************************************************

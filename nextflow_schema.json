@@ -17,17 +17,64 @@
                     "format": "file-path",
                     "exists": true,
                     "schema": "assets/schema_input.json",
-                    "mimetype": "text/csv",
-                    "pattern": "^\\S+\\.csv$",
-                    "description": "Path to comma-separated file containing information about the samples in the experiment.",
-                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. See [usage docs](https://nf-co.re/magmap/usage#samplesheet-input).",
+                    "pattern": "^\\S+\\.(csv|tsv|yaml|yml|json)$",
+                    "description": "Path to a file containing information about the samples in the experiment.",
+                    "help_text": "You will need to create a design file with information about the samples in your experiment before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row.",
                     "fa_icon": "fas fa-file-csv"
                 },
-                "outdir": {
+                "genomeinfo": {
+                    "type": "string",
+                    "format": "file-path",
+                    "pattern": "^\\S+\\.(csv|tsv|yaml|yml|json)$",
+                    "fa_icon": "fas fa-dna",
+                    "description": "Path to a file containing information about the genomes to map to, see [usage docs](https://nf-co.re/magmap/usage#genome-input).",
+                    "schema": "assets/schema_genomeinfo.json"
+                },
+                "gtdb_metadata": {
+                    "type": "string",
+                    "description": "Comma-separated list of paths to tab-separated files containing information from GTDB. For column description, see [usage docs](https://nf-co.re/magmap/usage#gtdb-metadata).",
+                    "help_text": "Typically, the files are the standard GTDB metadata files, e.g. `bac120_metadata_r226.tsv.gz`. You will need to use or create a file with information about the genomes' taxonomy you want to map to before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 9 columns, and a header row. Columns are: accno, checkm_completeness, checkm_contamination, checkm_strain_heterogeneity, contig_count, genome_size, gtdb_genome_representative, gtdb_representative, gtdb_taxonomy.",
+                    "fa_icon": "fas fa-table"
+                },
+                "checkm_metadata": {
+                    "type": "string",
+                    "description": "Comma-separated list of path to tab-separated files containing the output from CheckM. For column description, see [usage docs](https://nf-co.re/magmap/usage#checkmcheckm2-metadata).",
+                    "help_text": "You will need to use or create a file with information about the genomes' statistics you want to map to before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 5 columns, and a header row. Columns are: checkm_completeness, checkm_contamination, contig_count, checkm_strain_heterogeneity, genome_size.",
+                    "fa_icon": "fas fa-table"
+                },
+                "gtdbtk_metadata": {
+                    "type": "string",
+                    "description": "Comma-separated list of paths to tab-separated files containing a .tsv file which has the same columns as the output from GTDB-Tk, see [usage docs](https://nf-co.re/magmap/usage#gtdb-tk-metadata).",
+                    "help_text": "You will need to use or create a file with information about the genomes' taxonomy you want to map to before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. Columns are: gtdb_genome_representative, gtdb_representative, gtdb_taxonomy.",
+                    "fa_icon": "fas fa-bacteria"
+                },
+                "remote_genome_sources": {
+                    "type": "string",
+                    "description": "Comma-separated list of paths to tsv files with information about genomes in NCBI 'assembly_summary' format. The default are GenBank and RefSeq summary files.",
+                    "help_text": "The summary files need to contain the column '#assembly_accession', referring to genome identifiers used in sourmash indexes and 'ftp_path' pointing to where the genome can be fetched. The directory structure of the 'ftp_path' paths needs to conform with NCBI standards and contain a contig file with the pattern '<accno>*_genomic.fna.gz'.",
+                    "default": "https://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_refseq.txt,https://ftp.ncbi.nlm.nih.gov/genomes/ASSEMBLY_REPORTS/assembly_summary_genbank.txt",
+                    "fa_icon": "fas fa-network-wired"
+                },
+                "genome_store_dir": {
                     "type": "string",
                     "format": "directory-path",
-                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
-                    "fa_icon": "fas fa-folder-open"
+                    "default": "magmap_genomes",
+                    "fa_icon": "fas fa-dna",
+                    "description": "Path to a directory where downloaded genome files is stored.",
+                    "help_text": "Any genome files downloaded by the pipeline will be stored in this directory for potential later use."
+                },
+                "prokka_store_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "default": "magmap_prokka",
+                    "fa_icon": "fas fa-dna",
+                    "description": "Path to a directory where prokka output is stored.",
+                    "help_text": "Prokka annotation files created by the pipeline will be stored in this directory for potential later use."
+                },
+                "indexes": {
+                    "type": "string",
+                    "description": "Path to .sbt file.",
+                    "fa_icon": "far fa-address-book"
                 },
                 "email": {
                     "type": "string",
@@ -40,47 +87,162 @@
                     "type": "string",
                     "description": "MultiQC report title. Printed as page header, used for filename if not otherwise specified.",
                     "fa_icon": "fas fa-file-signature"
+                },
+                "outdir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "The output directory where the results will be saved. You have to use absolute paths to storage on Cloud infrastructure.",
+                    "fa_icon": "fas fa-folder-open"
                 }
             }
         },
-        "reference_genome_options": {
-            "title": "Reference genome options",
+        "quality_control_options": {
+            "title": "Quality control options",
             "type": "object",
-            "fa_icon": "fas fa-dna",
-            "description": "Reference genome related files and options required for the workflow.",
+            "description": "Option for QC steps",
+            "default": "",
             "properties": {
-                "genome": {
-                    "type": "string",
-                    "description": "Name of iGenomes reference.",
-                    "fa_icon": "fas fa-book",
-                    "help_text": "If using a reference genome configured in the pipeline using iGenomes, use this parameter to give the ID for the reference. This is then used to build the full paths for all required reference genome files e.g. `--genome GRCh38`. \n\nSee the [nf-core website docs](https://nf-co.re/usage/reference_genomes) for more details."
-                },
-                "fasta": {
-                    "type": "string",
-                    "format": "file-path",
-                    "exists": true,
-                    "mimetype": "text/plain",
-                    "pattern": "^\\S+\\.fn?a(sta)?(\\.gz)?$",
-                    "description": "Path to FASTA genome file.",
-                    "help_text": "This parameter is *mandatory* if `--genome` is not specified. If you don't have a BWA index available this will be generated for you automatically. Combine with `--save_reference` to save BWA index for future runs.",
-                    "fa_icon": "far fa-file-code"
-                },
-                "igenomes_ignore": {
+                "skip_qc": {
                     "type": "boolean",
-                    "description": "Do not load the iGenomes reference config.",
-                    "fa_icon": "fas fa-ban",
-                    "hidden": true,
-                    "help_text": "Do not load `igenomes.config` when running the pipeline. You may choose this option if you observe clashes between custom parameters and those supplied in `igenomes.config`."
+                    "description": "Skip all QC steps except for MultiQC.",
+                    "fa_icon": "fas fa-forward"
                 },
-                "igenomes_base": {
+                "skip_fastqc": {
+                    "type": "boolean",
+                    "description": "Skip FastQC.",
+                    "fa_icon": "fas fa-forward"
+                }
+            },
+            "fa_icon": "fas fa-check-circle"
+        },
+        "trimming_options": {
+            "title": "Trimming options",
+            "type": "object",
+            "description": "All the trim option are listed below",
+            "default": "",
+            "properties": {
+                "clip_r1": {
                     "type": "string",
-                    "format": "directory-path",
-                    "description": "The base path to the igenomes reference files",
-                    "fa_icon": "fas fa-ban",
-                    "hidden": true,
-                    "default": "s3://ngi-igenomes/igenomes/"
+                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 1 (or single-end reads).",
+                    "fa_icon": "fas fa-hand-scissors"
+                },
+                "clip_r2": {
+                    "type": "string",
+                    "description": "Instructs Trim Galore to remove bp from the 5' end of read 2 (or single-end reads).",
+                    "fa_icon": "fas fa-hand-scissors"
+                },
+                "three_prime_clip_r1": {
+                    "type": "string",
+                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 1 AFTER adapter/quality trimming has been performed.",
+                    "fa_icon": "far fa-hand-scissors"
+                },
+                "three_prime_clip_r2": {
+                    "type": "string",
+                    "description": "Instructs Trim Galore to remove bp from the 3' end of read 2 AFTER adapter/quality trimming has been performed.",
+                    "fa_icon": "far fa-hand-scissors"
+                },
+                "trim_reads": {
+                    "type": "string",
+                    "description": "Instructs Trim Galore to apply the --nextseq=X option, to trim based on quality after removing poly-G tails.",
+                    "fa_icon": "fab fa-cuttlefish"
+                },
+                "save_trimmed": {
+                    "type": "boolean",
+                    "description": "Save the trimmed FastQ files in the results directory.",
+                    "fa_icon": "fab fa-cuttlefish"
+                },
+                "skip_trimming": {
+                    "type": "boolean",
+                    "description": "Skip the adapter trimming step.",
+                    "fa_icon": "fas fa-forward"
+                }
+            },
+            "fa_icon": "fas fa-cut"
+        },
+        "mapping_options": {
+            "title": "Mapping options",
+            "type": "object",
+            "description": "All the options you can use for BBmap or BBduk)",
+            "default": "",
+            "properties": {
+                "sequence_filter": {
+                    "type": "string",
+                    "description": "Instructs BBduk to use a fasta file to filter away sequences before running further analysis.",
+                    "fa_icon": "fas fa-filter"
+                },
+                "bbmap_minid": {
+                    "type": "number",
+                    "default": 0.9,
+                    "description": "Minimal identity for BBmap",
+                    "fa_icon": "fas fa-search-minus"
+                },
+                "bbmap_ambiguous": {
+                    "type": "string",
+                    "default": "best",
+                    "description": "Select how BBmap should treat ambiguous mapping",
+                    "enum": ["best", "all", "random", "toss"],
+                    "help_text": "Using `all` allows multi-mapping, see [usage docs](https://nf-co.re/magmap/usage#multimapping"
+                },
+                "bbmap_save_bam": {
+                    "type": "boolean",
+                    "description": "Save bam output file",
+                    "fa_icon": "fas fa-save"
+                },
+                "bbmap_save_index": {
+                    "type": "boolean",
+                    "description": "Save ref folder containing the reference index",
+                    "fa_icon": "fas fa-save"
+                },
+                "save_concatenated_genomes": {
+                    "type": "boolean",
+                    "description": "Save genomes concatenated file",
+                    "fa_icon": "fas fa-save"
+                }
+            },
+            "fa_icon": "fas fa-align-justify"
+        },
+        "featurecounts_option": {
+            "title": "FeatureCounts option",
+            "type": "object",
+            "description": "FeatureCounts option",
+            "default": "",
+            "properties": {
+                "features": {
+                    "type": "string",
+                    "description": "Specify which features to count",
+                    "default": "CDS,rRNA,tRNA,tmRNA"
+                },
+                "featurecounts_fraction": {
+                    "type": "boolean",
+                    "description": "Allow featureCounts to handle multiple-mapping",
+                    "help_text": "This parameter works best coupled with `--bbmap_ambiguous`. See documentation."
                 }
             }
+        },
+        "sourmash_options": {
+            "title": "Sourmash",
+            "type": "object",
+            "description": "All the options available for Sourmash",
+            "default": "",
+            "properties": {
+                "skip_sourmash": {
+                    "type": "boolean",
+                    "description": "Skip Sourmash filtering for user-provided genomes",
+                    "default": true,
+                    "fa_icon": "fas fa-play-circle"
+                },
+                "sourmash_ksize": {
+                    "type": "integer",
+                    "default": 21,
+                    "description": "K-mer size used by Sourmash",
+                    "fa_icon": "fas fa-arrows-alt-h"
+                },
+                "sourmash_save_sourmash": {
+                    "type": "boolean",
+                    "description": "Save Sourmash output"
+                }
+            },
+            "fa_icon": "fas fa-filter"
         },
         "institutional_config_options": {
             "title": "Institutional config options",
@@ -183,7 +345,7 @@
                 "hook_url": {
                     "type": "string",
                     "description": "Incoming hook URL for messaging service",
-                    "fa_icon": "fas fa-people-group",
+                    "fa_icon": "fas fa-globe",
                     "help_text": "Incoming hook URL for messaging service. Currently, MS Teams and Slack are supported.",
                     "hidden": true
                 },
@@ -245,7 +407,19 @@
             "$ref": "#/$defs/input_output_options"
         },
         {
-            "$ref": "#/$defs/reference_genome_options"
+            "$ref": "#/$defs/quality_control_options"
+        },
+        {
+            "$ref": "#/$defs/trimming_options"
+        },
+        {
+            "$ref": "#/$defs/mapping_options"
+        },
+        {
+            "$ref": "#/$defs/featurecounts_option"
+        },
+        {
+            "$ref": "#/$defs/sourmash_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"

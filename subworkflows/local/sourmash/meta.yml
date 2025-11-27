@@ -1,0 +1,71 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: sourmash
+description: Select genomes from the downstream analysis that are identified by Sourmash
+keywords:
+  - genomes
+  - selection
+  - sourmash
+components:
+  - sourmash/gather
+  - sourmash/sketch
+  - sourmash/index
+input:
+  - ch_sample_reads:
+    description: |
+      Fastq files with reads for each sample
+      Structure: [ val(meta), [ path(reads) ] ]
+  - ch_indexes:
+    description: |
+      List of Sourmash indexs
+      Structure: [ path(index) ]
+  - ch_user_genomeinfo:
+    description: |
+      User provided genomes
+      Structure: [ path(genome) ]
+  - ch_ncbi_genomeinfo_files:
+    description: |
+      CSV file with paths to genome information in NCBI format, i.e. containing at least the assembly_accession and ftp_path fields
+      Structure: path(csvfile)
+  - ksize:
+    description: |
+      K-mere size to use
+      Structure: val(odd_int)
+  - save_unassigned:
+    description: |
+      Boolean value passed to sourmash/gather
+      Structure: val(boolean)
+  - save_matches_sig:
+    description: |
+      Boolean value passed to sourmash/gather
+      Structure: val(boolean)
+  - save_prefetch:
+    description: |
+      Boolean value passed to sourmash/gather
+      Structure: val(boolean)
+  - save_prefetch_csv:
+    description: |
+      Boolean value passed to sourmash/gather
+      Structure: val(boolean)
+output:
+  - gindex:
+      description: |
+        Genome signatures from genomes/sketch
+        Structure: [ val(meta), path(sig) ]
+  - sindex:
+      description: |
+        Sample signatures from genomes/sketch
+        Structure: [ val(meta), path(sig) ]
+  - filtered_genomes:
+      description: |
+        Sample signatures from genomes/sketch
+        Structure: [ val(accno), path(genome) ]
+  - versions:
+      description: |
+        Files containing software versions
+        Structure: [ path(versions.yml) ]
+authors:
+  - "@danilodileo"
+  - "@erikrikarddaniel"
+maintainers:
+  - "@danilodileo"
+  - "@erikrikarddaniel"

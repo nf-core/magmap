@@ -4,16 +4,71 @@
 
 > _Documentation of pipeline parameters is generated automatically from the pipeline schema and can no longer be found in markdown files._
 
+## Table of Contents
+
+- [Introduction](#introduction)
+- [Running the workflow](#running-the-workflow)
+  - [Quickstart](#quickstart)
+  - [Samplesheet input](#samplesheet-input)
+  - [Multiple runs of the same sample](#multiple-runs-of-the-same-sample)
+  - [Full samplesheet](#full-samplesheet)
+  - [Genome input](#genome-input)
+  - [Other inputs](#other-inputs)
+    - [Index input](#index-input)
+    - [Genome metadata input](#genome-metadata-input)
+      - [GTDB metadata](#gtdb-metadata)
+      - [GTDB-Tk metadata](#gtdb-tk-metadata)
+      - [CheckM/CheckM2 metadata](#checkmcheckm2-metadata)
+  - [Check duplicates](#check-duplicates)
+  - [Remove contaminants from the samples] (#remove-contaminants-from-the-samples)
+  - [Sourmash](#sourmash)
+  - [Feature calling](#feature-calling)
+  - [Multimapping](#Multimapping)
+  - [Feature quantification](#feature-quantification)
+- [Running the pipeline](#running-the-pipeline)
+  - [Updating the pipeline](#updating-the-pipeline)
+  - [Reproducibility](#reproducibility)
+- [Core Nextflow arguments](#core-nextflow-arguments)
+  - [`-profile`](#-profile)
+  - [`-resume`](#-resume)
+  - [`-c`](#-c)
+- [Custom configuration](#custom-configuration)
+  - [Resource requests](#resource-requests)
+  - [Custom Containers](#custom-containers)
+  - [Custom Tool Arguments](#custom-tool-arguments)
+  - [nf-core/configs](#nf-core/configs)
+- [Running in the background](#running-in-the-background)
+- [Nextflow memory requirements](#nextflow-memory-requirements)
+
 ## Introduction
 
-<!-- TODO nf-core: Add documentation about anything specific to running your pipeline. For general topics, please point to (and add to) the main nf-core website. -->
+**nf-core/magmap** is a workflow designed for mapping metatranscriptomic and metagenomic reads onto a group of genomes.
+The collection of genomes can either be specified directly using a table (see the [`--genomeinfo` parameter](https://nf-co.re/magmap/parameters/#genomeinfo)) or be the result of filtering with Sourmash.
+The latter can use either the genomes specified by `--genomeinfo`, a "sketch index" pointing to genomes available for instance at NCBI (see the [`--indexes` parameter](https://nf-co.re/magmap/parameters/#indexes) or a combination, to identify a smaller set to map to.
+Genome files provided with `--genominfo` must include contigs in fasta format and optionally gff files (Prokka format).
+Any genome for which a gff file is missing will be annotated with Prokka.
+The pipeline can take output files from CheckM, CheckM2 and GTDB-Tk as input, and will provide processed output from these tools.
+Note that the pipeline can map to any collection of genomes, including single cell genomes and isolates.
 
-## Samplesheet input
+## Running the workflow
 
-You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row as shown in the examples below.
+### Quickstart
+
+A typical command for running the workflow is:
 
 ```bash
---input '[path to samplesheet file]'
+nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv
+```
+
+### Samplesheet input
+
+You will need to create a samplesheet with information about the samples you would like to analyse before running the pipeline. Use this parameter to specify its location. It must be a comma-separated file with 3 columns, and a header row as shown in the examples below
+
+```csv title="samplesheet.csv"
+sample,fastq_1,fastq_2
+T0a,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz
+T0b,AEG588A2_S2_L002_R1_001.fastq.gz,AEG588A2_S2_L002_R2_001.fastq.gz
+T0c,AEG588A3_S3_L002_R1_001.fastq.gz,AEG588A3_S3_L002_R2_001.fastq.gz
 ```
 
 ### Multiple runs of the same sample
@@ -52,12 +107,160 @@ TREATMENT_REP3,AEG588A6_S6_L004_R1_001.fastq.gz,
 
 An [example samplesheet](../assets/samplesheet.csv) has been provided with the pipeline.
 
+### Genome input
+
+A second file input is the genome input sheet, which is specified with the option [`--genomeinfo`](https://nf-co.re/magmap/parameters/#genomeinfo).
+This file is a `.csv` file and it can contain three columns: `accno`, `genome_fna`, `genome_gff`.
+The first two are mandatory, while the third, `genome_gff`, is not.
+
+```csv title="samplesheet.csv"
+accno,genome_fna,genome_gff
+GCA_002688505,./genomes/GCA_002688505.fna,./genomes/GCA_002688505.gff
+GCA_002688515,./genomes/GCA_002688515.fna,
+```
+
+> [!NOTE]
+> The pipeline assumes gff files have the same format as is output by Prokka.
+
+Any genome used by the pipeline for which a gff file is not found will be annotated with Prokka to produce a gff file.
+
+| Column       | Description                                                                                                                               |
+| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| `accno`      | Accession number. For your local genomes, write the name of them.                                                                         |
+| `genome_fna` | Full path to Fasta file that contains nucleotide sequences of your genome. File can be gzipped and have the extension ".fna.gz" or "fna". |
+| `genome_gff` | Full path to gff file of your genome. File can be gzipped and have the extension ".gff.gz" or ".gff".                                     |
+
+### Other inputs
+
+#### Index input
+
+In addition to, or instead of, providing a genome file with genomes to map to, you can provide a [Sourmash](https://sourmash.readthedocs.io/en/latest/) index file that points to genomes.
+Sourmash will be run using the index files and matching genomes will be downloaded, annotated with Prokka and mapped to by the pipeline.
+For this to work, entries in the Sourmash index need to point to NCBI assemblies with accessions in the format: `GC[A-Z]_[0-9]+\.[0-9]+`.
+The index input ([`--indexes`](https://nf-co.re/magmap/parameters/#indexes) is used by Sourmash to select genomes that can be downloaded in a second step and added to the pipeline.
+See also [Sourmash](#sourmash) below.
+
+Particular examples of Sourmash index files are those prepared by the authors of Sourmash, which can be found [here](https://sourmash.readthedocs.io/en/latest/databases.html).
+
+##### Remote genome sources
+
+Genomes are by default fetched from NCBI using genome information files provided through the [`--remote_genome_sources`](https://nf-co.re/magmap/parameters/#remote_genome_sources) parameter.
+This is a comma-separated list of paths to NCBI-style genome information files, containing at least the columns `#assembly_accession` and `ftp_path`.
+The `#assembly_accession` needs to match the identifiers used in the Sourmash indexes.
+By default, two NCBI files are used: `assembly_summary_refseq.txt` and `assembly_summary_genbank.txt`.
+Since the index files mentioned above provided by the [Sourmash authors](https://sourmash.readthedocs.io/en/latest/) use NCBI identifiers, the genome information files from NCBI work with them.
+
+```bash
+nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --indexes 'https://farm.cse.ucdavis.edu/~ctbrown/sourmash-db/gtdb-rs214/gtdb-rs214-reps.k21.sbt.zip'
+```
+
+Note, more than one index file can be provided, separated by commas.
+
+##### Genome data will be directed to a specific directory
+
+All genomes potentially downloaded as part of the Sourmash process, will be output in the directory specified with [`--genome_store_dir`](https://nf-co.re/magmap/parameters/#genome_store_dir) (set to `genomes` by default).  
+Similarly, the output from Prokka annotation of genomes will be stored in the directory specified with [`--prokka_store_dir`](https://nf-co.re/magmap/parameters/#prokka_store_dir) (`prokka` by default).
+On subsequent runs, any genome file or Prokka annotation files found in the specified directories will be skipped from download and/or Prokka annotation.
+Since annotating genomes is computationally relatively expensive, we recommend that you _reuse these directories_ between pipeline runs.
+If you create storage directories that you can access from the directories from which you run the pipeline, just symlink the storage directories to the pipeline run directory or give the full path to the `--genome_store_dir` and `--prokka_store_dir` parameters.
+
+> [!NOTE]
+> By default, the pipeline will try to download genomes from NCBI five times to allow for temporary errors.
+> After five attempts, any file that was not properly downloaded will be ignored and processing continues.
+
+#### Genome metadata input
+
+**nf-core/magmap** accepts three types of metadata files that provides information about the genomes that you will use in the pipeline.
+At the moment, **nf-core/magmap** can handle output from CheckM/CheckM2 and GTDB-Tk as well as standard GTDB metadata files.
+**nf-core/magmap** will merge the tables and summarise the information for easy access.
+
+##### (1) GTDB metadata
+
+With this parameter, you can supply a file like the GTDB metadata files provided on their official [website](https://gtdb.ecogenomic.org/), e.g. [`bac120_metadata_r220.tsv.gz`](https://data.ace.uq.edu.au/public/gtdb/data/releases/release220/220.0/bac120_metadata_r220.tsv.gz).
+You can either use their files directly or make a custom one.
+If you want make your own table, fill up the following columns: `accno`, `checkm_completeness`, `checkm_contamination`, `checkm_strain_heterogeneity`, `contig_count`, `genome_size`, `gtdb_genome_representative`,gtdb_representative`, `gtdb_taxonomy`.
+
+##### (2) GTDB-Tk metadata
+
+This file should be formatted like the GTDB-Tk output, [see](https://ecogenomics.github.io/GTDBTk/files/summary.tsv.html).
+
+##### (3) CheckM/CheckM2 metadata
+
+This file should be formatted like the CheckM or CheckM2 output, [see](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv).
+
+### Check duplicates
+
+The pipeline will perform validation checks to see if there are any duplicate names among the genomes that the user provides.
+If there are duplicates, the pipeline will stop and return a file with the contig names that needs to be changed in their name in order to work.
+This is done to avoid overlapping in the following steps (e.g. same prokka output for the protein sequences and the gffs).
+
+### Remove contaminants from the samples
+
+The pipeline can remove potential contaminants (e.g. rRNA sequences with SILVA database) using BBduk.
+Specify a fasta file, gzipped or not, with the [`--sequence_filter](parameters/#sequence_filter <sequences>.fasta` parameter.
+For further documentation, see the [BBduk official website](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbduk-guide/).
+
+```bash
+nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --sequence_filter path/to/file
+```
+
+> [!NOTE]
+> In our experience, removing rRNA and other abundant non-mRNA sequences from samples prior to mapping is more important than one might think.
+> Even if in theory, rRNA reads should map to rRNA genes, be properly quantified and not influence quantification of CDS features, we have observed
+> that this assumption not always holds.
+
+### Sourmash
+
+With [Sourmash](https://sourmash.readthedocs.io/en/latest/index.html) you can filter the genomes to be used by magmap in the mapping step.
+This function is optional but can speed up the process and is controlled by the [`--skip_sourmash` parameter](parameters/#skip_sourmash) (true by default).
+It can also allow identification of remote genomes that match samples in the run, see [Index input](#index-input) above.
+
+> [!NOTE] > `--skip_sourmash` only affects filtering of user-provided genomes. One or more provided indexes will always be evaluated with Sourmash.
+
+```bash
+nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --skip_sourmash false
+```
+
+### Feature calling
+
+The pipeline uses [Prokka](https://github.com/tseemann/prokka) to call features (genes/ORFs) from the genomes.
+This is suitable for prokaryotes and it provides a gff as output for downstream analysis.
+It also performs functional annotation of ORFs.
+Output from Prokka will be placed in subdirectories under the directory specified with [`--prokka_store_dir`](parameters/#prokka_store_dir) (default `prokka`) as described [above](#genome-data-will-be-directed-to-a-specific-directory).
+
+### Multimapping
+
+If there are several possible alignments, BBMap align will, by default, assign a read to only one target sequence.
+The pipeline supports all four possible BBMap values for this option:
+
+| bbmap_ambiguous | Behaviour                            |
+| --------------- | ------------------------------------ |
+| best            | Use the first best site              |
+| toss            | Consider unmapped                    |
+| random          | Select one top-scoring site randomly |
+| all             | Retain all top-scoring sites         |
+
+The default is 'best'.
+In the featureCounts step multiple matches are by default counted as fractions.
+If you prefer to count them all individually, set `--featurecounts_fraction false`.
+A typical command line for multiple alignment will then look like:
+
+```bash
+nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --skip_sourmash false --bbmap_ambiguous all
+```
+
+### Feature quantification
+
+Genome features -- by default CDS, rRNA, tRNA and tmRNA, but that can be controlled with [`--features`](parameters/#features) -- are quantified in a two-step process.
+First, reads are mapped to a concatenated set of genome contigs.
+Second, the mapping output is processed by FeatureCount to produce feature specific count tables.
+
 ## Running the pipeline
 
 The typical command for running the pipeline is as follows:
 
 ```bash
-nextflow run nf-core/magmap --input ./samplesheet.csv --outdir ./results --genome GRCh37 -profile docker
+nextflow run nf-core/magmap --input ./samplesheet.csv --outdir ./results --genomeinfo ./genomes.csv -profile docker
 ```
 
 This will launch the pipeline with the `docker` configuration profile. See below for more information about profiles.
@@ -68,6 +271,8 @@ Note that the pipeline will create the following files in your working directory
 work                # Directory containing the nextflow working files
 <OUTDIR>            # Finished results in specified location (defined with --outdir)
 .nextflow_log       # Log file from Nextflow
+magmap_genomes/     # Directory with downloaded genomes; the path can be changed with `--genome_store_dir`
+magmap_prokka/      # Directory with annotated genomes; the path can be changed with `--prokka_store_dir`
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
 
@@ -89,7 +294,6 @@ with:
 ```yaml title="params.yaml"
 input: './samplesheet.csv'
 outdir: './results/'
-genome: 'GRCh37'
 <...>
 ```
 
@@ -189,7 +393,7 @@ To learn how to provide additional arguments to a particular tool of the pipelin
 
 ### nf-core/configs
 
-In most cases, you will only need to create a custom config as a one-off but if you and others within your organisation are likely to be running nf-core pipelines regularly and need to use the same settings regularly it may be a good idea to request that your custom config file is uploaded to the `nf-core/configs` git repository. Before you do this please can you test that the config file works with your pipeline of choice using the `-c` parameter. You can then create a pull request to the `nf-core/configs` repository with the addition of your config file, associated documentation file (see examples in [`nf-core/configs/docs`](https://github.com/nf-core/configs/tree/master/docs)), and amending [`nfcore_custom.config`](https://github.com/nf-core/configs/blob/master/nfcore_custom.config) to include your custom profile.
+In most cases, you will only need to create a custom config as a one-off but if you and others within your organization are likely to be running nf-core pipelines regularly and need to use the same settings regularly it may be a good idea to request that your custom config file is uploaded to the `nf-core/configs` git repository. Before you do this please can you test that the config file works with your pipeline of choice using the `-c` parameter. You can then create a pull request to the `nf-core/configs` repository with the addition of your config file, associated documentation file (see examples in [`nf-core/configs/docs`](https://github.com/nf-core/configs/tree/master/docs)), and amending [`nfcore_custom.config`](https://github.com/nf-core/configs/blob/master/nfcore_custom.config) to include your custom profile.
 
 See the main [Nextflow documentation](https://www.nextflow.io/docs/latest/config.html) for more information about creating your own configuration files.
 

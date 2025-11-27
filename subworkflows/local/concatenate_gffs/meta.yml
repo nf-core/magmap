@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: cat_gffs
+description: Creates a concatenated set of gff files, containing only the feature description part. Handles large number of input files by concatenating in two passes.
+keywords:
+  - gff
+  - concatenate
+  - tsv
+components:
+  - cat/many
+  - genomes2orfs
+  - prokkagff2tsv
+input:
+  - ch_genome_gffs:
+      description: |
+        The input channel containing the gff files
+        Structure: [ gffs ]
+output:
+  - gff:
+      description: |
+        File containing concatenated gffs
+        Structure: path(gff)
+  - genomes2orfs:
+      description: |
+        TSV file containing a mapping between genome accessions and ORF identifiers
+        Structure: path(gff)
+  - gfftsv:
+      description: |
+        TSV file with ORF annotation information; assumes Prokka gff format
+        Structure: path(gff)
+  - versions:
+      description: |
+        Files containing software versions
+        Structure: [ path(versions.yml) ]
+authors:
+  - "@danilodileo"
+  - "@erikrikarddaniel"
+maintainers:
+  - "@danilodileo"
+  - "@erikrikarddaniel"

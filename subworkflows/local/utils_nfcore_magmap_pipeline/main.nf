@@ -36,6 +36,14 @@ workflow PIPELINE_INITIALISATION {
     help              // boolean: Display help message and exit
     help_full         // boolean: Show the full help message
     show_hidden       // boolean: Show hidden parameters in the help message
+    genomeinfo              //  string: Path to user-provided genome sheet
+    remote_genome_sources   //  string: Comma-separated list of NCBI-style genome summary files
+    genome_store_dir        //  string: Path to a directory where genome annotation files will be stored
+    indexes                 //  string: Path to user-provided Sourmash index file
+    gtdb_metadata           //  string: Paths to GTDB metadata files
+    gtdbtk_metadata         //  string: Path to GTDB-Tk metadata file
+    checkm_metadata         //  string: Path to GTDB metadata file
+    features                //  string: Comma-separated string of feature types
 
     main:
 
@@ -98,7 +106,7 @@ workflow PIPELINE_INITIALISATION {
     validateInputParameters()
 
     //
-    // Create channel from input file provided through params.input
+    // Create a channel from input file provided through params.input
     //
 
     channel
@@ -121,9 +129,92 @@ workflow PIPELINE_INITIALISATION {
         }
         .set { ch_samplesheet }
 
+    //
+    // INPUT: if the user provides --genomeinfo, populate ch_genomeinfo with a table that provides the genomes to filter with sourmash
+    //
+    ch_genomeinfo = Channel.empty()
+    if ( params.genomeinfo) {
+        Channel
+            .fromPath(params.genomeinfo)
+            .splitCsv(sep: ',', header: true)
+            .map { it -> [
+                    accno: it.accno,
+                    genome_fna: file(it.genome_fna),
+                    genome_gff: it.genome_gff ? file(it.genome_gff) : []
+                ]
+            }
+            .set { ch_genomeinfo }
+    }
+
+    //
+    // INPUT: genome info from ncbi
+    //
+    ch_remote_genome_sources = Channel.empty()
+    if ( remote_genome_sources ) {
+        ch_remote_genome_sources = Channel
+            .of(remote_genome_sources.split(','))
+            .map { file(it) }
+    }
+
+    //
+    // Make sure that the directories for genome and annotation storage exists
+    //
+    if ( params.genome_store_dir ) {
+        d = new File("${params.genome_store_dir}")
+        if ( ! d.exists() ) { d.mkdirs() }
+    }
+    if ( params.prokka_store_dir ) {
+        d = new File("${params.prokka_store_dir}")
+        if ( ! d.exists() ) { d.mkdirs() }
+    }
+
+    //
+    // INPUT: if the user provides, populate ch_indexes
+    //
+    ch_indexes = Channel.empty()
+    if ( indexes ) {
+        ch_indexes = Channel.fromPath(indexes)
+    }
+
+    //
+    // Take care of genome metadata files
+    //
+    ch_gtdb_metadata = Channel.empty()
+    if ( gtdb_metadata ) {
+        ch_gtdb_metadata = Channel
+            .of(gtdb_metadata.split(','))
+            .map { file(it) }
+    }
+
+    ch_gtdbtk_metadata = Channel.empty()
+    if ( gtdbtk_metadata ) {
+        ch_gtdbtk_metadata = Channel
+            .of(gtdbtk_metadata.split(','))
+            .map { file(it) }
+    }
+
+    ch_checkm_metadata = Channel.empty()
+    if ( checkm_metadata ) {
+        ch_checkm_metadata = Channel
+            .of(checkm_metadata.split(','))
+            .map { file(it) }
+    }
+
+    ch_features = Channel.of(
+        ['CDS'] + features.split(','))
+        .flatten()
+        .unique()
+
     emit:
-    samplesheet = ch_samplesheet
-    versions    = ch_versions
+    samplesheet             = ch_samplesheet
+    genomeinfo              = ch_genomeinfo
+    remote_genome_sources   = ch_remote_genome_sources
+    indexes                 = ch_indexes
+    gtdb_metadata           = ch_gtdb_metadata
+    gtdbtk_metadata         = ch_gtdbtk_metadata
+    checkm_metadata         = ch_checkm_metadata
+    features                = ch_features
+    versions                = ch_versions
 }
 
 /*
@@ -203,33 +294,23 @@ def validateInputSamplesheet(input) {
 //
 // Get attribute from genome config file e.g. fasta
 //
+// Not implemented, since we don't have a genome param
+//
 def getGenomeAttribute(attribute) {
-    if (params.genomes && params.genome && params.genomes.containsKey(params.genome)) {
-        if (params.genomes[ params.genome ].containsKey(attribute)) {
-            return params.genomes[ params.genome ][ attribute ]
-        }
-    }
     return null
 }
 
 //
 // Exit pipeline if incorrect --genome key provided
 //
+// Not implemented, since we don't have a genome param
+//
 def genomeExistsError() {
-    if (params.genomes && params.genome && !params.genomes.containsKey(params.genome)) {
-        def error_string = "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n" +
-            "  Genome '${params.genome}' not found in any config files provided to the pipeline.\n" +
-            "  Currently, the available genome keys are:\n" +
-            "  ${params.genomes.keySet().join(", ")}\n" +
-            "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
-        error(error_string)
-    }
 }
 //
 // Generate methods description for MultiQC
 //
 def toolCitationText() {
-    // TODO nf-core: Optionally add in-text citation tools to this list.
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "Tool (Foo et al. 2023)" : "",
     // Uncomment function in methodsDescriptionText to render in MultiQC report
     def citation_text = [
@@ -243,7 +324,6 @@ def toolCitationText() {
 }
 
 def toolBibliographyText() {
-    // TODO nf-core: Optionally add bibliographic entries to this list.
     // Can use ternary operators to dynamically construct based conditions, e.g. params["run_xyz"] ? "<li>Author (2023) Pub name, Journal, DOI</li>" : "",
     // Uncomment function in methodsDescriptionText to render in MultiQC report
     def reference_text = [
@@ -278,7 +358,6 @@ def methodsDescriptionText(mqc_methods_yaml) {
     meta["tool_citations"] = ""
     meta["tool_bibliography"] = ""
 
-    // TODO nf-core: Only uncomment below if logic in toolCitationText/toolBibliographyText has been filled!
     // meta["tool_citations"] = toolCitationText().replaceAll(", \\.", ".").replaceAll("\\. \\.", ".").replaceAll(", \\.", ".")
     // meta["tool_bibliography"] = toolBibliographyText()
 

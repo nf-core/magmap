@@ -1,0 +1,34 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: create_bbmap_index
+description: Create a BBMap index out of a set of fasta nucleotide files.
+keywords:
+  - fasta
+  - bbmap
+  - index
+components:
+  - cat/many
+  - bbmap/index
+input:
+  - ch_genome_fnas:
+      description: |
+        The input channel containing the fasta files
+        Structure: [ path(fasta) ]
+output:
+  - index:
+      description: |
+        The BBMap index directory
+        Structure: [ path(index_dir) ]
+  - genome_fnas:
+      description: |
+        A set of concatenated genome fasta files
+        Structure: [ path(fasta) ]
+  - versions:
+      description: |
+        Files containing software versions
+        Structure: [ path(versions.yml) ]
+authors:
+  - "@danilodileo"
+  - "@erikrikarddaniel"
+maintainers:
+  - "@danilodileo"
+  - "@erikrikarddaniel"

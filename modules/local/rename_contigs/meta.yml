@@ -1,0 +1,37 @@
+name: rename_contigs
+description: Renames sequences by prepending meta.id
+keywords:
+  - contigs
+  - duplicates
+  - fasta
+tools:
+  - seqkit:
+      description: SeqKit - a cross-platform and ultrafast toolkit for FASTA/Q file manipulation
+      homepage: https://github.com/shenwei356/seqkit
+      documentation: https://github.com/shenwei356/seqkit
+      licence: ["MIT"]
+      identifier: seqkit
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - fnas:
+        type: file
+        description: |
+          A gzipped fasta file with contigs
+output:
+  - rename_contigs:
+      - "*.renamed.fna.gz":
+          type: file
+          description: Gzipped fasta file with sequence names prepended with meta.id
+  - versions:
+      - versions.yml:
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"

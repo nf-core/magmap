@@ -1,0 +1,40 @@
+name: check_duplicates
+description: Checks if any input fasta files contain the same sequence names
+keywords:
+  - contigs
+  - duplicates
+  - fasta
+tools:
+  - grep:
+      description: GNU grep
+      homepage: https://www.gnu.org/software/grep/
+      documentation: https://www.gnu.org/software/grep/manual/
+      licence: ["GPL"]
+      identifier: grep
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - fnas:
+        type: file
+        description: |
+          List of input gzipped fasta files with contigs
+output:
+  - duplicate_genomes:
+      type: list
+      description: List of filenames containing duplicates
+  - genomes_with_duplicates:
+      - "*.genomes_with_duplicates.txt":
+          type: file
+          description: File with names of genomes containing duplicates
+  - versions:
+      - versions.yml:
+          type: file
+          description: File containing software versions
+          pattern: "versions.yml"
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"
