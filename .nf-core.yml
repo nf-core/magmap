@@ -5,7 +5,7 @@ lint:
   nextflow_config:
     - config_defaults:
         - params.ncbi_genome_infos
-nf_core_version: 3.4.1
+nf_core_version: 3.5.1
 repository_type: pipeline
 template:
   author: Danilo Di Leo, Emelie Nilsson and Daniel Lundin
