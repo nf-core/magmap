@@ -209,14 +209,15 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_magmap_software_mqc_versions.yml",
+                "samtools",
                 "samtools/s0.flagstat",
-                "samtools/s1.flagstat",
-                "samtools/s2.flagstat",
                 "samtools/s0.idxstats",
-                "samtools/s1.idxstats",
-                "samtools/s2.idxstats",
                 "samtools/s0.stats",
+                "samtools/s1.flagstat",
+                "samtools/s1.idxstats",
                 "samtools/s1.stats",
+                "samtools/s2.flagstat",
+                "samtools/s2.idxstats",
                 "samtools/s2.stats",
                 "summary_tables",
                 "summary_tables/magmap.CDS.counts.tsv.gz",
@@ -290,6 +291,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.8"
         },
-        "timestamp": "2025-11-27T17:53:28.453195207"
+        "timestamp": "2025-12-05T07:34:35.648733928"
     }
 }
