@@ -84,7 +84,7 @@
                     "pigz": 2.8
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.0.0"
+                    "nf-core/magmap": "v1.0.1dev"
                 }
             },
             [
@@ -299,8 +299,8 @@
         ],
         "meta": {
             "nf-test": "0.9.3",
-            "nextflow": "25.10.2"
+            "nextflow": "25.04.8"
         },
-        "timestamp": "2025-12-05T07:16:01.547805427"
+        "timestamp": "2025-12-05T09:15:16.099969967"
     }
 }

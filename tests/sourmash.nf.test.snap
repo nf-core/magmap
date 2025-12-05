@@ -83,7 +83,7 @@
                     "wget": "1.21.4"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.0.0"
+                    "nf-core/magmap": "v1.0.1dev"
                 }
             },
             [
@@ -242,6 +242,6 @@
             "nf-test": "0.9.3",
             "nextflow": "25.04.8"
         },
-        "timestamp": "2025-12-05T07:43:00.383968939"
+        "timestamp": "2025-12-05T09:32:22.125932212"
     }
 }
