@@ -23,6 +23,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
   - [Quantification of genome features](#quantification-of-genome-features)
     - [BBmap](#bbmap) - Output from BBmap
     - [FeatureCounts](#featureCounts) - Output from FeatureCounts
+    - [Samtools](#samtools) - Output from Samtools
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 - [MultiQC](#multiqc) - Aggregate report describing results
 
@@ -147,6 +148,18 @@ To save the `.bam` files, use `--bbmap_save_bam` and to save the index, use `--b
 - `featurecounts/`
   - `<SAMPLE>.<FEATURE>.featureCounts.tsv`: Counts for `SAMPLE` and `FEATURE`
   - `<SAMPLE>.<FEATURE>.featureCounts.tsv.summary`: Summary of counts for `SAMPLE` and `FEATURE`
+
+<details markdown="1">
+
+#### Samtools
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `samtools/`
+  - `<SAMPLE>.flagstat`: Flagstat statistics for `SAMPLE`
+  - `<SAMPLE>.idxstats`: Idxstats statistics for `SAMPLE`
+  - `<SAMPLE>.stats`: Stats statistics for `SAMPLE`
 
 <details markdown="1">
 
