@@ -53,7 +53,7 @@ process PROKKAGFF2TSV {
             ec_number = if_else(
                 is.na(ec_number) & str_detect(db_xref, 'EC:'),
                 str_replace(db_xref, '.*EC:([0-9.-]+).*', '\\\\1'),
-                ec_number 
+                ec_number
             )
         ) %>%
         transmute(
