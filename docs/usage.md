@@ -45,7 +45,7 @@
 **nf-core/magmap** is a workflow designed for mapping metatranscriptomic and metagenomic reads onto a group of genomes.
 The collection of genomes can either be specified directly using a table (see the [`--genomeinfo` parameter](https://nf-co.re/magmap/parameters/#genomeinfo)) or be the result of filtering with Sourmash.
 The latter can use either the genomes specified by `--genomeinfo`, a "sketch index" pointing to genomes available for instance at NCBI (see the [`--indexes` parameter](https://nf-co.re/magmap/parameters/#indexes) or a combination, to identify a smaller set to map to.
-Genome files provided with `--genominfo` must include contigs in fasta format and optionally gff files (Prokka format).
+Genome files provided with `--genominfo` must include contigs in fasta format and optionally gff files (Prokka or Bakta format).
 Any genome for which a gff file is missing will be annotated with Prokka.
 The pipeline can take output files from CheckM, CheckM2 and GTDB-Tk as input, and will provide processed output from these tools.
 Note that the pipeline can map to any collection of genomes, including single cell genomes and isolates.
@@ -120,7 +120,7 @@ GCA_002688515,./genomes/GCA_002688515.fna,
 ```
 
 > [!NOTE]
-> The pipeline assumes gff files have the same format as is output by Prokka.
+> The pipeline assumes gff files have the same format as is output by Prokka or Bakta.
 
 Any genome used by the pipeline for which a gff file is not found will be annotated with Prokka to produce a gff file.
 

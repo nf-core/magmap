@@ -44,9 +44,21 @@ process PROKKAGFF2TSV {
         pivot_wider(names_from = k, values_from = v) %>%
         select(-a, -b) %>%
         rename_all(str_to_lower) %>%
+            mutate(
+        db_xref   = if ("db_xref" %in% names(.)) db_xref else if ("dbxref" %in% names(.)) dbxref else NA_character_,
+        gene      = if ("gene" %in% names(.)) gene else NA_character_,
+        ec_number = if ("ec_number" %in% names(.)) ec_number else NA_character_
+        ) %>%
+        mutate(
+            ec_number = if_else(
+                is.na(ec_number) & str_detect(db_xref, 'EC:'),
+                str_replace(db_xref, '.*EC:([0-9.-]+).*', '\\\\1'),
+                ec_number 
+            )
+        ) %>%
         transmute(
             locus_tag = id, ftype = feature, length = abs(start - end) + 1, gene, ec_number,
-            cog = ifelse(str_detect(db_xref, 'COG'), str_replace(db_xref, '.*COG:([A-Z0-9]+).*', '\\\\1'), NA),
+            cog = ifelse(str_detect(db_xref, 'COG'), str_replace(db_xref, '.*COG:(COG[0-9]+).*', '\\\\1'), NA),
             product
         ) %>%
         as.data.table() %>%
