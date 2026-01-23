@@ -23,8 +23,8 @@
             "genome_gff": {
                 "type": "string",
                 "format": "file-path",
-                "pattern": "^\\S+\\.gff(\\.gz)?$",
-                "errorMessage": "The name of the gff file cannot contain spaces and must end with `.gff``, potentially followed by a `.gz`",
+                "pattern": "^\\S+\\.gff3?(\\.gz)?$",
+                "errorMessage": "The name of the gff file cannot contain spaces and must end with `.gff` or `.gff3``, potentially followed by a `.gz`",
                 "meta": ["genome_gff"]
             }
         },
