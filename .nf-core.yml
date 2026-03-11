@@ -1,4 +1,11 @@
-nf_core_version: 3.3.2
+lint:
+  files_unchanged:
+    - docs/images/nf-core-magmap_logo_light.png
+    - docs/images/nf-core-magmap_logo_dark.png
+  nextflow_config:
+    - config_defaults:
+        - params.ncbi_genome_infos
+nf_core_version: 3.5.2
 repository_type: pipeline
 template:
   author: Danilo Di Leo, Emelie Nilsson and Daniel Lundin
@@ -9,4 +16,4 @@ template:
   name: magmap
   org: nf-core
   outdir: .
-  version: 1.0.0
+  version: 1.0.1dev
