@@ -20,7 +20,7 @@ workflow SOURMASH {
         skip_sourmash               // Boolean that controls whether user-provided genomes are sketched, indexed and used in gathering genomes
 
     main:
-        ch_versions = Channel.empty()
+        ch_versions = channel.empty()
 
         ch_ncbi_genomeinfo = ch_remote_genome_sources
                 .splitCsv(skip: 1, header: true, sep: '\t')
@@ -32,7 +32,7 @@ workflow SOURMASH {
                     ]
                 }
 
-        ch_sample_sigs = Channel.empty()
+        ch_sample_sigs = channel.empty()
         if ( index_list || ! skip_sourmash ) {
             SAMPLE_SKETCH(ch_sample_reads)
             ch_versions = ch_versions.mix(SAMPLE_SKETCH.out.versions)

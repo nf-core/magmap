@@ -9,7 +9,7 @@ workflow CREATE_BBMAP_INDEX {
         ch_genome_fnas
 
     main:
-        ch_versions = Channel.empty()
+        ch_versions = channel.empty()
         CAT_FNA( [id:'cat.fna'], ch_genome_fnas.collect() )
         ch_versions = ch_versions.mix(CAT_FNA.out.versions)
 

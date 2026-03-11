@@ -132,9 +132,9 @@ workflow PIPELINE_INITIALISATION {
     //
     // INPUT: if the user provides --genomeinfo, populate ch_genomeinfo with a table that provides the genomes to filter with sourmash
     //
-    ch_genomeinfo = Channel.empty()
+    ch_genomeinfo = channel.empty()
     if ( params.genomeinfo) {
-        Channel
+        channel
             .fromPath(params.genomeinfo)
             .splitCsv(sep: ',', header: true)
             .map { it -> [
@@ -149,9 +149,9 @@ workflow PIPELINE_INITIALISATION {
     //
     // INPUT: genome info from ncbi
     //
-    ch_remote_genome_sources = Channel.empty()
+    ch_remote_genome_sources = channel.empty()
     if ( remote_genome_sources ) {
-        ch_remote_genome_sources = Channel
+        ch_remote_genome_sources = channel
             .of(remote_genome_sources.split(','))
             .map { file(it) }
     }
@@ -171,36 +171,36 @@ workflow PIPELINE_INITIALISATION {
     //
     // INPUT: if the user provides, populate ch_indexes
     //
-    ch_indexes = Channel.empty()
+    ch_indexes = channel.empty()
     if ( indexes ) {
-        ch_indexes = Channel.fromPath(indexes)
+        ch_indexes = channel.fromPath(indexes)
     }
 
     //
     // Take care of genome metadata files
     //
-    ch_gtdb_metadata = Channel.empty()
+    ch_gtdb_metadata = channel.empty()
     if ( gtdb_metadata ) {
-        ch_gtdb_metadata = Channel
+        ch_gtdb_metadata = channel
             .of(gtdb_metadata.split(','))
             .map { file(it) }
     }
 
-    ch_gtdbtk_metadata = Channel.empty()
+    ch_gtdbtk_metadata = channel.empty()
     if ( gtdbtk_metadata ) {
-        ch_gtdbtk_metadata = Channel
+        ch_gtdbtk_metadata = channel
             .of(gtdbtk_metadata.split(','))
             .map { file(it) }
     }
 
-    ch_checkm_metadata = Channel.empty()
+    ch_checkm_metadata = channel.empty()
     if ( checkm_metadata ) {
-        ch_checkm_metadata = Channel
+        ch_checkm_metadata = channel
             .of(checkm_metadata.split(','))
             .map { file(it) }
     }
 
-    ch_features = Channel.of(
+    ch_features = channel.of(
         ['CDS'] + features.split(','))
         .flatten()
         .unique()

@@ -10,7 +10,7 @@ workflow CONCATENATE_GFFS {
     ch_genome_gffs
 
     main:
-        ch_versions = Channel.empty()
+        ch_versions = channel.empty()
 
         CAT_GFF([id:'genomes'], ch_genome_gffs.collect())
         ch_versions = ch_versions.mix(CAT_GFF.out.versions)
