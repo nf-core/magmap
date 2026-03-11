@@ -12,7 +12,7 @@ process WGET {
 
     output:
     tuple val(meta), path("${url.substring(url.lastIndexOf('/')+1, url.length())}"), emit: outfile
-    path "versions.yml"                                                            , emit: versions
+    tuple val("${task.process}"), val('wget'), eval('wget --version | head -1 | cut -d " " -f 3'), emit: versions_wget, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -25,20 +25,10 @@ process WGET {
     wget \\
         $args \\
         $url
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        wget: \$(wget --version | head -1 | cut -d ' ' -f 3)
-    END_VERSIONS
     """
 
     stub:
     """
     touch ${url.substring( url.lastIndexOf('/')+1, url.length() )}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        wget: \$(wget --version | head -1 | cut -d ' ' -f 3)
-    END_VERSIONS
     """
 }
