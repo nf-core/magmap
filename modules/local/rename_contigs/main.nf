@@ -11,30 +11,20 @@ process RENAME_CONTIGS {
     tuple val(meta), path(contigs)
 
     output:
-    tuple val(meta), path("*.renamed.fna.gz"), emit: renamed_contigs
-    path "versions.yml"                      , emit: versions
+    tuple val(meta), path("${prefix}.renamed.fna.gz"), emit: renamed_contigs
+    tuple val("${task.process}"), val('seqkit'), eval('seqkit version | sed "s/seqkit v//" | sed "s/ Build.*//"'), emit: versions_seqkit, topic: versions
 
     script:
-    def prefix     = task.ext.prefix ?: meta.id
-    def prefix_md5 = prefix.md5().substring(0,9)
+    prefix     = task.ext.prefix ?: meta.id
+    prefix_md5 = prefix.md5().substring(0,9)
 
     """
     seqkit replace -p "^" -r "${prefix_md5}_" $contigs | gzip -c > ${prefix}.renamed.fna.gz
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        seqkit: \$(seqkit version | sed 's/seqkit v//' | sed 's/ Build.*//')
-    END_VERSIONS
     """
 
     stub:
-    def prefix = task.ext.prefix ?: meta.id
+    prefix = task.ext.prefix ?: meta.id
     """
-    touch ${prefix}_renamed_contigs.fna.gz
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        seqkit: 2.3.1
-    END_VERSIONS
+    cat /dev/null | gzip -c > ${prefix}.renamed.fna.gz
     """
 }

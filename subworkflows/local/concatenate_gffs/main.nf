@@ -10,16 +10,11 @@ workflow CONCATENATE_GFFS {
     ch_genome_gffs
 
     main:
-        ch_versions = channel.empty()
-
         CAT_GFF([id:'genomes'], ch_genome_gffs.collect())
-        ch_versions = ch_versions.mix(CAT_GFF.out.versions)
 
         GENOMES2ORFS(ch_genome_gffs.collect().map { gffs -> [ [ id: 'genomes' ], gffs ] })
-        ch_versions = ch_versions.mix(GENOMES2ORFS.out.versions)
 
     emit:
     gff          = CAT_GFF.out.concatenated_files
     genomes2orfs = GENOMES2ORFS.out.genomes2orfs
-    versions     = ch_versions
 }

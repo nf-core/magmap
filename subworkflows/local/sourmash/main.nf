@@ -20,8 +20,6 @@ workflow SOURMASH {
         skip_sourmash               // Boolean that controls whether user-provided genomes are sketched, indexed and used in gathering genomes
 
     main:
-        ch_versions = channel.empty()
-
         ch_ncbi_genomeinfo = ch_remote_genome_sources
                 .splitCsv(skip: 1, header: true, sep: '\t')
                 .map { row ->
@@ -35,8 +33,6 @@ workflow SOURMASH {
         ch_sample_sigs = channel.empty()
         if ( index_list || ! skip_sourmash ) {
             SAMPLE_SKETCH(ch_sample_reads)
-            ch_versions = ch_versions.mix(SAMPLE_SKETCH.out.versions)
-
             ch_sample_sigs = SAMPLE_SKETCH.out.signatures
         }
 
@@ -44,19 +40,16 @@ workflow SOURMASH {
         ch_selected_user_genomes = ch_user_genomeinfo   // Will be set to selected genomes if sourmash is _not_ skipped, since sourmash will then be used to select matching genomes
         if ( ! skip_sourmash ) {
             GENOME_SKETCH(ch_user_genomeinfo.map { [ [ id: it.accno ], it.genome_fna ] })
-            ch_versions = ch_versions.mix(GENOME_SKETCH.out.versions)
 
             ch_genome_sigs = GENOME_SKETCH.out.signatures
                 .collect { meta, sig -> sig }
                 .map { sigs -> [ [ id: 'local-genomes' ], sigs ] }
 
             GENOME_INDEX(ch_genome_sigs, ksize)
-            ch_versions = ch_versions.mix(GENOME_INDEX.out.versions)
 
             ch_user_genome_index = GENOME_INDEX.out.signature_index
 
             GATHER_USER_GENOMES(ch_sample_sigs, ch_genome_sigs, true, true, true, true)
-            ch_versions = ch_versions.mix(GATHER_USER_GENOMES.out.versions)
 
             // Collect matching user genomes
             ch_selected_user_genomes = ch_user_genomeinfo
@@ -79,7 +72,9 @@ workflow SOURMASH {
             // and multiple indexes. In our experience, this does not return the full set of hits however.)
             def i = 0
             ch_gather = ch_sample_sigs
-                .combine(ch_indexes.map { index -> [ [ id: sprintf("remoteidx_%02d", i++) ], index ] })
+                .combine(
+                    ch_indexes.map { index -> [ [ id: sprintf("remoteidx_%02d", i++) ], index ] }
+                )
 
             // Do only the remote-genome index gathering here
             GATHER_REMOTE_GENOMES(
@@ -87,7 +82,6 @@ workflow SOURMASH {
                 ch_gather.map { it -> [ it[2], it[3] ] },
                 true, true, true, true
             )
-            ch_versions = ch_versions.mix(GATHER_REMOTE_GENOMES.out.versions)
 
             // The genomes that were selected by sourmash can either be local genomes provided by the user
             // with --genomeinfo, or genomes we need to fetch from NCBI
@@ -115,7 +109,6 @@ workflow SOURMASH {
                     )
                     .map { genome -> [ [ id: genome[1].accno ], genome[1].genome_fna ] }
             )
-            ch_versions = ch_versions.mix(WGET_GENOME.out.versions)
 
             // 3. Mix the local and the newly fetched NCBI genomes
             ch_filtered_genomes = ch_selected_user_genomes
@@ -127,5 +120,4 @@ workflow SOURMASH {
 
     emit:
         filtered_genomes = ch_filtered_genomes
-        versions         = ch_versions
 }

@@ -9,15 +9,11 @@ workflow CREATE_BBMAP_INDEX {
         ch_genome_fnas
 
     main:
-        ch_versions = channel.empty()
         CAT_FNA( [id:'cat.fna'], ch_genome_fnas.collect() )
-        ch_versions = ch_versions.mix(CAT_FNA.out.versions)
 
-        BBMAP_INDEX (CAT_FNA.out.concatenated_files.map{ it[1]})
-        ch_versions = ch_versions.mix(BBMAP_INDEX.out.versions)
+        BBMAP_INDEX (CAT_FNA.out.concatenated_files.map{ it -> it[1]})
 
     emit:
     index         = BBMAP_INDEX.out.index.collect()
     genome_fnas   = CAT_FNA.out.concatenated_files.collect()
-    versions      = ch_versions
 }

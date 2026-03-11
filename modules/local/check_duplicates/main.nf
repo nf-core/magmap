@@ -11,25 +11,26 @@ process CHECK_DUPLICATES {
     tuple val(meta), path(fnas, stageAs: 'contigs/*')
 
     output:
-    stdout                                emit: duplicate_genomes
-    path "*.genomes_with_duplicates.txt", emit: genomes_with_duplicates
-    path "versions.yml"                 , emit: versions
+    stdout                        emit: duplicate_genomes
+    path "${outfile}"           , emit: genomes_with_duplicates
+    tuple val("${task.process}"), val('zgrep'), eval('zgrep --version | sed "s/.*/1.5/" | head -n 1'), emit: versions_zgrep, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
     def prefix  = task.ext.prefix ?: meta.id
-    def outfile = "${prefix}.genomes_with_duplicates.txt"
+    outfile = "${prefix}.genomes_with_duplicates.txt"
 
     """
     zgrep -h '>' $fnas | sed 's/>//' | sort | uniq -d > dupl_contig_names.txt
     zgrep -l -F -f dupl_contig_names.txt $fnas | sed 's:contigs/::' | sort -u > ${outfile} || touch ${outfile}
     cat ${outfile}
+    """
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        zgrep: \$( zgrep --version | sed 's/.*/1.5/' | head -n 1 )
-    END_VERSIONS
+    stub:
+    """
+    touch ${outfile}
+    cat ${outfile}
     """
 }

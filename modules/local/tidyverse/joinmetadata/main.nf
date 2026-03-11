@@ -16,7 +16,7 @@ process TIDYVERSE_JOINMETADATA {
 
     output:
     path "*.genome_metadata.tsv.gz", emit: genome_metadata
-    path "versions.yml"            , emit: versions
+    path "versions.yml"            , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when

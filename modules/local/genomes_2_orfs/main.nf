@@ -11,7 +11,7 @@ process GENOMES2ORFS {
 
     output:
     path "*.genomes2orfs.tsv.gz", emit: genomes2orfs
-    path "versions.yml"         , emit: versions
+    tuple val("${task.process}"), val('sed'), eval('sed --version 2>&1 | grep "^sed" | sed "s/^.* //"'), emit: versions_sed, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -35,10 +35,10 @@ process GENOMES2ORFS {
         fi | grep -o 'ID=[A-Z0-9_]\\+' | \
             sed "s/^/\$ac\\t\$fn\\t/; s/ID=//" | gzip -c >> ${outfile}
     done
+    """
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        sed: \$(sed --version 2>&1 | grep "^sed" | sed 's/^.* //')
-    END_VERSIONS
+    stub:
+    """
+    touch ${outfile}
     """
 }

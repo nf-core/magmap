@@ -12,13 +12,12 @@ process CATPROKKATSVS {
 
     output:
     tuple val(meta), path("${outfile}.gz"), emit: tsv
-    path "versions.yml"                   , emit: versions
+    tuple val("${task.process}"), val('pigz'), eval('pigz --version 2>&1 | sed "s/^pigz //"'), emit: versions_pigz, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
     outfile = "${prefix}.prokka-annotations.tsv"
     """
@@ -27,26 +26,17 @@ process CATPROKKATSVS {
     find tsvs -name "*.tsv.gz" | xargs unpigz -c | grep -v '^locus_tag' | grep -v '\tgene\t' >> ${outfile}
 
     pigz ${outfile}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        pigz: \$(echo \$(pigz --version 2>&1) | sed 's/^.*pigz[[:space:]]*//' )
-    END_VERSIONS
     """
 
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
-    outfile = "${prefix}.prokka-annotations.tsv"
+    outfile = "${prefix}.prokka-annotations.tsv.gz"
     """
     echo $args
 
     touch ${outfile}
-    pigz ${outfile}
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        pigz: \$(echo \$(pigz --version 2>&1) | sed 's/^.*pigz[[:space:]]*//' )
-    END_VERSIONS
+    pigz ${outfile}
     """
 }

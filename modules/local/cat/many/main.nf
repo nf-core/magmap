@@ -12,13 +12,12 @@ process CAT_MANY {
 
     output:
     tuple val(meta), path("*.gz"), emit: concatenated_files
-    path "versions.yml"          , emit: versions
+    tuple val("${task.process}"), val('pigz'), eval('pigz --version 2>&1 | sed "s/^pigz //"'), emit: versions_pigz, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args    = task.ext.args ?: ''
     def prefix  = task.ext.prefix ?: "${meta.id}"
     def outfile = "${prefix}.gz"
 
@@ -39,21 +38,11 @@ process CAT_MANY {
 
     echo "Cleaning up..."
     rm temp_concatenated
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        pigz: \$( pigz --version 2>&1 | sed 's/^pigz //' )
-    END_VERSIONS
     """
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
     """
     touch ${prefix}.gz
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        pigz: \$( pigz --version 2>&1 | sed 's/^pigz //' )
-    END_VERSIONS
     """
 }

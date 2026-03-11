@@ -70,7 +70,6 @@ workflow MAGMAP {
         .map { g -> [ [ id: "local-genomes" ], g ] }
 
     CHECK_DUPLICATES(ch_check_duplicates)
-    ch_versions = ch_versions.mix(CHECK_DUPLICATES.out.versions)
 
     ch_duplicates = CHECK_DUPLICATES.out.duplicate_genomes
         .flatMap { it -> it.tokenize('\n') }
@@ -90,7 +89,6 @@ workflow MAGMAP {
         ch_genomes_pre_renaming.needs_renaming
             .map { g -> [ [ id: g.accno ], g.genome_fna ] }
     )
-    ch_versions = ch_versions.mix(RENAME_CONTIGS.out.versions)
 
     ch_genomes_post_renaming = RENAME_CONTIGS.out.renamed_contigs
         .map { g -> [ accno: g[0].id, genome_fna: g[1], genome_gff: [] ] }
@@ -115,13 +113,11 @@ workflow MAGMAP {
     //
     FASTQC(ch_samplesheet)
     ch_multiqc_files = ch_multiqc_files.mix(FASTQC.out.zip.collect{ it -> it[1] })
-    ch_versions = ch_versions.mix(FASTQC.out.versions.first())
 
     //
     // MODULE: Concatenate FastQ files from same sample if required
     //
     CAT_FASTQ (ch_short_reads_forcat.cat.map { meta, reads -> [meta, reads.flatten()] })
-    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first())
 
     // Ensure we don't have nests of nests so that structure is in form expected for assembly
     ch_short_reads_catskipped = ch_short_reads_forcat.skip_cat.map { meta, reads ->
@@ -132,7 +128,6 @@ workflow MAGMAP {
     // Combine single run and multi-run-merged data
     ch_short_reads = channel.empty()
     ch_short_reads = CAT_FASTQ.out.reads.mix(ch_short_reads_catskipped)
-    ch_versions = ch_versions.mix(CAT_FASTQ.out.versions.first())
 
     //
     // SUBWORKFLOW: Read QC and trim adapters
@@ -142,8 +137,6 @@ workflow MAGMAP {
         skip_fastqc || skip_qc,
         skip_trimming
     )
-
-    ch_versions = ch_versions.mix(FASTQC_TRIMGALORE.out.versions)
 
     ch_collect_stats = ch_short_reads
         .collect { meta, _fasta -> meta }
@@ -173,7 +166,6 @@ workflow MAGMAP {
     //
     if ( sequence_filter ) {
         BBMAP_BBDUK(FASTQC_TRIMGALORE.out.reads, sequence_filter)
-        ch_versions   = ch_versions.mix(BBMAP_BBDUK.out.versions)
 
         ch_clean_reads = BBMAP_BBDUK.out.reads
         ch_bbduk_logs = BBMAP_BBDUK.out.log.collect { it -> it[1] }.map { it -> [ it ] }
@@ -199,7 +191,6 @@ workflow MAGMAP {
         sourmash_ksize,
         skip_sourmash
     )
-    ch_versions = ch_versions.mix(SOURMASH.out.versions)
     ch_genomes = SOURMASH.out.filtered_genomes
 
     //
@@ -215,7 +206,6 @@ workflow MAGMAP {
         ch_gtdbtk_metadata.collect().ifEmpty([]),
         ch_checkm_metadata.collect().ifEmpty([])
     )
-    ch_versions = ch_versions.mix(TIDYVERSE_JOINMETADATA.out.versions.first())
 
     //
     // MODULE: Prokka - get gff for all genomes that lack it
@@ -227,13 +217,11 @@ workflow MAGMAP {
         .map { g -> [ [ id: g.accno ], g.genome_fna ] }
 
     PROKKA(ch_no_gff, [], [])
-    ch_versions = ch_versions.mix(PROKKA.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(PROKKA.out.log.collect{ _meta, log -> log })
 
     PROKKAGFF2TSV(
         ch_genomes.filter { g -> g.genome_gff }.map { g -> [ [ id: g.accno ], g.genome_gff ] }
     )
-    ch_versions = ch_versions.mix(PROKKAGFF2TSV.out.versions)
 
     CATPROKKATSVS(
         PROKKA.out.tsv
@@ -244,7 +232,6 @@ workflow MAGMAP {
             .collect()
             .map { t -> [ [ id: 'magmap' ], t ] }
     )
-    ch_versions = ch_versions.mix(CATPROKKATSVS.out.versions)
 
     // Mix genome entries that were not sent to Prokka with those that were not
     ch_collected_genomes = ch_genomes
@@ -259,26 +246,22 @@ workflow MAGMAP {
     // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
     //
     CREATE_BBMAP_INDEX(ch_collected_genomes.map { it -> it.genome_fna })
-    ch_versions = ch_versions.mix(CREATE_BBMAP_INDEX.out.versions)
 
     //
     // SUBWORKFLOW: Concatenate gff files
     //
     CONCATENATE_GFFS(ch_collected_genomes.map { it -> it.genome_gff })
-    ch_versions = ch_versions.mix(CONCATENATE_GFFS.out.versions)
 
     //
     // BBMAP ALIGN. Call BBMap with the index once per sample
     //
     BBMAP_ALIGN ( ch_clean_reads, CREATE_BBMAP_INDEX.out.index )
     ch_multiqc_files = ch_multiqc_files.mix(BBMAP_ALIGN.out.log.collect{ _meta, log -> log })
-    ch_versions = ch_versions.mix(BBMAP_ALIGN.out.versions)
 
     //
     // SUBWORKFLOW: sort bam file and produce statistics
     //
     BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genome_fnas)
-    ch_versions = ch_versions.mix(BAM_SORT_STATS_SAMTOOLS.out.versions)
 
     ch_stage_counts = BAM_SORT_STATS_SAMTOOLS.out.bam
         .combine(CONCATENATE_GFFS.out.gff.map { it -> it[1] })
@@ -296,7 +279,6 @@ workflow MAGMAP {
         }
 
     FEATURECOUNTS(ch_featurecounts)
-    ch_versions = ch_versions.mix(FEATURECOUNTS.out.versions)
     ch_multiqc_files = ch_multiqc_files.mix(FEATURECOUNTS.out.summary.collect{ _meta, log -> log })
 
     //
@@ -315,7 +297,6 @@ workflow MAGMAP {
         }
 
     COLLECT_FEATURECOUNTS(ch_collect_featurecounts)
-    ch_versions           = ch_versions.mix(COLLECT_FEATURECOUNTS.out.versions)
 
     ch_fcs_for_stats      = COLLECT_FEATURECOUNTS.out.counts.collect { _meta, tsv -> tsv }.map { it -> [ it ] }
     //ch_fcs_for_summary    = COLLECT_FEATURECOUNTS.out.counts.map { _meta, tsv -> tsv }
@@ -325,7 +306,6 @@ workflow MAGMAP {
     // Collect statistics from the pipeline
     //
     COLLECT_STATS(ch_collect_stats.map { s -> s + [[]] }) // The last [[]] is to create a value for the `mergetab` that we have in metatdenovo (which shares the swf)
-    ch_versions     = ch_versions.mix(COLLECT_STATS.out.versions)
 
     //
     // Collate and save software versions
@@ -379,7 +359,7 @@ workflow MAGMAP {
     ch_methods_description                = channel.value(
         methodsDescriptionText(ch_multiqc_custom_methods_description))
 
-    ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
+    //ch_multiqc_files = ch_multiqc_files.mix(ch_collated_versions)
     ch_multiqc_files = ch_multiqc_files.mix(
         ch_methods_description.collectFile(
             name: 'methods_description_mqc.yaml',
