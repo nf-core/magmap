@@ -347,7 +347,7 @@ workflow MAGMAP {
             "${process}:\n${tool_versions.join('\n')}"
         }
 
-    ch_collated_versions = softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
+    softwareVersionsToYAML(ch_versions.mix(topic_versions.versions_file))
         .mix(topic_versions_string)
         .collectFile(
             storeDir: "${outdir}/pipeline_info",
