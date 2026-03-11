@@ -5,8 +5,7 @@
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18,
-                    "samtools": 1.21,
-                    "pigz": 2.8
+                    "samtools": 1.21
                 },
                 "BBMAP_INDEX": {
                     "bbmap": 39.18
@@ -41,7 +40,7 @@
                     "fastqc": "0.12.1"
                 },
                 "FEATURECOUNTS": {
-                    "subread": "2.0.6"
+                    "subread": "2.1.1"
                 },
                 "GENOMES2ORFS": {
                     "sed": 4.9
@@ -77,9 +76,7 @@
                     "stringr": "1.5.2"
                 },
                 "TRIMGALORE": {
-                    "trimgalore": "0.6.10",
-                    "cutadapt": 4.9,
-                    "pigz": 2.8
+                    "trimgalore": "0.6.10"
                 },
                 "Workflow": {
                     "nf-core/magmap": "v1.0.1dev"
@@ -145,7 +142,6 @@
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_featurecounts.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
-                "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_plots",
                 "multiqc/multiqc_plots/pdf",
@@ -272,10 +268,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
+        "timestamp": "2026-03-11T16:43:06.222850091",
         "meta": {
-            "nf-test": "0.9.3",
-            "nextflow": "25.04.8"
-        },
-        "timestamp": "2025-12-05T09:21:10.863380116"
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
     }
 }
