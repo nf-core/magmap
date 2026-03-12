@@ -39,15 +39,13 @@ workflow SOURMASH {
         // Skip sketching and indexing of user-provided genomes if skip_sourmash is set
         ch_selected_user_genomes = ch_user_genomeinfo   // Will be set to selected genomes if sourmash is _not_ skipped, since sourmash will then be used to select matching genomes
         if ( ! skip_sourmash ) {
-            GENOME_SKETCH(ch_user_genomeinfo.map { [ [ id: it.accno ], it.genome_fna ] })
+            GENOME_SKETCH(ch_user_genomeinfo.map { it -> [ [ id: it.accno ], it.genome_fna ] })
 
             ch_genome_sigs = GENOME_SKETCH.out.signatures
-                .collect { meta, sig -> sig }
+                .collect { _meta, sig -> sig }
                 .map { sigs -> [ [ id: 'local-genomes' ], sigs ] }
 
             GENOME_INDEX(ch_genome_sigs, ksize)
-
-            ch_user_genome_index = GENOME_INDEX.out.signature_index
 
             GATHER_USER_GENOMES(ch_sample_sigs, ch_genome_sigs, true, true, true, true)
 
@@ -56,7 +54,7 @@ workflow SOURMASH {
                 .map { genome -> [ [ genome.accno ], genome ] }
                 .join(
                     GATHER_USER_GENOMES.out.result
-                        .map { meta, csv -> csv }
+                        .map { _meta, csv -> csv }
                         .splitCsv( sep: ',', header: true, quote: '"')
                         .map { genome -> [ [ genome.name ], [ accno: genome.name ] ] }
                         .unique()
@@ -73,7 +71,7 @@ workflow SOURMASH {
             def i = -1
             ch_gather = ch_sample_sigs
                 .combine(
-                    ch_indexes.map { index -> i += 1; [ [ id: sprintf("remoteidx_%02d", i) ], index ] }
+                    ch_indexes.map { index -> i += 1; [ [ id: String.format("remoteidx_%02d", i) ], index ] }
                 )
 
             // Do only the remote-genome index gathering here
@@ -88,7 +86,7 @@ workflow SOURMASH {
 
             // 1. Find the genomes that were selected
             ch_remote_genomes = GATHER_REMOTE_GENOMES.out.result
-                .map { meta, csv -> csv }
+                .map { _meta, csv -> csv }
                 .splitCsv( sep: ',', header: true, quote: '"')
                 // Strip everything except accession number from NCBI-like names
                 .map { genome ->
@@ -119,5 +117,5 @@ workflow SOURMASH {
         }
 
     emit:
-        filtered_genomes = ch_filtered_genomes
+        filtered_genomes  = ch_filtered_genomes
 }

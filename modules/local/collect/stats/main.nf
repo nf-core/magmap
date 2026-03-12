@@ -5,22 +5,21 @@ process COLLECT_STATS {
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a0/a04c5424ce6fbf346430d99ae9f72d0bbb90e3a5cf4096df32fc1716f03973a4/data' :
-        'community.wave.seqera.io/library/r-base_r-data.table_r-dplyr_r-dtplyr_pruned:a6608bc81b0e6546'
-    }"
+        'community.wave.seqera.io/library/r-base_r-data.table_r-dplyr_r-dtplyr_pruned:a6608bc81b0e6546' }"
 
     input:
     tuple val(meta), val(samples), path(trimlogs), path(bblogs), path(idxstats), path(fcs), path(mergetab)
 
     output:
-    path "${meta.id}.overall_stats.tsv.gz", emit: overall_stats
-    path "versions.yml"                   , emit: versions, topic: versions
+    path "${outfile}"  , emit: overall_stats
+    path "versions.yml", emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "${meta.id}"
+    outfile    = "${prefix}.overall_stats.tsv.gz"
 
     def read_trimlogs = ""
     if ( trimlogs ) {
@@ -126,7 +125,7 @@ process COLLECT_STATS {
         left_join(counts, by = join_by(sample)) %>%
         left_join(mergetab, by = join_by(sample)) %>%
         arrange(sample) %>%
-        write_tsv("${meta.id}.overall_stats.tsv.gz")
+        write_tsv("${outfile}")
 
     writeLines(
         c(
@@ -144,9 +143,9 @@ process COLLECT_STATS {
 
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
+    outfile    = "${prefix}.overall_stats.tsv.gz"
     """
-    touch ${prefix}.overall_stats.tsv
-    gzip ${prefix}.overall_stats.tsv
+    cat /dev/null | gzip -c > ${outfile}
 
     cat <<-END_VERSIONS > versions.yml
     "${task.process}":

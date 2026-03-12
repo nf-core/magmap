@@ -5,8 +5,7 @@ process PROKKAGFF2TSV {
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a0/a04c5424ce6fbf346430d99ae9f72d0bbb90e3a5cf4096df32fc1716f03973a4/data' :
-        'community.wave.seqera.io/library/r-base_r-data.table_r-dplyr_r-dtplyr_pruned:a6608bc81b0e6546'
-    }"
+        'community.wave.seqera.io/library/r-base_r-data.table_r-dplyr_r-dtplyr_pruned:a6608bc81b0e6546' }"
 
     input:
     tuple val(meta), path(gff)
@@ -19,7 +18,6 @@ process PROKKAGFF2TSV {
     task.ext.when == null || task.ext.when
 
     script:
-    def args    = task.ext.args ?: ''
     def prefix  = task.ext.prefix ?: "${meta.id}"
     outfile = "${prefix}/${prefix}.prokka-annotations.tsv.gz"
 
