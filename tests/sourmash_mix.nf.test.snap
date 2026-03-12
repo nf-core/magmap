@@ -41,8 +41,23 @@
                 "FEATURECOUNTS": {
                     "subread": "2.1.1"
                 },
+                "GATHER_REMOTE_GENOMES": {
+                    "sourmash": "4.9.4"
+                },
+                "GATHER_USER_GENOMES": {
+                    "sourmash": "4.9.4"
+                },
                 "GENOMES2ORFS": {
                     "sed": 4.9
+                },
+                "GENOME_INDEX": {
+                    "sourmash": "4.9.4"
+                },
+                "GENOME_SKETCH": {
+                    "sourmash": "4.9.4"
+                },
+                "SAMPLE_SKETCH": {
+                    "sourmash": "4.9.4"
                 },
                 "SAMTOOLS_FLAGSTAT": {
                     "samtools": "1.22.1"
@@ -260,7 +275,7 @@
             ],
             1
         ],
-        "timestamp": "2026-03-12T11:15:54.274034503",
+        "timestamp": "2026-03-12T15:12:26.366884441",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"

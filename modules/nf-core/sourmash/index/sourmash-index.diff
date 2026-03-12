@@ -1,0 +1,41 @@
+Changes in component 'nf-core/sourmash/index'
+'modules/nf-core/sourmash/index/environment.yml' is unchanged
+Changes in 'sourmash/index/main.nf':
+--- modules/nf-core/sourmash/index/main.nf
++++ modules/nf-core/sourmash/index/main.nf
+@@ -13,7 +13,7 @@
+ 
+     output:
+     tuple val(meta), path("*.sbt.zip"), emit: signature_index
+-    path "versions.yml"               , emit: versions
++    tuple val("${task.process}"), val('sourmash'), eval('sourmash --version 2>&1 | sed "s/^sourmash //"'), emit: versions_sourmash, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+@@ -27,21 +27,11 @@
+         $args \\
+         '${prefix}.sbt.zip' \\
+         $signatures
+-
+-    cat <<-END_VERSIONS > versions.yml
+-    "${task.process}":
+-        sourmash: \$(echo \$(sourmash --version 2>&1) | sed 's/^sourmash //' )
+-    END_VERSIONS
+     """
+ 
+     stub:
+     def prefix = task.ext.prefix ?: "${meta.id}"
+     """
+     touch "${prefix}.sbt.zip"
+-
+-    cat <<-END_VERSIONS > versions.yml
+-    "${task.process}":
+-        sourmash: \$(echo \$(sourmash --version 2>&1) | sed 's/^sourmash //' )
+-    END_VERSIONS
+     """
+ }
+
+'modules/nf-core/sourmash/index/meta.yml' is unchanged
+'modules/nf-core/sourmash/index/tests/main.nf.test' is unchanged
+'modules/nf-core/sourmash/index/tests/main.nf.test.snap' is unchanged
+************************************************************

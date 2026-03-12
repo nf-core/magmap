@@ -38,8 +38,14 @@
                 "FEATURECOUNTS": {
                     "subread": "2.1.1"
                 },
+                "GATHER_REMOTE_GENOMES": {
+                    "sourmash": "4.9.4"
+                },
                 "GENOMES2ORFS": {
                     "sed": 4.9
+                },
+                "SAMPLE_SKETCH": {
+                    "sourmash": "4.9.4"
                 },
                 "SAMTOOLS_FLAGSTAT": {
                     "samtools": "1.22.1"
@@ -166,7 +172,6 @@
                 "sourmash/twogenomes_remoteidx_00_prefetch.csv.gz",
                 "sourmash/twogenomes_remoteidx_00_prefetch.sig.zip",
                 "sourmash/twogenomes_remoteidx_00_unassigned.sig.zip",
-                "sourmash/versions.yml",
                 "summary_tables",
                 "summary_tables/magmap.CDS.counts.tsv.gz",
                 "summary_tables/magmap.genome_metadata.tsv.gz",
@@ -198,8 +203,7 @@
                 "multiqc_featurecounts.txt:md5,86a43e2bba623046c565e839b778db57",
                 "twogenomes.sig:md5,e232d8ad70d3a5608845b5cb56d51106",
                 "twogenomes_remoteidx_00.csv.gz:md5,64854a1b8cfb433bed72a43dd642fb5c",
-                "twogenomes_remoteidx_00_prefetch.csv.gz:md5,b718cac0aa924d280b5d0de1b4262c64",
-                "versions.yml:md5,f0be003fa234bbecaaeb5073224e804c"
+                "twogenomes_remoteidx_00_prefetch.csv.gz:md5,b718cac0aa924d280b5d0de1b4262c64"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\ttRNA"
@@ -227,7 +231,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-03-12T11:33:52.368555168",
+        "timestamp": "2026-03-12T15:00:06.662967892",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"

@@ -21,7 +21,7 @@ process SOURMASH_GATHER {
     tuple val(meta), path('*_matches.sig.zip')    , optional:true, emit: matches
     tuple val(meta), path('*_prefetch.sig.zip')   , optional:true, emit: prefetch
     tuple val(meta), path('*_prefetch.csv.gz')    , optional:true, emit: prefetchcsv
-    path "versions.yml"                           , emit: versions
+    tuple val("${task.process}"), val('sourmash'), eval('sourmash --version 2>&1 | sed "s/^sourmash //"'), emit: versions_sourmash, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -43,11 +43,6 @@ process SOURMASH_GATHER {
         ${prefetchcsv} \\
         ${signature} \\
         ${database}
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        sourmash: \$(echo \$(sourmash --version 2>&1) | sed 's/^sourmash //' )
-    END_VERSIONS
     """
 
     stub:
@@ -58,11 +53,6 @@ process SOURMASH_GATHER {
     touch ${prefix}_matches.sig.zip
     touch ${prefix}_prefetch.sig.zip
     echo "" | gzip > ${prefix}_prefetch.csv.gz
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        sourmash: \$(echo \$(sourmash --version 2>&1) | sed 's/^sourmash //' )
-    END_VERSIONS
     """
 
 }

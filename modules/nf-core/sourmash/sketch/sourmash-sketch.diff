@@ -1,0 +1,41 @@
+Changes in component 'nf-core/sourmash/sketch'
+'modules/nf-core/sourmash/sketch/environment.yml' is unchanged
+Changes in 'sourmash/sketch/main.nf':
+--- modules/nf-core/sourmash/sketch/main.nf
++++ modules/nf-core/sourmash/sketch/main.nf
+@@ -12,7 +12,7 @@
+ 
+     output:
+     tuple val(meta), path("*.sig"), emit: signatures
+-    path "versions.yml"           , emit: versions
++    tuple val("${task.process}"), val('sourmash'), eval('sourmash --version 2>&1 | sed "s/^sourmash //"'), emit: versions_sourmash, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+@@ -27,21 +27,11 @@
+         --merge '${prefix}' \\
+         --output '${prefix}.sig' \\
+         $sequence
+-
+-    cat <<-END_VERSIONS > versions.yml
+-    "${task.process}":
+-        sourmash: \$(echo \$(sourmash --version 2>&1) | sed 's/^sourmash //' )
+-    END_VERSIONS
+     """
+ 
+     stub:
+     def prefix = task.ext.prefix   ?: "${meta.id}"
+     """
+     touch ${prefix}.sig
+-
+-    cat <<-END_VERSIONS > versions.yml
+-    "${task.process}":
+-        sourmash: \$(echo \$(sourmash --version 2>&1) | sed 's/^sourmash //' )
+-    END_VERSIONS
+     """
+ }
+
+'modules/nf-core/sourmash/sketch/meta.yml' is unchanged
+'modules/nf-core/sourmash/sketch/tests/main.nf.test' is unchanged
+'modules/nf-core/sourmash/sketch/tests/main.nf.test.snap' is unchanged
+************************************************************

@@ -12,7 +12,7 @@ process SOURMASH_SKETCH {
 
     output:
     tuple val(meta), path("*.sig"), emit: signatures
-    path "versions.yml"           , emit: versions
+    tuple val("${task.process}"), val('sourmash'), eval('sourmash --version 2>&1 | sed "s/^sourmash //"'), emit: versions_sourmash, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -27,21 +27,11 @@ process SOURMASH_SKETCH {
         --merge '${prefix}' \\
         --output '${prefix}.sig' \\
         $sequence
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        sourmash: \$(echo \$(sourmash --version 2>&1) | sed 's/^sourmash //' )
-    END_VERSIONS
     """
 
     stub:
     def prefix = task.ext.prefix   ?: "${meta.id}"
     """
     touch ${prefix}.sig
-
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        sourmash: \$(echo \$(sourmash --version 2>&1) | sed 's/^sourmash //' )
-    END_VERSIONS
     """
 }
