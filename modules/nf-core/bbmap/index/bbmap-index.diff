@@ -1,5 +1,5 @@
 Changes in component 'nf-core/bbmap/index'
-'modules/nf-core/bbmap/index/meta.yml' is unchanged
+'modules/nf-core/bbmap/index/environment.yml' is unchanged
 Changes in 'bbmap/index/main.nf':
 --- modules/nf-core/bbmap/index/main.nf
 +++ modules/nf-core/bbmap/index/main.nf
@@ -12,7 +12,7 @@ Changes in 'bbmap/index/main.nf':
      conda "${moduleDir}/environment.yml"
      container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
 
-'modules/nf-core/bbmap/index/environment.yml' is unchanged
-'modules/nf-core/bbmap/index/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/bbmap/index/meta.yml' is unchanged
 'modules/nf-core/bbmap/index/tests/main.nf.test' is unchanged
+'modules/nf-core/bbmap/index/tests/main.nf.test.snap' is unchanged
 ************************************************************

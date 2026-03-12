@@ -15,7 +15,6 @@ process BBMAP_ALIGN {
     tuple val(meta), path("*.bam"), emit: bam
     tuple val(meta), path("*.log"), emit: log
     tuple val("${task.process}"), val('bbmap'), eval('bbversion.sh | grep -v "Duplicate cpuset"'), emit: versions_bbmap, topic: versions
-    tuple val("${task.process}"), val('samtools'), eval('samtools --version |grep "^samtools" 2>/dev/null|sed "s/samtools //"'), emit: versions_samtools, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -49,7 +48,6 @@ process BBMAP_ALIGN {
         -Xmx${task.memory.toGiga()}g \\
         &> ${prefix}.bbmap.log
     """
-
     stub:
     def prefix = task.ext.prefix ?: "${meta.id}"
     """

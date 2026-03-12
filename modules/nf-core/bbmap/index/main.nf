@@ -26,7 +26,6 @@ process BBMAP_INDEX {
         threads=$task.cpus \\
         -Xmx${task.memory.toGiga()}g
     """
-
     stub:
     """
     mkdir -p ref
