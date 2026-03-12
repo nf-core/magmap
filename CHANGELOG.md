@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Dependencies`
 
 | Tool    | Previous version | New version |
-|---------|------------------|-------------|
+| ------- | ---------------- | ----------- |
 | MultiQC | 1.32             | 1.33        |
 | Subread | 2.0.6            | 2.1.1       |
 
