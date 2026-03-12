@@ -1,0 +1,30 @@
+Changes in component 'nf-core/utils_nextflow_pipeline'
+Changes in 'utils_nextflow_pipeline/main.nf':
+--- subworkflows/nf-core/utils_nextflow_pipeline/main.nf
++++ subworkflows/nf-core/utils_nextflow_pipeline/main.nf
+@@ -36,7 +36,7 @@
+     // When running with Conda, warn if channels have not been set-up appropriately
+     //
+     if (check_conda_channels) {
+-        checkCondaChannels()
++        checkCondachannels()
+     }
+ 
+     emit:
+@@ -84,7 +84,7 @@
+ //
+ // When running with -profile conda, warn if channels have not been set-up appropriately
+ //
+-def checkCondaChannels() {
++def checkCondachannels() {
+     def parser = new org.yaml.snakeyaml.Yaml()
+     def channels = []
+     try {
+
+'subworkflows/nf-core/utils_nextflow_pipeline/main.nf.cp' was created
+'subworkflows/nf-core/utils_nextflow_pipeline/meta.yml' is unchanged
+'subworkflows/nf-core/utils_nextflow_pipeline/tests/nextflow.config' is unchanged
+'subworkflows/nf-core/utils_nextflow_pipeline/tests/main.function.nf.test' is unchanged
+'subworkflows/nf-core/utils_nextflow_pipeline/tests/main.workflow.nf.test' is unchanged
+'subworkflows/nf-core/utils_nextflow_pipeline/tests/main.function.nf.test.snap' is unchanged
+************************************************************
