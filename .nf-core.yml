@@ -2,6 +2,7 @@ lint:
   files_unchanged:
     - docs/images/nf-core-magmap_logo_light.png
     - docs/images/nf-core-magmap_logo_dark.png
+    - assets/nf-core-magmap_logo_light.png
   nextflow_config:
     - config_defaults:
         - params.ncbi_genome_infos
