@@ -70,10 +70,10 @@ workflow SOURMASH {
             // combine the two channels.
             // (In theory, this should not be required as the command supposedly can take multiple samples
             // and multiple indexes. In our experience, this does not return the full set of hits however.)
-            def i = 0
+            def i = -1
             ch_gather = ch_sample_sigs
                 .combine(
-                    ch_indexes.map { index -> [ [ id: sprintf("remoteidx_%02d", i++) ], index ] }
+                    ch_indexes.map { index -> i += 1; [ [ id: sprintf("remoteidx_%02d", i) ], index ] }
                 )
 
             // Do only the remote-genome index gathering here
