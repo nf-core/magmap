@@ -1,0 +1,284 @@
+{
+    "-profile test_sourmash_mix_sampleset": {
+        "content": [
+            74,
+            {
+                "BBMAP_ALIGN": {
+                    "bbmap": 39.18
+                },
+                "BBMAP_INDEX": {
+                    "bbmap": 39.18
+                },
+                "CATPROKKATSVS": {
+                    "pigz": 2.8
+                },
+                "CAT_FNA": {
+                    "pigz": 2.6
+                },
+                "CAT_GFF": {
+                    "pigz": 2.6
+                },
+                "CHECK_DUPLICATES": {
+                    "zgrep": 1.5
+                },
+                "COLLECT_FEATURECOUNTS": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "dtplyr": "1.3.2",
+                    "data.table": "1.17.8"
+                },
+                "COLLECT_STATS": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5",
+                    "purrr": "1.1.0",
+                    "tidyr": "1.3.1",
+                    "stringr": "1.5.2"
+                },
+                "FASTQC": {
+                    "fastqc": "0.12.1"
+                },
+                "FEATURECOUNTS": {
+                    "subread": "2.1.1"
+                },
+                "GATHER_REMOTE_GENOMES": {
+                    "sourmash": "4.9.4"
+                },
+                "GATHER_USER_GENOMES": {
+                    "sourmash": "4.9.4"
+                },
+                "GENOMES2ORFS": {
+                    "sed": 4.9
+                },
+                "GENOME_INDEX": {
+                    "sourmash": "4.9.4"
+                },
+                "GENOME_SKETCH": {
+                    "sourmash": "4.9.4"
+                },
+                "SAMPLE_SKETCH": {
+                    "sourmash": "4.9.4"
+                },
+                "SAMTOOLS_FLAGSTAT": {
+                    "samtools": "1.22.1"
+                },
+                "SAMTOOLS_IDXSTATS": {
+                    "samtools": "1.22.1"
+                },
+                "SAMTOOLS_INDEX": {
+                    "samtools": "1.22.1"
+                },
+                "SAMTOOLS_SORT": {
+                    "samtools": "1.22.1"
+                },
+                "SAMTOOLS_STATS": {
+                    "samtools": "1.22.1"
+                },
+                "TIDYVERSE_JOINMETADATA": {
+                    "R": "4.3.1",
+                    "readr": "2.1.5",
+                    "dplyr": "1.1.4",
+                    "tidyr": "1.3.1",
+                    "stringr": "1.5.2"
+                },
+                "TRIMGALORE": {
+                    "trimgalore": "0.6.10"
+                },
+                "WGET_GENOME": {
+                    "wget": "1.21.4"
+                },
+                "Workflow": {
+                    "nf-core/magmap": "v1.0.1dev"
+                }
+            },
+            [
+                "bbmap",
+                "bbmap/logs",
+                "bbmap/logs/ecoli.bbmap.log",
+                "bbmap/logs/sixgenomes.bbmap.log",
+                "bbmap/logs/twogenomes.bbmap.log",
+                "fastqc",
+                "fastqc/ecoli_1_fastqc.html",
+                "fastqc/ecoli_2_fastqc.html",
+                "fastqc/sixgenomes_1_fastqc.html",
+                "fastqc/sixgenomes_2_fastqc.html",
+                "fastqc/twogenomes_1_fastqc.html",
+                "fastqc/twogenomes_2_fastqc.html",
+                "featurecounts",
+                "featurecounts/ecoli.CDS.featureCounts.tsv",
+                "featurecounts/ecoli.CDS.featureCounts.tsv.summary",
+                "featurecounts/ecoli.rRNA.featureCounts.tsv",
+                "featurecounts/ecoli.rRNA.featureCounts.tsv.summary",
+                "featurecounts/ecoli.tRNA.featureCounts.tsv",
+                "featurecounts/ecoli.tRNA.featureCounts.tsv.summary",
+                "featurecounts/sixgenomes.CDS.featureCounts.tsv",
+                "featurecounts/sixgenomes.CDS.featureCounts.tsv.summary",
+                "featurecounts/sixgenomes.rRNA.featureCounts.tsv",
+                "featurecounts/sixgenomes.rRNA.featureCounts.tsv.summary",
+                "featurecounts/sixgenomes.tRNA.featureCounts.tsv",
+                "featurecounts/sixgenomes.tRNA.featureCounts.tsv.summary",
+                "featurecounts/twogenomes.CDS.featureCounts.tsv",
+                "featurecounts/twogenomes.CDS.featureCounts.tsv.summary",
+                "featurecounts/twogenomes.rRNA.featureCounts.tsv",
+                "featurecounts/twogenomes.rRNA.featureCounts.tsv.summary",
+                "featurecounts/twogenomes.tRNA.featureCounts.tsv",
+                "featurecounts/twogenomes.tRNA.featureCounts.tsv.summary",
+                "multiqc",
+                "multiqc/multiqc_data",
+                "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
+                "multiqc/multiqc_data/fastqc_overrepresented_sequences_plot.txt",
+                "multiqc/multiqc_data/fastqc_per_base_n_content_plot.txt",
+                "multiqc/multiqc_data/fastqc_per_base_sequence_quality_plot.txt",
+                "multiqc/multiqc_data/fastqc_per_sequence_gc_content_plot_Counts.txt",
+                "multiqc/multiqc_data/fastqc_per_sequence_gc_content_plot_Percentages.txt",
+                "multiqc/multiqc_data/fastqc_per_sequence_quality_scores_plot.txt",
+                "multiqc/multiqc_data/fastqc_sequence_counts_plot.txt",
+                "multiqc/multiqc_data/fastqc_sequence_duplication_levels_plot.txt",
+                "multiqc/multiqc_data/fastqc_top_overrepresented_sequences_table.txt",
+                "multiqc/multiqc_data/featureCounts_assignment_plot.txt",
+                "multiqc/multiqc_data/llms-full.txt",
+                "multiqc/multiqc_data/multiqc.log",
+                "multiqc/multiqc_data/multiqc.parquet",
+                "multiqc/multiqc_data/multiqc_citations.txt",
+                "multiqc/multiqc_data/multiqc_data.json",
+                "multiqc/multiqc_data/multiqc_fastqc.txt",
+                "multiqc/multiqc_data/multiqc_featurecounts.txt",
+                "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_sources.txt",
+                "multiqc/multiqc_plots",
+                "multiqc/multiqc_plots/pdf",
+                "multiqc/multiqc_plots/pdf/fastqc-status-check-heatmap.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_overrepresented_sequences_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_base_n_content_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_base_sequence_quality_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_sequence_gc_content_plot_Counts.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_sequence_gc_content_plot_Percentages.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_per_sequence_quality_scores_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_sequence_counts_plot-cnt.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_sequence_counts_plot-pct.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_sequence_duplication_levels_plot.pdf",
+                "multiqc/multiqc_plots/pdf/fastqc_top_overrepresented_sequences_table.pdf",
+                "multiqc/multiqc_plots/pdf/featureCounts_assignment_plot-cnt.pdf",
+                "multiqc/multiqc_plots/pdf/featureCounts_assignment_plot-pct.pdf",
+                "multiqc/multiqc_plots/png",
+                "multiqc/multiqc_plots/png/fastqc-status-check-heatmap.png",
+                "multiqc/multiqc_plots/png/fastqc_overrepresented_sequences_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_per_base_n_content_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_per_base_sequence_quality_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_per_sequence_gc_content_plot_Counts.png",
+                "multiqc/multiqc_plots/png/fastqc_per_sequence_gc_content_plot_Percentages.png",
+                "multiqc/multiqc_plots/png/fastqc_per_sequence_quality_scores_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_sequence_counts_plot-cnt.png",
+                "multiqc/multiqc_plots/png/fastqc_sequence_counts_plot-pct.png",
+                "multiqc/multiqc_plots/png/fastqc_sequence_duplication_levels_plot.png",
+                "multiqc/multiqc_plots/png/fastqc_top_overrepresented_sequences_table.png",
+                "multiqc/multiqc_plots/png/featureCounts_assignment_plot-cnt.png",
+                "multiqc/multiqc_plots/png/featureCounts_assignment_plot-pct.png",
+                "multiqc/multiqc_plots/svg",
+                "multiqc/multiqc_plots/svg/fastqc-status-check-heatmap.svg",
+                "multiqc/multiqc_plots/svg/fastqc_overrepresented_sequences_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_base_n_content_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_base_sequence_quality_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_sequence_gc_content_plot_Counts.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_sequence_gc_content_plot_Percentages.svg",
+                "multiqc/multiqc_plots/svg/fastqc_per_sequence_quality_scores_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_sequence_counts_plot-cnt.svg",
+                "multiqc/multiqc_plots/svg/fastqc_sequence_counts_plot-pct.svg",
+                "multiqc/multiqc_plots/svg/fastqc_sequence_duplication_levels_plot.svg",
+                "multiqc/multiqc_plots/svg/fastqc_top_overrepresented_sequences_table.svg",
+                "multiqc/multiqc_plots/svg/featureCounts_assignment_plot-cnt.svg",
+                "multiqc/multiqc_plots/svg/featureCounts_assignment_plot-pct.svg",
+                "multiqc/multiqc_report.html",
+                "pipeline_info",
+                "pipeline_info/nf_core_magmap_software_mqc_versions.yml",
+                "samtools",
+                "samtools/ecoli.flagstat",
+                "samtools/ecoli.idxstats",
+                "samtools/ecoli.stats",
+                "samtools/sixgenomes.flagstat",
+                "samtools/sixgenomes.idxstats",
+                "samtools/sixgenomes.stats",
+                "samtools/twogenomes.flagstat",
+                "samtools/twogenomes.idxstats",
+                "samtools/twogenomes.stats",
+                "summary_tables",
+                "summary_tables/magmap.CDS.counts.tsv.gz",
+                "summary_tables/magmap.genome_metadata.tsv.gz",
+                "summary_tables/magmap.genomes2orfs.tsv.gz",
+                "summary_tables/magmap.overall_stats.tsv.gz",
+                "summary_tables/magmap.prokka-annotations.tsv.gz",
+                "summary_tables/magmap.rRNA.counts.tsv.gz",
+                "summary_tables/magmap.tRNA.counts.tsv.gz",
+                "trimgalore",
+                "trimgalore/ecoli_1.fastq.gz_trimming_report.txt",
+                "trimgalore/ecoli_2.fastq.gz_trimming_report.txt",
+                "trimgalore/fastqc",
+                "trimgalore/fastqc/ecoli_1_val_1_fastqc.html",
+                "trimgalore/fastqc/ecoli_2_val_2_fastqc.html",
+                "trimgalore/fastqc/sixgenomes_1_val_1_fastqc.html",
+                "trimgalore/fastqc/sixgenomes_2_val_2_fastqc.html",
+                "trimgalore/fastqc/twogenomes_1_val_1_fastqc.html",
+                "trimgalore/fastqc/twogenomes_2_val_2_fastqc.html",
+                "trimgalore/sixgenomes_1.fastq.gz_trimming_report.txt",
+                "trimgalore/sixgenomes_2.fastq.gz_trimming_report.txt",
+                "trimgalore/twogenomes_1.fastq.gz_trimming_report.txt",
+                "trimgalore/twogenomes_2.fastq.gz_trimming_report.txt"
+            ],
+            [
+                "fastqc-status-check-heatmap.txt:md5,dd99e0486753bfc27d510c6a733cc1fb",
+                "fastqc_overrepresented_sequences_plot.txt:md5,b96220e3a3bbb3558277fde0f34317cf",
+                "fastqc_per_base_n_content_plot.txt:md5,9c3eab4f3cc391c08586a1af7362d3a6",
+                "fastqc_per_base_sequence_quality_plot.txt:md5,3734e4d478d5d273f921ba4e1c3d5d79",
+                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,6d23336692e4fd3e5dccb4d39797954b",
+                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,ecc325a70832fdd31e1472c667826704",
+                "fastqc_per_sequence_quality_scores_plot.txt:md5,cd8ec42994381cdd57b2264f1c47d58e",
+                "fastqc_sequence_counts_plot.txt:md5,32f3848b00fdb52ba1f81ff5b4898a9b",
+                "fastqc_sequence_duplication_levels_plot.txt:md5,66e59b18b0a180351207f2dd114d7972",
+                "featureCounts_assignment_plot.txt:md5,c3e9a60fec49a7852431f3a80b3b5d21",
+                "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
+                "multiqc_fastqc.txt:md5,4a880a036e7caa2e538370a8efd3b61c",
+                "multiqc_featurecounts.txt:md5,b05719c6222e634d7c56fe4096d6bae0"
+            ],
+            [
+                "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\ttRNA"
+            ],
+            4,
+            [
+                "orf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
+            ],
+            [
+                "orf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
+            ],
+            [
+                "orf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
+            ],
+            [
+                "accno\tcheckm_completeness\tcheckm_contamination\tcheckm_strain_heterogeneity\tcontig_count\tgenome_size\tgtdb_genome_representative\tgtdb_representative\tgtdb_taxonomy\tsource\tpriority"
+            ],
+            [
+                "GCA_009777615.1\t97.98\t2.42\t0\t8\t1619733\tGB_GCA_009777615.1\tTRUE\td__Archaea;p__Thermoplasmatota;c__Thermoplasmata;o__Methanomassiliicoccales;f__Methanomethylophilaceae;g__Methanoplasma;s__Methanoplasma cognatum\tGTDB metadata\t10"
+            ],
+            [
+                "GCF_001983105.1\t100\t0.82\t50\t174\t9435764\tRS_GCF_001983105.1\tTRUE\td__Bacteria;p__Actinomycetota;c__Actinomycetes;o__Mycobacteriales;f__Frankiaceae;g__Pseudofrankia;s__Pseudofrankia asymbiotica\tGTDB metadata\t10",
+                "GCF_002368115.1\t99.33\t0.22\t100\t89\t5165988\tRS_GCF_002368115.1\tTRUE\td__Bacteria;p__Cyanobacteriota;c__Cyanobacteriia;o__Cyanobacteriales;f__Nostocaceae;g__Dolichospermum;s__Dolichospermum compactum\tGTDB metadata\t10",
+                "GCF_007748075.1\t96.21\t0\t0\t1\t3486541\tRS_GCF_007748075.1\tTRUE\td__Bacteria;p__Planctomycetota;c__Phycisphaerae;o__Phycisphaerales;f__Phycisphaeraceae;g__Mucisphaera;s__Mucisphaera calidilacus\tGTDB metadata\t10",
+                "GCF_016757965.1\t100\t0\t0\t32\t2115826\tRS_GCF_016757965.1\tTRUE\td__Archaea;p__Halobacteriota;c__Archaeoglobi;o__Archaeoglobales;f__Archaeoglobaceae;g__Archaeoglobus;s__Archaeoglobus neptunius\tGTDB metadata\t10"
+            ],
+            [
+                "ecoli_genome\t100\t1\tNA\tNA\tNA\t\tNA\td__Bacteria;p__Pseudomonadota;c__Gammaproteobacteria;o__Enterobacterales;f__Enterobacteriaceae;g__Escherichia;s__Escherichia coli\tGTDB-Tk/CheckM\t0"
+            ],
+            [
+                "accno\tgenome\torf"
+            ],
+            [
+                "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
+            ],
+            1
+        ],
+        "timestamp": "2026-03-19T15:12:05.799504927",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "25.10.4"
+        }
+    }
+}
