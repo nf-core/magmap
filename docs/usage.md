@@ -13,14 +13,13 @@
   - [Multiple runs of the same sample](#multiple-runs-of-the-same-sample)
   - [Full samplesheet](#full-samplesheet)
   - [Genome input](#genome-input)
-  - [Other inputs](#other-inputs)
-    - [Index input](#index-input)
-    - [Genome metadata input](#genome-metadata-input)
-      - [GTDB metadata](#gtdb-metadata)
-      - [GTDB-Tk metadata](#gtdb-tk-metadata)
-      - [CheckM/CheckM2 metadata](#checkmcheckm2-metadata)
+  - [Genome index input](#genome-index-input)
+  - [Genome metadata input](#genome-metadata-input)
+    - [GTDB metadata](#gtdb-metadata)
+    - [GTDB-Tk metadata](#gtdb-tk-metadata)
+    - [CheckM/CheckM2 metadata](#checkmcheckm2-metadata)
   - [Check duplicates](#check-duplicates)
-  - [Remove contaminants from the samples] (#remove-contaminants-from-the-samples)
+  - [Remove contaminants from samples] (#remove-contaminants-from-samples)
   - [Sourmash](#sourmash)
   - [Feature calling](#feature-calling)
   - [Multimapping](#Multimapping)
@@ -130,9 +129,7 @@ Any genome used by the pipeline for which a gff file is not found will be annota
 | `genome_fna` | Full path to Fasta file that contains nucleotide sequences of your genome. File can be gzipped and have the extension ".fna.gz" or "fna". |
 | `genome_gff` | Full path to gff file of your genome. File can be gzipped and have the extension ".gff.gz" or ".gff".                                     |
 
-### Other inputs
-
-#### Index input
+### Genome index input
 
 In addition to, or instead of, providing a genome file with genomes to map to, you can provide a [Sourmash](https://sourmash.readthedocs.io/en/latest/) index file that points to genomes.
 Sourmash will be run using the index files and matching genomes will be downloaded, annotated with Prokka and mapped to by the pipeline.
@@ -142,7 +139,11 @@ See also [Sourmash](#sourmash) below.
 
 Particular examples of Sourmash index files are those prepared by the authors of Sourmash, which can be found [here](https://sourmash.readthedocs.io/en/latest/databases.html).
 
-##### Remote genome sources
+By default, all genomes identified from indices will be mapped to for all samples.
+Particularly in cases where a lot of genomes are identified and they differ considerably between samples, it can be beneficial to instead map to only the genomes identified for each sample.
+This is determined by the `--genomeset_mode` parameter that can be set to either `joint` (default, map to all samples) or `sample` (map to sample-specific sets of genomes).
+
+#### Remote genome sources
 
 Genomes are by default fetched from NCBI using genome information files provided through the [`--remote_genome_sources`](https://nf-co.re/magmap/parameters/#remote_genome_sources) parameter.
 This is a comma-separated list of paths to NCBI-style genome information files, containing at least the columns `#assembly_accession` and `ftp_path`.
@@ -156,7 +157,7 @@ nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.cs
 
 Note, more than one index file can be provided, separated by commas.
 
-##### Genome data will be directed to a specific directory
+#### Genome data will be directed to a specific directory
 
 All genomes potentially downloaded as part of the Sourmash process, will be output in the directory specified with [`--genome_store_dir`](https://nf-co.re/magmap/parameters/#genome_store_dir) (set to `genomes` by default).  
 Similarly, the output from Prokka annotation of genomes will be stored in the directory specified with [`--prokka_store_dir`](https://nf-co.re/magmap/parameters/#prokka_store_dir) (`prokka` by default).
@@ -168,23 +169,23 @@ If you create storage directories that you can access from the directories from 
 > By default, the pipeline will try to download genomes from NCBI five times to allow for temporary errors.
 > After five attempts, any file that was not properly downloaded will be ignored and processing continues.
 
-#### Genome metadata input
+### Genome metadata input
 
 **nf-core/magmap** accepts three types of metadata files that provides information about the genomes that you will use in the pipeline.
 At the moment, **nf-core/magmap** can handle output from CheckM/CheckM2 and GTDB-Tk as well as standard GTDB metadata files.
 **nf-core/magmap** will merge the tables and summarise the information for easy access.
 
-##### (1) GTDB metadata
+#### (1) GTDB metadata
 
 With this parameter, you can supply a file like the GTDB metadata files provided on their official [website](https://gtdb.ecogenomic.org/), e.g. [`bac120_metadata_r220.tsv.gz`](https://data.ace.uq.edu.au/public/gtdb/data/releases/release220/220.0/bac120_metadata_r220.tsv.gz).
 You can either use their files directly or make a custom one.
 If you want make your own table, fill up the following columns: `accno`, `checkm_completeness`, `checkm_contamination`, `checkm_strain_heterogeneity`, `contig_count`, `genome_size`, `gtdb_genome_representative`,gtdb_representative`, `gtdb_taxonomy`.
 
-##### (2) GTDB-Tk metadata
+#### (2) GTDB-Tk metadata
 
 This file should be formatted like the GTDB-Tk output, [see](https://ecogenomics.github.io/GTDBTk/files/summary.tsv.html).
 
-##### (3) CheckM/CheckM2 metadata
+#### (3) CheckM/CheckM2 metadata
 
 This file should be formatted like the CheckM or CheckM2 output, [see](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv).
 
@@ -194,9 +195,9 @@ The pipeline will perform validation checks to see if there are any duplicate na
 If there are duplicates, the pipeline will stop and return a file with the contig names that needs to be changed in their name in order to work.
 This is done to avoid overlapping in the following steps (e.g. same prokka output for the protein sequences and the gffs).
 
-### Remove contaminants from the samples
+### Remove contaminants from samples
 
-The pipeline can remove potential contaminants (e.g. rRNA sequences with SILVA database) using BBduk.
+The pipeline can remove potential contaminant sequences (e.g. rRNA sequences with the SILVA database) from samples using BBduk.
 Specify a fasta file, gzipped or not, with the [`--sequence_filter](parameters/#sequence_filter <sequences>.fasta` parameter.
 For further documentation, see the [BBduk official website](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbduk-guide/).
 
