@@ -273,7 +273,7 @@ workflow MAGMAP {
         //
         // BBMAP ALIGN. Call BBMap with the index once per sample
         //
-        
+
         // Make sure the correct index is sent with each sample
         ch_reads_and_indices = ch_clean_reads
             .map { r -> [ [ id: r[0].id ], r[0], r[1] ] }
