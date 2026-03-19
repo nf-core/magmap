@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#188](https://github.com/nf-core/magmap/pull/188) - Add the possibility to run mapping with sample-specific genome sets (by @erikrikarddaniel).
+
 ### `Fixed`
 
 - [#186](https://github.com/nf-core/magmap/pull/186) - Update pipeline to use topic channels for too versions (by @erikrikarddaniel).
