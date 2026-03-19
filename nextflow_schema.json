@@ -48,6 +48,11 @@
                     "help_text": "You will need to use or create a file with information about the genomes' taxonomy you want to map to before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. Columns are: gtdb_genome_representative, gtdb_representative, gtdb_taxonomy.",
                     "fa_icon": "fas fa-bacteria"
                 },
+                "indexes": {
+                    "type": "string",
+                    "description": "Path to Sourmash .sbt file.",
+                    "fa_icon": "far fa-address-book"
+                },
                 "remote_genome_sources": {
                     "type": "string",
                     "description": "Comma-separated list of paths to tsv files with information about genomes in NCBI 'assembly_summary' format. The default are GenBank and RefSeq summary files.",
@@ -70,11 +75,6 @@
                     "fa_icon": "fas fa-dna",
                     "description": "Path to a directory where prokka output is stored.",
                     "help_text": "Prokka annotation files created by the pipeline will be stored in this directory for potential later use."
-                },
-                "indexes": {
-                    "type": "string",
-                    "description": "Path to .sbt file.",
-                    "fa_icon": "far fa-address-book"
                 },
                 "email": {
                     "type": "string",
@@ -222,9 +222,17 @@
         "sourmash_options": {
             "title": "Sourmash",
             "type": "object",
-            "description": "All the options available for Sourmash",
+            "description": "Options available for Sourmash",
             "default": "",
             "properties": {
+                "genomeset_mode": {
+                    "type": "string",
+                    "description": "Perform mapping on all genomes for all samples ('joint') or sample-specific selections of genomes ('sample').",
+                    "default": "joint",
+                    "help_text": "When you use Sourmash to select genomes, either from remote sources, from your own genomes or both, the pipeline can either map to all identified genomes ('joint') or sample-specific selections of genomes ('sample').",
+                    "enum": ["joint", "sample"],
+                    "fa_icon": "far fa-address-book"
+                },
                 "skip_sourmash": {
                     "type": "boolean",
                     "description": "Skip Sourmash filtering for user-provided genomes",

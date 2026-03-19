@@ -1,18 +1,32 @@
 Changes in component 'nf-core/bbmap/index'
-'modules/nf-core/bbmap/index/environment.yml' is unchanged
+'modules/nf-core/bbmap/index/meta.yml' is unchanged
 Changes in 'bbmap/index/main.nf':
 --- modules/nf-core/bbmap/index/main.nf
 +++ modules/nf-core/bbmap/index/main.nf
 @@ -1,6 +1,6 @@
  process BBMAP_INDEX {
-     tag "$fasta"
+-    tag "$fasta"
 -    label 'process_long'
++    tag "${meta.id}"
 +    label 'process_high'
  
      conda "${moduleDir}/environment.yml"
      container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+@@ -8,10 +8,10 @@
+         'community.wave.seqera.io/library/bbmap_pigz:07416fe99b090fa9' }"
+ 
+     input:
+-    path fasta
++    tuple val(meta), path(fasta)
+ 
+     output:
+-    path 'ref'                    , emit: index
++    tuple val(meta), path('ref'), emit: index
+     tuple val("${task.process}"), val('bbmap'), eval('bbversion.sh | grep -v "Duplicate cpuset"'), emit: versions_bbmap, topic: versions
+ 
+     when:
 
-'modules/nf-core/bbmap/index/meta.yml' is unchanged
-'modules/nf-core/bbmap/index/tests/main.nf.test' is unchanged
+'modules/nf-core/bbmap/index/environment.yml' is unchanged
 'modules/nf-core/bbmap/index/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/bbmap/index/tests/main.nf.test' is unchanged
 ************************************************************

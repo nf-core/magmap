@@ -37,7 +37,7 @@ workflow SOURMASH {
         }
 
         // Skip sketching and indexing of user-provided genomes if skip_sourmash is set
-        ch_selected_user_genomes = ch_user_genomeinfo   // Will be set to selected genomes if sourmash is _not_ skipped, since sourmash will then be used to select matching genomes
+        ch_joint_user_genomes = ch_user_genomeinfo   // Will be set to selected genomes if sourmash is _not_ skipped, since sourmash will then be used to select matching genomes
         if ( ! skip_sourmash ) {
             GENOME_SKETCH(ch_user_genomeinfo.map { it -> [ [ id: it.accno ], it.genome_fna ] })
 
@@ -50,7 +50,7 @@ workflow SOURMASH {
             GATHER_USER_GENOMES(ch_sample_sigs, ch_genome_sigs, true, true, true, true)
 
             // Collect matching user genomes
-            ch_selected_user_genomes = ch_user_genomeinfo
+            ch_joint_user_genomes = ch_user_genomeinfo
                 .map { genome -> [ [ genome.accno ], genome ] }
                 .join(
                     GATHER_USER_GENOMES.out.result
@@ -62,7 +62,16 @@ workflow SOURMASH {
                 .map { g -> g[1] }
         }
 
-        ch_filtered_genomes = ch_selected_user_genomes
+        // Make a cartesian product of samples and user genomes to serve as sample-specific user genomes, i.e. user genomes are always provided to all samples
+        ch_sample_user_genomes = ch_sample_reads
+            .map { sample -> [ id: sample[0].id ] }
+            .combine(ch_joint_user_genomes)
+
+        // Populate both the joint and sample-filtered return channels with all matching user genomes
+        ch_joint_filtered_genomes  = ch_joint_user_genomes
+        ch_sample_filtered_genomes = ch_joint_user_genomes
+
+        // Call Sourmash with indices for remote genomes if present
         if ( index_list ) {
             // To make sure that all combinations of sample signatures and indexes are gathered below,
             // combine the two channels.
@@ -84,22 +93,26 @@ workflow SOURMASH {
             // The genomes that were selected by sourmash can either be local genomes provided by the user
             // with --genomeinfo, or genomes we need to fetch from NCBI
 
-            // 1. Find the genomes that were selected
-            ch_remote_genomes = GATHER_REMOTE_GENOMES.out.result
-                .map { _meta, csv -> csv }
+            // 1. Find the remote genomes that were selected
+            // 1.2 Sample-specific set -- "sample"
+            ch_sample_remote_genomes = GATHER_REMOTE_GENOMES.out.result
                 .splitCsv( sep: ',', header: true, quote: '"')
                 // Strip everything except accession number from NCBI-like names
-                .map { genome ->
+                .map { meta, genome ->
                     def matcher = ( genome.name =~ /^(GC[A-Z]_[0-9]+\.[0-9]+)/ )
                     return matcher ?
-                        [ accno: matcher[0][0] ] :
-                        [ accno: genome.name ]
+                        [ id: meta.id, accno: matcher[0][0] ] :
+                        [ id: meta.id, accno: genome.name ]
                 }
+
+            // 1.2 Total set -- "joint"
+            ch_joint_remote_genomes = ch_sample_remote_genomes
+                .map { g -> [ accno: g.accno ] }
                 .unique()
 
             // 2. Fetch NCBI genomes
             WGET_GENOME(
-                ch_remote_genomes
+                ch_joint_remote_genomes
                     .map { genome -> [ [ genome.accno ] ] }
                     .join(
                         ch_ncbi_genomeinfo
@@ -109,7 +122,15 @@ workflow SOURMASH {
             )
 
             // 3. Mix the local and the newly fetched NCBI genomes
-            ch_filtered_genomes = ch_selected_user_genomes
+            // 3.1 Sample specific sets
+            ch_sample_filtered_genomes = ch_sample_remote_genomes
+                .map { g -> [ [ id: g.accno ], g ] }
+                .join(WGET_GENOME.out.outfile)
+                .map { g -> [ [  id: g[1].id ], [ accno: g[1].accno, g_fna: g[2] ] ] }
+                .mix(ch_sample_user_genomes)
+
+            // 3.2 Total set -- "joint"
+            ch_joint_filtered_genomes = ch_joint_user_genomes
                 .mix(
                     WGET_GENOME.out.outfile
                         .map { genome -> [ accno: genome[0].id, genome_fna: genome[1] ] }
@@ -117,5 +138,6 @@ workflow SOURMASH {
         }
 
     emit:
-        filtered_genomes  = ch_filtered_genomes
+        joint_filtered_genomes  = ch_joint_filtered_genomes
+        sample_filtered_genomes = ch_sample_filtered_genomes
 }

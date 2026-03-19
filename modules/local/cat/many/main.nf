@@ -1,4 +1,5 @@
 process CAT_MANY {
+    tag "${meta.id}"
     label 'process_long'
 
     conda "${moduleDir}/environment.yml"

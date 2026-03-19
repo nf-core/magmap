@@ -49,6 +49,7 @@ workflow MAGMAP {
     ch_gtdb_metadata            // channel: GTDB metadata files
     ch_gtdbtk_metadata          // channel: GTDB-Tk metadata files
     ch_checkm_metadata          // channel: CheckM/CheckM2 metadata files
+    genomeset_mode              //  string: Either 'joint' for mapping samples against all genomes, or 'sample' to map to sample-specific sets
     skip_sourmash               // boolean: run Sourmash or not
     sourmash_ksize              // integer
     ch_features                 // channel: list of feature types to call
@@ -191,7 +192,7 @@ workflow MAGMAP {
         sourmash_ksize,
         skip_sourmash
     )
-    ch_genomes = SOURMASH.out.filtered_genomes
+    ch_genomes = SOURMASH.out.joint_filtered_genomes
 
     //
     // MODULE: Join and filter genome metadata
@@ -242,21 +243,53 @@ workflow MAGMAP {
                 .map { meta, fna, gff -> [ accno: meta.id  , genome_fna: fna, genome_gff: gff ] }
         )
 
-    //
-    // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
-    //
-    CREATE_BBMAP_INDEX(ch_collected_genomes.map { it -> it.genome_fna })
+    if ( genomeset_mode == 'joint' ) {
+        //
+        // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
+        //
+        CREATE_BBMAP_INDEX(
+            ch_collected_genomes
+                .collect { it -> it.genome_fna }
+                .map { it -> [ [ id: 'all' ], it ] }
+        )
+
+        //
+        // BBMAP ALIGN. Call BBMap with the index once per sample
+        //
+        BBMAP_ALIGN(ch_clean_reads, CREATE_BBMAP_INDEX.out.index.map { index -> index[1] })
+        ch_multiqc_files = ch_multiqc_files.mix(BBMAP_ALIGN.out.log.collect{ _meta, log -> log })
+    } else if ( genomeset_mode == 'sample' ) {
+        ch_fnas_to_index = SOURMASH.out.sample_filtered_genomes
+            .map { g -> [ [ accno: g[1].accno ], [ id: g[0].id, accno: g[1].accno ] ] }
+            .combine(ch_collected_genomes.map { g -> [ [ accno: g.accno ], g ] }, by: 0)
+            .map { g -> [ [ id: g[1].id ], g[2].genome_fna ] }
+            .groupTuple()
+
+        //
+        // SUBWORKFLOW: Concatenate the genome fasta files and create a BBMap index
+        //
+        CREATE_BBMAP_INDEX(ch_fnas_to_index)
+
+        //
+        // BBMAP ALIGN. Call BBMap with the index once per sample
+        //
+        
+        // Make sure the correct index is sent with each sample
+        ch_reads_and_indices = ch_clean_reads
+            .map { r -> [ [ id: r[0].id ], r[0], r[1] ] }
+            .join(CREATE_BBMAP_INDEX.out.index)
+
+        BBMAP_ALIGN(
+            ch_reads_and_indices.map { ri -> [ ri[1], ri[2] ] },
+            ch_reads_and_indices.map { ri -> ri[3] }
+        )
+        ch_multiqc_files = ch_multiqc_files.mix(BBMAP_ALIGN.out.log.collect { _meta, log -> log })
+    }
 
     //
     // SUBWORKFLOW: Concatenate gff files
     //
     CONCATENATE_GFFS(ch_collected_genomes.map { it -> it.genome_gff })
-
-    //
-    // BBMAP ALIGN. Call BBMap with the index once per sample
-    //
-    BBMAP_ALIGN ( ch_clean_reads, CREATE_BBMAP_INDEX.out.index )
-    ch_multiqc_files = ch_multiqc_files.mix(BBMAP_ALIGN.out.log.collect{ _meta, log -> log })
 
     //
     // SUBWORKFLOW: sort bam file and produce statistics

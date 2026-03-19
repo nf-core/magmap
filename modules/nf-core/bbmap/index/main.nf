@@ -1,5 +1,5 @@
 process BBMAP_INDEX {
-    tag "$fasta"
+    tag "${meta.id}"
     label 'process_high'
 
     conda "${moduleDir}/environment.yml"
@@ -8,10 +8,10 @@ process BBMAP_INDEX {
         'community.wave.seqera.io/library/bbmap_pigz:07416fe99b090fa9' }"
 
     input:
-    path fasta
+    tuple val(meta), path(fasta)
 
     output:
-    path 'ref'                    , emit: index
+    tuple val(meta), path('ref'), emit: index
     tuple val("${task.process}"), val('bbmap'), eval('bbversion.sh | grep -v "Duplicate cpuset"'), emit: versions_bbmap, topic: versions
 
     when:
