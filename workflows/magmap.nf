@@ -8,8 +8,9 @@ include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core
 include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align'
 include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk'
 include { CAT_FASTQ            	                 } from '../modules/nf-core/cat/fastq'
+include { CAT_MANY as CAT_GFF                    } from '../modules/local/cat/many'
+include { GENOMES2ORFS                           } from '../modules/local/genomes2orfs'
 include { CATPROKKATSVS        	                 } from '../modules/local/catprokkatsvs'
-include { CONCATENATE_GFFS                       } from '../subworkflows/local/concatenate_gffs'
 include { CHECK_DUPLICATES                       } from '../modules/local/check_duplicates'
 include { COLLECT_FEATURECOUNTS                  } from '../modules/local/collect/featurecounts'
 include { COLLECT_STATS                          } from '../modules/local/collect/stats'
@@ -287,17 +288,22 @@ workflow MAGMAP {
     }
 
     //
-    // SUBWORKFLOW: Concatenate gff files
+    // MODULE: Concatenate gff files
     //
-    CONCATENATE_GFFS(ch_collected_genomes.map { it -> it.genome_gff })
+    CAT_GFF([id: 'genomes'], ch_collected_genomes.map { genome -> genome.genome_gff }.collect())
+
+    //
+    // MODULE: Create an index file from genome accnos to feature prefixes
+    //
+    GENOMES2ORFS(ch_collected_genomes.map { genome -> genome.genome_gff }.collect().map { genomes -> [ [ id: 'genomes' ], genomes ] })
 
     //
     // SUBWORKFLOW: sort bam file and produce statistics
     //
-    BAM_SORT_STATS_SAMTOOLS ( BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genome_fnas)
+    BAM_SORT_STATS_SAMTOOLS(BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genome_fnas)
 
     ch_stage_counts = BAM_SORT_STATS_SAMTOOLS.out.bam
-        .combine(CONCATENATE_GFFS.out.gff.map { it -> it[1] })
+        .combine(CAT_GFF.out.concatenated_files.map { it -> it[1] })
 
     ch_collect_stats = ch_collect_stats
         .combine(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect { it -> it[1]}.map { it -> [ it ] })
@@ -329,7 +335,7 @@ workflow MAGMAP {
             [ [id: meta.feature ], data ]
         }
 
-    COLLECT_FEATURECOUNTS(ch_collect_featurecounts)
+    COLLECT_FEATURECOUNTS(ch_collect_featurecounts, GENOMES2ORFS.out.genomes2orfs.map { _m, g2orfs -> g2orfs })
 
     ch_fcs_for_stats      = COLLECT_FEATURECOUNTS.out.counts.collect { _meta, tsv -> tsv }.map { it -> [ it ] }
     //ch_fcs_for_summary    = COLLECT_FEATURECOUNTS.out.counts.map { _meta, tsv -> tsv }

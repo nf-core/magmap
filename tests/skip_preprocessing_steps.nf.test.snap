@@ -250,19 +250,19 @@
             4,
             "",
             [
-                "orf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
+                "accno\torf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
             ],
             3000000,
             [
-                "orf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
+                "accno\torf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
             ],
             3000000,
             [
-                "orf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
+                "accno\torf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
             ],
             1000000,
             [
-                "orf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
+                "accno\torf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
             ],
             3000000,
             [
@@ -278,7 +278,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-03-12T11:00:54.821595771",
+        "timestamp": "2026-03-26T06:28:03.884524427",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"

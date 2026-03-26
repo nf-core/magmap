@@ -249,16 +249,16 @@
             ],
             4,
             [
-                "orf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
+                "accno\torf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
             ],
             [
-                "orf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
+                "accno\torf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
             ],
             [
-                "orf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
+                "accno\torf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
             ],
             [
-                "orf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
+                "accno\torf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
             ],
             [
                 "accno\tcheckm_completeness\tcheckm_contamination\tcheckm_strain_heterogeneity\tcontig_count\tgenome_size\tgtdb_genome_representative\tgtdb_representative\tgtdb_taxonomy\tsource\tpriority"
@@ -273,7 +273,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-03-12T10:57:19.748073513",
+        "timestamp": "2026-03-25T22:33:40.246120387",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "25.10.4"

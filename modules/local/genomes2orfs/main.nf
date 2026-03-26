@@ -10,7 +10,7 @@ process GENOMES2ORFS {
     tuple val(meta), path(gffs, stageAs: 'gffs/*')
 
     output:
-    path "*.genomes2orfs.tsv.gz", emit: genomes2orfs
+    tuple val(meta), path(outfile), emit: genomes2orfs
     tuple val("${task.process}"), val('sed'), eval('sed --version 2>&1 | grep "^sed" | sed "s/^.* //"'), emit: versions_sed, topic: versions
 
     when:
@@ -32,13 +32,13 @@ process GENOMES2ORFS {
             zcat "\$f"
         else
             cat "\$f"
-        fi | grep -o 'ID=[A-Z0-9_]\\+' | \
+        fi | grep -o 'ID=[A-Z_0-9]\\+' | \
             sed "s/^/\$ac\\t\$fn\\t/; s/ID=//" | gzip -c >> ${outfile}
     done
     """
 
     stub:
     """
-    touch ${outfile}
+    echo /dev/null | gzip -c ${outfile}.gz
     """
 }

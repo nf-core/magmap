@@ -93,7 +93,7 @@ process COLLECT_STATS {
         unnest(d) %>%
         select(-fname)
 
-    counts <- read_tsv(c('${fcs.join("', '")}'), col_types = 'cciicicid', id = 'fname') %>%
+    counts <- read_tsv(c('${fcs.join("', '")}'), col_types = 'ccciicicid', id = 'fname') %>%
         mutate(feature = str_replace(fname, '^[^.]+\\\\.([^.]+)\\\\..*', '\\\\1')) %>%
         group_by(sample, feature) %>%
         summarise(count = sum(count), .groups = 'drop') %>%

@@ -1,5 +1,5 @@
 name: genomes2orfs
-description: Outputs a tsv file with genome/orf information
+description: Outputs a tsv file with genome and orf (feature) names
 keywords:
   - genomes
   - gff

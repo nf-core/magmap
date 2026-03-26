@@ -162,7 +162,7 @@
         "mapping_options": {
             "title": "Mapping options",
             "type": "object",
-            "description": "All the options you can use for BBmap or BBduk)",
+            "description": "All the options you can use for BBmap or BBduk",
             "default": "",
             "properties": {
                 "sequence_filter": {
