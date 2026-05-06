@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#197](https://github.com/nf-core/magmap/pull/197) - Fix bug in sample-specific genome set mode (by @erikrikarddaniel).
 - [#186](https://github.com/nf-core/magmap/pull/186) - Update pipeline to use topic channels for tool versions (by @erikrikarddaniel).
 - [#186](https://github.com/nf-core/magmap/pull/186) - Make sure `nextflow lint` works for the pipeline (by @erikrikarddaniel).
 - [#186](https://github.com/nf-core/magmap/pull/186) - Update pipeline to nf-core template v.3.5.2 (by @erikrikarddaniel).
