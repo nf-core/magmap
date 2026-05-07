@@ -170,7 +170,7 @@ workflow PIPELINE_INITIALISATION {
     //
     ch_indexes = channel.empty()
     if ( indexes ) {
-        ch_indexes = channel.fromPath(indexes)
+        ch_indexes = channel.fromPath(indexes.tokenize(','))
     }
 
     //
