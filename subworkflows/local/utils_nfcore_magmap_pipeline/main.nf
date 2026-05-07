@@ -38,7 +38,9 @@ workflow PIPELINE_INITIALISATION {
     genomeinfo              //  string: Path to user-provided genome sheet
     remote_genome_sources   //  string: Comma-separated list of NCBI-style genome summary files
     genome_store_dir        //  string: Path to a directory where genome annotation files will be stored
+    prokka_store_dir        //  string: Path to a directory where Prokka annotation files will be stored
     indexes                 //  string: Path to user-provided Sourmash index file
+    genomeset_mode          //  string: Genomeset mode ('sample' or 'joint')
     gtdb_metadata           //  string: Paths to GTDB metadata files
     gtdbtk_metadata         //  string: Path to GTDB-Tk metadata file
     checkm_metadata         //  string: Path to GTDB metadata file
@@ -160,8 +162,8 @@ workflow PIPELINE_INITIALISATION {
         d = new File("${genome_store_dir}")
         if ( ! d.exists() ) { d.mkdirs() }
     }
-    if ( params.prokka_store_dir ) {
-        d = new File("${params.prokka_store_dir}")
+    if ( prokka_store_dir ) {
+        d = new File("${prokka_store_dir}")
         if ( ! d.exists() ) { d.mkdirs() }
     }
 
@@ -176,7 +178,7 @@ workflow PIPELINE_INITIALISATION {
     //
     // Return error if user asks for sourmash filtering but doesn't provide indexes.
     //
-    if (params.genomeset_mode == 'sample' && !params.indexes) {
+    if (genomeset_mode == 'sample' && !indexes) {
         error("You have asked to run sourmash sample filtering but have not provided any Sourmash indexes. Please provide --indexes or set --skip_sourmash to true.")
     }
 
