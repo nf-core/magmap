@@ -50,7 +50,8 @@
                 },
                 "indexes": {
                     "type": "string",
-                    "description": "Path to Sourmash .sbt file.",
+                    "description": "Path to Sourmash .sbt/.sbt.zip file.",
+                    "help_text": "The Sourmash authors provide index files for e.g. GTDB and NCBI data at https://sourmash.readthedocs.io/en/latest/databases.html. For GTDB, we recommend using the species-representative genomes.",
                     "fa_icon": "far fa-address-book"
                 },
                 "remote_genome_sources": {

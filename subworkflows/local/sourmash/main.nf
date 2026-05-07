@@ -125,7 +125,7 @@ workflow SOURMASH {
             // 3.1 Sample specific sets
             ch_sample_filtered_genomes = ch_sample_remote_genomes
                 .map { g -> [ [ id: g.accno ], g ] }
-                .join(WGET_GENOME.out.outfile)
+                .combine(WGET_GENOME.out.outfile, by: 0)
                 .map { g -> [ [  id: g[1].id ], [ accno: g[1].accno, g_fna: g[2] ] ] }
                 .mix(ch_sample_user_genomes)
 
