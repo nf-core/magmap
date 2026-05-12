@@ -7,11 +7,4 @@ testing/
 testing*
 *.pyc
 null/
-.nf-test/
-.nf-test.log
-.Rproj.user
-kraken2_databases/
-magmap_genomes
-magmap_prokka
-.positai
 .lineage/
