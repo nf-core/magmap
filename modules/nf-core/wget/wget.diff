@@ -1,24 +1,28 @@
 Changes in component 'nf-core/wget'
+'modules/nf-core/wget/meta.yml' is unchanged
 Changes in 'wget/main.nf':
 --- modules/nf-core/wget/main.nf
 +++ modules/nf-core/wget/main.nf
-@@ -11,38 +11,24 @@
-     tuple val(meta), val(url)
+@@ -8,24 +8,22 @@
+         'community.wave.seqera.io/library/wget:1.21.4--8b0fcde81c17be5e' }"
+ 
+     input:
+-    tuple val(meta), val(url), val(suffix)
++    tuple val(meta), val(url)
  
      output:
 -    tuple val(meta), path("${prefix}.${suffix}"), emit: outfile
 -    path "versions.yml"                         , emit: versions
 +    tuple val(meta), path("${url.substring(url.lastIndexOf('/')+1, url.length())}"), emit: outfile
-+    tuple val("${task.process}"), val('wget'), eval('wget --version | head -1 | cut -d ' ' -f 3'), emit: versions_wget, topic: versions
++    path "versions.yml", emit: versions
  
      when:
      task.ext.when == null || task.ext.when
  
      script:
-     def args = task.ext.args   ?: ''
+-    def args = task.ext.args   ?: ''
 -    prefix   = task.ext.prefix ?: "${meta.id}"
--    suffix   = task.ext.suffix ?: 'html'
-+
++    def args = task.ext.args ?: ''
      """
 +    echo $url
      wget \\
@@ -26,17 +30,15 @@ Changes in 'wget/main.nf':
          $args \\
 -        $url \\
 -        > ${prefix}.${suffix}
--
--    cat <<-END_VERSIONS > versions.yml
--    "${task.process}":
--        wget: \$(wget --version | head -1 | cut -d ' ' -f 3)
--    END_VERSIONS
 +        $url
+ 
+     cat <<-END_VERSIONS > versions.yml
+     "${task.process}":
+@@ -34,13 +32,7 @@
      """
  
      stub:
 -    prefix   = task.ext.prefix ?: "${meta.id}"
--    suffix   = task.ext.suffix ?: 'html'
      """
 -    touch ${prefix}.${suffix}
 -
@@ -44,13 +46,12 @@ Changes in 'wget/main.nf':
 -    "${task.process}":
 -        wget: \$(wget --version | head -1 | cut -d ' ' -f 3)
 -    END_VERSIONS
-+    touch ${url.substring( url.lastIndexOf('/')+1, url.length() )}
++    touch ${url.substring(url.lastIndexOf('/')+1, url.length())}
      """
- }
-
-'modules/nf-core/wget/meta.yml' is unchanged
+-}
++}
 'modules/nf-core/wget/environment.yml' is unchanged
+'modules/nf-core/wget/tests/nextflow.config' is unchanged
 'modules/nf-core/wget/tests/main.nf.test' is unchanged
 'modules/nf-core/wget/tests/main.nf.test.snap' is unchanged
-'modules/nf-core/wget/tests/nextflow.config' is unchanged
 ************************************************************

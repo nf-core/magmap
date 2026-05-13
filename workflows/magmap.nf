@@ -303,7 +303,10 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: sort bam file and produce statistics
     //
-    BAM_SORT_STATS_SAMTOOLS(BBMAP_ALIGN.out.bam, CREATE_BBMAP_INDEX.out.genome_fnas)
+    ch_fasta_fai = CREATE_BBMAP_INDEX.out.genome_fnas
+    .map { meta, fna -> [ meta, fna, [] ] }
+
+    BAM_SORT_STATS_SAMTOOLS(BBMAP_ALIGN.out.bam, ch_fasta_fai)
 
     ch_stage_counts = BAM_SORT_STATS_SAMTOOLS.out.bam
         .combine(CAT_GFF.out.concatenated_files.map { it -> it[1] })

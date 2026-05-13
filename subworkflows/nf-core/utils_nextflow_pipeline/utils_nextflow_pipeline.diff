@@ -11,7 +11,7 @@ Changes in 'utils_nextflow_pipeline/main.nf':
      }
  
      emit:
-@@ -84,7 +84,7 @@
+@@ -96,7 +96,7 @@
  //
  // When running with -profile conda, warn if channels have not been set-up appropriately
  //
@@ -21,7 +21,6 @@ Changes in 'utils_nextflow_pipeline/main.nf':
      def channels = []
      try {
 
-'subworkflows/nf-core/utils_nextflow_pipeline/main.nf.cp' was created
 'subworkflows/nf-core/utils_nextflow_pipeline/meta.yml' is unchanged
 'subworkflows/nf-core/utils_nextflow_pipeline/tests/nextflow.config' is unchanged
 'subworkflows/nf-core/utils_nextflow_pipeline/tests/main.function.nf.test' is unchanged

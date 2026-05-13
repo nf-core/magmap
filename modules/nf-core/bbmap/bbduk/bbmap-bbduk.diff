@@ -1,8 +1,17 @@
 Changes in component 'nf-core/bbmap/bbduk'
-'modules/nf-core/bbmap/bbduk/environment.yml' is unchanged
+'modules/nf-core/bbmap/bbduk/meta.yml' is unchanged
 Changes in 'bbmap/bbduk/main.nf':
 --- modules/nf-core/bbmap/bbduk/main.nf
 +++ modules/nf-core/bbmap/bbduk/main.nf
+@@ -14,7 +14,7 @@
+     output:
+     tuple val(meta), path('*.fastq.gz'), emit: reads
+     tuple val(meta), path('*.log')     , emit: log
+-    tuple val("${task.process}"), val('bbmap'), eval('bbversion.sh | grep -v "Duplicate cpuset"'), emit: versions_bbmap, topic: versions
++    tuple val("${task.process}"), val('bbmap'), eval('bbversion.sh 2>/dev/null | grep -E "^[0-9]"'), emit: versions_bbmap, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
 @@ -23,7 +23,7 @@
      def args = task.ext.args ?: ''
      def prefix = task.ext.prefix ?: "${meta.id}"
@@ -13,7 +22,7 @@ Changes in 'bbmap/bbduk/main.nf':
      """
      bbduk.sh \\
 
-'modules/nf-core/bbmap/bbduk/meta.yml' is unchanged
+'modules/nf-core/bbmap/bbduk/environment.yml' is unchanged
 'modules/nf-core/bbmap/bbduk/tests/nextflow.config' is unchanged
 'modules/nf-core/bbmap/bbduk/tests/main.nf.test' is unchanged
 'modules/nf-core/bbmap/bbduk/tests/main.nf.test.snap' is unchanged

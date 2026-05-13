@@ -1,5 +1,5 @@
 Changes in component 'nf-core/prokka'
-'modules/nf-core/prokka/meta.yml' is unchanged
+'modules/nf-core/prokka/environment.yml' is unchanged
 Changes in 'prokka/main.nf':
 --- modules/nf-core/prokka/main.nf
 +++ modules/nf-core/prokka/main.nf
@@ -44,7 +44,7 @@ Changes in 'prokka/main.nf':
      cat <<-END_VERSIONS > versions.yml
      "${task.process}":
 
-'modules/nf-core/prokka/environment.yml' is unchanged
-'modules/nf-core/prokka/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/prokka/meta.yml' is unchanged
 'modules/nf-core/prokka/tests/main.nf.test' is unchanged
+'modules/nf-core/prokka/tests/main.nf.test.snap' is unchanged
 ************************************************************

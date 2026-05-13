@@ -1,19 +1,19 @@
 process SOURMASH_INDEX {
-    tag "$meta.id"
+    tag "${meta.id}"
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://depot.galaxyproject.org/singularity/sourmash:4.9.4--hdfd78af_0':
-        'biocontainers/sourmash:4.9.4--hdfd78af_0' }"
+    container "${workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+        ? 'https://depot.galaxyproject.org/singularity/sourmash:4.9.4--hdfd78af_0'
+        : 'quay.io/biocontainers/sourmash:4.9.4--hdfd78af_0'}"
 
     input:
     tuple val(meta), path(signatures)
-    val(ksize)
+    val ksize
 
     output:
     tuple val(meta), path("*.sbt.zip"), emit: signature_index
-    tuple val("${task.process}"), val('sourmash'), eval('sourmash --version 2>&1 | sed "s/^sourmash //"'), emit: versions_sourmash, topic: versions
+    tuple val("${task.process}"), val('sourmash'), eval("sourmash --version 2>&1 | sed 's/^sourmash //'"), emit: versions_sourmash, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -24,9 +24,9 @@ process SOURMASH_INDEX {
     """
     sourmash index \\
         --ksize ${ksize} \\
-        $args \\
+        ${args} \\
         '${prefix}.sbt.zip' \\
-        $signatures
+        ${signatures}
     """
 
     stub:
