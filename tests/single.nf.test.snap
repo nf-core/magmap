@@ -113,9 +113,6 @@
                 "trimgalore/s2.fastq.gz_trimming_report.txt"
             ],
             [
-                "bbduk-filtered-barplot_Bases.txt:md5,2e61aed9edc80377aec84b44885c4ef8",
-                "bbduk-filtered-barplot_Reads.txt:md5,389e296c140475ca03e8829366ccbbd8",
-                "bbduk.txt:md5,13e2d090c17388433b4f925f96767f26",
                 "cutadapt_filtered_reads_plot.txt:md5,49ca44a6d24e3919b7d2390a2d4d9602",
                 "cutadapt_trimmed_sequences_plot_3_Counts.txt:md5,31bfd03e0a7790ca31050c6864b64d6a",
                 "cutadapt_trimmed_sequences_plot_3_Obs_Exp.txt:md5,f53ede5b6b0a181bd5ce268ec03e7a2c",
@@ -174,7 +171,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-05-13T15:43:26.082838919",
+        "timestamp": "2026-05-13T19:55:50.844095535",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
