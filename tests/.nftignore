@@ -27,3 +27,5 @@ trimgalore/fastqc/*_fastqc.{html,zip}
 trimgalore/*trimming_report.txt
 sourmash/*sig.zip
 sourmash/*.csv.gz
+multiqc_data/bbduk*.txt
+multiqc_data/bbduk-filtered*.txt
