@@ -26,3 +26,4 @@ summary_tables/*.tsv.gz
 trimgalore/fastqc/*_fastqc.{html,zip}
 trimgalore/*trimming_report.txt
 sourmash/*sig.zip
+sourmash/*.csv.gz

@@ -65,7 +65,6 @@ runs:
           --profile=+${{ inputs.profile }} \
           $(if [ -n "${{ inputs.tags }}" ]; then echo "--tag ${{ inputs.tags }}"; fi) \
           --ci \
-          --update-snapshot \
           --changed-since HEAD^ \
           --verbose \
           --tap=test.tap \
