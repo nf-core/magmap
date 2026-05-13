@@ -114,10 +114,7 @@
                 "samtools-idxstats-mapped-reads-plot_Raw_Counts.txt:md5,c3cbc88395d5feb7d689bb42f3df2ae9",
                 "samtools-stats-dp.txt:md5,5ba41b1aff36df2959c8650833570af8",
                 "samtools_alignment_plot.txt:md5,6cda162642cea2a5401f5cb9a362e2b5",
-                "twogenomes.sig:md5,8f9cb9b54ccae574eabf1129a47081c7",
-                "twogenomes_remoteidx_00.csv.gz:md5,e2f48483b80aaa74543dc27820ccfe24",
-                "twogenomes_remoteidx_00_prefetch.csv.gz:md5,795e7c2b9522667038169c2d4c0e306e",
-                "twogenomes_remoteidx_01_prefetch.csv.gz:md5,d41d8cd98f00b204e9800998ecf8427e"
+                "twogenomes.sig:md5,c0ee0dc264c6ac778c0e850b5fa836e1"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\ttRNA"
@@ -145,7 +142,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-05-13T17:58:11.311999387",
+        "timestamp": "2026-05-13T20:41:01.175847554",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"

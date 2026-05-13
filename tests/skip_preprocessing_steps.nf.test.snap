@@ -100,9 +100,6 @@
                 "summary_tables/magmap.tmRNA.counts.tsv.gz"
             ],
             [
-                "bbduk-filtered-barplot_Bases.txt:md5,1030946639af805c0ac9b3efa3958322",
-                "bbduk-filtered-barplot_Reads.txt:md5,f5427b2a7c2659cf4c01d82dc0cd0eb8",
-                "bbduk.txt:md5,d827b9375317040014b400d56010c0a2",
                 "fastqc-status-check-heatmap.txt:md5,dc1bf56fcdaf9d486c808354b9af6fc6",
                 "fastqc_adapter_content_plot.txt:md5,847ded8ccf3c10ab66d421e61933a899",
                 "fastqc_overrepresented_sequences_plot.txt:md5,882815485253c9c8d4dcbf3c3d58d364",
@@ -162,7 +159,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-05-13T16:25:20.16597254",
+        "timestamp": "2026-05-13T21:03:51.847322103",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "25.10.4"
