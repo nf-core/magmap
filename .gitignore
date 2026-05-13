@@ -1,3 +1,5 @@
+.nf-test/
+.nf-test.log
 .nextflow*
 work/
 data/
@@ -8,7 +10,9 @@ testing*
 *.pyc
 null/
 .lineage/
-.nf-test.log
-.nf-test/
-magmap_prokka/
+.nf-test*
+.Rproj.user
+kraken2_databases/
 magmap_genomes
+magmap_prokka
+.positai
