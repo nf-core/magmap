@@ -164,14 +164,8 @@
                 "samtools-stats-dp.txt:md5,3c367a65d62b3db654a9549261d542ad",
                 "samtools_alignment_plot.txt:md5,cb5c609d6c18299d800b45f471bad707",
                 "sample00.sig:md5,905d2444559cb9973271c31ecead3444",
-                "sample00_remoteidx_00.csv.gz:md5,606063786773e07f50c8496a3bf8e270",
-                "sample00_remoteidx_00_prefetch.csv.gz:md5,e787271bee9a0a1c24c5142cdabdad32",
                 "sample01.sig:md5,f6e1b240d774e2bb6f8c36e157279723",
-                "sample01_remoteidx_00.csv.gz:md5,71a839c9ff4883cbfb1083f70045dd87",
-                "sample01_remoteidx_00_prefetch.csv.gz:md5,c797e73836a0dc6178e05b4917758708",
-                "sample02.sig:md5,457bc77cb03fa8714b6bc92229a64c93",
-                "sample02_remoteidx_00.csv.gz:md5,4ddb111480c8b5313b8a2883a8b66465",
-                "sample02_remoteidx_00_prefetch.csv.gz:md5,99520c006ae0d3ec68fbc69dfc596e6d"
+                "sample02.sig:md5,ad0d054fefa869c42f538ffff373d6f7"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\trRNA\ttRNA"
@@ -227,10 +221,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-05-13T16:40:59.696208976",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "25.10.4"
-        }
+            "nf-test": "0.9.2",
+            "nextflow": "26.04.1"
+        },
+        "timestamp": "2026-05-15T09:21:09.605658"
     }
 }
