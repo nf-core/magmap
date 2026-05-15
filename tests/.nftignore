@@ -25,6 +25,7 @@ samtools/*.stats
 summary_tables/*.tsv.gz
 trimgalore/fastqc/*_fastqc.{html,zip}
 trimgalore/*trimming_report.txt
+sourmash/*.sig
 sourmash/*sig.zip
 sourmash/*.csv.gz
 multiqc/multiqc_data/bbduk*.txt

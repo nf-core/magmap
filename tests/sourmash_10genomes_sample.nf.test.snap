@@ -162,10 +162,7 @@
                 "samtools-idxstats-mapped-reads-plot_Observed_over_Expected_Counts.txt:md5,38efcd1f42b466c561e7c547afd77b0c",
                 "samtools-idxstats-mapped-reads-plot_Raw_Counts.txt:md5,4a47e0c8a2425377cda04f6ce740473c",
                 "samtools-stats-dp.txt:md5,3c367a65d62b3db654a9549261d542ad",
-                "samtools_alignment_plot.txt:md5,cb5c609d6c18299d800b45f471bad707",
-                "sample00.sig:md5,5c3458032a20a1f94c9ba48924f27727",
-                "sample01.sig:md5,f6e1b240d774e2bb6f8c36e157279723",
-                "sample02.sig:md5,ad0d054fefa869c42f538ffff373d6f7"
+                "samtools_alignment_plot.txt:md5,cb5c609d6c18299d800b45f471bad707"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\trRNA\ttRNA"
@@ -225,6 +222,6 @@
             "nf-test": "0.9.2",
             "nextflow": "26.04.1"
         },
-        "timestamp": "2026-05-15T10:14:35.135286"
+        "timestamp": "2026-05-15T13:23:53.2344"
     }
 }
