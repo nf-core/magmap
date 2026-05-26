@@ -84,7 +84,7 @@ workflow PIPELINE_INITIALISATION {
     https://github.com/nf-core/magmap/blob/master/CITATIONS.md
 """
     if (_monochrome_logs) {
-    before_text = before_text.replaceAll(/\033\[[0-9;]*m/, '')
+        before_text = before_text.replaceAll(/\033\[[0-9;]*m/, '')
     }
 
     command = "nextflow run ${workflow.manifest.name} -profile <docker/singularity/.../institute> --input samplesheet.csv --outdir <OUTDIR>"
