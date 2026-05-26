@@ -324,7 +324,16 @@ workflow MAGMAP {
         }
 
     FEATURECOUNTS(ch_featurecounts)
-    ch_multiqc_files = ch_multiqc_files.mix(FEATURECOUNTS.out.summary.collect{ _meta, log -> log })
+    // ch_multiqc_files = ch_multiqc_files.mix(FEATURECOUNTS.out.summary.collect{ _meta, log -> log })
+    ch_multiqc_files = ch_multiqc_files.mix(
+    FEATURECOUNTS.out.summary
+        .map { meta, summary ->
+            def content = summary.text.replaceAll(/\S+\.sorted\.bam/, "${meta.id}.${meta.feature}")
+            [ "${meta.id}.${meta.feature}.featureCounts.tsv.summary", content ]
+        }
+        .collectFile { name, content -> [ name, content ] }
+        .collect()
+    )
 
     //
     // MODULE: Collect featurecounts output counts in one table
