@@ -1,27 +1,19 @@
 Changes in component 'nf-core/bbmap/align'
-Changes in 'bbmap/align/environment.yml':
---- modules/nf-core/bbmap/align/environment.yml
-+++ modules/nf-core/bbmap/align/environment.yml
-@@ -5,4 +5,5 @@
-   - bioconda
- dependencies:
-   - bioconda::bbmap=39.18
-+  - bioconda::samtools=1.21
-   - pigz=2.8
-
+'modules/nf-core/bbmap/align/meta.yml' is unchanged
 Changes in 'bbmap/align/main.nf':
 --- modules/nf-core/bbmap/align/main.nf
 +++ modules/nf-core/bbmap/align/main.nf
-@@ -1,6 +1,6 @@
- process BBMAP_ALIGN {
-     tag "$meta.id"
--    label 'process_medium'
-+    label 'process_high'
+@@ -14,7 +14,7 @@
+     output:
+     tuple val(meta), path("*.bam"), emit: bam
+     tuple val(meta), path("*.log"), emit: log
+-    tuple val("${task.process}"), val('bbmap'), eval('bbversion.sh | grep -v "Duplicate cpuset"'), emit: versions_bbmap, topic: versions
++    tuple val("${task.process}"), val('bbmap'), eval('bbversion.sh 2>/dev/null | grep -E "^[0-9]"'), emit: versions_bbmap, topic: versions
  
-     conda "${moduleDir}/environment.yml"
-     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
+     when:
+     task.ext.when == null || task.ext.when
 
-'modules/nf-core/bbmap/align/meta.yml' is unchanged
+'modules/nf-core/bbmap/align/environment.yml' is unchanged
 'modules/nf-core/bbmap/align/tests/nextflow.config' is unchanged
 'modules/nf-core/bbmap/align/tests/main.nf.test' is unchanged
 'modules/nf-core/bbmap/align/tests/main.nf.test.snap' is unchanged

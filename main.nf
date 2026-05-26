@@ -71,6 +71,9 @@ workflow NFCORE_MAGMAP {
         skip_fastqc,
         skip_qc,
         skip_trimming,
+        params.multiqc_config,
+        params.multiqc_logo,
+        params.multiqc_methods_description,
         outdir
     )
     emit:
@@ -143,7 +146,6 @@ workflow {
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        params.hook_url,
         NFCORE_MAGMAP.out.multiqc_report
     )
 }
