@@ -94,7 +94,7 @@ jobs:
         uses: ./.github/actions/nf-test
         continue-on-error: ${{ matrix.NXF_VER == 'latest-everything' }}
         env:
-          NFT_WORKDIR: ${{ env.NFT_WORKDIR }}
+          NFT_WORKDIR: ${{ runner.temp }}/.nf-test
           NXF_VERSION: ${{ matrix.NXF_VER }}
         with:
           profile: ${{ matrix.profile }}
