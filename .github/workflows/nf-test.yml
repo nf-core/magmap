@@ -133,7 +133,7 @@ jobs:
           fi
 
   confirm-pass:
-    needs: [nf-test-changes, nf-test]
+    needs: [-test]
     if: always()
     runs-on: # use self-hosted runners
       - runs-on=${{ github.run_id }}-confirm-pass
