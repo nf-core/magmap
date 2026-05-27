@@ -83,7 +83,6 @@ jobs:
     env:
       NXF_ANSI_LOG: false
       TOTAL_SHARDS: ${{ needs.nf-test-changes.outputs.total_shards }}
-      NFT_WORKDIR: ${{ runner.temp }}/.nf-test
 
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
