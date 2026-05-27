@@ -49,8 +49,12 @@ jobs:
         uses: ./.github/actions/get-shards
         env:
           NFT_VER: ${{ env.NFT_VER }}
+          # Skip sentieon tests on fork PRs where secrets are not available
+          SKIP_SENTIEON: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != 'nf-core/rnaseq' }}
+          # Skip GPU tests on CPU runners
+          SKIP_GPU: "true"
         with:
-          max_shards: 7
+          max_shards: 20
 
       - name: debug
         run: |
@@ -73,7 +77,7 @@ jobs:
           - ${{ github.base_ref == 'master' || github.base_ref == 'main' }}
         # Exclude conda and singularity on dev
         exclude:
-          - isMain: false
+          - isMain: true
             profile: "conda"
           - isMain: false
             profile: "singularity"
@@ -95,7 +99,19 @@ jobs:
         continue-on-error: ${{ matrix.NXF_VER == 'latest-everything' }}
         env:
           NFT_WORKDIR: ${{ runner.temp }}/.nf-test
+          SENTIEON_AUTH_MECH: "GitHub Actions - token"
+          SENTIEON_ENCRYPTION_KEY: ${{ secrets.SENTIEON_ENCRYPTION_KEY }}
+          SENTIEON_LICENSE_MESSAGE: ${{ secrets.SENTIEON_LICENSE_MESSAGE }}
+          SENTIEON_LICSRVR_IP: ${{ secrets.SENTIEON_LICSRVR_IP }}
           NXF_VERSION: ${{ matrix.NXF_VER }}
+          # Skip sentieon tests on fork PRs where secrets are not available,
+          # and on conda because conda-resolved sentieon + its license-server
+          # handshake isn't deterministic run-to-run, so classifyStrand can
+          # flip on a threshold boundary and the summary-table md5 drifts
+          # vs the docker-captured snapshot.
+          SKIP_SENTIEON: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != 'nf-core/rnaseq') || matrix.profile == 'conda' }}
+          # Skip GPU tests on CPU runners
+          SKIP_GPU: "true"
         with:
           profile: ${{ matrix.profile }}
           shard: ${{ matrix.shard }}
@@ -117,7 +133,7 @@ jobs:
           fi
 
   confirm-pass:
-    needs: [nf-test]
+    needs: [nf-test-changes, nf-test]
     if: always()
     runs-on: # use self-hosted runners
       - runs-on=${{ github.run_id }}-confirm-pass
