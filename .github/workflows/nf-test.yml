@@ -109,7 +109,7 @@ jobs:
           # handshake isn't deterministic run-to-run, so classifyStrand can
           # flip on a threshold boundary and the summary-table md5 drifts
           # vs the docker-captured snapshot.
-          SKIP_SENTIEON: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != 'nf-core/rnaseq') || matrix.profile == 'conda' }}
+          SKIP_SENTIEON: ${{ (github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name != 'nf-core/magmap') || matrix.profile == 'conda' }}
           # Skip GPU tests on CPU runners
           SKIP_GPU: "true"
         with:
