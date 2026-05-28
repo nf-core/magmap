@@ -26,7 +26,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Tool    | Previous version | New version |
 | ------- | ---------------- | ----------- |
 | MultiQC | 1.32             | 1.33        |
-| Subread | 2.0.6            | 2.1.1       |
++| Subread | 2.0.6            | 2.1.1       |
++| trimgalore | 0.6.10           | 2.1.0       |
++| Samtools   | 1.22.1           | 1.23.1      |
 
 ### `Deprecated`
 
