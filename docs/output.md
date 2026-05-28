@@ -22,7 +22,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
   - [Genome fetching](#genome-fetching) - Genomes fetched from remote sources
   - [Quantification of genome features](#quantification-of-genome-features)
     - [BBmap](#bbmap) - Output from BBmap
-    - [FeatureCounts](#featureCounts) - Output from FeatureCounts
+    - [FeatureCounts](#featurecounts) - Output from FeatureCounts
     - [Samtools](#samtools) - Output from Samtools
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 - [MultiQC](#multiqc) - Aggregate report describing results
