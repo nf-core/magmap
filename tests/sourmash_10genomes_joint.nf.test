@@ -7,6 +7,8 @@ nextflow_pipeline {
 
     test("-profile test_sourmash_10genomes_joint") {
 
+        no_conda true
+
         when {
             params {
                 outdir = "$outputDir"
