@@ -4,7 +4,6 @@ nextflow_pipeline {
     script "../main.nf"
     tag "pipeline"
     profile 'test_sourmash'
-    no_conda true
 
     test("-profile test_sourmash") {
 
