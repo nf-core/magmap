@@ -55,7 +55,7 @@
                     },
                     "prokka": {
                         "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "git_sha": "2dc23692bd1c3a23a12cfd959808a8fe7e3c6557",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/prokka/prokka.diff"
                     },
