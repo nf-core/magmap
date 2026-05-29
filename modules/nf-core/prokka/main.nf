@@ -25,19 +25,19 @@ process PROKKA {
     tuple val(meta), path("${prefix}/${prefix}.log.gz"), emit: log
     tuple val(meta), path("${prefix}/${prefix}.txt.gz"), emit: txt
     tuple val(meta), path("${prefix}/${prefix}.tsv.gz"), emit: tsv
-    tuple val("${task.process}"), val('prokka'), eval("prokka --version 2>&1 | sed 's/^.*prokka //'"), topic: versions, emit: versions_prokka
+    path "versions.yml", emit: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args             = task.ext.args   ?: ''
-    prefix               = task.ext.prefix ?: "${meta.id}"
-    def input            = fasta.toString() - ~/\.gz$/
-    def decompress       = fasta.getExtension() == "gz" ? "gunzip -c ${fasta} > ${input}" : ""
-    def cleanup          = fasta.getExtension() == "gz" ? "rm ${input}" : ""
-    def proteins_opt     = proteins ? "--proteins ${proteins}" : ""
-    def prodigal_tf_in   = prodigal_tf ? "--prodigaltf ${prodigal_tf}" : ""
+    def args         = task.ext.args   ?: ''
+    prefix           = task.ext.prefix ?: "${meta.id}"
+    def input        = fasta.toString() - ~/\.gz$/
+    def decompress   = fasta.getExtension() == "gz" ? "gunzip -c ${fasta} > ${input}" : ""
+    def cleanup      = fasta.getExtension() == "gz" ? "rm ${input}" : ""
+    def proteins_opt = proteins    ? "--proteins ${proteins}"       : ""
+    def prodigal_tf_in = prodigal_tf ? "--prodigaltf ${prodigal_tf}" : ""
     """
     ${decompress}
 
@@ -52,6 +52,11 @@ process PROKKA {
     ${cleanup}
 
     gzip ${prefix}/*
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        prokka: \$(echo \$(prokka --version 2>&1) | sed 's/^.*prokka //')
+    END_VERSIONS
     """
 
     stub:
@@ -71,5 +76,10 @@ process PROKKA {
     touch ${prefix}/${prefix}.txt
     touch ${prefix}/${prefix}.tsv
     gzip ${prefix}/*
+
+    cat <<-END_VERSIONS > versions.yml
+    "${task.process}":
+        prokka: \$(echo \$(prokka --version 2>&1) | sed 's/^.*prokka //')
+    END_VERSIONS
     """
 }
