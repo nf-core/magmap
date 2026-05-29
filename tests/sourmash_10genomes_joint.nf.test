@@ -4,10 +4,9 @@ nextflow_pipeline {
     script "../main.nf"
     tag "pipeline"
     profile 'test_sourmash_10genomes_joint'
+    no_conda true
 
     test("-profile test_sourmash_10genomes_joint") {
-
-        no_conda true
 
         when {
             params {
