@@ -1,5 +1,6 @@
 Changes in component 'nf-core/prokka'
 'modules/nf-core/prokka/environment.yml' is unchanged
+'modules/nf-core/prokka/meta.yml' is unchanged
 Changes in 'prokka/main.nf':
 --- modules/nf-core/prokka/main.nf
 +++ modules/nf-core/prokka/main.nf
@@ -31,7 +32,7 @@ Changes in 'prokka/main.nf':
 +    tuple val(meta), path("${prefix}/${prefix}.log.gz"), emit: log
 +    tuple val(meta), path("${prefix}/${prefix}.txt.gz"), emit: txt
 +    tuple val(meta), path("${prefix}/${prefix}.tsv.gz"), emit: tsv
-     path "versions.yml" , emit: versions
+     tuple val("${task.process}"), val('prokka'), eval("prokka --version 2>&1 | sed 's/^.*prokka //'"), topic: versions, emit: versions_prokka
  
      when:
 @@ -50,6 +50,8 @@
@@ -40,11 +41,18 @@ Changes in 'prokka/main.nf':
      ${cleanup}
 +
 +    gzip ${prefix}/*
+     """
  
-     cat <<-END_VERSIONS > versions.yml
-     "${task.process}":
-
-'modules/nf-core/prokka/meta.yml' is unchanged
-'modules/nf-core/prokka/tests/main.nf.test' is unchanged
+     stub:
+@@ -68,6 +70,6 @@
+     touch ${prefix}/${prefix}.log
+     touch ${prefix}/${prefix}.txt
+     touch ${prefix}/${prefix}.tsv
+-    touch ${prefix}/${prefix}.gff
++    gzip ${prefix}/*
+     """
+-}
++}
 'modules/nf-core/prokka/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/prokka/tests/main.nf.test' is unchanged
 ************************************************************
