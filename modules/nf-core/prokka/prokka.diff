@@ -1,9 +1,10 @@
 Changes in component 'nf-core/prokka'
+'modules/nf-core/prokka/environment.yml' is unchanged
 'modules/nf-core/prokka/meta.yml' is unchanged
 Changes in 'prokka/main.nf':
 --- modules/nf-core/prokka/main.nf
 +++ modules/nf-core/prokka/main.nf
-@@ -13,18 +13,18 @@
+@@ -13,31 +13,31 @@
      path prodigal_tf
  
      output:
@@ -19,6 +20,7 @@ Changes in 'prokka/main.nf':
 -    tuple val(meta), path("${prefix}/*.log"), emit: log
 -    tuple val(meta), path("${prefix}/*.txt"), emit: txt
 -    tuple val(meta), path("${prefix}/*.tsv"), emit: tsv
+-    tuple val("${task.process}"), val('prokka'), eval("prokka --version 2>&1 | sed 's/^.*prokka //'"), topic: versions, emit: versions_prokka
 +    tuple val(meta), path("${prefix}/${prefix}.gff.gz"), emit: gff
 +    tuple val(meta), path("${prefix}/${prefix}.gbk.gz"), emit: gbk
 +    tuple val(meta), path("${prefix}/${prefix}.fna.gz"), emit: fna
@@ -31,20 +33,57 @@ Changes in 'prokka/main.nf':
 +    tuple val(meta), path("${prefix}/${prefix}.log.gz"), emit: log
 +    tuple val(meta), path("${prefix}/${prefix}.txt.gz"), emit: txt
 +    tuple val(meta), path("${prefix}/${prefix}.tsv.gz"), emit: tsv
-     path "versions.yml" , emit: versions
++    path "versions.yml", emit: versions
  
      when:
-@@ -50,6 +50,8 @@
+     task.ext.when == null || task.ext.when
+ 
+     script:
+-    def args             = task.ext.args   ?: ''
+-    prefix               = task.ext.prefix ?: "${meta.id}"
+-    def input            = fasta.toString() - ~/\.gz$/
+-    def decompress       = fasta.getExtension() == "gz" ? "gunzip -c ${fasta} > ${input}" : ""
+-    def cleanup          = fasta.getExtension() == "gz" ? "rm ${input}" : ""
+-    def proteins_opt     = proteins ? "--proteins ${proteins}" : ""
+-    def prodigal_tf_in   = prodigal_tf ? "--prodigaltf ${prodigal_tf}" : ""
++    def args         = task.ext.args   ?: ''
++    prefix           = task.ext.prefix ?: "${meta.id}"
++    def input        = fasta.toString() - ~/\.gz$/
++    def decompress   = fasta.getExtension() == "gz" ? "gunzip -c ${fasta} > ${input}" : ""
++    def cleanup      = fasta.getExtension() == "gz" ? "rm ${input}" : ""
++    def proteins_opt = proteins    ? "--proteins ${proteins}"       : ""
++    def prodigal_tf_in = prodigal_tf ? "--prodigaltf ${prodigal_tf}" : ""
+     """
+     ${decompress}
+ 
+@@ -50,6 +50,13 @@
          ${input}
  
      ${cleanup}
 +
 +    gzip ${prefix}/*
++
++    cat <<-END_VERSIONS > versions.yml
++    "${task.process}":
++        prokka: \$(echo \$(prokka --version 2>&1) | sed 's/^.*prokka //')
++    END_VERSIONS
+     """
  
-     cat <<-END_VERSIONS > versions.yml
-     "${task.process}":
-
-'modules/nf-core/prokka/environment.yml' is unchanged
+     stub:
+@@ -68,6 +75,11 @@
+     touch ${prefix}/${prefix}.log
+     touch ${prefix}/${prefix}.txt
+     touch ${prefix}/${prefix}.tsv
+-    touch ${prefix}/${prefix}.gff
++    gzip ${prefix}/*
++
++    cat <<-END_VERSIONS > versions.yml
++    "${task.process}":
++        prokka: \$(echo \$(prokka --version 2>&1) | sed 's/^.*prokka //')
++    END_VERSIONS
+     """
+-}
++}
 'modules/nf-core/prokka/tests/main.nf.test.snap' is unchanged
 'modules/nf-core/prokka/tests/main.nf.test' is unchanged
 ************************************************************

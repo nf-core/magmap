@@ -40,6 +40,7 @@ workflow NFCORE_MAGMAP {
     gtdb_metadata               // channel: GTDB metadata files
     gtdbtk_metadata             // channel: GTDB-Tk metadata files
     checkm_metadata             // channel: CheckM/CheckM2 metadata files
+    genomeset_mode              //  string: Either 'joint' for mapping samples against all genomes or 'sample' to map to sample-specific sets
     skip_sourmash               // boolean: skip Sourmash or not
     sourmash_ksize              // integer
     features                    // channel: types of features to call
@@ -63,12 +64,16 @@ workflow NFCORE_MAGMAP {
         gtdb_metadata,
         gtdbtk_metadata,
         checkm_metadata,
+        genomeset_mode,
         skip_sourmash,
         sourmash_ksize,
         features,
         skip_fastqc,
         skip_qc,
         skip_trimming,
+        params.multiqc_config,
+        params.multiqc_logo,
+        params.multiqc_methods_description,
         outdir
     )
     emit:
@@ -100,7 +105,9 @@ workflow {
         params.genomeinfo,
         params.remote_genome_sources,
         params.genome_store_dir,
+        params.prokka_store_dir,
         params.indexes,
+        params.genomeset_mode,
         params.gtdb_metadata,
         params.gtdbtk_metadata,
         params.checkm_metadata,
@@ -120,6 +127,7 @@ workflow {
         PIPELINE_INITIALISATION.out.gtdb_metadata,
         PIPELINE_INITIALISATION.out.gtdbtk_metadata,
         PIPELINE_INITIALISATION.out.checkm_metadata,
+        params.genomeset_mode,
         params.skip_sourmash,
         params.sourmash_ksize,
         PIPELINE_INITIALISATION.out.features,
@@ -138,7 +146,6 @@ workflow {
         params.plaintext_email,
         params.outdir,
         params.monochrome_logs,
-        params.hook_url,
         NFCORE_MAGMAP.out.multiqc_report
     )
 }

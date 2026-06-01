@@ -5,8 +5,7 @@ process TIDYVERSE_JOINMETADATA {
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a0/a04c5424ce6fbf346430d99ae9f72d0bbb90e3a5cf4096df32fc1716f03973a4/data' :
-        'community.wave.seqera.io/library/r-base_r-data.table_r-dplyr_r-dtplyr_pruned:a6608bc81b0e6546'
-    }"
+        'community.wave.seqera.io/library/r-base_r-data.table_r-dplyr_r-dtplyr_pruned:a6608bc81b0e6546' }"
 
     input:
     path genomes            // Genome accessions to output information for
@@ -15,16 +14,15 @@ process TIDYVERSE_JOINMETADATA {
     path checkm_metadata    // Output files from CheckM/CheckM2
 
     output:
-    path "*.genome_metadata.tsv.gz", emit: genome_metadata
-    path "versions.yml"            , emit: versions
+    path "${outfile}"  , emit: genome_metadata
+    path "versions.yml", emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args    = task.ext.args ?: ''
     def prefix  = task.ext.prefix ?: "magmap"
-    def outfile = "${prefix}.genome_metadata.tsv.gz"
+    outfile = "${prefix}.genome_metadata.tsv.gz"
 
     def read_gtdb_metadata = """
         gtdb_metadata <- tibble(
@@ -140,6 +138,7 @@ process TIDYVERSE_JOINMETADATA {
     stub:
     def args = task.ext.args ?: ''
     def prefix = task.ext.prefix ?: "magmap"
+    outfile = "${prefix}.genome_metadata.tsv.gz"
     """
     echo $args
 

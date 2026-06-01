@@ -1,0 +1,32 @@
+name: genomes2orfs
+description: Outputs a tsv file with genome and orf (feature) names
+keywords:
+  - genomes
+  - gff
+  - tsv
+tools:
+  - grep:
+      description: GNU sed
+      homepage: https://www.gnu.org/software/sed/
+      documentation: https://www.gnu.org/software/sed/manual/
+      licence: ["GPL"]
+      identifier: sed
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - fnas:
+        type: file
+        description: |
+          List of input gzipped or not gff files
+output:
+  - genomes2orfs:
+      - "*.genomes2orfs.tsv.gz":
+          type: file
+          description: TSV file with genome/orf information
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"

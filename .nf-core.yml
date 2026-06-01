@@ -2,18 +2,18 @@ lint:
   files_unchanged:
     - docs/images/nf-core-magmap_logo_light.png
     - docs/images/nf-core-magmap_logo_dark.png
+    - assets/nf-core-magmap_logo_light.png
   nextflow_config:
     - config_defaults:
         - params.ncbi_genome_infos
-nf_core_version: 3.5.1
+nf_core_version: 4.0.2
 repository_type: pipeline
 template:
   author: Danilo Di Leo, Emelie Nilsson and Daniel Lundin
-  description: nf-core/magmap is a bioinformatics best-practice analysis pipeline
-    for mapping reads to a (large) collections of genomes.
+  description: nf-core/magmap is a bioinformatics best-practice analysis pipeline for mapping reads to a (large) collections of genomes.
   force: false
   is_nfcore: true
   name: magmap
   org: nf-core
   outdir: .
-  version: 1.0.0
+  version: 1.1.0

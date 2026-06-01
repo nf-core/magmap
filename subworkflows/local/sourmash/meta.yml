@@ -47,22 +47,10 @@ input:
       Boolean value passed to sourmash/gather
       Structure: val(boolean)
 output:
-  - gindex:
-      description: |
-        Genome signatures from genomes/sketch
-        Structure: [ val(meta), path(sig) ]
-  - sindex:
-      description: |
-        Sample signatures from genomes/sketch
-        Structure: [ val(meta), path(sig) ]
   - filtered_genomes:
       description: |
-        Sample signatures from genomes/sketch
+        Selected genomes
         Structure: [ val(accno), path(genome) ]
-  - versions:
-      description: |
-        Files containing software versions
-        Structure: [ path(versions.yml) ]
 authors:
   - "@danilodileo"
   - "@erikrikarddaniel"

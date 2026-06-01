@@ -13,6 +13,10 @@ input:
       type: file
       description: Input featureCounts TSV files
       pattern: "*.featureCounts.tsv"
+  - g2ids:
+      type: file
+      description: File mapping gene IDs to gene names
+      pattern: "*genomes2orfs.tsv.gz"
 output:
   - meta:
       type: map
@@ -27,5 +31,7 @@ output:
       type: file
       description: File containing software versions
       pattern: "versions.yml"
+      ontologies:
+        - edam: "http://edamontology.org/format_3750" # YAML
 authors:
   - "@danilodileo"

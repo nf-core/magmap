@@ -22,7 +22,8 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
   - [Genome fetching](#genome-fetching) - Genomes fetched from remote sources
   - [Quantification of genome features](#quantification-of-genome-features)
     - [BBmap](#bbmap) - Output from BBmap
-    - [FeatureCounts](#featureCounts) - Output from FeatureCounts
+    - [FeatureCounts](#featurecounts) - Output from FeatureCounts
+    - [Samtools](#samtools) - Output from Samtools
 - [Pipeline information](#pipeline-information) - Report metrics generated during the workflow execution
 - [MultiQC](#multiqc) - Aggregate report describing results
 
@@ -124,6 +125,8 @@ When the pipeline is run with [`--skip_sourmash false`](https://nf-co.re/magmap/
 
 #### BBmap
 
+[BBMap](https://sourceforge.net/projects/bbmap/) is a splice-aware global aligner for DNA and RNA sequencing reads. It provides detailed alignment statistics including mapped read counts, insert size distribution, and error rates. For further reading and documentation see the [BBMap documentation](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbmap-guide/).
+
 Only logs are saved by default from the BBmap step.
 To save the `.bam` files, use `--bbmap_save_bam` and to save the index, use `--bbmap_save_index`.
 
@@ -133,13 +136,14 @@ To save the `.bam` files, use `--bbmap_save_bam` and to save the index, use `--b
 - `bbmap/`
   - `bam/`
     - `<SAMPLE>.bam`: bam file for `SAMPLE`
-  - `logs/`:
+  - `logs/`
     - `<SAMPLE>.bbmap.log`: BBmap log for `SAMPLE`
 
-<details markdown="1">
-<summary>Output files</summary>
+</details>
 
 #### FeatureCounts
+
+[featureCounts](https://subread.sourceforge.net/) is a highly efficient read summarization program that counts mapped reads for genomic features such as genes and transcripts. It provides read count matrices that serve as input for downstream differential expression analysis. For further reading and documentation see the [featureCounts documentation](https://subread.sourceforge.net/featureCounts.html).
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -148,7 +152,21 @@ To save the `.bam` files, use `--bbmap_save_bam` and to save the index, use `--b
   - `<SAMPLE>.<FEATURE>.featureCounts.tsv`: Counts for `SAMPLE` and `FEATURE`
   - `<SAMPLE>.<FEATURE>.featureCounts.tsv.summary`: Summary of counts for `SAMPLE` and `FEATURE`
 
+</details>
+
+#### Samtools
+
+[Samtools](https://www.htslib.org) is a suite of programs for interacting with high-throughput sequencing data. It provides statistics on alignment quality, coverage, and read duplication. For further reading and documentation see the [Samtools documentation](http://www.htslib.org/doc/). Samtools statistics are provided alongside the alignment files in the BBMap output folder.
+
 <details markdown="1">
+<summary>Output files</summary>
+
+- `samtools/`
+  - `<SAMPLE>.flagstat`: Flagstat statistics for `SAMPLE`
+  - `<SAMPLE>.idxstats`: Idxstats statistics for `SAMPLE`
+  - `<SAMPLE>.stats`: Stats statistics for `SAMPLE`
+
+</details>
 
 ## Pipeline information
 

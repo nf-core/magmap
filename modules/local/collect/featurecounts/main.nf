@@ -5,22 +5,21 @@ process COLLECT_FEATURECOUNTS {
     conda "${moduleDir}/environment.yml"
     container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a0/a04c5424ce6fbf346430d99ae9f72d0bbb90e3a5cf4096df32fc1716f03973a4/data' :
-        'community.wave.seqera.io/library/r-base_r-data.table_r-dplyr_r-dtplyr_pruned:a6608bc81b0e6546'
-    }"
+        'community.wave.seqera.io/library/r-base_r-data.table_r-dplyr_r-dtplyr_pruned:a6608bc81b0e6546' }"
 
     input:
     tuple val(meta), path(inputfiles)
+    path g2ids
 
     output:
-    tuple val(meta), path("*.counts.tsv.gz"), emit: counts
-    path "versions.yml"                     , emit: versions
+    tuple val(meta), path("${prefix}.counts.tsv.gz"), emit: counts
+    path "versions.yml"                             , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
 
     script:
-    def args     = task.ext.args ?: ''
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = task.ext.prefix ?: "${meta.id}"
     """
     #!/usr/bin/env Rscript
 
@@ -28,9 +27,12 @@ process COLLECT_FEATURECOUNTS {
     library(dtplyr)
     library(readr)
     library(dplyr)
+    library(tidyr)
     library(stringr)
 
     setDTthreads($task.cpus)
+
+    g2ids <- read_tsv("${g2ids}", col_types = 'ccc')
 
     tibble(f = Sys.glob('*.featureCounts.tsv')) %>%
         mutate(
@@ -45,7 +47,7 @@ process COLLECT_FEATURECOUNTS {
                             sample = str_remove(sample, '.sorted.bam'),
                             r = count/Length
                         ) %>%
-                        rename( orf = Geneid, chr = Chr, start = Start, end = End, strand = Strand, length = Length ) %>%
+                        rename(orf = Geneid, chr = Chr, start = Start, end = End, strand = Strand, length = Length) %>%
                         group_by(sample) %>%
                         mutate(tpm = r/sum(r) * 1e6) %>% ungroup() %>%
                         select(-r) %>%
@@ -55,6 +57,8 @@ process COLLECT_FEATURECOUNTS {
         ) %>%
         tidyr::unnest(d) %>%
         select(-f) %>%
+        inner_join(g2ids %>% select(-genome), by = join_by(orf)) %>%
+        relocate(accno) %>%
         write_tsv("${prefix}.counts.tsv.gz")
 
         writeLines(
@@ -70,7 +74,8 @@ process COLLECT_FEATURECOUNTS {
     """
 
     stub:
-    def prefix = task.ext.prefix ?: "${meta.id}"
+    prefix = task.ext.prefix ?: "${meta.id}"
+
     """
     touch ${prefix}.counts.tsv
     gzip ${prefix}.counts.tsv

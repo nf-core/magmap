@@ -13,14 +13,13 @@
   - [Multiple runs of the same sample](#multiple-runs-of-the-same-sample)
   - [Full samplesheet](#full-samplesheet)
   - [Genome input](#genome-input)
-  - [Other inputs](#other-inputs)
-    - [Index input](#index-input)
-    - [Genome metadata input](#genome-metadata-input)
-      - [GTDB metadata](#gtdb-metadata)
-      - [GTDB-Tk metadata](#gtdb-tk-metadata)
-      - [CheckM/CheckM2 metadata](#checkmcheckm2-metadata)
+  - [Genome index input](#genome-index-input)
+  - [Genome metadata input](#genome-metadata-input)
+    - [GTDB metadata](#gtdb-metadata)
+    - [GTDB-Tk metadata](#gtdb-tk-metadata)
+    - [CheckM/CheckM2 metadata](#checkmcheckm2-metadata)
   - [Check duplicates](#check-duplicates)
-  - [Remove contaminants from the samples] (#remove-contaminants-from-the-samples)
+  - [Remove contaminants from samples](#remove-contaminants-from-samples)
   - [Sourmash](#sourmash)
   - [Feature calling](#feature-calling)
   - [Multimapping](#Multimapping)
@@ -44,8 +43,8 @@
 
 **nf-core/magmap** is a workflow designed for mapping metatranscriptomic and metagenomic reads onto a group of genomes.
 The collection of genomes can either be specified directly using a table (see the [`--genomeinfo` parameter](https://nf-co.re/magmap/parameters/#genomeinfo)) or be the result of filtering with Sourmash.
-The latter can use either the genomes specified by `--genomeinfo`, a "sketch index" pointing to genomes available for instance at NCBI (see the [`--indexes` parameter](https://nf-co.re/magmap/parameters/#indexes) or a combination, to identify a smaller set to map to.
-Genome files provided with `--genominfo` must include contigs in fasta format and optionally gff files (Prokka format).
+The latter can use either the genomes specified by `--genomeinfo`, a "sketch index" pointing to genomes available for instance at NCBI (see the [`--indexes` parameter](https://nf-co.re/magmap/parameters/#indexes)) or a combination, to identify a smaller set to map to.
+Genome files provided with `--genomeinfo` must include contigs in fasta format and optionally gff files (Prokka or Bakta format).
 Any genome for which a gff file is missing will be annotated with Prokka.
 The pipeline can take output files from CheckM, CheckM2 and GTDB-Tk as input, and will provide processed output from these tools.
 Note that the pipeline can map to any collection of genomes, including single cell genomes and isolates.
@@ -120,7 +119,7 @@ GCA_002688515,./genomes/GCA_002688515.fna,
 ```
 
 > [!NOTE]
-> The pipeline assumes gff files have the same format as is output by Prokka.
+> The pipeline assumes gff files have the same format as is output by Prokka or Bakta.
 
 Any genome used by the pipeline for which a gff file is not found will be annotated with Prokka to produce a gff file.
 
@@ -130,9 +129,7 @@ Any genome used by the pipeline for which a gff file is not found will be annota
 | `genome_fna` | Full path to Fasta file that contains nucleotide sequences of your genome. File can be gzipped and have the extension ".fna.gz" or "fna". |
 | `genome_gff` | Full path to gff file of your genome. File can be gzipped and have the extension ".gff.gz" or ".gff".                                     |
 
-### Other inputs
-
-#### Index input
+### Genome index input
 
 In addition to, or instead of, providing a genome file with genomes to map to, you can provide a [Sourmash](https://sourmash.readthedocs.io/en/latest/) index file that points to genomes.
 Sourmash will be run using the index files and matching genomes will be downloaded, annotated with Prokka and mapped to by the pipeline.
@@ -142,7 +139,11 @@ See also [Sourmash](#sourmash) below.
 
 Particular examples of Sourmash index files are those prepared by the authors of Sourmash, which can be found [here](https://sourmash.readthedocs.io/en/latest/databases.html).
 
-##### Remote genome sources
+By default, all genomes identified from indices will be mapped to for all samples.
+Particularly in cases where a lot of genomes are identified and they differ considerably between samples, it can be beneficial to instead map to only the genomes identified for each sample.
+This is determined by the `--genomeset_mode` parameter that can be set to either `joint` (default, map to all samples) or `sample` (map to sample-specific sets of genomes).
+
+#### Remote genome sources
 
 Genomes are by default fetched from NCBI using genome information files provided through the [`--remote_genome_sources`](https://nf-co.re/magmap/parameters/#remote_genome_sources) parameter.
 This is a comma-separated list of paths to NCBI-style genome information files, containing at least the columns `#assembly_accession` and `ftp_path`.
@@ -156,7 +157,7 @@ nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.cs
 
 Note, more than one index file can be provided, separated by commas.
 
-##### Genome data will be directed to a specific directory
+#### Genome data will be directed to a specific directory
 
 All genomes potentially downloaded as part of the Sourmash process, will be output in the directory specified with [`--genome_store_dir`](https://nf-co.re/magmap/parameters/#genome_store_dir) (set to `genomes` by default).  
 Similarly, the output from Prokka annotation of genomes will be stored in the directory specified with [`--prokka_store_dir`](https://nf-co.re/magmap/parameters/#prokka_store_dir) (`prokka` by default).
@@ -168,23 +169,23 @@ If you create storage directories that you can access from the directories from 
 > By default, the pipeline will try to download genomes from NCBI five times to allow for temporary errors.
 > After five attempts, any file that was not properly downloaded will be ignored and processing continues.
 
-#### Genome metadata input
+### Genome metadata input
 
 **nf-core/magmap** accepts three types of metadata files that provides information about the genomes that you will use in the pipeline.
 At the moment, **nf-core/magmap** can handle output from CheckM/CheckM2 and GTDB-Tk as well as standard GTDB metadata files.
 **nf-core/magmap** will merge the tables and summarise the information for easy access.
 
-##### (1) GTDB metadata
+#### (1) GTDB metadata
 
 With this parameter, you can supply a file like the GTDB metadata files provided on their official [website](https://gtdb.ecogenomic.org/), e.g. [`bac120_metadata_r220.tsv.gz`](https://data.ace.uq.edu.au/public/gtdb/data/releases/release220/220.0/bac120_metadata_r220.tsv.gz).
 You can either use their files directly or make a custom one.
-If you want make your own table, fill up the following columns: `accno`, `checkm_completeness`, `checkm_contamination`, `checkm_strain_heterogeneity`, `contig_count`, `genome_size`, `gtdb_genome_representative`,gtdb_representative`, `gtdb_taxonomy`.
+If you want make your own table, fill up the following columns: `accno`, `checkm_completeness`, `checkm_contamination`, `checkm_strain_heterogeneity`, `contig_count`, `genome_size`, `gtdb_genome_representative`, `gtdb_representative`, `gtdb_taxonomy`.
 
-##### (2) GTDB-Tk metadata
+#### (2) GTDB-Tk metadata
 
 This file should be formatted like the GTDB-Tk output, [see](https://ecogenomics.github.io/GTDBTk/files/summary.tsv.html).
 
-##### (3) CheckM/CheckM2 metadata
+#### (3) CheckM/CheckM2 metadata
 
 This file should be formatted like the CheckM or CheckM2 output, [see](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv).
 
@@ -194,10 +195,10 @@ The pipeline will perform validation checks to see if there are any duplicate na
 If there are duplicates, the pipeline will stop and return a file with the contig names that needs to be changed in their name in order to work.
 This is done to avoid overlapping in the following steps (e.g. same prokka output for the protein sequences and the gffs).
 
-### Remove contaminants from the samples
+### Remove contaminants from samples
 
-The pipeline can remove potential contaminants (e.g. rRNA sequences with SILVA database) using BBduk.
-Specify a fasta file, gzipped or not, with the [`--sequence_filter](parameters/#sequence_filter <sequences>.fasta` parameter.
+The pipeline can remove potential contaminant sequences (e.g. rRNA sequences with the SILVA database) from samples using BBduk.
+Specify a fasta file, gzipped or not, with the [`--sequence_filter`](parameters/#sequence_filter) `<sequences>.fasta` parameter.
 For further documentation, see the [BBduk official website](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbduk-guide/).
 
 ```bash
@@ -213,7 +214,7 @@ nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.cs
 
 With [Sourmash](https://sourmash.readthedocs.io/en/latest/index.html) you can filter the genomes to be used by magmap in the mapping step.
 This function is optional but can speed up the process and is controlled by the [`--skip_sourmash` parameter](parameters/#skip_sourmash) (true by default).
-It can also allow identification of remote genomes that match samples in the run, see [Index input](#index-input) above.
+It can also allow identification of remote genomes that match samples in the run, see [Genome index input](#genome-index-input) above.
 
 > [!NOTE] > `--skip_sourmash` only affects filtering of user-provided genomes. One or more provided indexes will always be evaluated with Sourmash.
 
@@ -281,7 +282,7 @@ If you wish to repeatedly use the same parameters for multiple runs, rather than
 Pipeline settings can be provided in a `yaml` or `json` file via `-params-file <file>`.
 
 > [!WARNING]
-> Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources), other infrastructural tweaks (such as output directories), or module arguments (args).
+> Do not use `-c <file>` to specify parameters as this will result in errors. Custom config files specified with `-c` must only be used for [tuning process resource specifications](https://nf-co.re/docs/running/run-pipelines#configuring-pipelines), other infrastructural tweaks (such as output directories), or module arguments (args).
 
 The above pipeline run specified with a params file in yaml format:
 
@@ -377,19 +378,19 @@ Specify the path to a specific config file (this is a core Nextflow command). Se
 
 Whilst the default requirements set within the pipeline will hopefully work for most people and with most input data, you may find that you want to customise the compute resources that the pipeline requests. Each step in the pipeline has a default set of requirements for number of CPUs, memory and time. For most of the pipeline steps, if the job exits with any of the error codes specified [here](https://github.com/nf-core/rnaseq/blob/4c27ef5610c87db00c3c5a3eed10b1d161abf575/conf/base.config#L18) it will automatically be resubmitted with higher resources request (2 x original, then 3 x original). If it still fails after the third attempt then the pipeline execution is stopped.
 
-To change the resource requests, please see the [max resources](https://nf-co.re/docs/usage/configuration#max-resources) and [tuning workflow resources](https://nf-co.re/docs/usage/configuration#tuning-workflow-resources) section of the nf-core website.
+To change the resource requests, please see the [max resources](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#set-max-resources) and [customise process resources](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#customize-process-resources) section of the nf-core website.
 
 ### Custom Containers
 
 In some cases, you may wish to change the container or conda environment used by a pipeline steps for a particular tool. By default, nf-core pipelines use containers and software from the [biocontainers](https://biocontainers.pro/) or [bioconda](https://bioconda.github.io/) projects. However, in some cases the pipeline specified version maybe out of date.
 
-To use a different container from the default container or conda environment specified in a pipeline, please see the [updating tool versions](https://nf-co.re/docs/usage/configuration#updating-tool-versions) section of the nf-core website.
+To use a different container from the default container or conda environment specified in a pipeline, please see the [updating tool versions](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#update-tool-versions) section of the nf-core website.
 
 ### Custom Tool Arguments
 
 A pipeline might not always support every possible argument or option of a particular tool used in pipeline. Fortunately, nf-core pipelines provide some freedom to users to insert additional parameters that the pipeline does not include by default.
 
-To learn how to provide additional arguments to a particular tool of the pipeline, please see the [customising tool arguments](https://nf-co.re/docs/usage/configuration#customising-tool-arguments) section of the nf-core website.
+To learn how to provide additional arguments to a particular tool of the pipeline, please see the [customising tool arguments](https://nf-co.re/docs/running/configuration/nextflow-for-your-system#modifying-tool-arguments) section of the nf-core website.
 
 ### nf-core/configs
 
