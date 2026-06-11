@@ -13,6 +13,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#210](https://github.com/nf-core/magmap/pull/210) - Update nf-schema and remove genomes param warning. (by @erikrikarddaniel)
 - [#201](https://github.com/nf-core/magmap/pull/201) - Changed name inside featureCounts output in order to obtain multiQC output for each feature (issue [#200](https://github.com/nf-core/magmap/issue/200)
 - [#198](https://github.com/nf-core/magmap/pull/198) - Update the --indexes parameter so it takes a list of indexes (issue [#200](https://github.com/nf-core/magmap/pull/201); by @danilodileo).
 - [#197](https://github.com/nf-core/magmap/pull/197) - Fix bug in sample-specific genome set mode (by @erikrikarddaniel).
