@@ -171,23 +171,26 @@ If you create storage directories that you can access from the directories from 
 
 ### Genome metadata input
 
-**nf-core/magmap** accepts three types of metadata files that provides information about the genomes that you will use in the pipeline.
-At the moment, **nf-core/magmap** can handle output from CheckM/CheckM2 and GTDB-Tk as well as standard GTDB metadata files.
-**nf-core/magmap** will merge the tables and summarise the information for easy access.
+**nf-core/magmap** accepts three types of metadata files that provides information about the genomes that you will use in the pipeline:
+output from CheckM/CheckM2 and GTDB-Tk as well as standard GTDB metadata files.
+The pipeline will merge the tables and summarise the information for easy access.
 
 #### (1) GTDB metadata
 
-With this parameter, you can supply a file like the GTDB metadata files provided on their official [website](https://gtdb.ecogenomic.org/), e.g. [`bac120_metadata_r220.tsv.gz`](https://data.ace.uq.edu.au/public/gtdb/data/releases/release220/220.0/bac120_metadata_r220.tsv.gz).
+With the `--gtdb_metadata` parameter, you can supply a file like the GTDB metadata files provided on their official [website](https://gtdb.ecogenomic.org/), e.g. [`bac120_metadata_r220.tsv.gz`](https://data.ace.uq.edu.au/public/gtdb/data/releases/release220/220.0/bac120_metadata_r220.tsv.gz).
 You can either use their files directly or make a custom one.
 If you want make your own table, fill up the following columns: `accno`, `checkm_completeness`, `checkm_contamination`, `checkm_strain_heterogeneity`, `contig_count`, `genome_size`, `gtdb_genome_representative`, `gtdb_representative`, `gtdb_taxonomy`.
 
 #### (2) GTDB-Tk metadata
 
-This file should be formatted like the GTDB-Tk output, [see](https://ecogenomics.github.io/GTDBTk/files/summary.tsv.html).
+This file should be formatted like the GTDB-Tk output, [see the GTDB-Tk documentation](https://ecogenomics.github.io/GTDBTk/files/summary.tsv.html) and is passed to the pipeline with `--gtdbtk_metadata`.
+In practice, the pipeline will look for the fields `user_genome` and `classification`.
 
 #### (3) CheckM/CheckM2 metadata
 
-This file should be formatted like the CheckM or CheckM2 output, [see](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv).
+This file should be formatted like the CheckM or CheckM2 output, [see this example CheckM2 `checkm2.quality_report.tsv` file](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv) and is passed to the pipeline with `--checkm_metadata`.
+In practice, the pipeline will look for the name of the genome as the first column, and then the following columns: `Completeness`, `Contamination`, and `Genome_Size` or `Genome size (bp)`.
+`Strain heterogeneity` and `# contigs` from CheckM are also handled.
 
 ### Check duplicates
 
