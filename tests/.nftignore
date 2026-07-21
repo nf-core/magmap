@@ -30,3 +30,5 @@ sourmash/*sig.zip
 sourmash/*.csv.gz
 multiqc/multiqc_data/bbduk*.txt
 multiqc/multiqc_data/bbduk-filtered*.txt
+multiqc/multiqc_data/multiqc_featurecounts.txt
+multiqc/multiqc_data/featureCounts_assignment_plot.txt

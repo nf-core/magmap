@@ -11,8 +11,8 @@ components:
 input:
   - ch_genome_fnas:
       description: |
-        The input channel containing the fasta files
-        Structure: [ path(fasta) ]
+        The input channel containing genome accessions and their fasta files
+        Structure: [ val(meta), list(val(accno)), list(path(fasta)) ]
 output:
   - index:
       description: |
@@ -22,6 +22,10 @@ output:
       description: |
         A set of concatenated genome fasta files
         Structure: [ path(fasta) ]
+  - genome_accnos:
+      description: |
+        The genome accessions that went into each index
+        Structure: [ val(meta), list(val(accno)) ]
   - versions:
       description: |
         Files containing software versions

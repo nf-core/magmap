@@ -128,7 +128,7 @@ When the pipeline is run with [`--skip_sourmash false`](https://nf-co.re/magmap/
 [BBMap](https://sourceforge.net/projects/bbmap/) is a splice-aware global aligner for DNA and RNA sequencing reads. It provides detailed alignment statistics including mapped read counts, insert size distribution, and error rates. For further reading and documentation see the [BBMap documentation](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbmap-guide/).
 
 Only logs are saved by default from the BBmap step.
-To save the `.bam` files, use `--bbmap_save_bam` and to save the index, use `--bbmap_save_index`.
+To save the `.bam` files, use `--bbmap_save_bam`, to save the index, use `--bbmap_save_index`, and to save a manifest of which genome accessions were included in each index, use `--bbmap_save_genome_list` (always produced when `--genomeset_mode` is `sample`).
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -138,6 +138,7 @@ To save the `.bam` files, use `--bbmap_save_bam` and to save the index, use `--b
     - `<SAMPLE>.bam`: bam file for `SAMPLE`
   - `logs/`
     - `<SAMPLE>.bbmap.log`: BBmap log for `SAMPLE`
+  - `<SAMPLE or "all">.genomes.txt`: genome accessions included in the BBMap index used for `SAMPLE` (`--genomeset_mode sample`) or for the whole run (`all`, `--genomeset_mode joint`)
 
 </details>
 

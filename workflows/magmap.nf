@@ -51,6 +51,7 @@ workflow MAGMAP {
     ch_gtdbtk_metadata          // channel: GTDB-Tk metadata files
     ch_checkm_metadata          // channel: CheckM/CheckM2 metadata files
     genomeset_mode              //  string: Either 'joint' for mapping samples against all genomes, or 'sample' to map to sample-specific sets
+    bbmap_save_genome_list      // boolean: save a manifest of genome accessions per BBMap index (always on in 'sample' mode)
     species_preference          //  string: 'all' to select all genomes for a species or 'local', 'completeness' or 'gtdb' to prefer one according to different criteria
     skip_sourmash               // boolean: run Sourmash or not
     sourmash_ksize              // integer
@@ -257,8 +258,9 @@ workflow MAGMAP {
         //
         CREATE_BBMAP_INDEX(
             ch_collected_genomes
-                .collect { it -> it.genome_fna }
-                .map { it -> [ [ id: 'all' ], it ] }
+                .map { it -> [ it.accno, it.genome_fna ] }
+                .toList()
+                .map { pairs -> [ [ id: 'all' ], pairs.collect { it[0] }, pairs.collect { it[1] } ] }
         )
 
         //
@@ -270,7 +272,7 @@ workflow MAGMAP {
         ch_fnas_to_index = SOURMASH.out.sample_filtered_genomes
             .map { g -> [ [ accno: g[1].accno ], [ id: g[0].id, accno: g[1].accno ] ] }
             .combine(ch_collected_genomes.map { g -> [ [ accno: g.accno ], g ] }, by: 0)
-            .map { g -> [ [ id: g[1].id ], g[2].genome_fna ] }
+            .map { g -> [ [ id: g[1].id ], g[2].accno, g[2].genome_fna ] }
             .groupTuple()
 
         //
@@ -292,6 +294,18 @@ workflow MAGMAP {
             ch_reads_and_indices.map { ri -> ri[3] }
         )
         ch_multiqc_files = ch_multiqc_files.mix(BBMAP_ALIGN.out.log.collect { _meta, log -> log })
+    }
+
+    //
+    // Publish the genome accessions that went into each BBMap index. Always on in
+    // 'sample' mode, since that's the one case where the list actually differs by
+    // group and is otherwise unrecoverable from downstream, read-dependent outputs.
+    //
+    if ( bbmap_save_genome_list || genomeset_mode == 'sample' ) {
+        CREATE_BBMAP_INDEX.out.genome_accnos
+            .collectFile(storeDir: "${outdir}/bbmap") { meta, accnos ->
+                [ "${meta.id}.genomes.txt", accnos.sort().join('\n') + '\n' ]
+            }
     }
 
     //

@@ -91,7 +91,7 @@ process TIDYVERSE_JOINMETADATA {
                         genome_size = ifelse(is.na(Genome_Size), as.integer(`Genome size (bp)`), as.integer(Genome_Size))
                 )
         }
-        checkm_metadata <- rcheckm('${checkm_metadata.join('\') %>% union(rcheckm(\'')}'))
+        checkm_metadata <- purrr::map(c('${checkm_metadata.join('\', \'')}'), rcheckm) %>% purrr::reduce(union)
         """
     }
 
@@ -102,6 +102,7 @@ process TIDYVERSE_JOINMETADATA {
     library(dplyr)
     library(tidyr)
     library(stringr)
+    library(purrr)
 
     genomes <- read_tsv('${genomes}', col_types = 'c', col_names = c('accno'))
 
@@ -136,7 +137,8 @@ process TIDYVERSE_JOINMETADATA {
             paste0("    readr: ", packageVersion('readr')),
             paste0("    dplyr: ", packageVersion('dplyr')),
             paste0("    tidyr: ", packageVersion('tidyr')),
-            paste0("    stringr: ", packageVersion('stringr'))
+            paste0("    stringr: ", packageVersion('stringr')),
+            paste0("    purrr: ", packageVersion('purrr'))
         ),
         "versions.yml"
     )

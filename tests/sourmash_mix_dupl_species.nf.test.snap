@@ -161,10 +161,8 @@
                 "fastqc_per_sequence_quality_scores_plot.txt:md5,dd3e11f739d9998714bb1b182de118aa",
                 "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
                 "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
-                "featureCounts_assignment_plot.txt:md5,8e82c9d4311093535afa13b134e0a359",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
-                "multiqc_featurecounts.txt:md5,5eedd66f2f646d9d7f55ad84b80ce678"
+                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS"
@@ -187,7 +185,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-21T14:15:28.223149001",
+        "timestamp": "2026-07-21T19:28:20.5978922",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

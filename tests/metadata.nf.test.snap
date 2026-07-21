@@ -72,7 +72,8 @@
                     "readr": "2.1.5",
                     "dplyr": "1.1.4",
                     "tidyr": "1.3.1",
-                    "stringr": "1.5.2"
+                    "stringr": "1.5.2",
+                    "purrr": "1.1.0"
                 },
                 "TRIMGALORE": {
                     "trimgalore": "2.1.0"
@@ -191,10 +192,8 @@
                 "fastqc_per_sequence_quality_scores_plot.txt:md5,3d32fc7eed7468abed6450cc8c7c3322",
                 "fastqc_sequence_counts_plot.txt:md5,aa8603ccb9c0d0d188281d1764f03330",
                 "fastqc_sequence_duplication_levels_plot.txt:md5,f8316c4463604b6c67902115f894f429",
-                "featureCounts_assignment_plot.txt:md5,febe799563437fc887b169798acb1f7d",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,ce7f1eb1bdf9591922528372e806963d",
-                "multiqc_featurecounts.txt:md5,8d59329a02ae8463d9eeecb2c9e9ca65"
+                "multiqc_fastqc.txt:md5,ce7f1eb1bdf9591922528372e806963d"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\trRNA\ttRNA\ttmRNA"
@@ -225,10 +224,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
+        "timestamp": "2026-07-21T20:09:35.239361893",
         "meta": {
-            "nf-test": "0.9.2",
-            "nextflow": "26.04.1"
-        },
-        "timestamp": "2026-05-26T22:33:57.142526"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
     }
 }
