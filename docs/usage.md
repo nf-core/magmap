@@ -192,6 +192,15 @@ This file should be formatted like the CheckM or CheckM2 output, [see this examp
 In practice, the pipeline will look for the name of the genome as the first column, and then the following columns: `Completeness`, `Contamination`, and `Genome_Size` or `Genome size (bp)`.
 `Strain heterogeneity` and `# contigs` from CheckM are also handled.
 
+### Preferring local or remote genomes for the same species
+
+If you provide your own genomes with `--genomeinfo` _and_ let Sourmash fetch remote genomes with `--indexes`, the same species can end up represented twice: once by your genome, once by a genome fetched from NCBI/GTDB.
+`--species_preference local` resolves this by dropping any remote candidate genome that represents the same GTDB species as one of your already-selected local genomes, before it is downloaded.
+This requires both `--gtdb_metadata` (species for the remote candidates) and `--gtdbtk_metadata` (species for your local genomes); the pipeline will stop with an error if either is missing.
+Remote candidates that can't be matched to a GTDB species (e.g. missing from `--gtdb_metadata`) are kept rather than silently dropped.
+The default, `--species_preference all`, keeps every genome Sourmash selects, local or remote.
+`completeness` and `gtdb` are documented options for choosing the more complete genome by other criteria, but are not implemented yet.
+
 ### Check duplicates
 
 The pipeline will perform validation checks to see if there are any duplicate names among the genomes that the user provides.

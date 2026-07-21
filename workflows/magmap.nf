@@ -51,6 +51,7 @@ workflow MAGMAP {
     ch_gtdbtk_metadata          // channel: GTDB-Tk metadata files
     ch_checkm_metadata          // channel: CheckM/CheckM2 metadata files
     genomeset_mode              //  string: Either 'joint' for mapping samples against all genomes, or 'sample' to map to sample-specific sets
+    species_preference          //  string: 'all' to select all genomes for a species or 'local', 'completeness' or 'gtdb' to prefer one according to different criteria
     skip_sourmash               // boolean: run Sourmash or not
     sourmash_ksize              // integer
     ch_features                 // channel: list of feature types to call
@@ -193,6 +194,9 @@ workflow MAGMAP {
         index_list,
         ch_genomes_post_renaming,
         ch_remote_genome_sources,
+        species_preference,
+        ch_gtdb_metadata,
+        ch_gtdbtk_metadata,
         sourmash_ksize,
         skip_sourmash
     )

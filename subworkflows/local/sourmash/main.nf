@@ -8,6 +8,7 @@ include { SOURMASH_SKETCH as GENOME_SKETCH         } from '../../../modules/nf-c
 include { SOURMASH_INDEX  as GENOME_INDEX          } from '../../../modules/nf-core/sourmash/index/main'
 include { SOURMASH_SKETCH as SAMPLE_SKETCH         } from '../../../modules/nf-core/sourmash/sketch/main'
 include { WGET as WGET_GENOME                      } from '../../../modules/nf-core/wget/main'
+include { TIDYVERSE_SELECTGENOMESPECIES            } from '../../../modules/local/tidyverse/selectgenomespecies/main'
 
 workflow SOURMASH {
     take:
@@ -16,6 +17,9 @@ workflow SOURMASH {
         index_list                  // Value of the indexes param, used for if clauses
         ch_user_genomeinfo          // User provided genomes [ path(genome) ]
         ch_remote_genome_sources    // Paths to genome information in NCBI format, i.e. containing at least the assembly_accession and ftp_path fields: path(csvfile)
+        species_preference          // String: 'all', 'local', 'completeness' or 'gtdb' to indicate prefered genome for a species
+        ch_gtdb_metadata            // GTDB metadata files, used to resolve remote genome species when species_preference == 'local'
+        ch_gtdbtk_metadata          // GTDB-Tk output files, used to resolve local genome species when species_preference == 'local'
         ksize                       // K-mere size to use: val(odd_int)
         skip_sourmash               // Boolean that controls whether user-provided genomes are sketched, indexed and used in gathering genomes
 
@@ -110,9 +114,36 @@ workflow SOURMASH {
                 .map { g -> [ accno: g.accno ] }
                 .unique()
 
+            // If asked to prefer local genomes, drop remote candidates that represent the
+            // same GTDB species as an already-selected local genome, before fetching them.
+            ch_joint_remote_genomes_for_fetch = ch_joint_remote_genomes
+            if ( species_preference == 'local' ) {
+                ch_local_accessions = ch_joint_user_genomes
+                    .collectFile(name: 'local_accessions.txt', newLine: true) { g -> g.accno }
+                ch_remote_candidates = ch_joint_remote_genomes
+                    .collectFile(name: 'remote_candidates.txt', newLine: true) { g -> g.accno }
+
+                TIDYVERSE_SELECTGENOMESPECIES(
+                    ch_local_accessions,
+                    ch_remote_candidates,
+                    ch_gtdbtk_metadata.collect().ifEmpty([]),
+                    ch_gtdb_metadata.collect().ifEmpty([])
+                )
+
+                ch_joint_remote_genomes_for_fetch = ch_joint_remote_genomes
+                    .map { g -> [ g.accno, g ] }
+                    .join(
+                        TIDYVERSE_SELECTGENOMESPECIES.out.kept
+                            .splitText() { it.trim() }
+                            .filter { it }
+                            .map { accno -> [ accno, true ] }
+                    )
+                    .map { g -> g[1] }
+            }
+
             // 2. Fetch NCBI genomes
             WGET_GENOME(
-                ch_joint_remote_genomes
+                ch_joint_remote_genomes_for_fetch
                     .map { genome -> [ [ genome.accno ] ] }
                     .join(
                         ch_ncbi_genomeinfo

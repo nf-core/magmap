@@ -9,6 +9,7 @@ components:
   - sourmash/gather
   - sourmash/sketch
   - sourmash/index
+  - local/tidyverse/selectgenomespecies
 input:
   - ch_sample_reads:
     description: |
@@ -26,6 +27,18 @@ input:
     description: |
       CSV file with paths to genome information in NCBI format, i.e. containing at least the assembly_accession and ftp_path fields
       Structure: path(csvfile)
+  - species_preference:
+    description: |
+      'all', 'local', 'completeness' or 'gtdb' to indicate the preferred genome for a species when both a local and a remote genome represent it. Only 'all' (no filtering) and 'local' are currently implemented.
+      Structure: val(string)
+  - ch_gtdb_metadata:
+    description: |
+      GTDB metadata files, used to resolve remote genome species when species_preference == 'local'
+      Structure: [ path(tsv) ]
+  - ch_gtdbtk_metadata:
+    description: |
+      GTDB-Tk output files, used to resolve local genome species when species_preference == 'local'
+      Structure: [ path(tsv) ]
   - ksize:
     description: |
       K-mere size to use

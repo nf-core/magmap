@@ -234,6 +234,14 @@
                     "enum": ["joint", "sample"],
                     "fa_icon": "far fa-address-book"
                 },
+                "species_preference": {
+                    "type": "string",
+                    "description": "Select genomes from the same species: 'all', 'local' (prefer local genomes), 'completeness' (prefer the most complete) or 'gtdb' (use GTDB's criterion of completeness and contamination)",
+                    "default": "all",
+                    "help_text": "When more than one genome from the same species is selected, select all (default) or select a single genome based on this preference. Only 'all' and 'local' are currently implemented; 'local' requires `--gtdb_metadata` and `--gtdbtk_metadata` (`--checkm_metadata` will additionally be required by the 'completeness' and 'gtdb' options once implemented).",
+                    "enum": ["all", "local", "completeness", "gtdb"],
+                    "fa_icon": "far fa-address-book"
+                },
                 "skip_sourmash": {
                     "type": "boolean",
                     "description": "Skip Sourmash filtering for user-provided genomes",
