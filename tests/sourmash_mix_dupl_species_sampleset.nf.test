@@ -46,10 +46,13 @@ nextflow_pipeline {
                     path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('\tgene\t') }.size(),
                 ).match() },
                 { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('^GC[AF]_') }.size() == 0 },
-                // Every sample's BBMap index should contain exactly the 7 local genomes and no species-duplicated remote ones
-                { assert ['arc00', 'arc01', 'arc02'].collect { s -> path("${params.outdir}/bbmap/${s}.genomes.txt").readLines().sort() }.unique().size() == 1 },
-                { assert path("${params.outdir}/bbmap/arc00.genomes.txt").readLines().size() == 7 },
-                { assert path("${params.outdir}/bbmap/arc00.genomes.txt").readLines().findAll { it =~ /^GC[AF]_/ }.isEmpty() },
+                // Genome selection is per-sample: arc00/arc02 pick up the remote genome GCF_022064045.1
+                // (its species has no local duplicate), arc01 doesn't -- confirms species_preference=local
+                // and genomeset_mode=sample correctly interact, rather than always falling back to a
+                // fully-local, identical-per-sample set.
+                { assert path("${params.outdir}/bbmap/arc00.genomes.txt").readLines().sort() == ['GCF_022064045.1', 'local_GCA_013329705.1', 'local_GCA_023269755.1', 'local_GCF_001315825.1', 'local_GCF_002194565.1', 'local_GCF_004323575.1', 'local_GCF_032248915.1'] },
+                { assert path("${params.outdir}/bbmap/arc01.genomes.txt").readLines().sort() == ['local_GCA_013329705.1', 'local_GCA_023269755.1', 'local_GCF_001315825.1', 'local_GCF_002194565.1', 'local_GCF_004323575.1', 'local_GCF_032248915.1'] },
+                { assert path("${params.outdir}/bbmap/arc02.genomes.txt").readLines().sort() == ['GCF_022064045.1', 'local_GCA_013329705.1', 'local_GCA_023269755.1', 'local_GCF_001315825.1', 'local_GCF_002194565.1', 'local_GCF_004323575.1', 'local_GCF_032248915.1'] },
                 { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.size() > 9000 },
                 { assert path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.size() > 29000 },
                 { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.size() == 8 },
