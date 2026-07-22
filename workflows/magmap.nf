@@ -198,6 +198,7 @@ workflow MAGMAP {
         species_preference,
         ch_gtdb_metadata,
         ch_gtdbtk_metadata,
+        ch_checkm_metadata,
         sourmash_ksize,
         skip_sourmash
     )

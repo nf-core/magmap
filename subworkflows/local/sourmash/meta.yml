@@ -29,15 +29,19 @@ input:
       Structure: path(csvfile)
   - species_preference:
     description: |
-      'all', 'local', 'completeness' or 'gtdb' to indicate the preferred genome for a species when both a local and a remote genome represent it. Only 'all' (no filtering) and 'local' are currently implemented.
+      'all', 'local', 'completeness' or 'gtdb' to indicate the preferred genome for a species when both a local and a remote genome represent it. 'local' always keeps the local genome; 'completeness' and 'gtdb' pick whichever of the local/remote candidates scores best and can drop the local one.
       Structure: val(string)
   - ch_gtdb_metadata:
     description: |
-      GTDB metadata files, used to resolve remote genome species when species_preference == 'local'
+      GTDB metadata files, used to resolve remote genome species and, for 'completeness'/'gtdb', their completeness/contamination
       Structure: [ path(tsv) ]
   - ch_gtdbtk_metadata:
     description: |
-      GTDB-Tk output files, used to resolve local genome species when species_preference == 'local'
+      GTDB-Tk output files, used to resolve local genome species
+      Structure: [ path(tsv) ]
+  - ch_checkm_metadata:
+    description: |
+      CheckM/CheckM2 output files, used to resolve local genome completeness/contamination when species_preference is 'completeness' or 'gtdb'
       Structure: [ path(tsv) ]
   - ksize:
     description: |

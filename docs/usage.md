@@ -195,11 +195,15 @@ In practice, the pipeline will look for the name of the genome as the first colu
 ### Preferring local or remote genomes for the same species
 
 If you provide your own genomes with `--genomeinfo` _and_ let Sourmash fetch remote genomes with `--indexes`, the same species can end up represented twice: once by your genome, once by a genome fetched from NCBI/GTDB.
-`--species_preference local` resolves this by dropping any remote candidate genome that represents the same GTDB species as one of your already-selected local genomes, before it is downloaded.
-This requires both `--gtdb_metadata` (species for the remote candidates) and `--gtdbtk_metadata` (species for your local genomes); the pipeline will stop with an error if either is missing.
-Remote candidates that can't be matched to a GTDB species (e.g. missing from `--gtdb_metadata`) are kept rather than silently dropped.
-The default, `--species_preference all`, keeps every genome Sourmash selects, local or remote.
-`completeness` and `gtdb` are documented options for choosing the more complete genome by other criteria, but are not implemented yet.
+`--species_preference` controls how this is resolved, and requires both `--gtdb_metadata` (species, and for `completeness`/`gtdb`, completeness/contamination, for the remote candidates) and `--gtdbtk_metadata` (species for your local genomes); the pipeline will stop with an error if either is missing.
+Genomes that can't be matched to a GTDB species (e.g. missing from `--gtdb_metadata`/`--gtdbtk_metadata`) are always kept rather than silently dropped.
+
+- `all` (default): keeps every genome Sourmash selects, local or remote.
+- `local`: drops any remote candidate genome that represents the same GTDB species as one of your already-selected local genomes, before it is downloaded. The local genome is never dropped.
+- `completeness`: additionally requires `--checkm_metadata` (completeness/contamination for your local genomes). For a duplicated species, keeps whichever genome — local or remote — has the higher CheckM completeness, and drops the other, even if that means dropping the local genome.
+- `gtdb`: same as `completeness` but ranks genomes by GTDB's own species-representative criterion, `completeness - 5 × contamination`, instead of completeness alone.
+
+For `completeness`/`gtdb`, a genome missing completeness or contamination data is always kept rather than compared and potentially dropped. Ties go to the local genome.
 
 ### Check duplicates
 

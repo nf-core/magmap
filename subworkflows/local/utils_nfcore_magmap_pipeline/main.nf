@@ -194,13 +194,13 @@ workflow PIPELINE_INITIALISATION {
 
     //
     // Return an error if the user asks for a species_preference that requires genome
-    // metadata we don't have, or one that isn't implemented yet.
+    // metadata we don't have.
     //
-    if (params.species_preference == 'local' && (!gtdb_metadata || !gtdbtk_metadata)) {
-        error("--species_preference 'local' requires genome metadata. Please provide both --gtdb_metadata and --gtdbtk_metadata, or set --species_preference to 'all'.")
+    if (params.species_preference in ['local', 'completeness', 'gtdb'] && (!gtdb_metadata || !gtdbtk_metadata)) {
+        error("--species_preference '${params.species_preference}' requires genome metadata. Please provide both --gtdb_metadata and --gtdbtk_metadata, or set --species_preference to 'all'.")
     }
-    if (params.species_preference in ['completeness', 'gtdb']) {
-        error("--species_preference '${params.species_preference}' is not yet implemented. Only 'all' and 'local' are currently supported.")
+    if (params.species_preference in ['completeness', 'gtdb'] && !checkm_metadata) {
+        error("--species_preference '${params.species_preference}' additionally requires --checkm_metadata.")
     }
 
     //

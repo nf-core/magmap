@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
 name: "tidyverse_selectgenomespecies"
-description: Given local and remote candidate genome accessions, drop remote candidates that represent the same GTDB species as an already-selected local genome
+description: Given local and remote candidate genome accessions representing the same GTDB species, select which one(s) to keep according to a species preference ('local', 'completeness' or 'gtdb')
 keywords:
   - genome
   - taxonomy
@@ -33,15 +33,27 @@ input:
       pattern: "*.tsv(.gz)?"
   - gtdb_metadata:
       type: files
-      description: GTDB metadata files, i.e. ar53_metadata_rNNN.tsv.gz and bac120_metadata_rNNN.tsv.gz, used for remote genome species assignments
+      description: GTDB metadata files, i.e. ar53_metadata_rNNN.tsv.gz and bac120_metadata_rNNN.tsv.gz, used for remote genome species assignments and, for 'completeness'/'gtdb', their completeness/contamination
       pattern: "*.tsv(.gz)?"
+  - checkm_metadata:
+      type: files
+      description: CheckM/CheckM2 output files, used for local genome completeness/contamination when species_preference is 'completeness' or 'gtdb'
+      pattern: "*.tsv(.gz)?"
+  - species_preference:
+      type: value
+      description: "One of 'local', 'completeness' or 'gtdb', selecting the criterion used to pick a genome among duplicated species"
 
 output:
-  kept:
+  kept_remote:
     - "*.kept_remote_accessions.txt":
         type: file
-        description: Single column file (no header) with the remote genome accessions that survived species filtering
+        description: Single column file (no header) with the remote genome accessions that survived species selection
         pattern: "*.kept_remote_accessions.txt"
+  kept_local:
+    - "*.kept_local_accessions.txt":
+        type: file
+        description: Single column file (no header) with the local genome accessions that survived species selection
+        pattern: "*.kept_local_accessions.txt"
   versions:
     - "versions.yml":
         type: file

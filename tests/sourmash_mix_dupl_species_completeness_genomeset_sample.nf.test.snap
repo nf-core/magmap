@@ -1,7 +1,7 @@
 {
-    "-profile test_sourmash_mix_dupl_species_sampleset": {
+    "-profile test_sourmash_mix_dupl_species_completeness_genomeset_sample": {
         "content": [
-            66,
+            69,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -158,9 +158,9 @@
                 "summary_tables/magmap.prokka-annotations.tsv.gz"
             ],
             [
-                "arc00.genomes.txt:md5,2d550684976cd1372c8f7c67a3031250",
-                "arc01.genomes.txt:md5,619047344c69ab98647e1eb902ad3c7b",
-                "arc02.genomes.txt:md5,2d550684976cd1372c8f7c67a3031250",
+                "arc00.genomes.txt:md5,41c5f54218e1b0d8084e0debfcabfce3",
+                "arc01.genomes.txt:md5,e73505cf4c71eaa34803d989916efc64",
+                "arc02.genomes.txt:md5,6c811e6039ae18bc71bfdd19df9bcc04",
                 "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
                 "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
@@ -180,47 +180,6 @@
                 "accno\torf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
             ],
             [
-                "GCF_022064045.1\tarc00",
-                "GCF_022064045.1\tarc02",
-                "local_GCA_013329705.1\tarc00",
-                "local_GCA_023269755.1\tarc00",
-                "local_GCA_023269755.1\tarc02",
-                "local_GCF_001315825.1\tarc01",
-                "local_GCF_001315825.1\tarc02",
-                "local_GCF_002194565.1\tarc01",
-                "local_GCF_004323575.1\tarc00",
-                "local_GCF_004323575.1\tarc01",
-                "local_GCF_032248915.1\tarc02"
-            ],
-            [
-                [
-                    "GCF_022064045.1",
-                    "local_GCA_013329705.1",
-                    "local_GCA_023269755.1",
-                    "local_GCF_001315825.1",
-                    "local_GCF_002194565.1",
-                    "local_GCF_004323575.1",
-                    "local_GCF_032248915.1"
-                ],
-                [
-                    "local_GCA_013329705.1",
-                    "local_GCA_023269755.1",
-                    "local_GCF_001315825.1",
-                    "local_GCF_002194565.1",
-                    "local_GCF_004323575.1",
-                    "local_GCF_032248915.1"
-                ],
-                [
-                    "GCF_022064045.1",
-                    "local_GCA_013329705.1",
-                    "local_GCA_023269755.1",
-                    "local_GCF_001315825.1",
-                    "local_GCF_002194565.1",
-                    "local_GCF_004323575.1",
-                    "local_GCF_032248915.1"
-                ]
-            ],
-            [
                 "accno\tcheckm_completeness\tcheckm_contamination\tcheckm_strain_heterogeneity\tcontig_count\tgenome_size\tgtdb_genome_representative\tgtdb_representative\tgtdb_taxonomy\tsource\tpriority"
             ],
             [
@@ -234,7 +193,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-22T20:41:53.530204951",
+        "timestamp": "2026-07-22T21:26:56.856706641",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
