@@ -8,13 +8,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Added`
 
 - [#212](https://github.com/nf-core/magmap/pull/212) - Add `--species_preference` parameter to allow choice of genome representing a species (by @erikrikarddaniel).
+- [#212](https://github.com/nf-core/magmap/pull/212) - Do not publish Sourmash index files (`*.sbt.zip`, `*.sig` and `*.sig.zip`) by default (by @erikrikarddaniel).
+- [#212](https://github.com/nf-core/magmap/pull/212) - Add summary of selected genomes to MultiQC report (by @erikrikarddaniel).
 
 ### `Fixed`
 
 ### `Dependencies`
 
-| Tool    | Previous version | New version |
-| ------- | ---------------- | ----------- | ------ |
+| Tool | Previous version | New version |
+| ---- | ---------------- | ----------- |
 
 ### `Deprecated`
 
@@ -39,12 +41,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
-| Tool    | Previous version | New version |
-| ------- | ---------------- | ----------- | ------ |
-| MultiQC | 1.32             | 1.33        |
-| +       | Subread          | 2.0.6       | 2.1.1  |
-| +       | trimgalore       | 0.6.10      | 2.1.0  |
-| +       | Samtools         | 1.22.1      | 1.23.1 |
+| Tool       | Previous version | New version |
+| ---------- | ---------------- | ----------- |
+| MultiQC    | 1.32             | 1.33        |
+| Subread    | 2.0.6            | 2.1.1       |
+| trimgalore | 0.6.10           | 2.1.0       |
+| Samtools   | 1.22.1           | 1.23.1      |
 
 ### `Deprecated`
 
