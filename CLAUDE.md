@@ -89,7 +89,7 @@ downstream BBMap indexing doesn't collide.
 ### Local vs nf-core modules/subworkflows
 
 - `modules/nf-core/` and `subworkflows/nf-core/` are installed via `nf-core modules
-  install` / `nf-core subworkflows install` and tracked in `modules.json` — don't hand-edit
+install` / `nf-core subworkflows install` and tracked in `modules.json` — don't hand-edit
   these; update via nf-core tools instead.
 - `modules/local/` and `subworkflows/local/` are pipeline-specific and safe to edit
   directly. Notable ones: `check_duplicates`, `rename_contigs`, `genomes2orfs` (builds the
