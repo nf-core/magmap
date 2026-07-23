@@ -3,11 +3,26 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.2.0dev - [YYYY-mm-dd]
+
+### `Added`
+
+- [#212](https://github.com/nf-core/magmap/pull/212) - Add `--species_preference` parameter to allow choice of genome representing a species (by @erikrikarddaniel).
+
+### `Fixed`
+
+### `Dependencies`
+
+| Tool    | Previous version | New version |
+| ------- | ---------------- | ----------- | ------ |
+
+### `Deprecated`
+
 ## v1.1.0 - [2026-05-28]
 
 ### `Added`
 
-- [#199](https://github.com/nf-core/magmap/pull/199) - update template v4.0.2, created with the [nf-core](https://nf-co.re/) template. (by @danilodileo)
+- [#199](https://github.com/nf-core/magmap/pull/199) - update template v4.0.2, created with the [nf-core](https://nf-co.re/) template (by @danilodileo).
 - [#189](https://github.com/nf-core/magmap/pull/189) - Add genome `accno` field to counts tables (by @erikrikarddaniel).
 - [#188](https://github.com/nf-core/magmap/pull/188) - Add the possibility to run mapping with sample-specific genome sets (by @erikrikarddaniel).
 

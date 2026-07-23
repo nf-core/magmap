@@ -21,6 +21,7 @@
   - [Check duplicates](#check-duplicates)
   - [Remove contaminants from samples](#remove-contaminants-from-samples)
   - [Sourmash](#sourmash)
+    - [Selection of genomes per species](#selection-of-genomes-per-species)
   - [Feature calling](#feature-calling)
   - [Multimapping](#Multimapping)
   - [Feature quantification](#feature-quantification)
@@ -237,6 +238,21 @@ It can also allow identification of remote genomes that match samples in the run
 ```bash
 nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --skip_sourmash false
 ```
+
+#### Selection of genomes per species
+
+If you mix your own, genomes (specified with `--genomeinfo`) with remote genomes (via `--indexes`), you are likely to encounter genomes from the two sets that represent the same species.
+By default, all genomes will be selected, but this can be modified with the `--species_preference` parameter so that only one genome is selected for each species.
+
+| species_preference | Selection preference                                                |
+| ------------------ | ------------------------------------------------------------------- |
+| all (default)      | Select all genomes for a species                                    |
+| local              | Prefer local genome(s)                                              |
+| completeness       | Prefer the most complete genome                                     |
+| gtdb               | Prefer the genome with the highest completeness - 5 x contamination |
+
+For `local` you must provide species information via `--gtdbtk_metadata` and `--gtdb_metadata`, and for the other two you must also provide CheckM/CheckM2 information via `--checkm_metadata`.
+In case there are ties for `completeness` or `gtdb`, local genome(s) will be preferred.
 
 ### Feature calling
 
