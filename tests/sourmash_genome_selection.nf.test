@@ -1,0 +1,197 @@
+nextflow_pipeline {
+
+    name "Test pipeline"
+    script "../main.nf"
+    tag "pipeline"
+    profile 'test_sourmash_genome_selection'
+
+    test("all") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', 'multiqc/multiqc_plots', 'multiqc/multiqc_plots/**'])
+            def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.trace.succeeded().size(),
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_magmap_software_mqc_versions.yml"),
+                    stable_path,
+                    stable_content,
+                    path("${params.outdir}/summary_tables/magmap.overall_stats.tsv.gz").linesGzip.findAll { l -> l.contains('CDS') },
+                    path("${params.outdir}/summary_tables/magmap.overall_stats.tsv.gz").linesGzip.size(),
+                    path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
+                    path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
+                    path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('^local') },
+                    path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
+                    path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
+                ).match() },
+                // 'all' keeps every local and every remote genome Sourmash matches -- no species dedup
+                { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('local_') }.size() == 6 },
+                { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.size() == 14 },
+                { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.size() > 10000 },
+                { assert path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.size() > 45000 },
+                { assert path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.size() > 22000 },
+            )
+        }
+    }
+
+    test("all, sample") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                genomeset_mode = 'sample'
+            }
+        }
+
+        then {
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', 'multiqc/multiqc_plots', 'multiqc/multiqc_plots/**'])
+            def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.trace.succeeded().size(),
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_magmap_software_mqc_versions.yml"),
+                    stable_path,
+                    stable_content,
+                    path("${params.outdir}/summary_tables/magmap.overall_stats.tsv.gz").linesGzip.findAll { l -> l.contains('CDS') },
+                    path("${params.outdir}/summary_tables/magmap.overall_stats.tsv.gz").linesGzip.size(),
+                    path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
+                    ['arc00', 'arc01', 'arc02'].collect { s -> path("${params.outdir}/bbmap/${s}.genomes.txt").readLines().sort() },
+                    path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
+                    path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('^local') },
+                    path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
+                    path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
+                ).match() },
+                { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('local_') }.size() == 6 },
+                { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.size() == 14 },
+                { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.size() > 10000 },
+                { assert path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.size() > 45000 },
+                { assert path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.size() > 22000 },
+            )
+        }
+    }
+
+    test("remote only") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                genomeinfo = null
+            }
+        }
+
+        then {
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', 'multiqc/multiqc_plots', 'multiqc/multiqc_plots/**'])
+            def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.trace.succeeded().size(),
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_magmap_software_mqc_versions.yml"),
+                    stable_path,
+                    stable_content,
+                    path("${params.outdir}/summary_tables/magmap.overall_stats.tsv.gz").linesGzip.findAll { l -> l.contains('CDS') },
+                    path("${params.outdir}/summary_tables/magmap.overall_stats.tsv.gz").linesGzip.size(),
+                    path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
+                    path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
+                    path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
+                    path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
+                ).match() },
+                // No --genomeinfo at all: every selected genome is remote, none of them local_*
+                { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('local_') }.size() == 0 },
+                { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.size() == 8 },
+                { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.size() > 8000 },
+                { assert path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.size() > 25000 },
+                { assert path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.size() > 12000 },
+                { assert path("${params.outdir}/sourmash/arc00_remoteidx_00_prefetch.csv.gz").linesGzip.size() > 0 },
+            )
+        }
+    }
+
+    test("remote only, sample") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                genomeinfo = null
+                genomeset_mode = 'sample'
+            }
+        }
+
+        then {
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', 'multiqc/multiqc_plots', 'multiqc/multiqc_plots/**'])
+            def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.trace.succeeded().size(),
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_magmap_software_mqc_versions.yml"),
+                    stable_path,
+                    stable_content,
+                    path("${params.outdir}/summary_tables/magmap.overall_stats.tsv.gz").linesGzip.findAll { l -> l.contains('CDS') },
+                    path("${params.outdir}/summary_tables/magmap.overall_stats.tsv.gz").linesGzip.size(),
+                    path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
+                    path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz")
+                        .csv(sep: '\t', decompress: true, header: true)
+                        .with { table -> [table.columns["accno"], table.columns["sample"]].transpose().collect { row -> row.join("\t") }.toSet().sort() },
+                    path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
+                    path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
+                    path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
+                ).match() },
+                { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('local_') }.size() == 0 },
+                { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.size() > 8000 },
+                { assert path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.size() > 25000 },
+                { assert path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.size() > 12000 },
+                { assert path("${params.outdir}/sourmash/arc00_remoteidx_00_prefetch.csv.gz").linesGzip.size() > 0 },
+                { assert path("${params.outdir}/sourmash/arc01_remoteidx_00_prefetch.csv.gz").linesGzip.size() > 0 },
+                { assert path("${params.outdir}/sourmash/arc02_remoteidx_00_prefetch.csv.gz").linesGzip.size() > 0 },
+            )
+        }
+    }
+
+    test("multiple indexes") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                // NOTE: params.pipelines_testdata_base_path isn't resolved yet in this
+                // per-test override context (evaluates to null), so this has to be a
+                // literal URL rather than built from that param like the base config does.
+                // Keep in sync with pipelines_testdata_base_path in nextflow.config.
+                indexes = "https://raw.githubusercontent.com/nf-core/test-datasets/magmap/testdata/archaeal_duplicates.index.sbt.zip,https://raw.githubusercontent.com/nf-core/test-datasets/magmap/testdata/archaeal_duplicates.index.sbt.zip"
+            }
+        }
+
+        then {
+            def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', 'multiqc/multiqc_plots', 'multiqc/multiqc_plots/**'])
+            def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
+            assertAll(
+                { assert workflow.success},
+                { assert snapshot(
+                    workflow.trace.succeeded().size(),
+                    removeNextflowVersion("$outputDir/pipeline_info/nf_core_magmap_software_mqc_versions.yml"),
+                    stable_path,
+                    stable_content,
+                    path("${params.outdir}/summary_tables/magmap.overall_stats.tsv.gz").linesGzip.findAll { l -> l.contains('CDS') },
+                    path("${params.outdir}/summary_tables/magmap.overall_stats.tsv.gz").linesGzip.size(),
+                    path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
+                    path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
+                    path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
+                    path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
+                ).match() },
+                // Same effective genome set as "all" -- two copies of the same index just proves
+                // comma-separated --indexes parsing and multi-index gathering doesn't break anything
+                { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.size() == 14 },
+                { assert path("${params.outdir}/sourmash/arc00_remoteidx_00_prefetch.csv.gz").linesGzip.size() > 0 },
+                { assert path("${params.outdir}/sourmash/arc00_remoteidx_01_prefetch.csv.gz").linesGzip.size() > 0 },
+            )
+        }
+    }
+}
