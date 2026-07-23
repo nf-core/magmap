@@ -41,7 +41,6 @@ workflow NFCORE_MAGMAP {
     gtdbtk_metadata             // channel: GTDB-Tk metadata files
     checkm_metadata             // channel: CheckM/CheckM2 metadata files
     genomeset_mode              //  string: Either 'joint' for mapping samples against all genomes or 'sample' to map to sample-specific sets
-    bbmap_save_genome_list      // boolean: save a manifest of genome accessions per BBMap index (always on in 'sample' mode)
     species_preference          //  string: 'all' to select all genomes for a species or 'local', 'completeness' or 'gtdb' to prefer one according to different criteria
     skip_sourmash               // boolean: skip Sourmash or not
     sourmash_ksize              // integer
@@ -67,7 +66,6 @@ workflow NFCORE_MAGMAP {
         gtdbtk_metadata,
         checkm_metadata,
         genomeset_mode,
-        bbmap_save_genome_list,
         species_preference,
         skip_sourmash,
         sourmash_ksize,
@@ -132,7 +130,6 @@ workflow {
         PIPELINE_INITIALISATION.out.gtdbtk_metadata,
         PIPELINE_INITIALISATION.out.checkm_metadata,
         params.genomeset_mode,
-        params.bbmap_save_genome_list,
         params.species_preference,
         params.skip_sourmash,
         params.sourmash_ksize,

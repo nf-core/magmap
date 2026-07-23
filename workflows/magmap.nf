@@ -13,6 +13,7 @@ include { GENOMES2ORFS                           } from '../modules/local/genome
 include { CATPROKKATSVS        	                 } from '../modules/local/catprokkatsvs'
 include { CHECK_DUPLICATES                       } from '../modules/local/check_duplicates'
 include { COLLECT_FEATURECOUNTS                  } from '../modules/local/collect/featurecounts'
+include { COLLECT_GENOMESELECTION                } from '../modules/local/collect/genomeselection'
 include { COLLECT_STATS                          } from '../modules/local/collect/stats'
 include { CREATE_BBMAP_INDEX                     } from '../subworkflows/local/create_bbmap_index'
 include { FASTQC                                 } from '../modules/nf-core/fastqc'
@@ -51,7 +52,6 @@ workflow MAGMAP {
     ch_gtdbtk_metadata          // channel: GTDB-Tk metadata files
     ch_checkm_metadata          // channel: CheckM/CheckM2 metadata files
     genomeset_mode              //  string: Either 'joint' for mapping samples against all genomes, or 'sample' to map to sample-specific sets
-    bbmap_save_genome_list      // boolean: save a manifest of genome accessions per BBMap index (always on in 'sample' mode)
     species_preference          //  string: 'all' to select all genomes for a species or 'local', 'completeness' or 'gtdb' to prefer one according to different criteria
     skip_sourmash               // boolean: run Sourmash or not
     sourmash_ksize              // integer
@@ -298,16 +298,27 @@ workflow MAGMAP {
     }
 
     //
-    // Publish the genome accessions that went into each BBMap index. Always on in
-    // 'sample' mode, since that's the one case where the list actually differs by
-    // group and is otherwise unrecoverable from downstream, read-dependent outputs.
+    // Publish the genome accessions that went into each BBMap index -- one file for the
+    // whole run in 'joint' mode, one per sample in 'sample' mode.
     //
-    if ( bbmap_save_genome_list || genomeset_mode == 'sample' ) {
+    CREATE_BBMAP_INDEX.out.genome_accnos
+        .collectFile(storeDir: "${outdir}/bbmap") { meta, accnos ->
+            [ "${meta.id}.genomes.txt", accnos.sort().join('\n') + '\n' ]
+        }
+
+    //
+    // MODULE: Summarize local vs remote genome selection for the MultiQC report -- one
+    // row per sample when genomeset_mode is 'sample', a single row for the whole run
+    // otherwise.
+    //
+    COLLECT_GENOMESELECTION(
         CREATE_BBMAP_INDEX.out.genome_accnos
-            .collectFile(storeDir: "${outdir}/bbmap") { meta, accnos ->
-                [ "${meta.id}.genomes.txt", accnos.sort().join('\n') + '\n' ]
-            }
-    }
+            .map { meta, accnos -> [ id: meta.id, accnos: accnos ] }
+            .collect()
+            .map { sets -> [ [ id: 'magmap' ], sets ] },
+        SOURMASH.out.local_accessions
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(COLLECT_GENOMESELECTION.out.multiqc.collect { _meta, tsv -> tsv })
 
     //
     // MODULE: Concatenate gff files

@@ -28,6 +28,7 @@ trimgalore/*trimming_report.txt
 sourmash/*.sig
 sourmash/*sig.zip
 sourmash/*.csv.gz
+sourmash/*.sbt.zip
 multiqc/multiqc_data/bbduk*.txt
 multiqc/multiqc_data/bbduk-filtered*.txt
 multiqc/multiqc_data/multiqc_featurecounts.txt

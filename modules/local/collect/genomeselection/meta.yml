@@ -1,0 +1,42 @@
+name: "collect_genomeselection"
+description: Summarize how many local (user-provided) and remote (NCBI-fetched) genomes were selected per genome set
+keywords:
+  - genomes
+  - sourmash
+  - collect
+input:
+  - meta:
+      type: map
+      description: |
+        Groovy Map containing an identifier for this run
+        e.g. [ id:'magmap' ]
+  - genome_sets:
+      type: value
+      description: |
+        One entry per genome set (one per sample when --genomeset_mode sample is used,
+        a single entry otherwise), each a map of the genome set id and the accessions in it
+        e.g. [ [ id: 'sample1', accnos: [ 'GCA_000001.1', 'accno2' ] ], ... ]
+  - local_accnos:
+      type: value
+      description: |
+        Accessions of genomes originating from --genomeinfo that were kept in the run
+        e.g. [ 'accno1', 'accno2' ]
+output:
+  - multiqc:
+      type: file
+      description: MultiQC custom-content table of local/remote genome counts per genome set
+      pattern: "*.genome_selection_mqc.tsv"
+  - full_table:
+      type: file
+      description: Full per-genome-set, per-accession table with local/remote origin
+      pattern: "*.genome_selection.tsv.gz"
+  - versions:
+      type: file
+      description: File containing software versions
+      pattern: "versions.yml"
+      ontologies:
+        - edam: "http://edamontology.org/format_3750" # YAML
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"

@@ -194,12 +194,6 @@
                     "description": "Save ref folder containing the reference index",
                     "fa_icon": "fas fa-save"
                 },
-                "bbmap_save_genome_list": {
-                    "type": "boolean",
-                    "description": "Save a manifest of the genome accessions included in each BBMap index",
-                    "help_text": "Always produced when `--genomeset_mode` is `sample`, regardless of this setting, since that's the case where the genome set actually differs between samples and can't otherwise be recovered from read-dependent outputs.",
-                    "fa_icon": "fas fa-save"
-                },
                 "save_concatenated_genomes": {
                     "type": "boolean",
                     "description": "Save genomes concatenated file",

@@ -64,10 +64,19 @@ input:
         Boolean value passed to sourmash/gather
         Structure: val(boolean)
 output:
-  - filtered_genomes:
+  - joint_filtered_genomes:
       description: |
-        Selected genomes
-        Structure: [ val(accno), path(genome) ]
+        Selected genomes, one shared set for the whole run
+        Structure: [ accno: val(accno), genome_fna: path(genome), genome_gff: path(gff)? ]
+  - sample_filtered_genomes:
+      description: |
+        Selected genomes, one set per sample
+        Structure: [ val(meta), [ accno: val(accno), g_fna: path(genome) ] ]
+  - local_accessions:
+      description: |
+        Accessions of local genomes (from --genomeinfo) that were kept in the run, a single
+        run-wide list since local genomes are not narrowed down per sample
+        Structure: val([ accno, ... ])
 authors:
   - "@danilodileo"
   - "@erikrikarddaniel"

@@ -187,7 +187,16 @@ workflow SOURMASH {
                 )
         }
 
+        // Accessions of local genomes that were actually kept in the run (a single,
+        // run-wide list -- local genomes are not narrowed down per sample), used to tell
+        // local and remote genomes apart in the genome-selection MultiQC summary
+        ch_local_accessions_kept = ch_joint_user_genomes_kept
+            .map { g -> g.accno }
+            .collect()
+            .ifEmpty([])
+
     emit:
         joint_filtered_genomes  = ch_joint_filtered_genomes
         sample_filtered_genomes = ch_sample_filtered_genomes
+        local_accessions        = ch_local_accessions_kept
 }

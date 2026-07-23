@@ -1,7 +1,7 @@
 {
     "completeness, sample": {
         "content": [
-            69,
+            70,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -26,6 +26,12 @@
                     "dplyr": "1.1.4",
                     "dtplyr": "1.3.2",
                     "data.table": "1.17.8"
+                },
+                "COLLECT_GENOMESELECTION": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5",
+                    "tidyr": "1.3.1"
                 },
                 "COLLECT_STATS": {
                     "R": "4.3.1",
@@ -135,6 +141,7 @@
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_featurecounts.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_genome_selection.txt",
                 "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_report.html",
@@ -153,6 +160,7 @@
                 "summary_tables",
                 "summary_tables/magmap.CDS.counts.tsv.gz",
                 "summary_tables/magmap.genome_metadata.tsv.gz",
+                "summary_tables/magmap.genome_selection.tsv.gz",
                 "summary_tables/magmap.genomes2orfs.tsv.gz",
                 "summary_tables/magmap.overall_stats.tsv.gz",
                 "summary_tables/magmap.prokka-annotations.tsv.gz"
@@ -170,7 +178,8 @@
                 "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
                 "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5"
+                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
+                "multiqc_genome_selection.txt:md5,f563ee06f07eec17664cdbe5824725fb"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS"
@@ -228,7 +237,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-22T23:24:50.762992405",
+        "timestamp": "2026-07-23T14:05:00.033996087",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -236,7 +245,7 @@
     },
     "gtdb, sample": {
         "content": [
-            71,
+            72,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -261,6 +270,12 @@
                     "dplyr": "1.1.4",
                     "dtplyr": "1.3.2",
                     "data.table": "1.17.8"
+                },
+                "COLLECT_GENOMESELECTION": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5",
+                    "tidyr": "1.3.1"
                 },
                 "COLLECT_STATS": {
                     "R": "4.3.1",
@@ -370,6 +385,7 @@
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_featurecounts.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_genome_selection.txt",
                 "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_report.html",
@@ -388,6 +404,7 @@
                 "summary_tables",
                 "summary_tables/magmap.CDS.counts.tsv.gz",
                 "summary_tables/magmap.genome_metadata.tsv.gz",
+                "summary_tables/magmap.genome_selection.tsv.gz",
                 "summary_tables/magmap.genomes2orfs.tsv.gz",
                 "summary_tables/magmap.overall_stats.tsv.gz",
                 "summary_tables/magmap.prokka-annotations.tsv.gz"
@@ -405,7 +422,8 @@
                 "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
                 "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5"
+                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
+                "multiqc_genome_selection.txt:md5,6a05091bd311300557b4629d1704ef5e"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS"
@@ -460,7 +478,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-23T00:02:40.603218585",
+        "timestamp": "2026-07-23T14:43:26.090483696",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -468,7 +486,7 @@
     },
     "local, sample": {
         "content": [
-            66,
+            67,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -493,6 +511,12 @@
                     "dplyr": "1.1.4",
                     "dtplyr": "1.3.2",
                     "data.table": "1.17.8"
+                },
+                "COLLECT_GENOMESELECTION": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5",
+                    "tidyr": "1.3.1"
                 },
                 "COLLECT_STATS": {
                     "R": "4.3.1",
@@ -602,6 +626,7 @@
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_featurecounts.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_genome_selection.txt",
                 "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_report.html",
@@ -620,6 +645,7 @@
                 "summary_tables",
                 "summary_tables/magmap.CDS.counts.tsv.gz",
                 "summary_tables/magmap.genome_metadata.tsv.gz",
+                "summary_tables/magmap.genome_selection.tsv.gz",
                 "summary_tables/magmap.genomes2orfs.tsv.gz",
                 "summary_tables/magmap.overall_stats.tsv.gz",
                 "summary_tables/magmap.prokka-annotations.tsv.gz"
@@ -637,7 +663,8 @@
                 "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
                 "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5"
+                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
+                "multiqc_genome_selection.txt:md5,fcb9056516b99009a5cba74a198131b6"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS"
@@ -701,7 +728,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-22T22:41:35.666426232",
+        "timestamp": "2026-07-23T13:28:09.647939242",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -709,7 +736,7 @@
     },
     "completeness": {
         "content": [
-            65,
+            66,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -734,6 +761,12 @@
                     "dplyr": "1.1.4",
                     "dtplyr": "1.3.2",
                     "data.table": "1.17.8"
+                },
+                "COLLECT_GENOMESELECTION": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5",
+                    "tidyr": "1.3.1"
                 },
                 "COLLECT_STATS": {
                     "R": "4.3.1",
@@ -803,6 +836,7 @@
             },
             [
                 "bbmap",
+                "bbmap/all.genomes.txt",
                 "bbmap/logs",
                 "bbmap/logs/arc00.bbmap.log",
                 "bbmap/logs/arc01.bbmap.log",
@@ -840,6 +874,7 @@
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_featurecounts.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_genome_selection.txt",
                 "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_report.html",
@@ -858,11 +893,13 @@
                 "summary_tables",
                 "summary_tables/magmap.CDS.counts.tsv.gz",
                 "summary_tables/magmap.genome_metadata.tsv.gz",
+                "summary_tables/magmap.genome_selection.tsv.gz",
                 "summary_tables/magmap.genomes2orfs.tsv.gz",
                 "summary_tables/magmap.overall_stats.tsv.gz",
                 "summary_tables/magmap.prokka-annotations.tsv.gz"
             ],
             [
+                "all.genomes.txt:md5,cc6ffa6ca3e12a69295163e0730715e7",
                 "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
                 "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
@@ -872,7 +909,8 @@
                 "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
                 "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5"
+                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
+                "multiqc_genome_selection.txt:md5,2085697e5c22eaa9a67a245b57fc0a6b"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS"
@@ -895,7 +933,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-22T23:05:55.335641534",
+        "timestamp": "2026-07-23T13:46:25.893494864",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -903,7 +941,7 @@
     },
     "gtdb": {
         "content": [
-            67,
+            68,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -928,6 +966,12 @@
                     "dplyr": "1.1.4",
                     "dtplyr": "1.3.2",
                     "data.table": "1.17.8"
+                },
+                "COLLECT_GENOMESELECTION": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5",
+                    "tidyr": "1.3.1"
                 },
                 "COLLECT_STATS": {
                     "R": "4.3.1",
@@ -997,6 +1041,7 @@
             },
             [
                 "bbmap",
+                "bbmap/all.genomes.txt",
                 "bbmap/logs",
                 "bbmap/logs/arc00.bbmap.log",
                 "bbmap/logs/arc01.bbmap.log",
@@ -1034,6 +1079,7 @@
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_featurecounts.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_genome_selection.txt",
                 "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_report.html",
@@ -1052,11 +1098,13 @@
                 "summary_tables",
                 "summary_tables/magmap.CDS.counts.tsv.gz",
                 "summary_tables/magmap.genome_metadata.tsv.gz",
+                "summary_tables/magmap.genome_selection.tsv.gz",
                 "summary_tables/magmap.genomes2orfs.tsv.gz",
                 "summary_tables/magmap.overall_stats.tsv.gz",
                 "summary_tables/magmap.prokka-annotations.tsv.gz"
             ],
             [
+                "all.genomes.txt:md5,a3a2b6592828c051bc342ee327702480",
                 "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
                 "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
@@ -1066,7 +1114,8 @@
                 "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
                 "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5"
+                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
+                "multiqc_genome_selection.txt:md5,3e0ef1a47589d8793fa2ac563ca550b0"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS"
@@ -1089,7 +1138,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-22T23:43:36.102601684",
+        "timestamp": "2026-07-23T14:24:11.727096957",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -1097,7 +1146,7 @@
     },
     "local": {
         "content": [
-            62,
+            63,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -1122,6 +1171,12 @@
                     "dplyr": "1.1.4",
                     "dtplyr": "1.3.2",
                     "data.table": "1.17.8"
+                },
+                "COLLECT_GENOMESELECTION": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5",
+                    "tidyr": "1.3.1"
                 },
                 "COLLECT_STATS": {
                     "R": "4.3.1",
@@ -1191,6 +1246,7 @@
             },
             [
                 "bbmap",
+                "bbmap/all.genomes.txt",
                 "bbmap/logs",
                 "bbmap/logs/arc00.bbmap.log",
                 "bbmap/logs/arc01.bbmap.log",
@@ -1228,6 +1284,7 @@
                 "multiqc/multiqc_data/multiqc_fastqc.txt",
                 "multiqc/multiqc_data/multiqc_featurecounts.txt",
                 "multiqc/multiqc_data/multiqc_general_stats.txt",
+                "multiqc/multiqc_data/multiqc_genome_selection.txt",
                 "multiqc/multiqc_data/multiqc_software_versions.txt",
                 "multiqc/multiqc_data/multiqc_sources.txt",
                 "multiqc/multiqc_report.html",
@@ -1246,11 +1303,13 @@
                 "summary_tables",
                 "summary_tables/magmap.CDS.counts.tsv.gz",
                 "summary_tables/magmap.genome_metadata.tsv.gz",
+                "summary_tables/magmap.genome_selection.tsv.gz",
                 "summary_tables/magmap.genomes2orfs.tsv.gz",
                 "summary_tables/magmap.overall_stats.tsv.gz",
                 "summary_tables/magmap.prokka-annotations.tsv.gz"
             ],
             [
+                "all.genomes.txt:md5,2d550684976cd1372c8f7c67a3031250",
                 "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
                 "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
@@ -1260,7 +1319,8 @@
                 "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
                 "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5"
+                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
+                "multiqc_genome_selection.txt:md5,be3a56db32288d8b35109b22e4aab512"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS"
@@ -1283,7 +1343,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-22T22:24:25.651344069",
+        "timestamp": "2026-07-23T13:11:42.508103158",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
