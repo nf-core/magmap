@@ -90,7 +90,7 @@ BBduk is built-in tool from BBmap.
 The Sourmash program can be used to prefilter genomes so that only genomes likely to be represented among the reads are passed to mapping.
 In addition, Sourmash can be used to fetch remote genomes, see [usage docs](https://nf-co.re/magmap/usage#genome-input).
 No output from Sourmash is save to `<outdir>` by default; the output is only used to select genomes for further processing.
-Use [`--sourmash_save_sourmash`](https://nf-co.re/magmap/parameters/#sourmash_save_sourmash) to copy the `*.csv.gz` output files (`*.sbt.zip`, `*.sig` and `*.sig.zip` are not saved under `<outdir>` even with this parameter).
+Use [`--sourmash_save_sourmash`](https://nf-co.re/magmap/parameters/#sourmash_save_sourmash) to copy the `*.csv.gz` `*.sbt.zip` output files (`*.sig` and `*.sig.zip` are not saved under `<outdir>` even with this parameter).
 
 <details markdown="1">
 <summary>Output files</summary>

@@ -26,6 +26,7 @@ summary_tables/*.tsv.gz
 trimgalore/fastqc/*_fastqc.{html,zip}
 trimgalore/*trimming_report.txt
 sourmash/*.csv.gz
+sourmash/*.sbt.zip
 multiqc/multiqc_data/bbduk*.txt
 multiqc/multiqc_data/bbduk-filtered*.txt
 multiqc/multiqc_data/multiqc_featurecounts.txt
