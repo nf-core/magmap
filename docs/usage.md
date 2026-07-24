@@ -206,6 +206,9 @@ Genomes that can't be matched to a GTDB species (e.g. missing from `--gtdb_metad
 
 For `completeness`/`gtdb`, a genome missing completeness or contamination data is always kept rather than compared and potentially dropped. Ties go to the local genome.
 
+> [!NOTE]
+> To make sure you only get one genome per species, you need to make sure that your local database only contains one genome per species and use a remote Sourmash index with one genome per species.
+
 ### Check duplicates
 
 The pipeline will perform validation checks to see if there are any duplicate names among the genomes that the user provides.
