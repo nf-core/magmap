@@ -3,8 +3,8 @@ Changes in component 'nf-core/wget'
 Changes in 'wget/main.nf':
 --- modules/nf-core/wget/main.nf
 +++ modules/nf-core/wget/main.nf
-@@ -8,24 +8,22 @@
-         'community.wave.seqera.io/library/wget:1.21.4--8b0fcde81c17be5e' }"
+@@ -8,10 +8,10 @@
+         : 'community.wave.seqera.io/library/wget:1.21.4--8b0fcde81c17be5e'}"
  
      input:
 -    tuple val(meta), val(url), val(suffix)
@@ -12,46 +12,34 @@ Changes in 'wget/main.nf':
  
      output:
 -    tuple val(meta), path("${prefix}.${suffix}"), emit: outfile
--    path "versions.yml"                         , emit: versions
 +    tuple val(meta), path("${url.substring(url.lastIndexOf('/')+1, url.length())}"), emit: outfile
-+    path "versions.yml", emit: versions
+     tuple val("${task.process}"), val('wget'), eval('wget --version | head -1 | cut -d " " -f 3'), emit: versions_wget, topic: versions
  
      when:
-     task.ext.when == null || task.ext.when
+@@ -19,18 +19,14 @@
  
      script:
--    def args = task.ext.args   ?: ''
--    prefix   = task.ext.prefix ?: "${meta.id}"
-+    def args = task.ext.args ?: ''
+     def args = task.ext.args ?: ''
+-    prefix = task.ext.prefix ?: "${meta.id}"
      """
-+    echo $url
      wget \\
 -        -O - \\
-         $args \\
--        $url \\
+         ${args} \\
+-        ${url} \\
 -        > ${prefix}.${suffix}
-+        $url
- 
-     cat <<-END_VERSIONS > versions.yml
-     "${task.process}":
-@@ -34,13 +32,7 @@
++        ${url}
      """
  
      stub:
--    prefix   = task.ext.prefix ?: "${meta.id}"
+-    prefix = task.ext.prefix ?: "${meta.id}"
      """
 -    touch ${prefix}.${suffix}
--
--    cat <<-END_VERSIONS > versions.yml
--    "${task.process}":
--        wget: \$(wget --version | head -1 | cut -d ' ' -f 3)
--    END_VERSIONS
 +    touch ${url.substring(url.lastIndexOf('/')+1, url.length())}
      """
--}
-+}
+ }
+
 'modules/nf-core/wget/environment.yml' is unchanged
 'modules/nf-core/wget/tests/nextflow.config' is unchanged
-'modules/nf-core/wget/tests/main.nf.test' is unchanged
 'modules/nf-core/wget/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/wget/tests/main.nf.test' is unchanged
 ************************************************************
