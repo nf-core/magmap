@@ -11,12 +11,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#212](https://github.com/nf-core/magmap/pull/212) - Do not publish Sourmash signature files (`*.sig` and `*.sig.zip`) even with `--sourmash_save_sourmash` (by @erikrikarddaniel).
 - [#212](https://github.com/nf-core/magmap/pull/212) - Add summary of selected genomes to MultiQC report (by @erikrikarddaniel).
 
+### `Changed`
+
+- [#NN](https://github.com/nf-core/magmap/pull/NN) - Template update for nf-core/tools version 4.0.3, and update nf-core modules and subworkflows (by @erikrikarddaniel).
+
 ### `Fixed`
 
 ### `Dependencies`
 
-| Tool | Previous version | New version |
-| ---- | ---------------- | ----------- |
+| Tool       | Previous version | New version |
+| ---------- | ---------------- | ----------- |
+| MultiQC    | 1.34             | 1.35        |
+| Samtools   | 1.23.1           | 1.24        |
+| trimgalore | 2.1.0            | 2.3.0       |
 
 ### `Deprecated`
 
