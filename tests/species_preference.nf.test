@@ -5,7 +5,7 @@ nextflow_pipeline {
     tag "pipeline"
     profile 'test_species_preference'
 
-    test("local") {
+    test("species_preference: local") {
 
         when {
             params {
@@ -42,7 +42,7 @@ nextflow_pipeline {
         }
     }
 
-    test("local, sample") {
+    test("species_preference: local, genomeset_mode: sample") {
 
         when {
             params {
@@ -131,7 +131,7 @@ nextflow_pipeline {
         }
     }
 
-    test("completeness, sample") {
+    test("species_preference: completeness, genomeset_mode: sample") {
 
         when {
             params {
@@ -174,7 +174,7 @@ nextflow_pipeline {
         }
     }
 
-    test("gtdb") {
+    test("species_preference: gtdb") {
 
         when {
             params {
@@ -212,7 +212,7 @@ nextflow_pipeline {
         }
     }
 
-    test("gtdb, sample") {
+    test("species_preference: gtdb, genomeset_mode: sample") {
 
         when {
             params {

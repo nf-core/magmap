@@ -1,5 +1,5 @@
 {
-    "completeness, sample": {
+    "species_preference: completeness, genomeset_mode: sample": {
         "content": [
             70,
             {
@@ -243,7 +243,7 @@
             "nextflow": "26.04.6"
         }
     },
-    "gtdb, sample": {
+    "species_preference: gtdb, genomeset_mode: sample": {
         "content": [
             72,
             {
@@ -484,7 +484,7 @@
             "nextflow": "26.04.6"
         }
     },
-    "local, sample": {
+    "species_preference: local, genomeset_mode: sample": {
         "content": [
             67,
             {
@@ -546,6 +546,14 @@
                 },
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
+                },
+                "PROKKAGFF2TSV": {
+                    "R": "4.3.1",
+                    "data.table": "1.17.8",
+                    "dtplyr": "1.3.2",
+                    "dplyr": "1.1.4",
+                    "tidyr": "1.3.1",
+                    "readr": "2.1.5"
                 },
                 "SAMPLE_SKETCH": {
                     "sourmash": "4.9.4"
@@ -728,7 +736,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-23T13:28:09.647939242",
+        "timestamp": "2026-07-27T11:40:24.682047277",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -796,6 +804,14 @@
                 },
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
+                },
+                "PROKKAGFF2TSV": {
+                    "R": "4.3.1",
+                    "data.table": "1.17.8",
+                    "dtplyr": "1.3.2",
+                    "dplyr": "1.1.4",
+                    "tidyr": "1.3.1",
+                    "readr": "2.1.5"
                 },
                 "SAMPLE_SKETCH": {
                     "sourmash": "4.9.4"
@@ -933,13 +949,13 @@
             ],
             1
         ],
-        "timestamp": "2026-07-23T13:46:25.893494864",
+        "timestamp": "2026-07-27T12:05:31.075345777",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
         }
     },
-    "gtdb": {
+    "species_preference: gtdb": {
         "content": [
             68,
             {
@@ -1144,7 +1160,7 @@
             "nextflow": "26.04.6"
         }
     },
-    "local": {
+    "species_preference: local": {
         "content": [
             63,
             {
@@ -1206,6 +1222,14 @@
                 },
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
+                },
+                "PROKKAGFF2TSV": {
+                    "R": "4.3.1",
+                    "data.table": "1.17.8",
+                    "dtplyr": "1.3.2",
+                    "dplyr": "1.1.4",
+                    "tidyr": "1.3.1",
+                    "readr": "2.1.5"
                 },
                 "SAMPLE_SKETCH": {
                     "sourmash": "4.9.4"
@@ -1343,7 +1367,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-23T13:11:42.508103158",
+        "timestamp": "2026-07-27T11:22:15.689407354",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
