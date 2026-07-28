@@ -10,12 +10,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#212](https://github.com/nf-core/magmap/pull/212) - Add `--species_preference` parameter to allow choice of genome representing a species (by @erikrikarddaniel).
 - [#212](https://github.com/nf-core/magmap/pull/212) - Do not publish Sourmash signature files (`*.sig` and `*.sig.zip`) even with `--sourmash_save_sourmash` (by @erikrikarddaniel).
 - [#212](https://github.com/nf-core/magmap/pull/212) - Add summary of selected genomes to MultiQC report (by @erikrikarddaniel).
+- [#NN](https://github.com/nf-core/magmap/pull/NN) - Add `--annotator` parameter to allow Bakta as an alternative to Prokka for genomes lacking a gff (`prokka`, `bakta_supported_only` or `bakta_all`), with `--bakta_db` and `--bakta_store_dir` controlling the Bakta database and annotation output locations (by @erikrikarddaniel).
 
 ### `Changed`
 
 - [#NN](https://github.com/nf-core/magmap/pull/NN) - Template update for nf-core/tools version 4.0.3, and update nf-core modules and subworkflows (by @erikrikarddaniel).
 
 ### `Fixed`
+
+- [#NN](https://github.com/nf-core/magmap/pull/NN) - Report the Prokka version in the collated `versions.yml`/MultiQC report; it was silently never being collected (by @erikrikarddaniel).
 
 ### `Dependencies`
 

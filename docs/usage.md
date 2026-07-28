@@ -22,7 +22,8 @@
   - [Remove contaminants from samples](#remove-contaminants-from-samples)
   - [Sourmash](#sourmash)
     - [Selection of genomes per species](#selection-of-genomes-per-species)
-  - [Feature calling](#feature-calling)
+  - [Genome annotation](#genome-annotation)
+    - [Choosing an annotator: Prokka or Bakta](#choosing-an-annotator-prokka-or-bakta)
   - [Multimapping](#Multimapping)
   - [Feature quantification](#feature-quantification)
 - [Running the pipeline](#running-the-pipeline)
@@ -46,7 +47,7 @@
 The collection of genomes can either be specified directly using a table (see the [`--genomeinfo` parameter](https://nf-co.re/magmap/parameters/#genomeinfo)) or be the result of filtering with Sourmash.
 The latter can use either the genomes specified by `--genomeinfo`, a "sketch index" pointing to genomes available for instance at NCBI (see the [`--indexes` parameter](https://nf-co.re/magmap/parameters/#indexes)) or a combination, to identify a smaller set to map to.
 Genome files provided with `--genomeinfo` must include contigs in fasta format and optionally gff files (Prokka or Bakta format).
-Any genome for which a gff file is missing will be annotated with Prokka.
+Any genome for which a gff file is missing will be annotated with Prokka or Bakta, depending on the [`--annotator` parameter](#choosing-an-annotator-prokka-or-bakta).
 The pipeline can take output files from CheckM, CheckM2 and GTDB-Tk as input, and will provide processed output from these tools.
 Note that the pipeline can map to any collection of genomes, including single cell genomes and isolates.
 
@@ -122,7 +123,7 @@ GCA_002688515,./genomes/GCA_002688515.fna,
 > [!NOTE]
 > The pipeline assumes gff files have the same format as is output by Prokka or Bakta.
 
-Any genome used by the pipeline for which a gff file is not found will be annotated with Prokka to produce a gff file.
+Any genome used by the pipeline for which a gff file is not found will be annotated with Prokka and/or Bakta to produce a gff file, see [Choosing an annotator: Prokka or Bakta](#choosing-an-annotator-prokka-or-bakta).
 
 | Column       | Description                                                                                                                               |
 | ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
@@ -133,7 +134,7 @@ Any genome used by the pipeline for which a gff file is not found will be annota
 ### Genome index input
 
 In addition to, or instead of, providing a genome file with genomes to map to, you can provide a [Sourmash](https://sourmash.readthedocs.io/en/latest/) index file that points to genomes.
-Sourmash will be run using the index files and matching genomes will be downloaded, annotated with Prokka and mapped to by the pipeline.
+Sourmash will be run using the index files and matching genomes will be downloaded, annotated with Prokka and/or Bakta, and mapped to by the pipeline.
 For this to work, entries in the Sourmash index need to point to NCBI assemblies with accessions in the format: `GC[A-Z]_[0-9]+\.[0-9]+`.
 The index input ([`--indexes`](https://nf-co.re/magmap/parameters/#indexes) is used by Sourmash to select genomes that can be downloaded in a second step and added to the pipeline.
 See also [Sourmash](#sourmash) below.
@@ -161,10 +162,11 @@ Note, more than one index file can be provided, separated by commas.
 #### Genome data will be directed to a specific directory
 
 All genomes potentially downloaded as part of the Sourmash process, will be output in the directory specified with [`--genome_store_dir`](https://nf-co.re/magmap/parameters/#genome_store_dir) (set to `genomes` by default).  
-Similarly, the output from Prokka annotation of genomes will be stored in the directory specified with [`--prokka_store_dir`](https://nf-co.re/magmap/parameters/#prokka_store_dir) (`prokka` by default).
-On subsequent runs, any genome file or Prokka annotation files found in the specified directories will be skipped from download and/or Prokka annotation.
+Similarly, the output from Prokka annotation of genomes will be stored in the directory specified with [`--prokka_store_dir`](https://nf-co.re/magmap/parameters/#prokka_store_dir) (`magmap_prokka` by default), and the output from Bakta annotation in [`--bakta_store_dir`](https://nf-co.re/magmap/parameters/#bakta_store_dir) (`magmap_bakta` by default) -- see [Choosing an annotator: Prokka or Bakta](#choosing-an-annotator-prokka-or-bakta).
+On subsequent runs, any genome file or Prokka/Bakta annotation files found in the specified directories will be skipped from download and/or annotation.
 Since annotating genomes is computationally relatively expensive, we recommend that you _reuse these directories_ between pipeline runs.
-If you create storage directories that you can access from the directories from which you run the pipeline, just symlink the storage directories to the pipeline run directory or give the full path to the `--genome_store_dir` and `--prokka_store_dir` parameters.
+If you create storage directories that you can access from the directories from which you run the pipeline, just symlink the storage directories to the pipeline run directory or give the full path to the `--genome_store_dir`, `--prokka_store_dir` and `--bakta_store_dir` parameters.
+The Bakta database itself is handled the same way: point [`--bakta_db`](https://nf-co.re/magmap/parameters/#bakta_db) (`magmap_bakta_db` by default) at a directory, and the pipeline downloads a database into it the first time and reuses it on subsequent runs -- or point it at a directory where you've already downloaded one yourself (e.g. with `bakta_db download`) to skip the pipeline's download entirely.
 
 > [!NOTE]
 > By default, the pipeline will try to download genomes from NCBI five times to allow for temporary errors.
@@ -257,12 +259,30 @@ By default, all genomes will be selected, but this can be modified with the `--s
 For `local` you must provide species information via `--gtdbtk_metadata` and `--gtdb_metadata`, and for the other two you must also provide CheckM/CheckM2 information via `--checkm_metadata`.
 In case there are ties for `completeness` or `gtdb`, local genome(s) will be preferred.
 
-### Feature calling
+### Genome annotation
 
-The pipeline uses [Prokka](https://github.com/tseemann/prokka) to call features (genes/ORFs) from the genomes.
-This is suitable for prokaryotes and it provides a gff as output for downstream analysis.
-It also performs functional annotation of ORFs.
-Output from Prokka will be placed in subdirectories under the directory specified with [`--prokka_store_dir`](parameters/#prokka_store_dir) (default `prokka`) as described [above](#genome-data-will-be-directed-to-a-specific-directory).
+The pipeline calls features (genes/ORFs) from genomes lacking a gff file using [Prokka](https://github.com/tseemann/prokka) and/or [Bakta](https://github.com/oschwengers/bakta), both of which provide a gff as output for downstream analysis as well as functional annotation of ORFs.
+Output is placed in subdirectories under the directory specified with [`--prokka_store_dir`](parameters/#prokka_store_dir)/[`--bakta_store_dir`](parameters/#bakta_store_dir) as described [above](#genome-data-will-be-directed-to-a-specific-directory).
+
+#### Choosing an annotator: Prokka or Bakta
+
+By default, every genome lacking a gff is annotated with Prokka.
+Bakta [was designed to annotate Bacteria only](https://github.com/oschwengers/bakta#readme) -- it has no option to change this -- so using it for Archaea is not officially supported, even though some users may want to risk it anyway, particularly when Archaea are rare in their samples.
+The [`--annotator`](https://nf-co.re/magmap/parameters/#annotator) parameter controls this:
+
+| annotator (default: `prokka`) | Behaviour                                                                                                                                              |
+| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `prokka`                      | Every genome lacking a gff is annotated with Prokka.                                                                                                   |
+| `bakta_supported_only`        | Genomes classified as Bacteria are annotated with Bakta; everything else (Archaea, and genomes whose domain can't be determined) falls back to Prokka. |
+| `bakta_all`                   | Every genome lacking a gff is annotated with Bakta, including Archaea -- unsupported by Bakta, at the user's own risk.                                 |
+
+`bakta_supported_only` and `bakta_all` both require [`--bakta_db`](https://nf-co.re/magmap/parameters/#bakta_db) (see [above](#genome-data-will-be-directed-to-a-specific-directory)).
+`bakta_supported_only` additionally determines each genome's domain from `--gtdb_metadata` (remote/GTDB genomes) and `--gtdbtk_metadata` (your local genomes) -- the same files used for [`--species_preference`](#preferring-local-or-remote-genomes-for-the-same-species).
+If a genome's domain can't be determined (e.g. it's missing from both), it's routed to Prokka rather than dropped or errored on, and the pipeline prints a warning listing which genomes this happened for.
+
+```bash
+nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --annotator bakta_supported_only --bakta_db /path/to/bakta_db
+```
 
 ### Multimapping
 
@@ -308,7 +328,9 @@ work                # Directory containing the nextflow working files
 <OUTDIR>            # Finished results in specified location (defined with --outdir)
 .nextflow_log       # Log file from Nextflow
 magmap_genomes/     # Directory with downloaded genomes; the path can be changed with `--genome_store_dir`
-magmap_prokka/      # Directory with annotated genomes; the path can be changed with `--prokka_store_dir`
+magmap_prokka/      # Directory with Prokka-annotated genomes; the path can be changed with `--prokka_store_dir`
+magmap_bakta/       # Directory with Bakta-annotated genomes; the path can be changed with `--bakta_store_dir`
+magmap_bakta_db/    # Directory with the Bakta database; the path can be changed with `--bakta_db`
 # Other nextflow hidden files, eg. history of pipeline runs and old logs.
 ```
 
