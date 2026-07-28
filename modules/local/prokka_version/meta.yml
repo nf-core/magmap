@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "prokka_version"
+description: Reports the Prokka version once per pipeline run, decoupled from the storeDir-cached PROKKA process
+keywords:
+  - versions
+  - annotation
+tools:
+  - "prokka":
+      description: "Rapid annotation of prokaryotic genomes"
+      homepage: "https://github.com/tseemann/prokka"
+      documentation: "https://github.com/tseemann/prokka"
+      identifier: ""
+input: []
+output:
+  versions:
+    - versions_prokka:
+        type: file
+        description: Topic channel entry with the Prokka version
+        pattern: ""
+        ontologies: []
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"
