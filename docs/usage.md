@@ -21,6 +21,7 @@
   - [Check duplicates](#check-duplicates)
   - [Remove contaminants from samples](#remove-contaminants-from-samples)
   - [Sourmash](#sourmash)
+    - [Selection of genomes per species](#selection-of-genomes-per-species)
   - [Feature calling](#feature-calling)
   - [Multimapping](#Multimapping)
   - [Feature quantification](#feature-quantification)
@@ -171,23 +172,42 @@ If you create storage directories that you can access from the directories from 
 
 ### Genome metadata input
 
-**nf-core/magmap** accepts three types of metadata files that provides information about the genomes that you will use in the pipeline.
-At the moment, **nf-core/magmap** can handle output from CheckM/CheckM2 and GTDB-Tk as well as standard GTDB metadata files.
-**nf-core/magmap** will merge the tables and summarise the information for easy access.
+**nf-core/magmap** accepts three types of metadata files that provides information about the genomes that you will use in the pipeline:
+output from CheckM/CheckM2 and GTDB-Tk as well as standard GTDB metadata files.
+The pipeline will merge the tables and summarise the information for easy access.
 
 #### (1) GTDB metadata
 
-With this parameter, you can supply a file like the GTDB metadata files provided on their official [website](https://gtdb.ecogenomic.org/), e.g. [`bac120_metadata_r220.tsv.gz`](https://data.ace.uq.edu.au/public/gtdb/data/releases/release220/220.0/bac120_metadata_r220.tsv.gz).
+With the `--gtdb_metadata` parameter, you can supply a file like the GTDB metadata files provided on their official [website](https://gtdb.ecogenomic.org/), e.g. [`bac120_metadata_r220.tsv.gz`](https://data.ace.uq.edu.au/public/gtdb/data/releases/release220/220.0/bac120_metadata_r220.tsv.gz).
 You can either use their files directly or make a custom one.
 If you want make your own table, fill up the following columns: `accno`, `checkm_completeness`, `checkm_contamination`, `checkm_strain_heterogeneity`, `contig_count`, `genome_size`, `gtdb_genome_representative`, `gtdb_representative`, `gtdb_taxonomy`.
 
 #### (2) GTDB-Tk metadata
 
-This file should be formatted like the GTDB-Tk output, [see](https://ecogenomics.github.io/GTDBTk/files/summary.tsv.html).
+This file should be formatted like the GTDB-Tk output, [see the GTDB-Tk documentation](https://ecogenomics.github.io/GTDBTk/files/summary.tsv.html) and is passed to the pipeline with `--gtdbtk_metadata`.
+In practice, the pipeline will look for the fields `user_genome` and `classification`.
 
 #### (3) CheckM/CheckM2 metadata
 
-This file should be formatted like the CheckM or CheckM2 output, [see](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv).
+This file should be formatted like the CheckM or CheckM2 output, [see this example CheckM2 `checkm2.quality_report.tsv` file](https://github.com/nf-core/test-datasets/blob/magmap/testdata/checkm2.quality_report.tsv) and is passed to the pipeline with `--checkm_metadata`.
+In practice, the pipeline will look for the name of the genome as the first column, and then the following columns: `Completeness`, `Contamination`, and `Genome_Size` or `Genome size (bp)`.
+`Strain heterogeneity` and `# contigs` from CheckM are also handled.
+
+### Preferring local or remote genomes for the same species
+
+If you provide your own genomes with `--genomeinfo` _and_ let Sourmash fetch remote genomes with `--indexes`, the same species can end up represented twice: once by your genome, once by a genome fetched from NCBI/GTDB.
+`--species_preference` controls how this is resolved, and requires both `--gtdb_metadata` (species, and for `completeness`/`gtdb`, completeness/contamination, for the remote candidates) and `--gtdbtk_metadata` (species for your local genomes); the pipeline will stop with an error if either is missing.
+Genomes that can't be matched to a GTDB species (e.g. missing from `--gtdb_metadata`/`--gtdbtk_metadata`) are always kept rather than silently dropped.
+
+- `all` (default): keeps every genome Sourmash selects, local or remote.
+- `local`: drops any remote candidate genome that represents the same GTDB species as one of your already-selected local genomes, before it is downloaded. The local genome is never dropped.
+- `completeness`: additionally requires `--checkm_metadata` (completeness/contamination for your local genomes). For a duplicated species, keeps whichever genome — local or remote — has the higher CheckM completeness, and drops the other, even if that means dropping the local genome.
+- `gtdb`: same as `completeness` but ranks genomes by GTDB's own species-representative criterion, `completeness - 5 × contamination`, instead of completeness alone.
+
+For `completeness`/`gtdb`, a genome missing completeness or contamination data is always kept rather than compared and potentially dropped. Ties go to the local genome.
+
+> [!NOTE]
+> To make sure you only get one genome per species, you need to make sure that your local database only contains one genome per species and use a remote Sourmash index with one genome per species.
 
 ### Check duplicates
 
@@ -221,6 +241,21 @@ It can also allow identification of remote genomes that match samples in the run
 ```bash
 nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --skip_sourmash false
 ```
+
+#### Selection of genomes per species
+
+If you mix your own, genomes (specified with `--genomeinfo`) with remote genomes (via `--indexes`), you are likely to encounter genomes from the two sets that represent the same species.
+By default, all genomes will be selected, but this can be modified with the `--species_preference` parameter so that only one genome is selected for each species.
+
+| species_preference | Selection preference                                                |
+| ------------------ | ------------------------------------------------------------------- |
+| all (default)      | Select all genomes for a species                                    |
+| local              | Prefer local genome(s)                                              |
+| completeness       | Prefer the most complete genome                                     |
+| gtdb               | Prefer the genome with the highest completeness - 5 x contamination |
+
+For `local` you must provide species information via `--gtdbtk_metadata` and `--gtdb_metadata`, and for the other two you must also provide CheckM/CheckM2 information via `--checkm_metadata`.
+In case there are ties for `completeness` or `gtdb`, local genome(s) will be preferred.
 
 ### Feature calling
 

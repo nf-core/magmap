@@ -8,6 +8,7 @@ include { SOURMASH_SKETCH as GENOME_SKETCH         } from '../../../modules/nf-c
 include { SOURMASH_INDEX  as GENOME_INDEX          } from '../../../modules/nf-core/sourmash/index/main'
 include { SOURMASH_SKETCH as SAMPLE_SKETCH         } from '../../../modules/nf-core/sourmash/sketch/main'
 include { WGET as WGET_GENOME                      } from '../../../modules/nf-core/wget/main'
+include { TIDYVERSE_SELECTGENOMESPECIES            } from '../../../modules/local/tidyverse/selectgenomespecies/main'
 
 workflow SOURMASH {
     take:
@@ -16,6 +17,10 @@ workflow SOURMASH {
         index_list                  // Value of the indexes param, used for if clauses
         ch_user_genomeinfo          // User provided genomes [ path(genome) ]
         ch_remote_genome_sources    // Paths to genome information in NCBI format, i.e. containing at least the assembly_accession and ftp_path fields: path(csvfile)
+        species_preference          // String: 'all', 'local', 'completeness' or 'gtdb' to indicate prefered genome for a species
+        ch_gtdb_metadata            // GTDB metadata files, used to resolve remote genome species and completeness/contamination
+        ch_gtdbtk_metadata          // GTDB-Tk output files, used to resolve local genome species
+        ch_checkm_metadata          // CheckM/CheckM2 output files, used to resolve local genome completeness/contamination
         ksize                       // K-mere size to use: val(odd_int)
         skip_sourmash               // Boolean that controls whether user-provided genomes are sketched, indexed and used in gathering genomes
 
@@ -62,14 +67,13 @@ workflow SOURMASH {
                 .map { g -> g[1] }
         }
 
-        // Make a cartesian product of samples and user genomes to serve as sample-specific user genomes, i.e. user genomes are always provided to all samples
-        ch_sample_user_genomes = ch_sample_reads
-            .map { sample -> [ id: sample[0].id ] }
-            .combine(ch_joint_user_genomes)
+        // May be narrowed down further below if species_preference is 'completeness' or 'gtdb',
+        // in which case a local genome can lose out to a better-scoring remote one
+        ch_joint_user_genomes_kept = ch_joint_user_genomes
 
         // Populate both the joint and sample-filtered return channels with all matching user genomes
-        ch_joint_filtered_genomes  = ch_joint_user_genomes
-        ch_sample_filtered_genomes = ch_joint_user_genomes
+        ch_joint_filtered_genomes  = ch_joint_user_genomes_kept
+        ch_sample_filtered_genomes = ch_joint_user_genomes_kept
 
         // Call Sourmash with indices for remote genomes if present
         if ( index_list ) {
@@ -110,9 +114,49 @@ workflow SOURMASH {
                 .map { g -> [ accno: g.accno ] }
                 .unique()
 
+            // If asked to prefer a genome per species, select which of the local/remote
+            // candidates for each duplicated species to keep, before fetching remote ones.
+            // 'local' never drops a local genome; 'completeness'/'gtdb' can.
+            ch_joint_remote_genomes_for_fetch = ch_joint_remote_genomes
+            if ( species_preference in ['local', 'completeness', 'gtdb'] ) {
+                ch_local_accessions = ch_joint_user_genomes
+                    .collectFile(name: 'local_accessions.txt', newLine: true) { g -> g.accno }
+                ch_remote_candidates = ch_joint_remote_genomes
+                    .collectFile(name: 'remote_candidates.txt', newLine: true) { g -> g.accno }
+
+                TIDYVERSE_SELECTGENOMESPECIES(
+                    ch_local_accessions,
+                    ch_remote_candidates,
+                    ch_gtdbtk_metadata.collect().ifEmpty([]),
+                    ch_gtdb_metadata.collect().ifEmpty([]),
+                    ch_checkm_metadata.collect().ifEmpty([]),
+                    species_preference
+                )
+
+                ch_joint_remote_genomes_for_fetch = ch_joint_remote_genomes
+                    .map { g -> [ g.accno, g ] }
+                    .join(
+                        TIDYVERSE_SELECTGENOMESPECIES.out.kept_remote
+                            .splitText() { it.trim() }
+                            .filter { it }
+                            .map { accno -> [ accno, true ] }
+                    )
+                    .map { g -> g[1] }
+
+                ch_joint_user_genomes_kept = ch_joint_user_genomes
+                    .map { g -> [ g.accno, g ] }
+                    .join(
+                        TIDYVERSE_SELECTGENOMESPECIES.out.kept_local
+                            .splitText() { it.trim() }
+                            .filter { it }
+                            .map { accno -> [ accno, true ] }
+                    )
+                    .map { g -> g[1] }
+            }
+
             // 2. Fetch NCBI genomes
             WGET_GENOME(
-                ch_joint_remote_genomes
+                ch_joint_remote_genomes_for_fetch
                     .map { genome -> [ [ genome.accno ] ] }
                     .join(
                         ch_ncbi_genomeinfo
@@ -121,23 +165,38 @@ workflow SOURMASH {
                     .map { genome -> [ [ id: genome[1].accno ], genome[1].genome_fna ] }
             )
 
+            // Make a cartesian product of samples and the (possibly species-filtered) user
+            // genomes, i.e. surviving user genomes are provided to all samples
+            ch_sample_user_genomes_kept = ch_sample_reads
+                .map { sample -> [ id: sample[0].id ] }
+                .combine(ch_joint_user_genomes_kept)
+
             // 3. Mix the local and the newly fetched NCBI genomes
             // 3.1 Sample specific sets
             ch_sample_filtered_genomes = ch_sample_remote_genomes
                 .map { g -> [ [ id: g.accno ], g ] }
                 .combine(WGET_GENOME.out.outfile, by: 0)
                 .map { g -> [ [  id: g[1].id ], [ accno: g[1].accno, g_fna: g[2] ] ] }
-                .mix(ch_sample_user_genomes)
+                .mix(ch_sample_user_genomes_kept)
 
             // 3.2 Total set -- "joint"
-            ch_joint_filtered_genomes = ch_joint_user_genomes
+            ch_joint_filtered_genomes = ch_joint_user_genomes_kept
                 .mix(
                     WGET_GENOME.out.outfile
                         .map { genome -> [ accno: genome[0].id, genome_fna: genome[1] ] }
                 )
         }
 
+        // Accessions of local genomes that were actually kept in the run (a single,
+        // run-wide list -- local genomes are not narrowed down per sample), used to tell
+        // local and remote genomes apart in the genome-selection MultiQC summary
+        ch_local_accessions_kept = ch_joint_user_genomes_kept
+            .map { g -> g.accno }
+            .collect()
+            .ifEmpty([])
+
     emit:
         joint_filtered_genomes  = ch_joint_filtered_genomes
         sample_filtered_genomes = ch_sample_filtered_genomes
+        local_accessions        = ch_local_accessions_kept
 }

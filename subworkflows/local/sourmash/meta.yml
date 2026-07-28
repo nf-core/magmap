@@ -9,48 +9,74 @@ components:
   - sourmash/gather
   - sourmash/sketch
   - sourmash/index
+  - local/tidyverse/selectgenomespecies
 input:
   - ch_sample_reads:
-    description: |
-      Fastq files with reads for each sample
-      Structure: [ val(meta), [ path(reads) ] ]
-  - ch_indexes:
-    description: |
-      List of Sourmash indexs
-      Structure: [ path(index) ]
-  - ch_user_genomeinfo:
-    description: |
-      User provided genomes
-      Structure: [ path(genome) ]
-  - ch_ncbi_genomeinfo_files:
-    description: |
-      CSV file with paths to genome information in NCBI format, i.e. containing at least the assembly_accession and ftp_path fields
-      Structure: path(csvfile)
-  - ksize:
-    description: |
-      K-mere size to use
-      Structure: val(odd_int)
-  - save_unassigned:
-    description: |
-      Boolean value passed to sourmash/gather
-      Structure: val(boolean)
-  - save_matches_sig:
-    description: |
-      Boolean value passed to sourmash/gather
-      Structure: val(boolean)
-  - save_prefetch:
-    description: |
-      Boolean value passed to sourmash/gather
-      Structure: val(boolean)
-  - save_prefetch_csv:
-    description: |
-      Boolean value passed to sourmash/gather
-      Structure: val(boolean)
-output:
-  - filtered_genomes:
       description: |
-        Selected genomes
-        Structure: [ val(accno), path(genome) ]
+        Fastq files with reads for each sample
+        Structure: [ val(meta), [ path(reads) ] ]
+  - ch_indexes:
+      description: |
+        List of Sourmash indexs
+        Structure: [ path(index) ]
+  - ch_user_genomeinfo:
+      description: |
+        User provided genomes
+        Structure: [ path(genome) ]
+  - ch_ncbi_genomeinfo_files:
+      description: |
+        CSV file with paths to genome information in NCBI format, i.e. containing at least the assembly_accession and ftp_path fields
+        Structure: path(csvfile)
+  - species_preference:
+      description: |
+        'all', 'local', 'completeness' or 'gtdb' to indicate the preferred genome for a species when both a local and a remote genome represent it. 'local' always keeps the local genome; 'completeness' and 'gtdb' pick whichever of the local/remote candidates scores best and can drop the local one.
+        Structure: val(string)
+  - ch_gtdb_metadata:
+      description: |
+        GTDB metadata files, used to resolve remote genome species and, for 'completeness'/'gtdb', their completeness/contamination
+        Structure: [ path(tsv) ]
+  - ch_gtdbtk_metadata:
+      description: |
+        GTDB-Tk output files, used to resolve local genome species
+        Structure: [ path(tsv) ]
+  - ch_checkm_metadata:
+      description: |
+        CheckM/CheckM2 output files, used to resolve local genome completeness/contamination when species_preference is 'completeness' or 'gtdb'
+        Structure: [ path(tsv) ]
+  - ksize:
+      description: |
+        K-mere size to use
+        Structure: val(odd_int)
+  - save_unassigned:
+      description: |
+        Boolean value passed to sourmash/gather
+        Structure: val(boolean)
+  - save_matches_sig:
+      description: |
+        Boolean value passed to sourmash/gather
+        Structure: val(boolean)
+  - save_prefetch:
+      description: |
+        Boolean value passed to sourmash/gather
+        Structure: val(boolean)
+  - save_prefetch_csv:
+      description: |
+        Boolean value passed to sourmash/gather
+        Structure: val(boolean)
+output:
+  - joint_filtered_genomes:
+      description: |
+        Selected genomes, one shared set for the whole run
+        Structure: [ accno: val(accno), genome_fna: path(genome), genome_gff: path(gff)? ]
+  - sample_filtered_genomes:
+      description: |
+        Selected genomes, one set per sample
+        Structure: [ val(meta), [ accno: val(accno), g_fna: path(genome) ] ]
+  - local_accessions:
+      description: |
+        Accessions of local genomes (from --genomeinfo) that were kept in the run, a single
+        run-wide list since local genomes are not narrowed down per sample
+        Structure: val([ accno, ... ])
 authors:
   - "@danilodileo"
   - "@erikrikarddaniel"

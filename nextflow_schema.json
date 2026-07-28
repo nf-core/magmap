@@ -33,19 +33,19 @@
                 "gtdb_metadata": {
                     "type": "string",
                     "description": "Comma-separated list of paths to tab-separated files containing information from GTDB. For column description, see [usage docs](https://nf-co.re/magmap/usage#gtdb-metadata).",
-                    "help_text": "Typically, the files are the standard GTDB metadata files, e.g. `bac120_metadata_r226.tsv.gz`. You will need to use or create a file with information about the genomes' taxonomy you want to map to before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 9 columns, and a header row. Columns are: accno, checkm_completeness, checkm_contamination, checkm_strain_heterogeneity, contig_count, genome_size, gtdb_genome_representative, gtdb_representative, gtdb_taxonomy.",
+                    "help_text": "Typically, the files are the standard GTDB metadata files, e.g. `bac120_metadata_r226.tsv.gz`. You will need to use or create a file with information about the genomes' taxonomy you want to map to before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 9 columns, and a header row. Columns are: `accno`, `checkm_completeness`, `checkm_contamination`, `checkm_strain_heterogeneity`, `contig_count`, `genome_size`, `gtdb_genome_representative`, `gtdb_representative` and `gtdb_taxonomy`.",
                     "fa_icon": "fas fa-table"
                 },
                 "checkm_metadata": {
                     "type": "string",
                     "description": "Comma-separated list of path to tab-separated files containing the output from CheckM. For column description, see [usage docs](https://nf-co.re/magmap/usage#checkmcheckm2-metadata).",
-                    "help_text": "You will need to use or create a file with information about the genomes' statistics you want to map to before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 5 columns, and a header row. Columns are: checkm_completeness, checkm_contamination, contig_count, checkm_strain_heterogeneity, genome_size.",
+                    "help_text": "You will need to use or create a file with information about the genomes' statistics you want to map to before running the pipeline. Use this parameter to specify its location. The files have to be tab-separated with a minimum of five columns, and a header row. Required columns are: `Name` or `Bin Id`, `Completeness`, `Contamination`, and `Genome_Size` or `Genome size (bp)`.",
                     "fa_icon": "fas fa-table"
                 },
                 "gtdbtk_metadata": {
                     "type": "string",
                     "description": "Comma-separated list of paths to tab-separated files containing a .tsv file which has the same columns as the output from GTDB-Tk, see [usage docs](https://nf-co.re/magmap/usage#gtdb-tk-metadata).",
-                    "help_text": "You will need to use or create a file with information about the genomes' taxonomy you want to map to before running the pipeline. Use this parameter to specify its location. It has to be a comma-separated file with 3 columns, and a header row. Columns are: gtdb_genome_representative, gtdb_representative, gtdb_taxonomy.",
+                    "help_text": "You will need to use or create a file with information about the genomes' taxonomy you want to map to before running the pipeline. Use this parameter to specify its location. The files have to be tab-separated with a minimum of two columns, and a header row. Required columns are: `user_genome` and `classification`.",
                     "fa_icon": "fas fa-bacteria"
                 },
                 "indexes": {
@@ -232,6 +232,14 @@
                     "default": "joint",
                     "help_text": "When you use Sourmash to select genomes, either from remote sources, from your own genomes or both, the pipeline can either map to all identified genomes ('joint') or sample-specific selections of genomes ('sample').",
                     "enum": ["joint", "sample"],
+                    "fa_icon": "far fa-address-book"
+                },
+                "species_preference": {
+                    "type": "string",
+                    "description": "Select genomes from the same species: 'all', 'local' (prefer local genomes), 'completeness' (prefer the most complete) or 'gtdb' (use GTDB's criterion of completeness and contamination)",
+                    "default": "all",
+                    "help_text": "When more than one genome from the same species is selected, select all (default) or select a single genome based on this preference. 'local', 'completeness' and 'gtdb' all require `--gtdb_metadata` and `--gtdbtk_metadata`; 'completeness' and 'gtdb' additionally require `--checkm_metadata`, since they compare local and remote genomes and can select the remote one over the local one.",
+                    "enum": ["all", "local", "completeness", "gtdb"],
                     "fa_icon": "far fa-address-book"
                 },
                 "skip_sourmash": {
