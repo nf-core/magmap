@@ -1,0 +1,61 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "tidyverse_selectannotator"
+description: Split genomes lacking a GFF between Prokka and Bakta according to --annotator and each genome's GTDB domain classification
+keywords:
+  - genome
+  - taxonomy
+  - annotation
+tools:
+  - "tidyverse":
+      description: "The 'tidyverse' is a set of packages that work in harmony because
+        they share common data representations and 'API' design. This package is designed
+        to make it easy to install and load multiple 'tidyverse' packages in a single
+        step. Learn more about the 'tidyverse' at <https://www.tidyverse.org>."
+      homepage: "None"
+      documentation: "None"
+      tool_dev_url: "None"
+      doi: ""
+      licence: ["MIT"]
+      identifier: null
+
+input:
+  - no_gff_accessions:
+      type: file
+      description: Single column file (no header) with accessions of genomes lacking a GFF
+      pattern: "*.txt"
+  - genome_metadata:
+      type: file
+      description: TIDYVERSE_JOINMETADATA output, containing a gtdb_taxonomy column used to determine each genome's domain
+      pattern: "*.tsv(.gz)?"
+  - annotator:
+      type: value
+      description: "One of 'prokka', 'bakta_supported_only' or 'bakta_all'"
+
+output:
+  bakta_accessions:
+    - "*.bakta_accessions.txt":
+        type: file
+        description: Single column file (no header) with accessions routed to Bakta
+        pattern: "*.bakta_accessions.txt"
+  prokka_accessions:
+    - "*.prokka_accessions.txt":
+        type: file
+        description: Single column file (no header) with accessions routed to Prokka
+        pattern: "*.prokka_accessions.txt"
+  unclassified_accessions:
+    - "*.unclassified_accessions.txt":
+        type: file
+        description: Single column file (no header) with accessions that lacked domain information (only non-empty under bakta_supported_only)
+        pattern: "*.unclassified_accessions.txt"
+  versions:
+    - "versions.yml":
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"
