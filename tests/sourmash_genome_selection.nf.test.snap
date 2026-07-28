@@ -1,5 +1,5 @@
 {
-    "all": {
+    "local + remote": {
         "content": [
             82,
             {
@@ -468,7 +468,7 @@
             "nextflow": "26.04.6"
         }
     },
-    "remote only, sample": {
+    "remote only, genomeset_mode: sample": {
         "content": [
             69,
             {
@@ -687,7 +687,7 @@
             "nextflow": "26.04.6"
         }
     },
-    "all, sample": {
+    "local + remote, genomeset_mode: sample": {
         "content": [
             86,
             {

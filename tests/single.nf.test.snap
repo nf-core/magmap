@@ -235,7 +235,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-07-25T17:36:18.454760921",
+        "timestamp": "2026-07-27T00:36:04.603103438",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

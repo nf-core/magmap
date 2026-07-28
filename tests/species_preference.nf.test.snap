@@ -1,5 +1,5 @@
 {
-    "completeness, sample": {
+    "species_preference: completeness, genomeset_mode: sample": {
         "content": [
             70,
             {
@@ -251,7 +251,7 @@
             "nextflow": "26.04.6"
         }
     },
-    "gtdb, sample": {
+    "species_preference: gtdb, genomeset_mode: sample": {
         "content": [
             72,
             {
@@ -500,7 +500,7 @@
             "nextflow": "26.04.6"
         }
     },
-    "local, sample": {
+    "species_preference: local, genomeset_mode: sample": {
         "content": [
             67,
             {
@@ -971,7 +971,7 @@
             "nextflow": "26.04.6"
         }
     },
-    "gtdb": {
+    "species_preference: gtdb": {
         "content": [
             68,
             {
@@ -1184,7 +1184,7 @@
             "nextflow": "26.04.6"
         }
     },
-    "local": {
+    "species_preference: local": {
         "content": [
             63,
             {

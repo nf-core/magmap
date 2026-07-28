@@ -5,7 +5,7 @@ nextflow_pipeline {
     tag "pipeline"
     profile 'test_sourmash_genome_selection'
 
-    test("all") {
+    test("local + remote") {
 
         when {
             params {
@@ -41,7 +41,7 @@ nextflow_pipeline {
         }
     }
 
-    test("all, sample") {
+    test("local + remote, genomeset_mode: sample") {
 
         when {
             params {
@@ -115,7 +115,7 @@ nextflow_pipeline {
         }
     }
 
-    test("remote only, sample") {
+    test("remote only, genomeset_mode: sample") {
 
         when {
             params {
