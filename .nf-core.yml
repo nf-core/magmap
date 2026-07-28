@@ -10,7 +10,7 @@ lint:
         - params.ncbi_genome_infos
   files_exist:
     - .github/workflows/linting_comment.yml
-nf_core_version: 4.0.2
+nf_core_version: 4.0.3
 repository_type: pipeline
 template:
   author: Danilo Di Leo, Emelie Nilsson and Daniel Lundin

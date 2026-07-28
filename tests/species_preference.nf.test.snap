@@ -74,19 +74,19 @@
                     "sourmash": "4.9.4"
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -326,19 +326,19 @@
                     "sourmash": "4.9.4"
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -575,19 +575,19 @@
                     "sourmash": "4.9.4"
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -752,7 +752,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-27T11:40:24.682047277",
+        "timestamp": "2026-07-23T13:28:09.647939242",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -833,19 +833,19 @@
                     "sourmash": "4.9.4"
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -965,7 +965,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-27T12:05:31.075345777",
+        "timestamp": "2026-07-23T13:46:25.893494864",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -1046,19 +1046,19 @@
                     "sourmash": "4.9.4"
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -1259,19 +1259,19 @@
                     "sourmash": "4.9.4"
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -1391,7 +1391,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-27T11:22:15.689407354",
+        "timestamp": "2026-07-23T13:11:42.508103158",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
