@@ -26,6 +26,8 @@ process GENOMES2ORFS {
     for f in ${gffs}; do
         fn=\$(basename \$f .gff.gz)
         fn=\$(basename \$fn .gff)
+        fn=\$(basename \$fn .gff3.gz)
+        fn=\$(basename \$fn .gff3)
         ac=\$(echo \$fn | sed 's/\\(G.._[0-9.]\\+\\)_.*/\\1/')
 
         if [ -f "\$f" ] && [ "\${f##*.}" = "gz" ]; then
