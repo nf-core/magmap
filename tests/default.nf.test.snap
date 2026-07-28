@@ -61,19 +61,19 @@
                     "readr": "2.1.5"
                 },
                 "SAMTOOLS_FLAGSTAT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_IDXSTATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_INDEX": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_SORT": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "SAMTOOLS_STATS": {
-                    "samtools": "1.23.1"
+                    "samtools": 1.24
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -84,7 +84,7 @@
                     "purrr": "1.1.0"
                 },
                 "TRIMGALORE": {
-                    "trimgalore": "2.1.0"
+                    "trimgalore": "2.3.0"
                 },
                 "Workflow": {
                     "nf-core/magmap": "v1.2.0dev"
