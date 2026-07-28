@@ -3,7 +3,7 @@ Changes in component 'nf-core/wget'
 Changes in 'wget/main.nf':
 --- modules/nf-core/wget/main.nf
 +++ modules/nf-core/wget/main.nf
-@@ -8,10 +8,10 @@
+@@ -8,29 +8,24 @@
          : 'community.wave.seqera.io/library/wget:1.21.4--8b0fcde81c17be5e'}"
  
      input:
@@ -12,11 +12,11 @@ Changes in 'wget/main.nf':
  
      output:
 -    tuple val(meta), path("${prefix}.${suffix}"), emit: outfile
+-    tuple val("${task.process}"), val('wget'), eval('wget --version | head -1 | cut -d " " -f 3'), emit: versions_wget, topic: versions
 +    tuple val(meta), path("${url.substring(url.lastIndexOf('/')+1, url.length())}"), emit: outfile
-     tuple val("${task.process}"), val('wget'), eval('wget --version | head -1 | cut -d " " -f 3'), emit: versions_wget, topic: versions
  
      when:
-@@ -19,18 +19,14 @@
+     task.ext.when == null || task.ext.when
  
      script:
      def args = task.ext.args ?: ''

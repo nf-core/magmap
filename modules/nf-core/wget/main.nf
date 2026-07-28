@@ -12,7 +12,6 @@ process WGET {
 
     output:
     tuple val(meta), path("${url.substring(url.lastIndexOf('/')+1, url.length())}"), emit: outfile
-    tuple val("${task.process}"), val('wget'), eval('wget --version | head -1 | cut -d " " -f 3'), emit: versions_wget, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
