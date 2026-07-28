@@ -19,7 +19,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### `Fixed`
 
 - [#NN](https://github.com/nf-core/magmap/pull/NN) - Report the Prokka version in the collated `versions.yml`/MultiQC report; it was silently never being collected (by @erikrikarddaniel).
-- [#215](https://github.com/nf-core/magmap/pull/215) - Revert the `eWaterCycle/setup-apptainer` digest bumped in by the nf-core/tools 4.0.3 template sync -- that update is faulty and causes a namespace error in some pipelines' Singularity/Apptainer CI jobs (by @erikrikarddaniel).
+- [#215](https://github.com/nf-core/magmap/pull/215) - Fix a CI issue affecting Singularity/Apptainer test jobs (by @erikrikarddaniel).
 
 ### `Dependencies`
 
