@@ -1,10 +1,9 @@
 Changes in component 'nf-core/prokka'
-'modules/nf-core/prokka/environment.yml' is unchanged
 'modules/nf-core/prokka/meta.yml' is unchanged
 Changes in 'prokka/main.nf':
 --- modules/nf-core/prokka/main.nf
 +++ modules/nf-core/prokka/main.nf
-@@ -13,31 +13,31 @@
+@@ -13,31 +13,30 @@
      path prodigal_tf
  
      output:
@@ -33,7 +32,6 @@ Changes in 'prokka/main.nf':
 +    tuple val(meta), path("${prefix}/${prefix}.log.gz"), emit: log
 +    tuple val(meta), path("${prefix}/${prefix}.txt.gz"), emit: txt
 +    tuple val(meta), path("${prefix}/${prefix}.tsv.gz"), emit: tsv
-+    path "versions.yml", emit: versions
  
      when:
      task.ext.when == null || task.ext.when
@@ -56,34 +54,25 @@ Changes in 'prokka/main.nf':
      """
      ${decompress}
  
-@@ -50,6 +50,13 @@
+@@ -50,6 +49,8 @@
          ${input}
  
      ${cleanup}
 +
 +    gzip ${prefix}/*
-+
-+    cat <<-END_VERSIONS > versions.yml
-+    "${task.process}":
-+        prokka: \$(echo \$(prokka --version 2>&1) | sed 's/^.*prokka //')
-+    END_VERSIONS
      """
  
      stub:
-@@ -68,6 +75,11 @@
+@@ -68,6 +69,6 @@
      touch ${prefix}/${prefix}.log
      touch ${prefix}/${prefix}.txt
      touch ${prefix}/${prefix}.tsv
 -    touch ${prefix}/${prefix}.gff
 +    gzip ${prefix}/*
-+
-+    cat <<-END_VERSIONS > versions.yml
-+    "${task.process}":
-+        prokka: \$(echo \$(prokka --version 2>&1) | sed 's/^.*prokka //')
-+    END_VERSIONS
      """
 -}
 +}
+'modules/nf-core/prokka/environment.yml' is unchanged
 'modules/nf-core/prokka/tests/main.nf.test.snap' is unchanged
 'modules/nf-core/prokka/tests/main.nf.test' is unchanged
 ************************************************************

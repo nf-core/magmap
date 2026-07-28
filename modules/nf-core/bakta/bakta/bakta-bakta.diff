@@ -1,0 +1,19 @@
+Changes in component 'nf-core/bakta/bakta'
+'modules/nf-core/bakta/bakta/meta.yml' is unchanged
+Changes in 'bakta/bakta/main.nf':
+--- modules/nf-core/bakta/bakta/main.nf
++++ modules/nf-core/bakta/bakta/main.nf
+@@ -27,7 +27,6 @@
+     tuple val(meta), path("${prefix}.tsv"), emit: tsv
+     tuple val(meta), path("${prefix}.txt"), emit: txt
+     tuple val(meta), path("${prefix}.json"), emit: json
+-    tuple val("${task.process}"), val('bakta'), eval("bakta --version 2>&1 | sed 's/.*bakta //'"), emit: versions_bakta, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+
+'modules/nf-core/bakta/bakta/environment.yml' is unchanged
+'modules/nf-core/bakta/bakta/tests/nextflow.config' is unchanged
+'modules/nf-core/bakta/bakta/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/bakta/bakta/tests/main.nf.test' is unchanged
+************************************************************
