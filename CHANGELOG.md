@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | MultiQC    | 1.34             | 1.35        |
 | Samtools   | 1.23.1           | 1.24        |
 | trimgalore | 2.1.0            | 2.3.0       |
+| Nextflow   | 25.10.4          | 26.04.0     |
 
 ### `Deprecated`
 
