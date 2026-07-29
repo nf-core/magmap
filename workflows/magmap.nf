@@ -16,7 +16,7 @@ include { COLLECT_FEATURECOUNTS                  } from '../modules/local/collec
 include { COLLECT_GENOMESELECTION                } from '../modules/local/collect/genomeselection'
 include { COLLECT_STATS                          } from '../modules/local/collect/stats'
 include { CREATE_BBMAP_INDEX                     } from '../subworkflows/local/create_bbmap_index'
-include { DUCKDB_TSV2PARQUET                     } from '../modules/local/duckdb/tsv2parquet'
+include { DUCKDB_TABLE2PARQUET                   } from '../modules/nf-core/duckdb/table2parquet'
 include { FASTQC                                 } from '../modules/nf-core/fastqc'
 include { FASTQC_TRIMGALORE                      } from '../subworkflows/local/fastqc_trimgalore'
 include { methodsDescriptionText                 } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
@@ -394,14 +394,14 @@ workflow MAGMAP {
     // MODULE: Also write the summary tables as Parquet
     //
     if ( save_parquet ) {
-        DUCKDB_TSV2PARQUET(
+        DUCKDB_TABLE2PARQUET(
             TIDYVERSE_JOINMETADATA.out.genome_metadata
                 .mix(COLLECT_GENOMESELECTION.out.full_table.map { _meta, tsv -> tsv })
                 .mix(GENOMES2ORFS.out.genomes2orfs.map { _meta, tsv -> tsv })
                 .mix(CATPROKKATSVS.out.tsv.map { _meta, tsv -> tsv })
                 .mix(COLLECT_FEATURECOUNTS.out.counts.map { _meta, tsv -> tsv })
                 .mix(COLLECT_STATS.out.overall_stats)
-                .collect()
+                .map { tsv -> [ [ id: tsv.name.replaceAll(/\.tsv(\.gz)?$/, '') ], tsv ] }
         )
     }
 

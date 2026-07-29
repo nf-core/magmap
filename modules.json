@@ -38,6 +38,11 @@
                         "git_sha": "eac429d4c67ac5114ce7d4287d460d8f05fd9fab",
                         "installed_by": ["modules"]
                     },
+                    "duckdb/table2parquet": {
+                        "branch": "master",
+                        "git_sha": "a28c71fc6491b345ad8e77d6a15e9fc93b5a98a1",
+                        "installed_by": ["modules"]
+                    },
                     "fastqc": {
                         "branch": "master",
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",

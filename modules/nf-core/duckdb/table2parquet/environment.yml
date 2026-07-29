@@ -3,4 +3,4 @@
 channels:
   - conda-forge
 dependencies:
-  - conda-forge::duckdb=1.5.5
+  - conda-forge::duckdb-cli=1.5.5
