@@ -168,6 +168,12 @@ Since annotating genomes is computationally relatively expensive, we recommend t
 If you create storage directories that you can access from the directories from which you run the pipeline, just symlink the storage directories to the pipeline run directory or give the full path to the `--genome_store_dir`, `--prokka_store_dir` and `--bakta_store_dir` parameters.
 The Bakta database itself is handled the same way: point [`--bakta_db`](https://nf-co.re/magmap/parameters/#bakta_db) (`magmap_bakta_db` by default) at a directory, and the pipeline downloads a database into it the first time and reuses it on subsequent runs -- or point it at a directory where you've already downloaded one yourself (e.g. with `bakta_db download`) to skip the pipeline's download entirely.
 
+> [!WARNING]
+> These caches are keyed purely by each genome's `accno`, on the assumption that the same accno means the same genome across runs.
+> That's always true for remote genomes -- NCBI accessions are globally unique and tied to fixed content -- but for your own genomes provided via `--genomeinfo`, `accno` is just whatever you write in that column.
+> If you reuse an accno for a genuinely different genome in a later run, the pipeline will silently reuse the old cached Prokka/Bakta annotation instead of re-annotating (this also affects Bakta's contig and feature names, which are derived from `accno` too -- see [Choosing an annotator: Prokka or Bakta](#choosing-an-annotator-prokka-or-bakta)).
+> Keep local genome accessions unique across runs and projects, or clear the relevant subdirectory of the store dir before reusing an accno for different content.
+
 > [!NOTE]
 > By default, the pipeline will try to download genomes from NCBI five times to allow for temporary errors.
 > After five attempts, any file that was not properly downloaded will be ignored and processing continues.
