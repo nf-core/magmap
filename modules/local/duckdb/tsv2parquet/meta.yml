@@ -1,0 +1,39 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "duckdb_tsv2parquet"
+description: Convert the pipeline's gzipped TSV summary tables to Parquet
+keywords:
+  - parquet
+  - tsv
+  - conversion
+tools:
+  - "duckdb":
+      description: "An in-process SQL OLAP database management system"
+      homepage: "https://duckdb.org"
+      documentation: "https://duckdb.org/docs/"
+      licence: ["MIT"]
+      identifier: ""
+
+input:
+  - tsvs:
+      type: files
+      description: Gzipped or plain TSV files to convert, one output Parquet file per input
+      pattern: "*.tsv(.gz)?"
+
+output:
+  parquet:
+    - "*.parquet":
+        type: file
+        description: One Parquet file per input TSV, same basename
+        pattern: "*.parquet"
+  versions:
+    - "versions.yml":
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"
