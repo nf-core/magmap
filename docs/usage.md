@@ -25,6 +25,7 @@
   - [Feature calling](#feature-calling)
   - [Multimapping](#Multimapping)
   - [Feature quantification](#feature-quantification)
+    - [Output formats](#output-formats)
 - [Running the pipeline](#running-the-pipeline)
   - [Updating the pipeline](#updating-the-pipeline)
   - [Reproducibility](#reproducibility)
@@ -290,6 +291,11 @@ nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.cs
 Genome features -- by default CDS, rRNA, tRNA and tmRNA, but that can be controlled with [`--features`](parameters/#features) -- are quantified in a two-step process.
 First, reads are mapped to a concatenated set of genome contigs.
 Second, the mapping output is processed by FeatureCount to produce feature specific count tables.
+
+### Output formats
+
+The summary tables described in [the output docs](https://nf-co.re/magmap/output#summary-tables) are always written as gzipped TSV.
+With [`--save_parquet`](https://nf-co.re/magmap/parameters/#save_parquet), the same tables are also written as [Parquet](https://parquet.apache.org/) files alongside the TSVs -- useful if you're loading them into tools like [DuckDB](https://duckdb.org/) or [Polars](https://pola.rs/), which can query Parquet's columnar, typed format without decompressing/parsing the whole file first.
 
 ## Running the pipeline
 

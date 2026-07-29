@@ -30,6 +30,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
 ## Summary tables
 
 Consistently named and formatted output tables in TSV format ready for further analysis.
+With [`--save_parquet`](https://nf-co.re/magmap/parameters/#save_parquet), the same tables are also written as [Parquet](https://parquet.apache.org/) files, alongside the TSVs.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -41,6 +42,7 @@ Consistently named and formatted output tables in TSV format ready for further a
   - `magmap.genome_selection.tsv.gz`: Per genome set (one per sample when `--genomeset_mode sample` is used, a single set otherwise), which genomes were selected and whether each originated from `--genomeinfo` (local) or was fetched from NCBI (remote).
   - `magmap.genomes2orfs.tsv.gz`: Translation table from ORF identifiers to genome identifiers.
   - `magmap.prokka-annotations.tsv.gz`: Annotation details extracted from GFF files.
+  - `*.parquet`: with `--save_parquet`, a Parquet copy of each of the above (same basename, `.parquet` extension instead of `.tsv.gz`).
 
 </details>
 

@@ -50,4 +50,27 @@ nextflow_pipeline {
             )
         }
     }
+
+    test("-profile test_duplicates, save_parquet: true") {
+
+        when {
+            params {
+                outdir = "$outputDir"
+                save_parquet = true
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert path("${params.outdir}/summary_tables/magmap.overall_stats.parquet").exists() },
+                { assert path("${params.outdir}/summary_tables/magmap.overall_stats.parquet").size() > 0 },
+                { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.parquet").exists() },
+                { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.parquet").size() > 0 },
+                { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.parquet").exists() },
+                { assert path("${params.outdir}/summary_tables/magmap.genomes2orfs.parquet").exists() },
+                { assert path("${params.outdir}/summary_tables/magmap.prokka-annotations.parquet").exists() },
+            )
+        }
+    }
 }
