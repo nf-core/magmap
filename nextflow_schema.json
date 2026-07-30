@@ -16,6 +16,7 @@
                     "type": "string",
                     "format": "file-path",
                     "exists": true,
+                    "mimetype": "text/csv",
                     "schema": "assets/schema_input.json",
                     "pattern": "^\\S+\\.(csv|tsv|yaml|yml|json)$",
                     "description": "Path to a file containing information about the samples in the experiment.",
@@ -76,6 +77,30 @@
                     "fa_icon": "fas fa-dna",
                     "description": "Path to a directory where prokka output is stored.",
                     "help_text": "Prokka annotation files created by the pipeline will be stored in this directory for potential later use."
+                },
+                "annotator": {
+                    "type": "string",
+                    "default": "prokka",
+                    "description": "Which tool to annotate genomes lacking a GFF with: 'prokka', 'bakta_supported_only' (Bacteria to Bakta, everything else -- Archaea and unclassified genomes -- to Prokka) or 'bakta_all' (everything to Bakta, including domains Bakta wasn't designed for).",
+                    "help_text": "'bakta_supported_only' and 'bakta_all' require `--bakta_db`. 'bakta_supported_only' determines each genome's domain from `--gtdb_metadata`/`--gtdbtk_metadata`; genomes it can't classify fall back to Prokka, with a warning.",
+                    "enum": ["prokka", "bakta_supported_only", "bakta_all"],
+                    "fa_icon": "fas fa-dna"
+                },
+                "bakta_db": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "default": "magmap_bakta_db",
+                    "fa_icon": "fas fa-database",
+                    "description": "Path to a directory holding the Bakta database, used only when --annotator is bakta_supported_only or bakta_all.",
+                    "help_text": "If the directory already contains a Bakta database (e.g. one you downloaded yourself with `bakta_db download`), the pipeline reuses it instead of downloading. Otherwise the pipeline downloads one into this directory for potential later use."
+                },
+                "bakta_store_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "default": "magmap_bakta",
+                    "fa_icon": "fas fa-dna",
+                    "description": "Path to a directory where Bakta annotation output is stored.",
+                    "help_text": "Bakta annotation files created by the pipeline will be stored in this directory for potential later use."
                 },
                 "email": {
                     "type": "string",

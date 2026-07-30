@@ -19,6 +19,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
   - [Filtering genomes](#filter-genomes) - Generate a list of genomes that will be used for the mapping
     - [Sourmash](#sourmash) - Output from Sourmash filtering of genomes.
   - [Prokka](#prokka) - Output from Prokka
+  - [Bakta](#bakta) - Output from Bakta
   - [Genome fetching](#genome-fetching) - Genomes fetched from remote sources
   - [Quantification of genome features](#quantification-of-genome-features)
     - [BBmap](#bbmap) - Output from BBmap
@@ -102,19 +103,38 @@ Use [`--sourmash_save_sourmash`](https://nf-co.re/magmap/parameters/#sourmash_sa
 
 ### Prokka
 
-[Prokka](https://github.com/tseemann/prokka) will be used to identify ORFs in any genomes for which a gff file is not provided.
+[Prokka](https://github.com/tseemann/prokka) identifies ORFs in genomes for which a gff file is not provided and [`--annotator`](https://nf-co.re/magmap/parameters/#annotator) routes to it -- see [Bakta](#bakta) below for the alternative.
 In addition to calling ORFs (done with Prodigal) Prokka will functionally annotate the ORFs.
-To make it easier to reuse already annotated genomes in other projects, output from Prokka is directed to subdirectories of the directory specified with the [`--prokka_store_dir` parameter](https://nf-co.re/magmap/parameters/#prokka_store_dir) (by default `prokka` in the working directory for the pipeline run).
+To make it easier to reuse already annotated genomes in other projects, output from Prokka is directed to subdirectories of the directory specified with the [`--prokka_store_dir` parameter](https://nf-co.re/magmap/parameters/#prokka_store_dir) (by default `magmap_prokka` in the working directory for the pipeline run).
 Genomes already found in the directory specified, will be skipped by the Prokka step.
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `prokka/`
-  - `<accno>`
-    - `*.ffn`: nucleotide fasta file output
-    - `*.faa`: amino acid fasta file output
-    - `*.gff`: genome feature file output
+- `magmap_prokka/`
+  - `<accno>/`
+    - `*.ffn.gz`: nucleotide fasta file output
+    - `*.faa.gz`: amino acid fasta file output
+    - `*.gff.gz`: genome feature file output
+
+</details>
+
+### Bakta
+
+[Bakta](https://github.com/oschwengers/bakta) is an alternative to Prokka for genomes lacking a gff, selected with [`--annotator bakta_supported_only` or `--annotator bakta_all`](https://nf-co.re/magmap/parameters/#annotator) -- see [Choosing an annotator: Prokka or Bakta](https://nf-co.re/magmap/usage#choosing-an-annotator-prokka-or-bakta) in the usage docs.
+Bakta is only designed to annotate Bacteria; `bakta_supported_only` keeps Archaea (and genomes it can't classify by domain) on Prokka, while `bakta_all` sends everything to Bakta regardless.
+As with Prokka, output is directed to subdirectories of the directory specified with [`--bakta_store_dir`](https://nf-co.re/magmap/parameters/#bakta_store_dir) (by default `magmap_bakta`), and genomes already found there are skipped.
+The Bakta database itself is downloaded once into [`--bakta_db`](https://nf-co.re/magmap/parameters/#bakta_db) (by default `magmap_bakta_db`) and reused on subsequent runs.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `magmap_bakta/`
+  - `<accno>/`
+    - `*.ffn.gz`: nucleotide fasta file output
+    - `*.faa.gz`: amino acid fasta file output
+    - `*.gff3.gz`: genome feature file output
+    - `*.tsv.gz`, `*.txt.gz`, `*.json.gz`, `*.embl.gz`, `*.gbff.gz`, `*.hypotheticals.*.gz`: Bakta's other native output formats
 
 </details>
 

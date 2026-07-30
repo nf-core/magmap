@@ -4,6 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+include { BAKTA                                   } from '../subworkflows/local/bakta'
 include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core/bam_sort_stats_samtools'
 include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align'
 include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk'
@@ -25,12 +26,14 @@ include { paramsSummaryMultiqc                   } from '../subworkflows/nf-core
 include { PIPELINE_COMPLETION                    } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { PIPELINE_INITIALISATION                } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { PROKKA                                 } from '../modules/nf-core/prokka'
+include { PROKKA_VERSION                         } from '../modules/local/prokka_version'
 include { PROKKAGFF2TSV                          } from '../modules/local/prokkagff2tsv'
 include { RENAME_CONTIGS                         } from '../modules/local/rename_contigs'
 include { softwareVersionsToYAML                 } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { SOURMASH                               } from '../subworkflows/local/sourmash'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts'
 include { TIDYVERSE_JOINMETADATA                 } from '../modules/local/tidyverse/joinmetadata/'
+include { TIDYVERSE_SELECTANNOTATOR              } from '../modules/local/tidyverse/selectannotator/'
 include { validateInputSamplesheet               } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 
 /*
@@ -53,6 +56,7 @@ workflow MAGMAP {
     ch_checkm_metadata          // channel: CheckM/CheckM2 metadata files
     genomeset_mode              //  string: Either 'joint' for mapping samples against all genomes, or 'sample' to map to sample-specific sets
     species_preference          //  string: 'all' to select all genomes for a species or 'local', 'completeness' or 'gtdb' to prefer one according to different criteria
+    annotator                   //  string: 'prokka', 'bakta_supported_only' or 'bakta_all' -- which tool(s) to annotate genomes lacking a GFF with
     skip_sourmash               // boolean: run Sourmash or not
     sourmash_ksize              // integer
     ch_features                 // channel: list of feature types to call
@@ -219,19 +223,76 @@ workflow MAGMAP {
     )
 
     //
-    // MODULE: Prokka - get gff for all genomes that lack it
+    // MODULE: Prokka/Bakta - get gff for all genomes that lack it
     //
 
-    // Find genomes without gff file, and pass them to Prokka
+    // Find genomes without gff file, and split them between Prokka and Bakta according to
+    // --annotator and, for 'bakta_supported_only', each genome's GTDB domain classification
     ch_no_gff = ch_genomes
         .filter { g -> ! g.genome_gff }
         .map { g -> [ [ id: g.accno ], g.genome_fna ] }
 
-    PROKKA(ch_no_gff, [], [])
+    if ( annotator == 'prokka' ) {
+        ch_no_gff_prokka = ch_no_gff
+        ch_no_gff_bakta  = channel.empty()
+    } else {
+        TIDYVERSE_SELECTANNOTATOR(
+            ch_no_gff.collectFile(name: 'no_gff_accessions.txt', newLine: true) { meta, _fna -> meta.id },
+            TIDYVERSE_JOINMETADATA.out.genome_metadata,
+            annotator
+        )
+
+        // Warn (once) about genomes bakta_supported_only couldn't classify by domain and
+        // therefore routed to Prokka rather than Bakta
+        TIDYVERSE_SELECTANNOTATOR.out.unclassified_accessions
+            .splitText() { it.trim() }
+            .filter { it }
+            .collect()
+            .subscribe { accnos ->
+                if ( accnos ) {
+                    log.warn "--annotator ${annotator}: could not determine a GTDB domain for ${accnos.size()} genome(s) lacking a GFF (${accnos.join(', ')}) -- routed to Prokka instead of Bakta. Provide --gtdb_metadata/--gtdbtk_metadata covering these genomes to use Bakta for them."
+                }
+            }
+
+        ch_no_gff_keyed = ch_no_gff.map { meta, fna -> [ meta.id, meta, fna ] }
+
+        ch_no_gff_bakta = ch_no_gff_keyed
+            .join(
+                TIDYVERSE_SELECTANNOTATOR.out.bakta_accessions
+                    .splitText() { it.trim() }
+                    .filter { it }
+                    .map { accno -> [ accno, true ] }
+            )
+            .map { _accno, meta, fna, _kept -> [ meta, fna ] }
+
+        ch_no_gff_prokka = ch_no_gff_keyed
+            .join(
+                TIDYVERSE_SELECTANNOTATOR.out.prokka_accessions
+                    .splitText() { it.trim() }
+                    .filter { it }
+                    .map { accno -> [ accno, true ] }
+            )
+            .map { _accno, meta, fna, _kept -> [ meta, fna ] }
+    }
+
+    PROKKA(ch_no_gff_prokka, [], [])
     ch_multiqc_files = ch_multiqc_files.mix(PROKKA.out.log.collect{ _meta, log -> log })
+    if ( annotator != 'bakta_all' ) {
+        PROKKA_VERSION()
+    }
+
+    ch_bakta_fna = channel.empty()
+    ch_bakta_gff = channel.empty()
+    if ( annotator != 'prokka' ) {
+        BAKTA(ch_no_gff_bakta)
+        ch_bakta_fna = BAKTA.out.fna
+        ch_bakta_gff = BAKTA.out.gff
+        ch_multiqc_files = ch_multiqc_files.mix(BAKTA.out.txt.collect{ _meta, txt -> txt })
+    }
 
     PROKKAGFF2TSV(
         ch_genomes.filter { g -> g.genome_gff }.map { g -> [ [ id: g.accno ], g.genome_gff ] }
+            .mix(ch_bakta_gff)
     )
 
     CATPROKKATSVS(
@@ -244,12 +305,17 @@ workflow MAGMAP {
             .map { t -> [ [ id: 'magmap' ], t ] }
     )
 
-    // Mix genome entries that were not sent to Prokka with those that were not
+    // Mix genome entries that were not sent to Prokka/Bakta with those that were
     ch_collected_genomes = ch_genomes
         .filter { g -> g.genome_gff }
         .mix(
             PROKKA.out.fna
                 .join(PROKKA.out.gff)
+                .map { meta, fna, gff -> [ accno: meta.id  , genome_fna: fna, genome_gff: gff ] }
+        )
+        .mix(
+            ch_bakta_fna
+                .join(ch_bakta_gff)
                 .map { meta, fna, gff -> [ accno: meta.id  , genome_fna: fna, genome_gff: gff ] }
         )
 

@@ -39,6 +39,8 @@ workflow PIPELINE_INITIALISATION {
     remote_genome_sources   //  string: Comma-separated list of NCBI-style genome summary files
     genome_store_dir        //  string: Path to a directory where genome annotation files will be stored
     prokka_store_dir        //  string: Path to a directory where Prokka annotation files will be stored
+    bakta_db                //  string: Path to a directory where the Bakta database is (or will be) stored
+    bakta_store_dir         //  string: Path to a directory where Bakta annotation files will be stored
     indexes                 //  string: Path to user-provided Sourmash index file
     genomeset_mode          //  string: Genomeset mode ('sample' or 'joint')
     gtdb_metadata           //  string: Paths to GTDB metadata files
@@ -174,6 +176,14 @@ workflow PIPELINE_INITIALISATION {
     }
     if ( prokka_store_dir ) {
         d = new File("${prokka_store_dir}")
+        if ( ! d.exists() ) { d.mkdirs() }
+    }
+    if ( bakta_db ) {
+        d = new File("${bakta_db}")
+        if ( ! d.exists() ) { d.mkdirs() }
+    }
+    if ( bakta_store_dir ) {
+        d = new File("${bakta_store_dir}")
         if ( ! d.exists() ) { d.mkdirs() }
     }
 

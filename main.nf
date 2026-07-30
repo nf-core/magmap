@@ -42,6 +42,7 @@ workflow NFCORE_MAGMAP {
     checkm_metadata             // channel: CheckM/CheckM2 metadata files
     genomeset_mode              //  string: Either 'joint' for mapping samples against all genomes or 'sample' to map to sample-specific sets
     species_preference          //  string: 'all' to select all genomes for a species or 'local', 'completeness' or 'gtdb' to prefer one according to different criteria
+    annotator                   //  string: 'prokka', 'bakta_supported_only' or 'bakta_all' -- which tool(s) to annotate genomes lacking a GFF with
     skip_sourmash               // boolean: skip Sourmash or not
     sourmash_ksize              // integer
     features                    // channel: types of features to call
@@ -67,6 +68,7 @@ workflow NFCORE_MAGMAP {
         checkm_metadata,
         genomeset_mode,
         species_preference,
+        annotator,
         skip_sourmash,
         sourmash_ksize,
         features,
@@ -108,6 +110,8 @@ workflow {
         params.remote_genome_sources,
         params.genome_store_dir,
         params.prokka_store_dir,
+        params.bakta_db,
+        params.bakta_store_dir,
         params.indexes,
         params.genomeset_mode,
         params.gtdb_metadata,
@@ -131,6 +135,7 @@ workflow {
         PIPELINE_INITIALISATION.out.checkm_metadata,
         params.genomeset_mode,
         params.species_preference,
+        params.annotator,
         params.skip_sourmash,
         params.sourmash_ksize,
         PIPELINE_INITIALISATION.out.features,

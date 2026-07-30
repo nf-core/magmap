@@ -1,0 +1,24 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "bakta_version"
+description: Reports the Bakta version once per pipeline run, decoupled from the storeDir-cached BAKTA_BAKTA process
+keywords:
+  - versions
+  - annotation
+tools:
+  - "bakta":
+      description: "Rapid & standardized annotation of bacterial genomes, MAGs & plasmids"
+      homepage: "https://github.com/oschwengers/bakta"
+      documentation: "https://github.com/oschwengers/bakta"
+      identifier: ""
+input: []
+output:
+  versions:
+    - versions_bakta:
+        type: file
+        description: Topic channel entry with the Bakta version
+        pattern: ""
+        ontologies: []
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"
