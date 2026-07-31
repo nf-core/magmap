@@ -460,7 +460,6 @@ workflow MAGMAP {
     // MODULE: Also write the summary tables as Parquet
     //
     if ( save_parquet ) {
-        // Empty comment, to be removed
         DUCKDB_TABLE2PARQUET(
             TIDYVERSE_JOINMETADATA.out.genome_metadata
                 .mix(COLLECT_GENOMESELECTION.out.full_table.map { _meta, tsv -> tsv })
