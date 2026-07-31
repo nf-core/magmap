@@ -15,6 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#NN](https://github.com/nf-core/magmap/pull/NN) - Define TPM calculation in docs/output.md (by @erikrikarddaniel).
 - [#215](https://github.com/nf-core/magmap/pull/215) - Template update for nf-core/tools version 4.0.3, and update nf-core modules and subworkflows (by @erikrikarddaniel).
 
 ### `Fixed`

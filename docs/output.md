@@ -38,7 +38,7 @@ With [`--save_parquet`](https://nf-co.re/magmap/parameters/#save_parquet), the s
 
 - `summary_tables/`
   - `magmap.overall_stats.tsv.gz`: Overall statistics from the pipeline, e.g. number of reads, number of called ORFs, number of reads mapping back to contigs/ORFs etc.
-  - `magmap.<FEATURE>.counts.tsv.gz`: Read counts for `FEATURE` per ORF and sample.
+  - `magmap.<FEATURE>.counts.tsv.gz`: Read counts and TPMs for `FEATURE` per ORF and sample. TPMs are calculated as: `r = count/length; tpm = r/sum(r)` over each sample, i.e. a length-corrected relative abundance.
   - `magmap.genome_metadata.tsv.gz`: Genome metadata from GTDB, GTDB-Tk and CheckM/CheckM2 if provided by the user.
   - `magmap.genome_selection.tsv.gz`: Per genome set (one per sample when `--genomeset_mode sample` is used, a single set otherwise), which genomes were selected and whether each originated from `--genomeinfo` (local) or was fetched from NCBI (remote).
   - `magmap.genomes2orfs.tsv.gz`: Translation table from ORF identifiers to genome identifiers.
