@@ -1,0 +1,19 @@
+Changes in component 'nf-core/bakta/baktadbdownload'
+'modules/nf-core/bakta/baktadbdownload/meta.yml' is unchanged
+Changes in 'bakta/baktadbdownload/main.nf':
+--- modules/nf-core/bakta/baktadbdownload/main.nf
++++ modules/nf-core/bakta/baktadbdownload/main.nf
+@@ -8,7 +8,6 @@
+ 
+     output:
+     path "db*", emit: db
+-    tuple val("${task.process}"), val('bakta'), eval("bakta --version 2>&1 | sed 's/.*bakta //'"), emit: versions_bakta, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+
+'modules/nf-core/bakta/baktadbdownload/environment.yml' is unchanged
+'modules/nf-core/bakta/baktadbdownload/tests/nextflow.config' is unchanged
+'modules/nf-core/bakta/baktadbdownload/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/bakta/baktadbdownload/tests/main.nf.test' is unchanged
+************************************************************
