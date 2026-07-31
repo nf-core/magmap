@@ -68,6 +68,25 @@ process COLLECT_STATS {
     """
     #!/usr/bin/env Rscript
 
+    # All read counts joined into this table (n_post_trimming, n_non_contaminated,
+    # idxs_n_mapped/idxs_n_unmapped, and the featureCounts columns) use the same unit:
+    # individual reads, with both mates of a pair counted separately -- none of them
+    # count fragments/pairs as a single unit, so the columns are directly comparable.
+    # Confirmed empirically for each source:
+    #   - n_post_trimming: Trim Galore's PE trimming report is per-mate-file, so only
+    #     the R1 report is read and multiplied by 2 (see 'mult' below) to reconstruct
+    #     the total across both mates.
+    #   - n_non_contaminated: BBDuk's "Result:" line already reports both mates combined.
+    #   - idxs_n_mapped/idxs_n_unmapped: samtools idxstats counts mapped read-segments,
+    #     i.e. each mate separately.
+    #   - featureCounts columns: SUBREAD_FEATURECOUNTS auto-adds '-p' for paired-end
+    #     samples (based on meta.single_end), but since '--countReadPairs' is NOT also
+    #     passed, Subread (2.0.3+) still counts at the individual-read level -- '-p'
+    #     alone only affects pairing validation, not the counted unit. Adding
+    #     '--countReadPairs' later (e.g. as a seemingly-modernizing change) would
+    #     silently switch this to fragment/pair counting and break comparability with
+    #     the other columns above.
+
     library(dplyr)
     library(readr)
     library(purrr)
