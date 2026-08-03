@@ -61,7 +61,7 @@
                     "readr": "2.1.5"
                 },
                 "PROKKA_VERSION": {
-                    "prokka": "1.14.6"
+                    "prokka": "1.15.6"
                 },
                 "SAMTOOLS_FLAGSTAT": {
                     "samtools": 1.24
