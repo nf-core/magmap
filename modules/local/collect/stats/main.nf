@@ -109,8 +109,8 @@ process COLLECT_STATS {
 
     ${read_trimlogs}
 
-    # Reading each idxstats file directly (instead of shelling out to `grep -v '^\*'`)
-    # avoids passing a sample-derived filename through a shell command string.
+    # Reading each idxstats file directly instead of shelling out to grep, to avoid
+    # passing a sample-derived filename through a shell command string.
     idxs <- tibble(fname = Sys.glob('*.idxstats')) %>%
         mutate(
             sample = str_remove(basename(fname), '.idxstats'),
