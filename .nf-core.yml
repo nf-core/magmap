@@ -8,9 +8,7 @@ lint:
   nextflow_config:
     - config_defaults:
         - params.ncbi_genome_infos
-  files_exist:
-    - .github/workflows/linting_comment.yml
-nf_core_version: 4.0.3
+nf_core_version: 4.1.0
 repository_type: pipeline
 template:
   author: Danilo Di Leo, Emelie Nilsson and Daniel Lundin
