@@ -24,6 +24,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#222](https://github.com/nf-core/magmap/pull/222) - Fix an intermittent `ConcurrentModificationException` in `COLLECT_GENOMESELECTION` caused by two channel subscribers sharing a mutable genome-accession list (by @erikrikarddaniel).
 - [#217](https://github.com/nf-core/magmap/pull/217) - Report the Prokka version in the collated `versions.yml`/MultiQC report; it was silently never being collected (by @erikrikarddaniel).
 - [#215](https://github.com/nf-core/magmap/pull/215) - Fix a CI issue affecting Singularity/Apptainer test jobs (by @erikrikarddaniel).
+- [#NN](https://github.com/nf-core/magmap/pull/NN) - Keep the locally-reported Prokka version (`PROKKA_VERSION`) in sync with the vendored module's actual version, and reuse its container instead of a near-duplicate one (by @erikrikarddaniel).
 
 ### `Dependencies`
 
@@ -33,6 +34,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Samtools   | 1.23.1           | 1.24        |
 | trimgalore | 2.1.0            | 2.3.0       |
 | Nextflow   | 25.10.4          | 26.04.0     |
+| Prokka     | 1.14.6           | 1.15.6      |
 
 ### `Deprecated`
 
