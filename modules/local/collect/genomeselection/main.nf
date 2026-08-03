@@ -1,3 +1,11 @@
+// Safely quote a Groovy value as a single-quoted R string literal. Used everywhere
+// below that a sample ID or genome accession (documented as accepting arbitrary text
+// via --genomeinfo) gets embedded into generated R source -- without this, a value
+// containing a quote could break the generated R syntax, or worse.
+def rq(v) {
+    return "'" + v.toString().replace('\\', '\\\\').replace("'", "\\'") + "'"
+}
+
 process COLLECT_GENOMESELECTION {
     tag "$meta.id"
     label 'process_single'
@@ -22,10 +30,10 @@ process COLLECT_GENOMESELECTION {
     script:
     prefix = task.ext.prefix ?: "${meta.id}"
     def local_accnos_r = local_accnos ?
-        "c(${local_accnos.collect { a -> "'${a}'" }.join(', ')})" :
+        "c(${local_accnos.collect { a -> rq(a) }.join(', ')})" :
         "character(0)"
     def genome_set_rows = genome_sets.collectMany { s ->
-        s.accnos.collect { accno -> "'${s.id}', '${accno}'," }
+        s.accnos.collect { accno -> "${rq(s.id)}, ${rq(accno)}," }
     }
     """
     #!/usr/bin/env Rscript

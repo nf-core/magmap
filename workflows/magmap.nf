@@ -371,7 +371,11 @@ workflow MAGMAP {
     //
     CREATE_BBMAP_INDEX.out.genome_accnos
         .collectFile(storeDir: "${outdir}/bbmap") { meta, accnos ->
-            [ "${meta.id}.genomes.txt", accnos.sort().join('\n') + '\n' ]
+            // sort(false) returns a new sorted list rather than sorting in place -- this
+            // same accnos list is also consumed (unsorted) by COLLECT_GENOMESELECTION
+            // below, and Groovy's no-arg List.sort() mutating it in place caused an
+            // intermittent ConcurrentModificationException there.
+            [ "${meta.id}.genomes.txt", accnos.sort(false).join('\n') + '\n' ]
         }
 
     //

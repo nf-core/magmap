@@ -15,10 +15,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#222](https://github.com/nf-core/magmap/pull/222) - Define TPM calculation in docs/output.md (by @erikrikarddaniel).
 - [#215](https://github.com/nf-core/magmap/pull/215) - Template update for nf-core/tools version 4.0.3, and update nf-core modules and subworkflows (by @erikrikarddaniel).
 
 ### `Fixed`
 
+- [#222](https://github.com/nf-core/magmap/pull/222) - Fix brittle R code in `COLLECT_STATS`/`COLLECT_GENOMESELECTION` ([#218](https://github.com/nf-core/magmap/issues/218), by @erikrikarddaniel).
+- [#222](https://github.com/nf-core/magmap/pull/222) - Fix an intermittent `ConcurrentModificationException` in `COLLECT_GENOMESELECTION` caused by two channel subscribers sharing a mutable genome-accession list (by @erikrikarddaniel).
 - [#217](https://github.com/nf-core/magmap/pull/217) - Report the Prokka version in the collated `versions.yml`/MultiQC report; it was silently never being collected (by @erikrikarddaniel).
 - [#215](https://github.com/nf-core/magmap/pull/215) - Fix a CI issue affecting Singularity/Apptainer test jobs (by @erikrikarddaniel).
 
