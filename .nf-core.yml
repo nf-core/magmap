@@ -1,12 +1,16 @@
 lint:
+  files_exist:
+    - .github/workflows/linting_comment.yml
   files_unchanged:
     - docs/images/nf-core-magmap_logo_light.png
     - docs/images/nf-core-magmap_logo_dark.png
     - assets/nf-core-magmap_logo_light.png
+    - .github/workflows/branch.yml
+    - .github/workflows/linting.yml
   nextflow_config:
     - config_defaults:
         - params.ncbi_genome_infos
-nf_core_version: 4.0.3
+nf_core_version: 4.1.0
 repository_type: pipeline
 template:
   author: Danilo Di Leo, Emelie Nilsson and Daniel Lundin
@@ -17,4 +21,4 @@ template:
   name: magmap
   org: nf-core
   outdir: .
-  version: 1.1.0
+  version: 1.2.0dev
