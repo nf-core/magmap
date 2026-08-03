@@ -11,7 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#212](https://github.com/nf-core/magmap/pull/212) - Add `--species_preference` parameter to allow choice of genome representing a species (by @erikrikarddaniel).
 - [#212](https://github.com/nf-core/magmap/pull/212) - Do not publish Sourmash signature files (`*.sig` and `*.sig.zip`) even with `--sourmash_save_sourmash` (by @erikrikarddaniel).
 - [#212](https://github.com/nf-core/magmap/pull/212) - Add summary of selected genomes to MultiQC report (by @erikrikarddaniel).
-- [#NN](https://github.com/nf-core/magmap/pull/NN) - Add `--save_parquet` to also write the summary tables in Parquet format, alongside the default gzipped TSV (by @erikrikarddaniel).
+- [#219](https://github.com/nf-core/magmap/pull/219) - Add `--save_parquet` to also write the summary tables in Parquet format, alongside the default gzipped TSV (by @erikrikarddaniel).
 
 ### `Changed`
 
