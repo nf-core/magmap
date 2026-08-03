@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#NN](https://github.com/nf-core/magmap/pull/NN) - Fix brittle R code in `COLLECT_STATS`/`COLLECT_GENOMESELECTION`: safely escape user-controlled values (sample IDs, genome accessions) embedded in generated R source, avoid shelling out to parse trimming/BBDuk/idxstats files, and type featureCounts columns by name instead of position ([#218](https://github.com/nf-core/magmap/issues/218), by @erikrikarddaniel).
 - [#217](https://github.com/nf-core/magmap/pull/217) - Report the Prokka version in the collated `versions.yml`/MultiQC report; it was silently never being collected (by @erikrikarddaniel).
 - [#215](https://github.com/nf-core/magmap/pull/215) - Fix a CI issue affecting Singularity/Apptainer test jobs (by @erikrikarddaniel).
 
