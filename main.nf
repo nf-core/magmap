@@ -49,6 +49,7 @@ workflow NFCORE_MAGMAP {
     skip_fastqc                 // boolean
     skip_qc                     // boolean
     skip_trimming               // boolean
+    save_parquet                // boolean: also write summary tables as Parquet
     outdir                      //  string: path to output directory
 
     main:
@@ -75,6 +76,7 @@ workflow NFCORE_MAGMAP {
         skip_fastqc,
         skip_qc,
         skip_trimming,
+        save_parquet,
         params.multiqc_config,
         params.multiqc_logo,
         params.multiqc_methods_description,
@@ -142,6 +144,7 @@ workflow {
         params.skip_fastqc,
         params.skip_qc,
         params.skip_trimming,
+        params.save_parquet,
         params.outdir
     )
 
