@@ -94,7 +94,7 @@
                     "trimgalore": "2.3.0"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.2.0dev"
+                    "nf-core/magmap": "v1.2.0"
                 }
             },
             [
@@ -305,7 +305,7 @@
                     "trimgalore": "2.3.0"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.2.0dev"
+                    "nf-core/magmap": "v1.2.0"
                 }
             },
             [
