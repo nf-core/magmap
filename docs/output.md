@@ -140,6 +140,13 @@ The Bakta database itself is downloaded once into [`--bakta_db`](https://nf-co.r
 
 </details>
 
+:::warning
+`--prokka_store_dir`/`--bakta_store_dir` are reused across pipeline runs -- genomes already found there are skipped rather than re-annotated (see above).
+This means genomes accumulated in a store directory over time may have been annotated with _different_ versions of Prokka or Bakta, even though only a single, current version is reported in the collated `versions.yml`/MultiQC report.
+There is currently no automated check or report of per-genome annotation tool versions across a genome library (see [issue #229](https://github.com/nf-core/magmap/issues/229)).
+If consistent annotation-tool versions across your whole genome collection matters, either start from an empty store directory, or track outside the pipeline which version annotated which genome.
+:::
+
 ### Genome fetching
 
 When the pipeline is run with [`--skip_sourmash false`](https://nf-co.re/magmap/parameters/#skip_sourmash) and one or more index files passed to [`--indexes`](https://nf-co.re/magmap/parameters/#indexes), remote genomes will be identified and downloaded to the directory specified by [`--genome_store_dir`](https://nf-co.re/magmap/parameters/#genome_store_dir) (by default `genomes` in the working directory for the pipeline run).
