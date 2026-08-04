@@ -7,25 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#219](https://github.com/nf-core/magmap/pull/219) - Add `--save_parquet` to also write the summary tables in Parquet format, alongside the default gzipped TSV (by @erikrikarddaniel).
 - [#217](https://github.com/nf-core/magmap/pull/217) - Add `--annotator` parameter to allow Bakta as an alternative to Prokka for genomes lacking a gff (`prokka`, `bakta_supported_only` or `bakta_all`), with `--bakta_db` and `--bakta_store_dir` controlling the Bakta database and annotation output locations (by @erikrikarddaniel).
 - [#212](https://github.com/nf-core/magmap/pull/212) - Add `--species_preference` parameter to allow choice of genome representing a species (by @erikrikarddaniel).
 - [#212](https://github.com/nf-core/magmap/pull/212) - Do not publish Sourmash signature files (`*.sig` and `*.sig.zip`) even with `--sourmash_save_sourmash` (by @erikrikarddaniel).
 - [#212](https://github.com/nf-core/magmap/pull/212) - Add summary of selected genomes to MultiQC report (by @erikrikarddaniel).
-- [#219](https://github.com/nf-core/magmap/pull/219) - Add `--save_parquet` to also write the summary tables in Parquet format, alongside the default gzipped TSV (by @erikrikarddaniel).
 
 ### `Changed`
 
-- [#222](https://github.com/nf-core/magmap/pull/222) - Define TPM calculation in docs/output.md (by @erikrikarddaniel).
 - [#223](https://github.com/nf-core/magmap/pull/223) - Template update for nf-core/tools version 4.1.0, and update nf-core modules and subworkflows (by @erikrikarddaniel).
+- [#222](https://github.com/nf-core/magmap/pull/222) - Define TPM calculation in docs/output.md (by @erikrikarddaniel).
 - [#215](https://github.com/nf-core/magmap/pull/215) - Template update for nf-core/tools version 4.0.3, and update nf-core modules and subworkflows (by @erikrikarddaniel).
 
 ### `Fixed`
 
+- [#223](https://github.com/nf-core/magmap/pull/223) - Keep the locally-reported Prokka version (`PROKKA_VERSION`) in sync with the vendored module's actual version, and reuse its container instead of a near-duplicate one (by @erikrikarddaniel).
 - [#222](https://github.com/nf-core/magmap/pull/222) - Fix brittle R code in `COLLECT_STATS`/`COLLECT_GENOMESELECTION` ([#218](https://github.com/nf-core/magmap/issues/218), by @erikrikarddaniel).
 - [#222](https://github.com/nf-core/magmap/pull/222) - Fix an intermittent `ConcurrentModificationException` in `COLLECT_GENOMESELECTION` caused by two channel subscribers sharing a mutable genome-accession list (by @erikrikarddaniel).
 - [#217](https://github.com/nf-core/magmap/pull/217) - Report the Prokka version in the collated `versions.yml`/MultiQC report; it was silently never being collected (by @erikrikarddaniel).
 - [#215](https://github.com/nf-core/magmap/pull/215) - Fix a CI issue affecting Singularity/Apptainer test jobs (by @erikrikarddaniel).
-- [#223](https://github.com/nf-core/magmap/pull/223) - Keep the locally-reported Prokka version (`PROKKA_VERSION`) in sync with the vendored module's actual version, and reuse its container instead of a near-duplicate one (by @erikrikarddaniel).
 
 ### `Dependencies`
 
