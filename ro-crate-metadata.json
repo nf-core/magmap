@@ -22,8 +22,8 @@
             "@id": "./",
             "@type": "Dataset",
             "creativeWorkStatus": "InProgress",
-            "datePublished": "2026-07-28T06:59:06+00:00",
-            "description": "<h1>\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"docs/images/nf-core-magmap_logo_dark.png\">\n    <img alt=\"nf-core/magmap\" src=\"docs/images/nf-core-magmap_logo_light.png\">\n  </picture>\n</h1>\n\n[![Open in GitHub Codespaces](https://img.shields.io/badge/Open_In_GitHub_Codespaces-black?labelColor=grey&logo=github)](https://github.com/codespaces/new/nf-core/magmap)\n[![GitHub Actions CI Status](https://github.com/nf-core/magmap/actions/workflows/nf-test.yml/badge.svg)](https://github.com/nf-core/magmap/actions/workflows/nf-test.yml)\n[![GitHub Actions Linting Status](https://github.com/nf-core/magmap/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/magmap/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/magmap/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.17752714-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.17752714)\n[![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)\n\n[![Nextflow](https://img.shields.io/badge/version-%E2%89%A526.04.0-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)\n[![nf-core template version](https://img.shields.io/badge/nf--core_template-4.0.3-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/4.0.3)\n[![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)\n[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)\n[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)\n[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://cloud.seqera.io/launch?pipeline=https://github.com/nf-core/magmap)\n\n[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23magmap-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/magmap)[![Follow on Bluesky](https://img.shields.io/badge/bluesky-%40nf__core-1185fe?labelColor=000000&logo=bluesky)](https://bsky.app/profile/nf-co.re)[![Follow on Mastodon](https://img.shields.io/badge/mastodon-nf__core-6364ff?labelColor=FFFFFF&logo=mastodon)](https://mstdn.science/@nf_core)[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)\n\n## Introduction\n\n**nf-core/magmap** is a bioinformatics best-practice analysis pipeline that maps reads to (large) collections of genomes.\nIts main output are tables with quantification of features (genes) in genomes which can be analyzed in R, Python or by other pipelines such as [**nf-core/differentialabundance**](https://nf-co.re/differentialabundance).\nIt is mainly meant for metatranscriptomes and metagenomes, but can be used for other types of samples where mapping to contigs is relevant.\nThe [**nf-core/rnaseq**](https://nf-co.re/rnaseq) pipeline is similar in purpose, but meant for single organisms with reference genomes and annotations, in practice eukaryotic model organisms.\n\nBefore running this pipeline, consider running [**nf-core/taxprofiler**](https://nf-co.re/taxprofiler) to get a view of whether the community composition in your samples fit **nf-core/magmap** and its focus on prokaryotic genomes.\n\nThe pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!\n\n![nf-core/magmap-metro-map](docs/images/metromap-magmap.png)\n\n1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))\n2. Quality trimming and adapters removal for raw reads ([`Trim Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))\n3. Filter reads with [`BBduk`](https://sourceforge.net/projects/bbmap/)\n4. Select reference genomes based on k-mer signatures in reads with [`sourmash`](https://sourmash.readthedocs.io/en/latest/)\n5. Quantification of genes identified in selected reference genomes:\n   1. Generate index of assembly ([`BBmap index`](https://sourceforge.net/projects/bbmap/))\n   2. Mapping cleaned reads to the assembly for quantification ([`BBmap`](https://sourceforge.net/projects/bbmap/))\n   3. Get raw counts per each gene present in the genomes ([`Featurecounts`](http://subread.sourceforge.net)) -> TSV table with collected featurecounts output\n6. Summary statistics table. Collect_stats.R\n7. Overall summary of tools output, including QC for reads before and after trimming ([`MultiQC`](http://multiqc.info/))\n\n## Quick Start\n\n> [!NOTE]\n> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/get_started/environment_setup/overview) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/get_started/run-your-first-pipeline) with `-profile test` before running the workflow on actual data.\n\nFirst, prepare a samplesheet with your input data that looks as follows:\n\n`samplesheet.csv`:\n\n```csv\nsample,fastq_1,fastq_2\nCONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz\nCONTROL_REP2,AEG588A1_S2_L002_R1_001.fastq.gz,AEG588A1_S2_L002_R2_001.fastq.gz\n```\n\nEach row represents a fastq file (single-end) or a pair of fastq files (paired end).\n\nAnd, if you want to map to a set of your own genomes, a genome information file looking like this:\n\n`genomeinfo.csv`:\n\n```csv\naccno,genome_fna,genome_gff\ngenome1,path/to/fna.gz,path/to/gff.gz\ngenome2,path/to/fna.gz,path/to/gff.gz\ngenome3,path/to/fna.gz,path/to/gff.gz\n```\n\nEach row represents a genome file with or without the paired gff\n\nNow, you can run the pipeline using:\n\n```bash\nnextflow run nf-core/magmap --input samplesheet.csv --genomeinfo genomeinfo.csv --outdir <OUTDIR> -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>\n```\n\n> [!WARNING]\n> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/running/run-pipelines#using-parameter-files).\n\nFor more details and further functionality, please refer to the [usage documentation](https://nf-co.re/magmap/usage) and the [parameter documentation](https://nf-co.re/magmap/parameters).\n\n## Pipeline output\n\nTo see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/magmap/results) tab on the nf-core website pipeline page.\nFor more details about the output files and reports, please refer to the\n[output documentation](https://nf-co.re/magmap/output).\n\n## Credits\n\nnf-core/magmap was originally written by Danilo Di Leo [@danilodileo](https://github.com/danilodileo), Emelie Nilsson [@emnillson](https://github.com/emnilsson) and Daniel Lundin [@erikrikardaniel](https://github.com/erikrikarddaniel).\n\n## Contributions and Support\n\nIf you would like to contribute to this pipeline, please see the [contributing guidelines](docs/CONTRIBUTING.md).\n\nFor further information or help, don't hesitate to get in touch on the [Slack `#magmap` channel](https://nfcore.slack.com/channels/magmap) (you can join with [this invite](https://nf-co.re/join/slack)).\n\n## Citations\n\nIf you use nf-core/magmap for your analysis, please cite it using the following doi: [10.5281/zenodo.17752714](https://doi.org/10.5281/zenodo.17752714).\n\nAn extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.\n\nYou can cite the `nf-core` publication as follows:\n\n> **The nf-core framework for community-curated bioinformatics pipelines.**\n>\n> Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.\n>\n> _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).\n",
+            "datePublished": "2026-08-03T18:20:43+00:00",
+            "description": "<h1>\n  <picture>\n    <source media=\"(prefers-color-scheme: dark)\" srcset=\"docs/images/nf-core-magmap_logo_dark.png\">\n    <img alt=\"nf-core/magmap\" src=\"docs/images/nf-core-magmap_logo_light.png\">\n  </picture>\n</h1>\n\n[![Open in GitHub Codespaces](https://img.shields.io/badge/Open_In_GitHub_Codespaces-black?labelColor=grey&logo=github)](https://github.com/codespaces/new/nf-core/magmap)\n[![GitHub Actions CI Status](https://github.com/nf-core/magmap/actions/workflows/nf-test.yml/badge.svg)](https://github.com/nf-core/magmap/actions/workflows/nf-test.yml)\n[![GitHub Actions Linting Status](https://github.com/nf-core/magmap/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/magmap/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/magmap/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.17752714-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.17752714)\n[![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)\n\n[![Nextflow](https://img.shields.io/badge/version-%E2%89%A526.04.0-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)\n[![nf-core template version](https://img.shields.io/badge/nf--core_template-4.1.0-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/4.1.0)\n[![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)\n[![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)\n[![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)\n[![Launch on Seqera Platform](https://img.shields.io/badge/Launch%20%F0%9F%9A%80-Seqera%20Platform-%234256e7)](https://cloud.seqera.io/launch?pipeline=https://github.com/nf-core/magmap)\n\n[![Get help on Slack](http://img.shields.io/badge/slack-nf--core%20%23magmap-4A154B?labelColor=000000&logo=slack)](https://nfcore.slack.com/channels/magmap)[![Follow on Bluesky](https://img.shields.io/badge/bluesky-%40nf__core-1185fe?labelColor=000000&logo=bluesky)](https://bsky.app/profile/nf-co.re)[![Follow on Mastodon](https://img.shields.io/badge/mastodon-nf__core-6364ff?labelColor=FFFFFF&logo=mastodon)](https://mstdn.science/@nf_core)[![Watch on YouTube](http://img.shields.io/badge/youtube-nf--core-FF0000?labelColor=000000&logo=youtube)](https://www.youtube.com/c/nf-core)\n\n## Introduction\n\n**nf-core/magmap** is a bioinformatics best-practice analysis pipeline that maps reads to (large) collections of genomes.\nIts main output are tables with quantification of features (genes) in genomes which can be analyzed in R, Python or by other pipelines such as [**nf-core/differentialabundance**](https://nf-co.re/differentialabundance).\nIt is mainly meant for metatranscriptomes and metagenomes, but can be used for other types of samples where mapping to contigs is relevant.\nThe [**nf-core/rnaseq**](https://nf-co.re/rnaseq) pipeline is similar in purpose, but meant for single organisms with reference genomes and annotations, in practice eukaryotic model organisms.\n\nBefore running this pipeline, consider running [**nf-core/taxprofiler**](https://nf-co.re/taxprofiler) to get a view of whether the community composition in your samples fit **nf-core/magmap** and its focus on prokaryotic genomes.\n\nThe pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool to run tasks across multiple compute infrastructures in a very portable manner. It uses Docker/Singularity containers making installation trivial and results highly reproducible. The [Nextflow DSL2](https://www.nextflow.io/docs/latest/dsl2.html) implementation of this pipeline uses one container per process which makes it much easier to maintain and update software dependencies. Where possible, these processes have been submitted to and installed from [nf-core/modules](https://github.com/nf-core/modules) in order to make them available to all nf-core pipelines, and to everyone within the Nextflow community!\n\n![nf-core/magmap-metro-map](docs/images/metromap-magmap.png)\n\n1. Read QC ([`FastQC`](https://www.bioinformatics.babraham.ac.uk/projects/fastqc/))\n2. Quality trimming and adapters removal for raw reads ([`Trim Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))\n3. Filter reads with [`BBduk`](https://sourceforge.net/projects/bbmap/)\n4. Select reference genomes based on k-mer signatures in reads with [`sourmash`](https://sourmash.readthedocs.io/en/latest/)\n5. Quantification of genes identified in selected reference genomes:\n   1. Generate index of assembly ([`BBmap index`](https://sourceforge.net/projects/bbmap/))\n   2. Mapping cleaned reads to the assembly for quantification ([`BBmap`](https://sourceforge.net/projects/bbmap/))\n   3. Get raw counts per each gene present in the genomes ([`Featurecounts`](http://subread.sourceforge.net)) -> TSV table with collected featurecounts output\n6. Summary statistics table. Collect_stats.R\n7. Overall summary of tools output, including QC for reads before and after trimming ([`MultiQC`](http://multiqc.info/))\n\n## Quick Start\n\n> [!NOTE]\n> If you are new to Nextflow and nf-core, please refer to [this page](https://nf-co.re/docs/get_started/environment_setup/overview) on how to set-up Nextflow. Make sure to [test your setup](https://nf-co.re/docs/get_started/run-your-first-pipeline) with `-profile test` before running the workflow on actual data.\n\nFirst, prepare a samplesheet with your input data that looks as follows:\n\n`samplesheet.csv`:\n\n```csv\nsample,fastq_1,fastq_2\nCONTROL_REP1,AEG588A1_S1_L002_R1_001.fastq.gz,AEG588A1_S1_L002_R2_001.fastq.gz\nCONTROL_REP2,AEG588A1_S2_L002_R1_001.fastq.gz,AEG588A1_S2_L002_R2_001.fastq.gz\n```\n\nEach row represents a fastq file (single-end) or a pair of fastq files (paired end).\n\nAnd, if you want to map to a set of your own genomes, a genome information file looking like this:\n\n`genomeinfo.csv`:\n\n```csv\naccno,genome_fna,genome_gff\ngenome1,path/to/fna.gz,path/to/gff.gz\ngenome2,path/to/fna.gz,path/to/gff.gz\ngenome3,path/to/fna.gz,path/to/gff.gz\n```\n\nEach row represents a genome file with or without the paired gff\n\nNow, you can run the pipeline using:\n\n```bash\nnextflow run nf-core/magmap --input samplesheet.csv --genomeinfo genomeinfo.csv --outdir <OUTDIR> -profile <docker/singularity/podman/shifter/charliecloud/conda/institute>\n```\n\n> [!WARNING]\n> Please provide pipeline parameters via the CLI or Nextflow `-params-file` option. Custom config files including those provided by the `-c` Nextflow option can be used to provide any configuration _**except for parameters**_; see [docs](https://nf-co.re/docs/running/run-pipelines#using-parameter-files).\n\nFor more details and further functionality, please refer to the [usage documentation](https://nf-co.re/magmap/usage) and the [parameter documentation](https://nf-co.re/magmap/parameters).\n\n## Pipeline output\n\nTo see the results of an example test run with a full size dataset refer to the [results](https://nf-co.re/magmap/results) tab on the nf-core website pipeline page.\nFor more details about the output files and reports, please refer to the\n[output documentation](https://nf-co.re/magmap/output).\n\n## Credits\n\nnf-core/magmap was originally written by Danilo Di Leo [@danilodileo](https://github.com/danilodileo), Emelie Nilsson [@emnillson](https://github.com/emnilsson) and Daniel Lundin [@erikrikardaniel](https://github.com/erikrikarddaniel).\n\n## Contributions and Support\n\nIf you would like to contribute to this pipeline, please see the [contributing guidelines](docs/CONTRIBUTING.md).\n\nFor further information or help, don't hesitate to get in touch on the [Slack `#magmap` channel](https://nfcore.slack.com/channels/magmap) (you can join with [this invite](https://nf-co.re/join/slack)).\n\n## Citations\n\nIf you use nf-core/magmap for your analysis, please cite it using the following doi: [10.5281/zenodo.17752714](https://doi.org/10.5281/zenodo.17752714).\n\nAn extensive list of references for the tools used by the pipeline can be found in the [`CITATIONS.md`](CITATIONS.md) file.\n\nYou can cite the `nf-core` publication as follows:\n\n> **The nf-core framework for community-curated bioinformatics pipelines.**\n>\n> Philip Ewels, Alexander Peltzer, Sven Fillinger, Harshil Patel, Johannes Alneberg, Andreas Wilm, Maxime Ulysse Garcia, Paolo Di Tommaso & Sven Nahnsen.\n>\n> _Nat Biotechnol._ 2020 Feb 13. doi: [10.1038/s41587-020-0439-x](https://dx.doi.org/10.1038/s41587-020-0439-x).\n",
             "hasPart": [
                 {
                     "@id": "main.nf"
@@ -42,9 +42,6 @@
                 },
                 {
                     "@id": "modules/"
-                },
-                {
-                    "@id": "modules/local/"
                 },
                 {
                     "@id": "modules/nf-core/"
@@ -102,7 +99,7 @@
             },
             "mentions": [
                 {
-                    "@id": "#6966bd9f-d858-4fcd-be90-defdb9bfbec4"
+                    "@id": "#b405691c-6bcb-4e31-bb96-d40e12d86f81"
                 }
             ],
             "name": "nf-core/magmap"
@@ -129,19 +126,16 @@
                 "SoftwareSourceCode",
                 "ComputationalWorkflow"
             ],
-            "author": [
+            "contributor": [
                 {
-                    "@id": "#danilo.dileo@lnu.se"
+                    "@id": "#0e90d755-c3f1-48d2-a45d-569a0b607981"
                 },
                 {
-                    "@id": "https://orcid.org/0000-0001-5103-214X"
-                },
-                {
-                    "@id": "https://orcid.org/0000-0002-8779-6464"
+                    "@id": "#da7c0489-02a2-4810-8602-2946a67545e6"
                 }
             ],
             "dateCreated": "",
-            "dateModified": "2026-07-28T08:59:06Z",
+            "dateModified": "2026-08-03T20:20:43Z",
             "dct:conformsTo": "https://bioschemas.org/profiles/ComputationalWorkflow/1.0-RELEASE/",
             "keywords": [
                 "nf-core",
@@ -149,14 +143,6 @@
             ],
             "license": [
                 "MIT"
-            ],
-            "maintainer": [
-                {
-                    "@id": "#danilo.dileo@lnu.se"
-                },
-                {
-                    "@id": "https://orcid.org/0000-0002-8779-6464"
-                }
             ],
             "name": [
                 "nf-core/magmap"
@@ -185,14 +171,14 @@
             "url": {
                 "@id": "https://www.nextflow.io/"
             },
-            "version": "!>=26.04.0"
+            "version": "!>=25.10.4"
         },
         {
-            "@id": "#6966bd9f-d858-4fcd-be90-defdb9bfbec4",
+            "@id": "#b405691c-6bcb-4e31-bb96-d40e12d86f81",
             "@type": "TestSuite",
             "instance": [
                 {
-                    "@id": "#8aa0d01e-cd1e-451f-9b7f-1802584d2abf"
+                    "@id": "#55e1efb9-8776-4885-96e8-9e250bfe0271"
                 }
             ],
             "mainEntity": {
@@ -201,7 +187,7 @@
             "name": "Test suite for nf-core/magmap"
         },
         {
-            "@id": "#8aa0d01e-cd1e-451f-9b7f-1802584d2abf",
+            "@id": "#55e1efb9-8776-4885-96e8-9e250bfe0271",
             "@type": "TestInstance",
             "name": "GitHub Actions workflow for testing nf-core/magmap",
             "resource": "repos/nf-core/magmap/actions/workflows/nf-test.yml",
@@ -242,11 +228,6 @@
             "@id": "modules/",
             "@type": "Dataset",
             "description": "Modules used by the pipeline"
-        },
-        {
-            "@id": "modules/local/",
-            "@type": "Dataset",
-            "description": "Pipeline-specific modules"
         },
         {
             "@id": "modules/nf-core/",
@@ -335,28 +316,15 @@
             "url": "https://nf-co.re/"
         },
         {
-            "@id": "#danilo.dileo@lnu.se",
+            "@id": "#0e90d755-c3f1-48d2-a45d-569a0b607981",
             "@type": "Person",
-            "affiliation": "Linnaeus University, Kalmar, Sweden",
-            "email": "danilo.dileo@lnu.se",
-            "name": "Danilo Di Leo",
-            "url": "https://github.com/danilodileo"
+            "email": "78909156+danilodileo@users.noreply.github.com",
+            "name": "Danilo Di Leo"
         },
         {
-            "@id": "https://orcid.org/0000-0001-5103-214X",
+            "@id": "#da7c0489-02a2-4810-8602-2946a67545e6",
             "@type": "Person",
-            "affiliation": "Linnaeus University, Kalmar, Sweden",
-            "email": "emelie.nilsson@lnu.se",
-            "name": "Emelie Nilsson",
-            "url": "https://github.com/emnilsson"
-        },
-        {
-            "@id": "https://orcid.org/0000-0002-8779-6464",
-            "@type": "Person",
-            "affiliation": "Linnaeus University, Kalmar, Sweden",
-            "email": "matricaria.suaveolens@gmail.com",
-            "name": "Daniel Lundin",
-            "url": "https://github.com/erikrikarddaniel"
+            "name": "Emelie Nilsson and Daniel Lundin"
         }
     ]
 }
