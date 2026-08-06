@@ -112,6 +112,7 @@ workflow {
         params.remote_genome_sources,
         params.genome_store_dir,
         params.prokka_store_dir,
+        params.annotator,
         params.bakta_db,
         params.bakta_store_dir,
         params.indexes,

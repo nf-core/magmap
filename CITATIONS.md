@@ -60,6 +60,10 @@
 
 > Barrett T, Dowle M, Srinivasan A, Gorecki J, Chirico M, Hocking T, Schwendinger B, Krylov I (2025): data.table: Extension of `data.frame`. doi:10.32614/CRAN.package.data.table
 
+- [DuckDB](https://duckdb.org)
+
+> Raasveldt M, Mühleisen H. DuckDB: an Embeddable Analytical Database. In: Proceedings of the 2019 International Conference on Management of Data (SIGMOD '19). 2019 Jun 25:1981-1984. doi: 10.1145/3299869.3320212.
+
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 
 > Ewels P, Magnusson M, Lundin S, Käller M. MultiQC: summarize analysis results for multiple tools and samples in a single report. Bioinformatics. 2016 Oct 1;32(19):3047-8. doi: 10.1093/bioinformatics/btw354. Epub 2016 Jun 16. PubMed PMID: 27312411; PubMed Central PMCID: PMC5039924.

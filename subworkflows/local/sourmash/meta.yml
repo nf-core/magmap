@@ -9,6 +9,7 @@ components:
   - sourmash/gather
   - sourmash/sketch
   - sourmash/index
+  - wget
   - local/tidyverse/selectgenomespecies
 input:
   - ch_sample_reads:
