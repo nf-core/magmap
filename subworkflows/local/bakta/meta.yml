@@ -8,7 +8,7 @@ keywords:
 components:
   - bakta/bakta
   - bakta/baktadbdownload
-  - local/bakta_version
+  - bakta/version
 input:
   - ch_fasta:
       type: file

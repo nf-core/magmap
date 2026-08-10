@@ -6,6 +6,9 @@ process BAKTA_BAKTADBDOWNLOAD {
         ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/50/50b75335f6394ae83fd05f364db27ee2eb75f4170e3525bb2aea47ad717a9e64/data'
         : 'community.wave.seqera.io/library/bakta_diamond:7830b94718da4f96'}"
 
+    input:
+    val trigger // any value; used only to gate execution on there being something to annotate -- see subworkflows/local/bakta
+
     output:
     path "db*", emit: db
 

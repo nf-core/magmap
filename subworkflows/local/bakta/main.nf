@@ -14,7 +14,10 @@ workflow BAKTA {
     ch_fasta // channel: [ val(meta), path(fasta) ] -- genomes without a GFF to annotate with Bakta
 
     main:
-    BAKTA_BAKTADBDOWNLOAD()
+    // Only download the (potentially large) Bakta database if there's actually a genome
+    // to annotate with it -- ch_fasta can be empty even when --annotator requests Bakta,
+    // e.g. if domain classification routed every genome lacking a GFF to Prokka instead.
+    BAKTA_BAKTADBDOWNLOAD(ch_fasta.count().filter { n -> n > 0 })
 
     BAKTA_BAKTA(
         ch_fasta,

@@ -17,7 +17,12 @@ tools:
       licence:
         - "GPL v3"
       identifier: biotools:bakta
-input: []
+input:
+  - - trigger:
+        type: string
+        description: |
+          Any value; used only to gate execution on there being something to
+          annotate (local patch, not part of the upstream module)
 output:
   db:
     - db*:
