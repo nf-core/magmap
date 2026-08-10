@@ -39,11 +39,12 @@ workflow PIPELINE_INITIALISATION {
     remote_genome_sources   //  string: Comma-separated list of NCBI-style genome summary files
     genome_store_dir        //  string: Path to a directory where genome annotation files will be stored
     prokka_store_dir        //  string: Path to a directory where Prokka annotation files will be stored
-    annotator                //  string: 'prokka', 'bakta_supported_only' or 'bakta_all' -- which tool(s) to annotate genomes lacking a GFF with
+    annotator               //  string: 'prokka', 'bakta_supported_only' or 'bakta_all' -- which tool(s) to annotate genomes lacking a GFF with
     bakta_db                //  string: Path to a directory where the Bakta database is (or will be) stored
     bakta_store_dir         //  string: Path to a directory where Bakta annotation files will be stored
     indexes                 //  string: Path to user-provided Sourmash index file
     genomeset_mode          //  string: Genomeset mode ('sample' or 'joint')
+    species_preference      //  string: 'all', 'local', 'completeness' or 'gtdb' to indicate preferred genome for a species
     gtdb_metadata           //  string: Paths to GTDB metadata files
     gtdbtk_metadata         //  string: Path to GTDB-Tk metadata file
     checkm_metadata         //  string: Path to GTDB metadata file
@@ -207,11 +208,11 @@ workflow PIPELINE_INITIALISATION {
     // Return an error if the user asks for a species_preference that requires genome
     // metadata we don't have.
     //
-    if (params.species_preference in ['local', 'completeness', 'gtdb'] && (!gtdb_metadata || !gtdbtk_metadata)) {
-        error("--species_preference '${params.species_preference}' requires genome metadata. Please provide both --gtdb_metadata and --gtdbtk_metadata, or set --species_preference to 'all'.")
+    if (species_preference in ['local', 'completeness', 'gtdb'] && (!gtdb_metadata || !gtdbtk_metadata)) {
+        error("--species_preference '${species_preference}' requires genome metadata. Please provide both --gtdb_metadata and --gtdbtk_metadata, or set --species_preference to 'all'.")
     }
-    if (params.species_preference in ['completeness', 'gtdb'] && !checkm_metadata) {
-        error("--species_preference '${params.species_preference}' additionally requires --checkm_metadata.")
+    if (species_preference in ['completeness', 'gtdb'] && !checkm_metadata) {
+        error("--species_preference '${species_preference}' additionally requires --checkm_metadata.")
     }
 
     //

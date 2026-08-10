@@ -102,6 +102,11 @@
                     "description": "Path to a directory where Bakta annotation output is stored.",
                     "help_text": "Bakta annotation files created by the pipeline will be stored in this directory for potential later use."
                 },
+                "save_parquet": {
+                    "type": "boolean",
+                    "description": "Also write the summary tables in Parquet format, alongside the default gzipped TSV.",
+                    "fa_icon": "fas fa-table"
+                },
                 "email": {
                     "type": "string",
                     "description": "Email address for completion summary.",
@@ -286,20 +291,6 @@
             },
             "fa_icon": "fas fa-filter"
         },
-        "output_options": {
-            "title": "Output options",
-            "type": "object",
-            "description": "Options controlling additional pipeline output",
-            "default": "",
-            "properties": {
-                "save_parquet": {
-                    "type": "boolean",
-                    "description": "Also write the summary tables in Parquet format, alongside the default gzipped TSV.",
-                    "fa_icon": "fas fa-table"
-                }
-            },
-            "fa_icon": "fas fa-save"
-        },
         "institutional_config_options": {
             "title": "Institutional config options",
             "type": "object",
@@ -469,9 +460,6 @@
         },
         {
             "$ref": "#/$defs/sourmash_options"
-        },
-        {
-            "$ref": "#/$defs/output_options"
         },
         {
             "$ref": "#/$defs/institutional_config_options"

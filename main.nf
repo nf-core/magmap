@@ -117,6 +117,7 @@ workflow {
         params.bakta_store_dir,
         params.indexes,
         params.genomeset_mode,
+        params.species_preference,
         params.gtdb_metadata,
         params.gtdbtk_metadata,
         params.checkm_metadata,

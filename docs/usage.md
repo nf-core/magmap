@@ -253,7 +253,7 @@ nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.cs
 
 #### Selection of genomes per species
 
-If you mix your own, genomes (specified with `--genomeinfo`) with remote genomes (via `--indexes`), you are likely to encounter genomes from the two sets that represent the same species.
+If you mix your own genomes (specified with `--genomeinfo`) with remote genomes (via `--indexes`), you are likely to encounter genomes from the two sets that represent the same species.
 By default, all genomes will be selected, but this can be modified with the `--species_preference` parameter so that only one genome is selected for each species.
 
 | species_preference | Selection preference                                                |
