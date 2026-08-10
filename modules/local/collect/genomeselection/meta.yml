@@ -10,12 +10,13 @@ input:
       description: |
         Groovy Map containing an identifier for this run
         e.g. [ id:'magmap' ]
-  - genome_sets:
-      type: value
+  - genome_files:
+      type: file
       description: |
-        One entry per genome set (one per sample when --genomeset_mode sample is used,
-        a single entry otherwise), each a map of the genome set id and the accessions in it
-        e.g. [ [ id: 'sample1', accnos: [ 'GCA_000001.1', 'accno2' ] ], ... ]
+        One <sample-or-'all'>.genomes.txt file per genome set (one per sample when
+        --genomeset_mode sample is used, a single file otherwise), each listing that
+        set's genome accessions one per line
+      pattern: "*.genomes.txt"
   - local_accnos:
       type: value
       description: |

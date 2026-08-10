@@ -1,6 +1,6 @@
-// Safely quote a Groovy value as a single-quoted R string literal. Used everywhere
-// below that a sample ID or genome accession (documented as accepting arbitrary text
-// via --genomeinfo) gets embedded into generated R source -- without this, a value
+// Safely quote a Groovy value as a single-quoted R string literal. Used for
+// local_accnos, whose size is bounded by the number of locally-provided genomes
+// (documented as accepting arbitrary text via --genomeinfo) -- without this, a value
 // containing a quote could break the generated R syntax, or worse.
 def rq(v) {
     return "'" + v.toString().replace('\\', '\\\\').replace("'", "\\'") + "'"
@@ -16,8 +16,8 @@ process COLLECT_GENOMESELECTION {
         'community.wave.seqera.io/library/r-base_r-data.table_r-dplyr_r-dtplyr_pruned:a6608bc81b0e6546' }"
 
     input:
-    tuple val(meta), val(genome_sets) // genome_sets: [ [ id: <sample or 'all'>, accnos: [ accno, ... ] ], ... ]
-    val local_accnos                  // [ accno, ... ] -- genomes originating from --genomeinfo that were kept in the run
+    tuple val(meta), path(genome_files) // one <sample-or-'all'>.genomes.txt per genome set, one accession per line
+    val local_accnos                    // [ accno, ... ] -- genomes originating from --genomeinfo that were kept in the run
 
     output:
     tuple val(meta), path("${prefix}.genome_selection_mqc.tsv"), emit: multiqc
@@ -32,22 +32,30 @@ process COLLECT_GENOMESELECTION {
     def local_accnos_r = local_accnos ?
         "c(${local_accnos.collect { a -> rq(a) }.join(', ')})" :
         "character(0)"
-    def genome_set_rows = genome_sets.collectMany { s ->
-        s.accnos.collect { accno -> "${rq(s.id)}, ${rq(accno)}," }
-    }
     """
     #!/usr/bin/env Rscript
 
     library(dplyr)
     library(readr)
     library(tidyr)
+    library(purrr)
+    library(stringr)
 
     local_accnos <- ${local_accnos_r}
 
-    genome_sets <- tribble(
-        ~sample, ~accno,
-        ${genome_set_rows.join('\n        ')}
-    ) %>%
+    # Read the accessions for each genome set from its own <sample-or-'all'>.genomes.txt
+    # file rather than embedding them into this generated script -- this pipeline maps
+    # against potentially large genome collections, and interpolating every accession
+    # into the script text does not scale (in --genomeset_mode sample, the row count is
+    # samples x genomes).
+    genome_sets <- tibble(fname = Sys.glob('*.genomes.txt')) %>%
+        mutate(
+            sample = str_remove(basename(fname), '\\\\.genomes\\\\.txt\$'),
+            accno  = map(fname, readLines)
+        ) %>%
+        unnest(accno) %>%
+        filter(accno != '') %>%
+        select(sample, accno) %>%
         mutate(source = if_else(accno %in% local_accnos, 'local', 'remote'))
 
     write_tsv(genome_sets, "${prefix}.genome_selection.tsv.gz")
@@ -78,7 +86,9 @@ process COLLECT_GENOMESELECTION {
             paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),
             paste0("    dplyr: ", packageVersion('dplyr')),
             paste0("    readr: ", packageVersion('readr')),
-            paste0("    tidyr: ", packageVersion('tidyr'))
+            paste0("    tidyr: ", packageVersion('tidyr')),
+            paste0("    purrr: ", packageVersion('purrr')),
+            paste0("    stringr: ", packageVersion('stringr'))
         ),
         "versions.yml"
     )
@@ -96,6 +106,8 @@ process COLLECT_GENOMESELECTION {
         dplyr: 1.0.7
         readr: 2.0.0
         tidyr: 1.1.3
+        purrr: 0.3.4
+        stringr: 1.4.0
     END_VERSIONS
     """
 }

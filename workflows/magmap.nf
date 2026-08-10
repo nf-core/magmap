@@ -367,15 +367,12 @@ workflow MAGMAP {
 
     //
     // Publish the genome accessions that went into each BBMap index -- one file for the
-    // whole run in 'joint' mode, one per sample in 'sample' mode.
+    // whole run in 'joint' mode, one per sample in 'sample' mode. Reused as the input to
+    // COLLECT_GENOMESELECTION below.
     //
-    CREATE_BBMAP_INDEX.out.genome_accnos
+    ch_genome_accnos_files = CREATE_BBMAP_INDEX.out.genome_accnos
         .collectFile(storeDir: "${outdir}/bbmap") { meta, accnos ->
-            // sort(false) returns a new sorted list rather than sorting in place -- this
-            // same accnos list is also consumed (unsorted) by COLLECT_GENOMESELECTION
-            // below, and Groovy's no-arg List.sort() mutating it in place caused an
-            // intermittent ConcurrentModificationException there.
-            [ "${meta.id}.genomes.txt", accnos.sort(false).join('\n') + '\n' ]
+            [ "${meta.id}.genomes.txt", accnos.sort().join('\n') + '\n' ]
         }
 
     //
@@ -384,10 +381,7 @@ workflow MAGMAP {
     // otherwise.
     //
     COLLECT_GENOMESELECTION(
-        CREATE_BBMAP_INDEX.out.genome_accnos
-            .map { meta, accnos -> [ id: meta.id, accnos: accnos ] }
-            .collect()
-            .map { sets -> [ [ id: 'magmap' ], sets ] },
+        ch_genome_accnos_files.collect().map { files -> [ [ id: 'magmap' ], files ] },
         SOURMASH.out.local_accessions
     )
     ch_multiqc_files = ch_multiqc_files.mix(COLLECT_GENOMESELECTION.out.multiqc.collect { _meta, tsv -> tsv })

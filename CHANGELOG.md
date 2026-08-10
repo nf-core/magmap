@@ -21,6 +21,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#228](https://github.com/nf-core/magmap/pull/228) - Stop `COLLECT_GENOMESELECTION` from embedding every genome accession into the generated R source; read them from the already-published `bbmap/*.genomes.txt` files instead. Also fixes a syntax error when a genome set has no genomes (by @erikrikarddaniel).
 - [#230](https://github.com/nf-core/magmap/pull/230) - Document that genomes reused from `--prokka_store_dir`/`--bakta_store_dir` across runs may have been annotated with different tool versions, not reflected in the collated `versions.yml`/MultiQC report ([#229](https://github.com/nf-core/magmap/issues/229), by @erikrikarddaniel).
 - [#223](https://github.com/nf-core/magmap/pull/223) - Keep the locally-reported Prokka version (`PROKKA_VERSION`) in sync with the vendored module's actual version, and reuse its container instead of a near-duplicate one (by @erikrikarddaniel).
 - [#222](https://github.com/nf-core/magmap/pull/222) - Fix brittle R code in `COLLECT_STATS`/`COLLECT_GENOMESELECTION` ([#218](https://github.com/nf-core/magmap/issues/218), by @erikrikarddaniel).
