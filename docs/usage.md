@@ -218,6 +218,8 @@ For `completeness`/`gtdb`, a genome missing completeness or contamination data i
 > [!NOTE]
 > To make sure you only get one genome per species, you need to make sure that your local database only contains one genome per species and use a remote Sourmash index with one genome per species.
 
+Keeping multiple genomes for the same species (the default, `all`) means reads from that species can map ambiguously across them -- see [Multimapping](#multimapping) below for how the pipeline handles that.
+
 ### Check duplicates
 
 The pipeline will perform validation checks to see if there are any duplicate names among the genomes that the user provides.
@@ -292,6 +294,11 @@ nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.cs
 ```
 
 ### Multimapping
+
+A read can align equally well to more than one target sequence whenever the genome collection contains genomes similar enough that the read could plausibly have come from any of them.
+This happens most often when [`--species_preference`](#preferring-local-or-remote-genomes-for-the-same-species) is left at its default (`all`) and multiple genomes representing the same species are kept side by side; it can also happen across genomes of different species that happen to share conserved regions, regardless of `--species_preference`.
+Choosing a stricter `--species_preference` (`local`, `completeness` or `gtdb`) reduces multimapping by dropping redundant same-species genomes down to one representative, but that comes at the cost of losing whatever strain-level resolution the discarded genomes would have provided -- there's a direct tradeoff between "fewer ambiguous reads" and "keeping enough closely related genomes around to tell strains apart".
+If your downstream analysis cares about that resolution, prefer `--species_preference all` and rely on the settings below to control how the ambiguity itself is handled.
 
 If there are several possible alignments, BBMap align will, by default, assign a read to only one target sequence.
 The pipeline supports all four possible BBMap values for this option:
