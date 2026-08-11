@@ -19,6 +19,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
   - [Filtering genomes](#filter-genomes) - Generate a list of genomes that will be used for the mapping
     - [Sourmash](#sourmash) - Output from Sourmash filtering of genomes.
   - [Prokka](#prokka) - Output from Prokka
+  - [Bakta](#bakta) - Output from Bakta
   - [Genome fetching](#genome-fetching) - Genomes fetched from remote sources
   - [Quantification of genome features](#quantification-of-genome-features)
     - [BBmap](#bbmap) - Output from BBmap
@@ -30,16 +31,19 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
 ## Summary tables
 
 Consistently named and formatted output tables in TSV format ready for further analysis.
+With [`--save_parquet`](https://nf-co.re/magmap/parameters/#save_parquet), the same tables are also written as [Parquet](https://parquet.apache.org/) files, alongside the TSVs.
 
 <details markdown="1">
 <summary>Output files</summary>
 
 - `summary_tables/`
   - `magmap.overall_stats.tsv.gz`: Overall statistics from the pipeline, e.g. number of reads, number of called ORFs, number of reads mapping back to contigs/ORFs etc.
-  - `magmap.<FEATURE>.counts.tsv.gz`: Read counts for `FEATURE` per ORF and sample.
+  - `magmap.<FEATURE>.counts.tsv.gz`: Read counts and TPMs for `FEATURE` per ORF and sample. TPMs are calculated as: `r = count/length; tpm = r/sum(r)` over each sample, i.e. a length-corrected relative abundance.
   - `magmap.genome_metadata.tsv.gz`: Genome metadata from GTDB, GTDB-Tk and CheckM/CheckM2 if provided by the user.
+  - `magmap.genome_selection.tsv.gz`: Per genome set (one per sample when `--genomeset_mode sample` is used, a single set otherwise), which genomes were selected and whether each originated from `--genomeinfo` (local) or was fetched from NCBI (remote).
   - `magmap.genomes2orfs.tsv.gz`: Translation table from ORF identifiers to genome identifiers.
   - `magmap.prokka-annotations.tsv.gz`: Annotation details extracted from GFF files.
+  - `*.parquet`: with `--save_parquet`, a Parquet copy of each of the above (same basename, `.parquet` extension instead of `.tsv.gz`).
 
 </details>
 
@@ -88,38 +92,73 @@ BBduk is built-in tool from BBmap.
 
 The Sourmash program can be used to prefilter genomes so that only genomes likely to be represented among the reads are passed to mapping.
 In addition, Sourmash can be used to fetch remote genomes, see [usage docs](https://nf-co.re/magmap/usage#genome-input).
-No output from Sourmash is enabled by default; the output is only used to select genomes for further processing.
-Use [`--sourmash_save_sourmash`](https://nf-co.re/magmap/parameters/#sourmash_save_sourmash) to copy output files.
+No output from Sourmash is saved to `<outdir>` by default; the output is only used to select genomes for further processing.
+Use [`--sourmash_save_sourmash`](https://nf-co.re/magmap/parameters/#sourmash_save_sourmash) to copy the `*.csv.gz` and `*.sbt.zip` output files (`*.sig` and `*.sig.zip` are not saved under `<outdir>` even with this parameter).
 
 <details markdown="1">
 <summary>Output files</summary>
 
 - `sourmash/`
-  - `*`: Output from Sourmash
+  - `*.csv.gz`: Comma-separated file with Sourmash statistics.
 
 </details>
 
 ### Prokka
 
-[Prokka](https://github.com/tseemann/prokka) will be used to identify ORFs in any genomes for which a gff file is not provided.
+[Prokka](https://github.com/tseemann/prokka) identifies ORFs in genomes for which a gff file is not provided and [`--annotator`](https://nf-co.re/magmap/parameters/#annotator) routes to it -- see [Bakta](#bakta) below for the alternative.
 In addition to calling ORFs (done with Prodigal) Prokka will functionally annotate the ORFs.
-To make it easier to reuse already annotated genomes in other projects, output from Prokka is directed to subdirectories of the directory specified with the [`--prokka_store_dir` parameter](https://nf-co.re/magmap/parameters/#prokka_store_dir) (by default `prokka` in the working directory for the pipeline run).
+To make it easier to reuse already annotated genomes in other projects, output from Prokka is directed to subdirectories of the directory specified with the [`--prokka_store_dir` parameter](https://nf-co.re/magmap/parameters/#prokka_store_dir) (by default `magmap_prokka` in the working directory for the pipeline run).
 Genomes already found in the directory specified, will be skipped by the Prokka step.
 
 <details markdown="1">
 <summary>Output files</summary>
 
-- `prokka/`
-  - `<accno>`
-    - `*.ffn`: nucleotide fasta file output
-    - `*.faa`: amino acid fasta file output
-    - `*.gff`: genome feature file output
+- `magmap_prokka/`
+  - `<accno>/`
+    - `*.ffn.gz`: nucleotide fasta file output
+    - `*.faa.gz`: amino acid fasta file output
+    - `*.gff.gz`: genome feature file output
 
 </details>
+
+### Bakta
+
+[Bakta](https://github.com/oschwengers/bakta) is an alternative to Prokka for genomes lacking a gff, selected with [`--annotator bakta_supported_only` or `--annotator bakta_all`](https://nf-co.re/magmap/parameters/#annotator) -- see [Choosing an annotator: Prokka or Bakta](https://nf-co.re/magmap/usage#choosing-an-annotator-prokka-or-bakta) in the usage docs.
+Bakta is only designed to annotate Bacteria; `bakta_supported_only` keeps Archaea (and genomes it can't classify by domain) on Prokka, while `bakta_all` sends everything to Bakta regardless.
+As with Prokka, output is directed to subdirectories of the directory specified with [`--bakta_store_dir`](https://nf-co.re/magmap/parameters/#bakta_store_dir) (by default `magmap_bakta`), and genomes already found there are skipped.
+The Bakta database itself is downloaded once into [`--bakta_db`](https://nf-co.re/magmap/parameters/#bakta_db) (by default `magmap_bakta_db`) and reused on subsequent runs.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `magmap_bakta/`
+  - `<accno>/`
+    - `*.ffn.gz`: nucleotide fasta file output
+    - `*.faa.gz`: amino acid fasta file output
+    - `*.gff3.gz`: genome feature file output
+    - `*.tsv.gz`, `*.txt.gz`, `*.json.gz`, `*.embl.gz`, `*.gbff.gz`, `*.hypotheticals.*.gz`: Bakta's other native output formats
+
+</details>
+
+:::warning
+`--prokka_store_dir`/`--bakta_store_dir` are reused across pipeline runs -- genomes already found there are skipped rather than re-annotated (see above).
+This means genomes accumulated in a store directory over time may have been annotated with _different_ versions of Prokka or Bakta, even though only a single, current version is reported in the collated `versions.yml`/MultiQC report.
+There is currently no automated check or report of per-genome annotation tool versions across a genome library (see [issue #229](https://github.com/nf-core/magmap/issues/229)).
+If consistent annotation-tool versions across your whole genome collection matters, either start from an empty store directory, or track outside the pipeline which version annotated which genome.
+:::
 
 ### Genome fetching
 
 When the pipeline is run with [`--skip_sourmash false`](https://nf-co.re/magmap/parameters/#skip_sourmash) and one or more index files passed to [`--indexes`](https://nf-co.re/magmap/parameters/#indexes), remote genomes will be identified and downloaded to the directory specified by [`--genome_store_dir`](https://nf-co.re/magmap/parameters/#genome_store_dir) (by default `genomes` in the working directory for the pipeline run).
+The exact behaviour is affected also by [--genomeset_mode](https://nf-co.re/magmap/parameters/#genomeset_mode) and [--species_preference](https://nf-co.re/magmap/parameters/#species_preference).
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `bbmap/`
+  - `*.genomes.txt`: Selected genomes, either for all samples or per sample depending on the `--genomeset_mode` parameter setting.
+
+</details>
 
 ### Quantification of genome features
 
@@ -127,8 +166,8 @@ When the pipeline is run with [`--skip_sourmash false`](https://nf-co.re/magmap/
 
 [BBMap](https://sourceforge.net/projects/bbmap/) is a splice-aware global aligner for DNA and RNA sequencing reads. It provides detailed alignment statistics including mapped read counts, insert size distribution, and error rates. For further reading and documentation see the [BBMap documentation](https://jgi.doe.gov/data-and-tools/software-tools/bbtools/bb-tools-user-guide/bbmap-guide/).
 
-Only logs are saved by default from the BBmap step.
-To save the `.bam` files, use `--bbmap_save_bam` and to save the index, use `--bbmap_save_index`.
+Only logs and a manifest of the genome accessions included in each index are saved by default from the BBmap step.
+To save the `.bam` files, use `--bbmap_save_bam`; to save the index, use `--bbmap_save_index`.
 
 <details markdown="1">
 <summary>Output files</summary>
@@ -138,6 +177,7 @@ To save the `.bam` files, use `--bbmap_save_bam` and to save the index, use `--b
     - `<SAMPLE>.bam`: bam file for `SAMPLE`
   - `logs/`
     - `<SAMPLE>.bbmap.log`: BBmap log for `SAMPLE`
+  - `<SAMPLE or "all">.genomes.txt`: genome accessions included in the BBMap index used for `SAMPLE` (`--genomeset_mode sample`) or for the whole run (`all`, `--genomeset_mode joint`)
 
 </details>
 
@@ -181,7 +221,7 @@ To save the `.bam` files, use `--bbmap_save_bam` and to save the index, use `--b
 
 </details>
 
-[Nextflow](https://www.nextflow.io/docs/latest/tracing.html) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
+[Nextflow](https://docs.seqera.io/platform-cloud/reports/overview) provides excellent functionality for generating various reports relevant to the running and execution of the pipeline. This will allow you to troubleshoot errors with the running of the pipeline, and also provide you with other information such as launch commands, run times and resource usage.
 
 ### MultiQC
 
@@ -202,3 +242,5 @@ Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQ
 :::note
 The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
 :::
+
+The report also includes a "Genome selection" table with the number of local (user-provided) and remote (NCBI-fetched) genomes selected per genome set -- one row per sample when `--genomeset_mode sample` is used, a single row for the whole run otherwise. See `summary_tables/magmap.genome_selection.tsv.gz` for the full per-genome breakdown.

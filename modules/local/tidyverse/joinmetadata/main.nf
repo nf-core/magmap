@@ -72,19 +72,26 @@ process TIDYVERSE_JOINMETADATA {
     """
     if ( checkm_metadata ) {
         read_checkm_metadata = """
-        checkm_cols = c('# contigs' = NA_integer_, 'Genome size (bp)' = NA_integer_, 'Strain heterogeneity' = NA_integer_)
-        checkm_metadata <- read_tsv(
-            c('${checkm_metadata.join('\', \'')}'),
-            col_types = cols(.default = col_character())
-        ) %>%
-            tibble::add_column(!!!checkm_cols[setdiff(names(checkm_cols), names(.))]) %>%
-            rename(accno = 1) %>%
-            transmute(
-                accno,
-                checkm_completeness = as.integer(Completeness), checkm_contamination = as.integer(Contamination),
-                checkm_strain_heterogeneity = as.integer(`Strain heterogeneity`),
-                contig_count = as.integer(`# contigs`), genome_size = as.integer(`Genome size (bp)`)
-            )
+        checkm_cols = c(
+             '# contigs' = NA_integer_,
+             'Genome size (bp)' = NA_integer_, 'Genome_Size' = NA_integer_,
+             'Strain heterogeneity' = NA_real_,
+             'contig_count' = NA_integer_
+        )
+
+        rcheckm <- function(fname) {
+            read_tsv(fname, col_types = cols(.default = col_character())) %>%
+                tibble::add_column(!!!checkm_cols[setdiff(names(checkm_cols), names(.))]) %>%
+                    rename(accno = 1) %>%
+                    transmute(
+                        accno,
+                        checkm_completeness = as.double(Completeness), checkm_contamination = as.double(Contamination),
+                        checkm_strain_heterogeneity = as.double(`Strain heterogeneity`),
+                        contig_count = as.integer(`# contigs`),
+                        genome_size = ifelse(is.na(Genome_Size), as.integer(`Genome size (bp)`), as.integer(Genome_Size))
+                )
+        }
+        checkm_metadata <- purrr::map(c('${checkm_metadata.join('\', \'')}'), rcheckm) %>% purrr::reduce(union)
         """
     }
 
@@ -95,6 +102,7 @@ process TIDYVERSE_JOINMETADATA {
     library(dplyr)
     library(tidyr)
     library(stringr)
+    library(purrr)
 
     genomes <- read_tsv('${genomes}', col_types = 'c', col_names = c('accno'))
 
@@ -129,7 +137,8 @@ process TIDYVERSE_JOINMETADATA {
             paste0("    readr: ", packageVersion('readr')),
             paste0("    dplyr: ", packageVersion('dplyr')),
             paste0("    tidyr: ", packageVersion('tidyr')),
-            paste0("    stringr: ", packageVersion('stringr'))
+            paste0("    stringr: ", packageVersion('stringr')),
+            paste0("    purrr: ", packageVersion('purrr'))
         ),
         "versions.yml"
     )

@@ -1,0 +1,60 @@
+Changes in component 'nf-core/bakta/baktadbdownload'
+Changes in 'bakta/baktadbdownload/meta.yml':
+--- modules/nf-core/bakta/baktadbdownload/meta.yml
++++ modules/nf-core/bakta/baktadbdownload/meta.yml
+@@ -17,7 +17,12 @@
+       licence:
+         - "GPL v3"
+       identifier: biotools:bakta
+-input: []
++input:
++  - - trigger:
++        type: string
++        description: |
++          Any value; used only to gate execution on there being something to
++          annotate (local patch, not part of the upstream module)
+ output:
+   db:
+     - db*:
+
+Changes in 'bakta/baktadbdownload/main.nf':
+--- modules/nf-core/bakta/baktadbdownload/main.nf
++++ modules/nf-core/bakta/baktadbdownload/main.nf
+@@ -6,9 +6,11 @@
+         ? 'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/50/50b75335f6394ae83fd05f364db27ee2eb75f4170e3525bb2aea47ad717a9e64/data'
+         : 'community.wave.seqera.io/library/bakta_diamond:7830b94718da4f96'}"
+ 
++    input:
++    val trigger // any value; used only to gate execution on there being something to annotate -- see subworkflows/local/bakta
++
+     output:
+     path "db*", emit: db
+-    tuple val("${task.process}"), val('bakta'), eval("bakta --version 2>&1 | sed 's/.*bakta //'"), emit: versions_bakta, topic: versions
+ 
+     when:
+     task.ext.when == null || task.ext.when
+
+'modules/nf-core/bakta/baktadbdownload/environment.yml' is unchanged
+'modules/nf-core/bakta/baktadbdownload/tests/nextflow.config' is unchanged
+'modules/nf-core/bakta/baktadbdownload/tests/main.nf.test.snap' is unchanged
+Changes in 'bakta/baktadbdownload/tests/main.nf.test':
+--- modules/nf-core/bakta/baktadbdownload/tests/main.nf.test
++++ modules/nf-core/bakta/baktadbdownload/tests/main.nf.test
+@@ -15,6 +15,7 @@
+         when {
+             process {
+                 """
++                input[0] = 1
+                 """
+             }
+         }
+@@ -36,6 +37,7 @@
+         when {
+             process {
+                 """
++                input[0] = 1
+                 """
+             }
+         }
+
+************************************************************

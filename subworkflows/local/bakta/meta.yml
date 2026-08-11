@@ -1,0 +1,41 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "bakta"
+description: Download (or reuse) a Bakta database and annotate genomes lacking a GFF with Bakta
+keywords:
+  - annotation
+  - bakta
+  - genomes
+components:
+  - bakta/bakta
+  - bakta/baktadbdownload
+  - bakta/version
+input:
+  - ch_fasta:
+      type: file
+      description: |
+        Genomes without a GFF to annotate with Bakta
+        Structure: [ val(meta), path(fasta) ]
+      pattern: "*.{fa,fasta,fna}"
+output:
+  - fna:
+      type: file
+      description: |
+        Bakta's nucleotide FASTA output per genome
+        Structure: [ val(meta), path(fna) ]
+      pattern: "*.fna"
+  - gff:
+      type: file
+      description: |
+        Bakta's GFF3 annotation per genome
+        Structure: [ val(meta), path(gff3) ]
+      pattern: "*.gff3"
+  - txt:
+      type: file
+      description: |
+        Bakta's annotation summary per genome
+        Structure: [ val(meta), path(txt) ]
+      pattern: "*.txt"
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"

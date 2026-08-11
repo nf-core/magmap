@@ -24,6 +24,10 @@
 
 > Seemann T. Prokka: rapid prokaryotic genome annotation Bioinformatics 2014 Jul 15;30(14):2068-9. PMID:24642063
 
+- [Bakta](https://github.com/oschwengers/bakta)
+
+> Schwengers O., Jelonek L., Dieckmann M. A., Beyvers S., Blom J., Goesmann A. Bakta: rapid and standardized annotation of bacterial genomes via alignment-free sequence identification. Microbial Genomics, 2021;7(11):000685. doi: 10.1099/mgen.0.000685. PMID: 34739369; PMCID: PMC8743544.
+
 - [BBmap](https://sourceforge.net/projects/bbmap/)
 
 - [samtools](http://www.htslib.org)
@@ -55,6 +59,10 @@
 - [data.table](https://CRAN.R-project.org/package=data.table)
 
 > Barrett T, Dowle M, Srinivasan A, Gorecki J, Chirico M, Hocking T, Schwendinger B, Krylov I (2025): data.table: Extension of `data.frame`. doi:10.32614/CRAN.package.data.table
+
+- [DuckDB](https://duckdb.org)
+
+> Raasveldt M, Mühleisen H. DuckDB: an Embeddable Analytical Database. In: Proceedings of the 2019 International Conference on Management of Data (SIGMOD '19). 2019 Jun 25:1981-1984. doi: 10.1145/3299869.3320212.
 
 - [MultiQC](https://pubmed.ncbi.nlm.nih.gov/27312411/)
 

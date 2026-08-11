@@ -10,8 +10,8 @@
 [![GitHub Actions Linting Status](https://github.com/nf-core/magmap/actions/workflows/linting.yml/badge.svg)](https://github.com/nf-core/magmap/actions/workflows/linting.yml)[![AWS CI](https://img.shields.io/badge/CI%20tests-full%20size-FF9900?labelColor=000000&logo=Amazon%20AWS)](https://nf-co.re/magmap/results)[![Cite with Zenodo](http://img.shields.io/badge/DOI-10.5281/zenodo.17752714-1073c8?labelColor=000000)](https://doi.org/10.5281/zenodo.17752714)
 [![nf-test](https://img.shields.io/badge/unit_tests-nf--test-337ab7.svg)](https://www.nf-test.com)
 
-[![Nextflow](https://img.shields.io/badge/version-%E2%89%A525.10.4-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
-[![nf-core template version](https://img.shields.io/badge/nf--core_template-4.0.2-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/4.0.2)
+[![Nextflow](https://img.shields.io/badge/version-%E2%89%A526.04.0-green?style=flat&logo=nextflow&logoColor=white&color=%230DC09D&link=https%3A%2F%2Fnextflow.io)](https://www.nextflow.io/)
+[![nf-core template version](https://img.shields.io/badge/nf--core_template-4.1.0-green?style=flat&logo=nfcore&logoColor=white&color=%2324B064&link=https%3A%2F%2Fnf-co.re)](https://github.com/nf-core/tools/releases/tag/4.1.0)
 [![run with conda](http://img.shields.io/badge/run%20with-conda-3EB049?labelColor=000000&logo=anaconda)](https://docs.conda.io/en/latest/)
 [![run with docker](https://img.shields.io/badge/run%20with-docker-0db7ed?labelColor=000000&logo=docker)](https://www.docker.com/)
 [![run with singularity](https://img.shields.io/badge/run%20with-singularity-1d355c.svg?labelColor=000000)](https://sylabs.io/docs/)
@@ -36,12 +36,13 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 2. Quality trimming and adapters removal for raw reads ([`Trim Galore!`](https://www.bioinformatics.babraham.ac.uk/projects/trim_galore/))
 3. Filter reads with [`BBduk`](https://sourceforge.net/projects/bbmap/)
 4. Select reference genomes based on k-mer signatures in reads with [`sourmash`](https://sourmash.readthedocs.io/en/latest/)
-5. Quantification of genes identified in selected reference genomes:
+5. Annotate selected genomes lacking a gff file with [`Prokka`](https://github.com/tseemann/prokka) or [`Bakta`](https://github.com/oschwengers/bakta) ([`--annotator`](https://nf-co.re/magmap/parameters/#annotator))
+6. Quantification of genes identified in selected reference genomes:
    1. Generate index of assembly ([`BBmap index`](https://sourceforge.net/projects/bbmap/))
    2. Mapping cleaned reads to the assembly for quantification ([`BBmap`](https://sourceforge.net/projects/bbmap/))
    3. Get raw counts per each gene present in the genomes ([`Featurecounts`](http://subread.sourceforge.net)) -> TSV table with collected featurecounts output
-6. Summary statistics table. Collect_stats.R
-7. Overall summary of tools output, including QC for reads before and after trimming ([`MultiQC`](http://multiqc.info/))
+7. Summary statistics table. Collect_stats.R
+8. Overall summary of tools output, including QC for reads before and after trimming ([`MultiQC`](http://multiqc.info/))
 
 ## Quick Start
 

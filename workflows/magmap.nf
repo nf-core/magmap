@@ -4,6 +4,7 @@
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
 
+include { BAKTA                                   } from '../subworkflows/local/bakta'
 include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core/bam_sort_stats_samtools'
 include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align'
 include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk'
@@ -13,8 +14,10 @@ include { GENOMES2ORFS                           } from '../modules/local/genome
 include { CATPROKKATSVS        	                 } from '../modules/local/catprokkatsvs'
 include { CHECK_DUPLICATES                       } from '../modules/local/check_duplicates'
 include { COLLECT_FEATURECOUNTS                  } from '../modules/local/collect/featurecounts'
+include { COLLECT_GENOMESELECTION                } from '../modules/local/collect/genomeselection'
 include { COLLECT_STATS                          } from '../modules/local/collect/stats'
 include { CREATE_BBMAP_INDEX                     } from '../subworkflows/local/create_bbmap_index'
+include { DUCKDB_TABLE2PARQUET                   } from '../modules/nf-core/duckdb/table2parquet'
 include { FASTQC                                 } from '../modules/nf-core/fastqc'
 include { FASTQC_TRIMGALORE                      } from '../subworkflows/local/fastqc_trimgalore'
 include { methodsDescriptionText                 } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
@@ -24,12 +27,14 @@ include { paramsSummaryMultiqc                   } from '../subworkflows/nf-core
 include { PIPELINE_COMPLETION                    } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { PIPELINE_INITIALISATION                } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { PROKKA                                 } from '../modules/nf-core/prokka'
+include { PROKKA_VERSION                         } from '../modules/local/prokka_version'
 include { PROKKAGFF2TSV                          } from '../modules/local/prokkagff2tsv'
 include { RENAME_CONTIGS                         } from '../modules/local/rename_contigs'
 include { softwareVersionsToYAML                 } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { SOURMASH                               } from '../subworkflows/local/sourmash'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts'
 include { TIDYVERSE_JOINMETADATA                 } from '../modules/local/tidyverse/joinmetadata/'
+include { TIDYVERSE_SELECTANNOTATOR              } from '../modules/local/tidyverse/selectannotator/'
 include { validateInputSamplesheet               } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 
 /*
@@ -51,12 +56,15 @@ workflow MAGMAP {
     ch_gtdbtk_metadata          // channel: GTDB-Tk metadata files
     ch_checkm_metadata          // channel: CheckM/CheckM2 metadata files
     genomeset_mode              //  string: Either 'joint' for mapping samples against all genomes, or 'sample' to map to sample-specific sets
+    species_preference          //  string: 'all' to select all genomes for a species or 'local', 'completeness' or 'gtdb' to prefer one according to different criteria
+    annotator                   //  string: 'prokka', 'bakta_supported_only' or 'bakta_all' -- which tool(s) to annotate genomes lacking a GFF with
     skip_sourmash               // boolean: run Sourmash or not
     sourmash_ksize              // integer
     ch_features                 // channel: list of feature types to call
     skip_fastqc                 // boolean
     skip_qc                     // boolean
     skip_trimming               // boolean
+    save_parquet                // boolean: also write summary tables as Parquet
     multiqc_config
     multiqc_logo
     multiqc_methods_description
@@ -193,6 +201,10 @@ workflow MAGMAP {
         index_list,
         ch_genomes_post_renaming,
         ch_remote_genome_sources,
+        species_preference,
+        ch_gtdb_metadata,
+        ch_gtdbtk_metadata,
+        ch_checkm_metadata,
         sourmash_ksize,
         skip_sourmash
     )
@@ -213,19 +225,76 @@ workflow MAGMAP {
     )
 
     //
-    // MODULE: Prokka - get gff for all genomes that lack it
+    // MODULE: Prokka/Bakta - get gff for all genomes that lack it
     //
 
-    // Find genomes without gff file, and pass them to Prokka
+    // Find genomes without gff file, and split them between Prokka and Bakta according to
+    // --annotator and, for 'bakta_supported_only', each genome's GTDB domain classification
     ch_no_gff = ch_genomes
         .filter { g -> ! g.genome_gff }
         .map { g -> [ [ id: g.accno ], g.genome_fna ] }
 
-    PROKKA(ch_no_gff, [], [])
+    if ( annotator == 'prokka' ) {
+        ch_no_gff_prokka = ch_no_gff
+        ch_no_gff_bakta  = channel.empty()
+    } else {
+        TIDYVERSE_SELECTANNOTATOR(
+            ch_no_gff.collectFile(name: 'no_gff_accessions.txt', newLine: true) { meta, _fna -> meta.id },
+            TIDYVERSE_JOINMETADATA.out.genome_metadata,
+            annotator
+        )
+
+        // Warn (once) about genomes bakta_supported_only couldn't classify by domain and
+        // therefore routed to Prokka rather than Bakta
+        TIDYVERSE_SELECTANNOTATOR.out.unclassified_accessions
+            .splitText() { it.trim() }
+            .filter { it }
+            .collect()
+            .subscribe { accnos ->
+                if ( accnos ) {
+                    log.warn "--annotator ${annotator}: could not determine a GTDB domain for ${accnos.size()} genome(s) lacking a GFF (${accnos.join(', ')}) -- routed to Prokka instead of Bakta. Provide --gtdb_metadata/--gtdbtk_metadata covering these genomes to use Bakta for them."
+                }
+            }
+
+        ch_no_gff_keyed = ch_no_gff.map { meta, fna -> [ meta.id, meta, fna ] }
+
+        ch_no_gff_bakta = ch_no_gff_keyed
+            .join(
+                TIDYVERSE_SELECTANNOTATOR.out.bakta_accessions
+                    .splitText() { it.trim() }
+                    .filter { it }
+                    .map { accno -> [ accno, true ] }
+            )
+            .map { _accno, meta, fna, _kept -> [ meta, fna ] }
+
+        ch_no_gff_prokka = ch_no_gff_keyed
+            .join(
+                TIDYVERSE_SELECTANNOTATOR.out.prokka_accessions
+                    .splitText() { it.trim() }
+                    .filter { it }
+                    .map { accno -> [ accno, true ] }
+            )
+            .map { _accno, meta, fna, _kept -> [ meta, fna ] }
+    }
+
+    PROKKA(ch_no_gff_prokka, [], [])
     ch_multiqc_files = ch_multiqc_files.mix(PROKKA.out.log.collect{ _meta, log -> log })
+    if ( annotator != 'bakta_all' ) {
+        PROKKA_VERSION()
+    }
+
+    ch_bakta_fna = channel.empty()
+    ch_bakta_gff = channel.empty()
+    if ( annotator != 'prokka' ) {
+        BAKTA(ch_no_gff_bakta)
+        ch_bakta_fna = BAKTA.out.fna
+        ch_bakta_gff = BAKTA.out.gff
+        ch_multiqc_files = ch_multiqc_files.mix(BAKTA.out.txt.collect{ _meta, txt -> txt })
+    }
 
     PROKKAGFF2TSV(
         ch_genomes.filter { g -> g.genome_gff }.map { g -> [ [ id: g.accno ], g.genome_gff ] }
+            .mix(ch_bakta_gff)
     )
 
     CATPROKKATSVS(
@@ -238,12 +307,17 @@ workflow MAGMAP {
             .map { t -> [ [ id: 'magmap' ], t ] }
     )
 
-    // Mix genome entries that were not sent to Prokka with those that were not
+    // Mix genome entries that were not sent to Prokka/Bakta with those that were
     ch_collected_genomes = ch_genomes
         .filter { g -> g.genome_gff }
         .mix(
             PROKKA.out.fna
                 .join(PROKKA.out.gff)
+                .map { meta, fna, gff -> [ accno: meta.id  , genome_fna: fna, genome_gff: gff ] }
+        )
+        .mix(
+            ch_bakta_fna
+                .join(ch_bakta_gff)
                 .map { meta, fna, gff -> [ accno: meta.id  , genome_fna: fna, genome_gff: gff ] }
         )
 
@@ -253,8 +327,9 @@ workflow MAGMAP {
         //
         CREATE_BBMAP_INDEX(
             ch_collected_genomes
-                .collect { it -> it.genome_fna }
-                .map { it -> [ [ id: 'all' ], it ] }
+                .map { it -> [ it.accno, it.genome_fna ] }
+                .toList()
+                .map { pairs -> [ [ id: 'all' ], pairs.collect { it[0] }, pairs.collect { it[1] } ] }
         )
 
         //
@@ -266,7 +341,7 @@ workflow MAGMAP {
         ch_fnas_to_index = SOURMASH.out.sample_filtered_genomes
             .map { g -> [ [ accno: g[1].accno ], [ id: g[0].id, accno: g[1].accno ] ] }
             .combine(ch_collected_genomes.map { g -> [ [ accno: g.accno ], g ] }, by: 0)
-            .map { g -> [ [ id: g[1].id ], g[2].genome_fna ] }
+            .map { g -> [ [ id: g[1].id ], g[2].accno, g[2].genome_fna ] }
             .groupTuple()
 
         //
@@ -289,6 +364,27 @@ workflow MAGMAP {
         )
         ch_multiqc_files = ch_multiqc_files.mix(BBMAP_ALIGN.out.log.collect { _meta, log -> log })
     }
+
+    //
+    // Publish the genome accessions that went into each BBMap index -- one file for the
+    // whole run in 'joint' mode, one per sample in 'sample' mode. Reused as the input to
+    // COLLECT_GENOMESELECTION below.
+    //
+    ch_genome_accnos_files = CREATE_BBMAP_INDEX.out.genome_accnos
+        .collectFile(storeDir: "${outdir}/bbmap") { meta, accnos ->
+            [ "${meta.id}.genomes.txt", accnos.sort().join('\n') + '\n' ]
+        }
+
+    //
+    // MODULE: Summarize local vs remote genome selection for the MultiQC report -- one
+    // row per sample when genomeset_mode is 'sample', a single row for the whole run
+    // otherwise.
+    //
+    COLLECT_GENOMESELECTION(
+        ch_genome_accnos_files.collect().map { files -> [ [ id: 'magmap' ], files ] },
+        SOURMASH.out.local_accessions
+    )
+    ch_multiqc_files = ch_multiqc_files.mix(COLLECT_GENOMESELECTION.out.multiqc.collect { _meta, tsv -> tsv })
 
     //
     // MODULE: Concatenate gff files
@@ -357,6 +453,21 @@ workflow MAGMAP {
     // Collect statistics from the pipeline
     //
     COLLECT_STATS(ch_collect_stats.map { s -> s + [[]] }) // The last [[]] is to create a value for the `mergetab` that we have in metatdenovo (which shares the swf)
+
+    //
+    // MODULE: Also write the summary tables as Parquet
+    //
+    if ( save_parquet ) {
+        DUCKDB_TABLE2PARQUET(
+            TIDYVERSE_JOINMETADATA.out.genome_metadata
+                .mix(COLLECT_GENOMESELECTION.out.full_table.map { _meta, tsv -> tsv })
+                .mix(GENOMES2ORFS.out.genomes2orfs.map { _meta, tsv -> tsv })
+                .mix(CATPROKKATSVS.out.tsv.map { _meta, tsv -> tsv })
+                .mix(COLLECT_FEATURECOUNTS.out.counts.map { _meta, tsv -> tsv })
+                .mix(COLLECT_STATS.out.overall_stats)
+                .map { tsv -> [ [ id: tsv.name.replaceAll(/\.tsv(\.gz)?$/, '') ], tsv ] }
+        )
+    }
 
     //
     // Collate and save software versions

@@ -15,4 +15,9 @@ null/
 kraken2_databases/
 magmap_genomes
 magmap_prokka
+magmap_bakta
+magmap_bakta_db
+magmap_bakta_db_test
+genomes/
+*.Rproj
 .positai
