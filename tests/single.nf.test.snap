@@ -1,7 +1,7 @@
 {
     "-profile test_single": {
         "content": [
-            58,
+            62,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -80,6 +80,11 @@
                 },
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
+                },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "readr": "2.1.5",
+                    "dplyr": "1.1.4"
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -240,7 +245,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-07-28T12:41:32.068806945",
+        "timestamp": "2026-08-12T14:49:02.777306325",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
