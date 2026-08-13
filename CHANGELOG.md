@@ -9,6 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#238](https://github.com/nf-core/magmap/pull/238) - Split the genome-accession join out of `COLLECT_FEATURECOUNTS` into a new local module, `TIDYVERSE_JOINFEATURECOUNTSACCNO`, in preparation for sharing feature-count aggregation logic with other pipelines ([#237](https://github.com/nf-core/magmap/issues/237), by @erikrikarddaniel).
+
 ### `Fixed`
 
 ### `Dependencies`
