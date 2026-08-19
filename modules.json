@@ -45,6 +45,11 @@
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
                         "installed_by": ["modules"]
                     },
+                    "custom/collectstats": {
+                        "branch": "master",
+                        "git_sha": "23e432f42c1f2aea64898b48839ebf7b925e4e8a",
+                        "installed_by": ["modules"]
+                    },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
                         "git_sha": "eac429d4c67ac5114ce7d4287d460d8f05fd9fab",

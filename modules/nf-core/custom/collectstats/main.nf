@@ -1,27 +1,26 @@
 // Safely quote a Groovy value as a single-quoted R string literal. Used everywhere
-// below that a sample ID or other user-controlled value (e.g. from --genomeinfo,
-// documented as accepting arbitrary text) gets embedded into generated R source --
-// without this, a value containing a quote could break the generated R syntax, or
-// worse.
+// below that a sample ID or other user-controlled value gets embedded into generated
+// R source -- without this, a value containing a quote could break the generated R
+// syntax, or worse.
 def rq(v) {
     return "'" + v.toString().replace('\\', '\\\\').replace("'", "\\'") + "'"
 }
 
-process COLLECT_STATS {
+process CUSTOM_COLLECTSTATS {
     tag "$meta.id"
     label 'process_medium'
 
     conda "${moduleDir}/environment.yml"
-    container "${ workflow.containerEngine == 'singularity' && !task.ext.singularity_pull_docker_container ?
-        'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/a0/a04c5424ce6fbf346430d99ae9f72d0bbb90e3a5cf4096df32fc1716f03973a4/data' :
-        'community.wave.seqera.io/library/r-base_r-data.table_r-dplyr_r-dtplyr_pruned:a6608bc81b0e6546' }"
+    container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
+?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/9d/9d1a8065dcebe35c513db5eb4a5237795aa4bae4756086f3c4319a820a8a647c/data'
+:         'community.wave.seqera.io/library/custom_collectstats:c1f477e6251c36bb' }"
 
     input:
-    tuple val(meta), val(samples), path(trimlogs), path(bblogs), path(idxstats), path(fcs), path(mergetab)
+    tuple val(meta), val(samples_meta), path(trimlogs), path(bblogs), path(idxstats), path(fcs), path(mergetab)
 
     output:
-    path "${outfile}"  , emit: overall_stats
-    path "versions.yml", emit: versions, topic: versions
+    tuple val(meta), path("${outfile}"), emit: overall_stats
+    path "versions.yml"                , emit: versions, topic: versions
 
     when:
     task.ext.when == null || task.ext.when
@@ -32,10 +31,10 @@ process COLLECT_STATS {
 
     def read_trimlogs = ""
     if ( trimlogs ) {
-        def se_trimlogs = samples
+        def se_trimlogs = samples_meta
             .findAll { s -> s.single_end }
             .collect { s -> "${rq(s.id)}, ${rq(s.id + '.*_trimming_report.txt')}, 1," }
-        def pe_trimlogs = samples
+        def pe_trimlogs = samples_meta
             .findAll { s -> ! s.single_end }
             .collect { s -> "${rq(s.id)}, ${rq(s.id + '_1.*_trimming_report.txt')}, 2," }
 
@@ -81,23 +80,12 @@ process COLLECT_STATS {
     #!/usr/bin/env Rscript
 
     # All read counts joined into this table (n_post_trimming, n_non_contaminated,
-    # idxs_n_mapped/idxs_n_unmapped, and the featureCounts columns) use the same unit:
-    # individual reads, with both mates of a pair counted separately -- none of them
-    # count fragments/pairs as a single unit, so the columns are directly comparable.
-    # Confirmed empirically for each source:
-    #   - n_post_trimming: Trim Galore's PE trimming report is per-mate-file, so only
-    #     the R1 report is read and multiplied by 2 (see 'mult' below) to reconstruct
-    #     the total across both mates.
-    #   - n_non_contaminated: BBDuk's "Result:" line already reports both mates combined.
-    #   - idxs_n_mapped/idxs_n_unmapped: samtools idxstats counts mapped read-segments,
-    #     i.e. each mate separately.
-    #   - featureCounts columns: SUBREAD_FEATURECOUNTS auto-adds '-p' for paired-end
-    #     samples (based on meta.single_end), but since '--countReadPairs' is NOT also
-    #     passed, Subread (2.0.3+) still counts at the individual-read level -- '-p'
-    #     alone only affects pairing validation, not the counted unit. Adding
-    #     '--countReadPairs' later (e.g. as a seemingly-modernizing change) would
-    #     silently switch this to fragment/pair counting and break comparability with
-    #     the other columns above.
+    # idxs_n_mapped/idxs_n_unmapped, and the featureCounts columns) are expected to use
+    # the same unit -- individual reads, with both mates of a pair counted separately,
+    # never fragments/pairs as a single unit -- so the columns stay directly comparable.
+    # This depends on how the upstream trimming/decontamination/alignment/counting steps
+    # are invoked (e.g. whether a paired-end-aware counting tool is asked to count reads
+    # or fragments), not on anything this module itself controls.
 
     library(dplyr)
     library(readr)
@@ -105,7 +93,7 @@ process COLLECT_STATS {
     library(tidyr)
     library(stringr)
 
-    start    <- tibble(sample = c(${samples.collect { s -> rq(s.id) }.join(', ')}))
+    start    <- tibble(sample = c(${samples_meta.collect { s -> rq(s.id) }.join(', ')}))
 
     ${read_trimlogs}
 
@@ -126,24 +114,16 @@ process COLLECT_STATS {
         unnest(d) %>%
         select(-fname)
 
-    # Column types given by name rather than position (contrast the old
-    # col_types = 'ccciicicid'): this only depends on COLLECT_FEATURECOUNTS's output
-    # columns existing and being correctly typed, not also on their order, so a future
-    # column reorder there won't silently misparse here.
+    # Column types given by name rather than position: this only depends on the
+    # feature-counts input's columns existing and being correctly typed, not also on
+    # their order, so a future column reorder upstream won't silently misparse here.
     counts <- read_tsv(
         c('${fcs.join("', '")}'),
         id = 'fname',
         col_types = cols(
-            accno  = col_character(),
-            orf    = col_character(),
-            chr    = col_character(),
-            start  = col_integer(),
-            end    = col_integer(),
-            strand = col_character(),
-            length = col_integer(),
-            sample = col_character(),
-            count  = col_integer(),
-            tpm    = col_double()
+            .default = col_guess(),
+            sample   = col_character(),
+            count    = col_integer()
         )
     ) %>%
         mutate(feature = str_replace(fname, '^[^.]+\\\\.([^.]+)\\\\..*', '\\\\1')) %>%
@@ -162,7 +142,7 @@ process COLLECT_STATS {
     }
     if ( nrow(bbduk) == 0 ) bbduk <- bbduk %>% select(sample)
 
-    # Add in stats from taxonomy and function
+    # Add in stats from taxonomy and function, if provided
     ${read_mergetab}
 
     # Write output
