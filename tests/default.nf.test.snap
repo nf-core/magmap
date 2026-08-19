@@ -80,6 +80,11 @@
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
                 },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "readr": "2.1.5",
+                    "dplyr": "1.1.4"
+                },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
                     "readr": "2.1.5",
@@ -250,7 +255,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-08-10T08:55:31.762733664",
+        "timestamp": "2026-08-12T13:06:17.174566335",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

@@ -1,7 +1,7 @@
 {
     "species_preference: gtdb": {
         "content": [
-            69,
+            70,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -92,6 +92,11 @@
                 },
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
+                },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "readr": "2.1.5",
+                    "dplyr": "1.1.4"
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -211,7 +216,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-28T15:42:32.472230094",
+        "timestamp": "2026-08-12T23:49:55.75957698",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -219,7 +224,7 @@
     },
     "species_preference: gtdb, genomeset_mode: sample": {
         "content": [
-            73,
+            74,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -310,6 +315,11 @@
                 },
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
+                },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "readr": "2.1.5",
+                    "dplyr": "1.1.4"
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -465,7 +475,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-28T16:11:32.79507198",
+        "timestamp": "2026-08-13T00:07:24.4351464",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -473,7 +483,7 @@
     },
     "species_preference: completeness, genomeset_mode: sample": {
         "content": [
-            71,
+            72,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -564,6 +574,11 @@
                 },
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
+                },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "readr": "2.1.5",
+                    "dplyr": "1.1.4"
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -722,7 +737,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-28T15:22:42.957637443",
+        "timestamp": "2026-08-12T23:27:29.216475608",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -730,7 +745,7 @@
     },
     "species_preference: local": {
         "content": [
-            64,
+            65,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -821,6 +836,11 @@
                 },
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
+                },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "readr": "2.1.5",
+                    "dplyr": "1.1.4"
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -940,7 +960,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-28T14:16:53.101572204",
+        "timestamp": "2026-08-12T18:51:50.574253841",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -948,7 +968,7 @@
     },
     "completeness": {
         "content": [
-            67,
+            68,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -1039,6 +1059,11 @@
                 },
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
+                },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "readr": "2.1.5",
+                    "dplyr": "1.1.4"
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -1158,7 +1183,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-28T14:58:52.127269608",
+        "timestamp": "2026-08-12T23:03:33.017359592",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -1166,7 +1191,7 @@
     },
     "species_preference: local, genomeset_mode: sample": {
         "content": [
-            68,
+            69,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -1257,6 +1282,11 @@
                 },
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
+                },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "readr": "2.1.5",
+                    "dplyr": "1.1.4"
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -1421,7 +1451,7 @@
             ],
             1
         ],
-        "timestamp": "2026-07-28T14:40:47.390954164",
+        "timestamp": "2026-08-12T22:30:08.325258099",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

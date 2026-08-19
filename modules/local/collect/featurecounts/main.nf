@@ -9,7 +9,6 @@ process COLLECT_FEATURECOUNTS {
 
     input:
     tuple val(meta), path(inputfiles)
-    path g2ids
 
     output:
     tuple val(meta), path("${prefix}.counts.tsv.gz"), emit: counts
@@ -31,8 +30,6 @@ process COLLECT_FEATURECOUNTS {
     library(stringr)
 
     setDTthreads($task.cpus)
-
-    g2ids <- read_tsv("${g2ids}", col_types = 'ccc')
 
     tibble(f = Sys.glob('*.featureCounts.tsv')) %>%
         mutate(
@@ -57,8 +54,6 @@ process COLLECT_FEATURECOUNTS {
         ) %>%
         tidyr::unnest(d) %>%
         select(-f) %>%
-        inner_join(g2ids %>% select(-genome), by = join_by(orf)) %>%
-        relocate(accno) %>%
         write_tsv("${prefix}.counts.tsv.gz")
 
         writeLines(

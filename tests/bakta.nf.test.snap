@@ -1,7 +1,7 @@
 {
     "annotator: bakta_all": {
         "content": [
-            58,
+            59,
             {
                 "BAKTA_VERSION": {
                     "bakta": "1.12.0"
@@ -77,6 +77,11 @@
                 },
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
+                },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "readr": "2.1.5",
+                    "dplyr": "1.1.4"
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
@@ -203,7 +208,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-07-28T22:50:54.160572195",
+        "timestamp": "2026-08-12T16:10:06.157765784",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -211,7 +216,7 @@
     },
     "annotator: bakta_supported_only": {
         "content": [
-            53,
+            54,
             {
                 "BAKTA_VERSION": {
                     "bakta": "1.12.0"
@@ -291,6 +296,11 @@
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
                 },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "readr": "2.1.5",
+                    "dplyr": "1.1.4"
+                },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
                     "readr": "2.1.5",
@@ -416,7 +426,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-07-28T21:09:15.158576987",
+        "timestamp": "2026-08-12T15:24:01.053939153",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
