@@ -35,7 +35,7 @@
                     "purrr": "1.1.0",
                     "stringr": "1.5.2"
                 },
-                "COLLECT_STATS": {
+                "CUSTOM_COLLECTSTATS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
                     "readr": "2.1.5",
@@ -248,7 +248,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-08-12T16:20:06.108461074",
+        "timestamp": "2026-08-19T15:15:26.325134728",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

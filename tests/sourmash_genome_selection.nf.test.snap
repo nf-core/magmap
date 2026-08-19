@@ -35,7 +35,7 @@
                     "purrr": "1.1.0",
                     "stringr": "1.5.2"
                 },
-                "COLLECT_STATS": {
+                "CUSTOM_COLLECTSTATS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
                     "readr": "2.1.5",
@@ -239,7 +239,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-08-12T18:38:44.654629662",
+        "timestamp": "2026-08-19T17:24:47.68669925",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -278,7 +278,7 @@
                     "purrr": "1.1.0",
                     "stringr": "1.5.2"
                 },
-                "COLLECT_STATS": {
+                "CUSTOM_COLLECTSTATS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
                     "readr": "2.1.5",
@@ -468,7 +468,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-08-12T18:20:36.369030697",
+        "timestamp": "2026-08-19T17:05:28.077038738",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -510,7 +510,7 @@
                     "purrr": "1.1.0",
                     "stringr": "1.5.2"
                 },
-                "COLLECT_STATS": {
+                "CUSTOM_COLLECTSTATS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
                     "readr": "2.1.5",
@@ -751,7 +751,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-08-12T17:40:37.455280548",
+        "timestamp": "2026-08-19T21:18:16.607372522",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -793,7 +793,7 @@
                     "purrr": "1.1.0",
                     "stringr": "1.5.2"
                 },
-                "COLLECT_STATS": {
+                "CUSTOM_COLLECTSTATS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
                     "readr": "2.1.5",
@@ -994,7 +994,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-08-12T17:18:58.934688078",
+        "timestamp": "2026-08-19T16:20:45.587828456",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -1033,7 +1033,7 @@
                     "purrr": "1.1.0",
                     "stringr": "1.5.2"
                 },
-                "COLLECT_STATS": {
+                "CUSTOM_COLLECTSTATS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
                     "readr": "2.1.5",
@@ -1207,7 +1207,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-08-12T18:02:31.097761454",
+        "timestamp": "2026-08-19T16:47:34.188640348",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
