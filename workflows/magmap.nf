@@ -466,7 +466,11 @@ workflow MAGMAP {
     //
     // Collect statistics from the pipeline
     //
-    CUSTOM_COLLECTSTATS(ch_collect_stats.map { s -> s + [[]] }) // The last [[]] is to create a value for the `mergetab` that we have in metatdenovo (which shares the swf)
+    CUSTOM_COLLECTSTATS(
+        ch_collect_stats.map { meta, samples, trimlogs, bblogs, idxstats, fcs ->
+            [ meta, samples, trimlogs, bblogs, idxstats, fcs, [] ] // The trailing [] is a value for the `mergetab` that we have in metatdenovo (which shares the swf)
+        }
+    )
 
     //
     // MODULE: Also write the summary tables as Parquet
