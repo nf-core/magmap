@@ -15,9 +15,9 @@ include { CATPROKKATSVS        	                 } from '../modules/local/catpro
 include { CHECK_DUPLICATES                       } from '../modules/local/check_duplicates'
 include { COLLECT_FEATURECOUNTS                  } from '../modules/local/collect/featurecounts'
 include { COLLECT_GENOMESELECTION                } from '../modules/local/collect/genomeselection'
-include { COLLECT_STATS                          } from '../modules/local/collect/stats'
 include { TIDYVERSE_JOINFEATURECOUNTSACCNO       } from '../modules/local/tidyverse/joinfeaturecountsaccno'
 include { CREATE_BBMAP_INDEX                     } from '../subworkflows/local/create_bbmap_index'
+include { CUSTOM_COLLECTSTATS                    } from '../modules/nf-core/custom/collectstats/main'
 include { DUCKDB_TABLE2PARQUET                   } from '../modules/nf-core/duckdb/table2parquet'
 include { FASTQC                                 } from '../modules/nf-core/fastqc'
 include { FASTQC_TRIMGALORE                      } from '../subworkflows/local/fastqc_trimgalore'
@@ -466,7 +466,11 @@ workflow MAGMAP {
     //
     // Collect statistics from the pipeline
     //
-    COLLECT_STATS(ch_collect_stats.map { s -> s + [[]] }) // The last [[]] is to create a value for the `mergetab` that we have in metatdenovo (which shares the swf)
+    CUSTOM_COLLECTSTATS(
+        ch_collect_stats.map { meta, samples, trimlogs, bblogs, idxstats, fcs ->
+            [ meta, samples, trimlogs, bblogs, idxstats, fcs, [] ] // The trailing [] is a value for the `mergetab` that we have in metatdenovo (which shares the swf)
+        }
+    )
 
     //
     // MODULE: Also write the summary tables as Parquet
@@ -478,7 +482,7 @@ workflow MAGMAP {
                 .mix(GENOMES2ORFS.out.genomes2orfs.map { _meta, tsv -> tsv })
                 .mix(CATPROKKATSVS.out.tsv.map { _meta, tsv -> tsv })
                 .mix(TIDYVERSE_JOINFEATURECOUNTSACCNO.out.counts.map { _meta, tsv -> tsv })
-                .mix(COLLECT_STATS.out.overall_stats)
+                .mix(CUSTOM_COLLECTSTATS.out.overall_stats.map { _meta, tsv -> tsv })
                 .map { tsv -> [ [ id: tsv.name.replaceAll(/\.tsv(\.gz)?$/, '') ], tsv ] }
         )
     }
