@@ -14,6 +14,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#NN](https://github.com/nf-core/magmap/pull/NN) - Stop the pipeline crashing on any run when NCBI's live remote genome catalog contains a suppressed/replaced assembly with a missing `ftp_path` field; such genomes are now skipped instead, closes [#244](https://github.com/nf-core/magmap/issues/244) (by @erikrikarddaniel).
+
 ### `Dependencies`
 
 ### `Deprecated`
