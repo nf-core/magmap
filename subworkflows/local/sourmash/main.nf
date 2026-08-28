@@ -27,6 +27,10 @@ workflow SOURMASH {
     main:
         ch_ncbi_genomeinfo = ch_remote_genome_sources
                 .splitCsv(skip: 1, header: true, sep: '\t')
+                // NCBI marks some suppressed/replaced assemblies in the live assembly_summary
+                // catalogs with an empty ftp_path -- such a genome can never be fetched anyway,
+                // so drop it here rather than crash the whole run on a null-safe string op below.
+                .filter { row -> row.ftp_path }
                 .map { row ->
                     [
                         accno: row["#assembly_accession"],
