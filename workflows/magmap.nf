@@ -13,10 +13,10 @@ include { CAT_MANY as CAT_GFF                    } from '../modules/local/cat/ma
 include { GENOMES2ORFS                           } from '../modules/local/genomes2orfs'
 include { CATPROKKATSVS        	                 } from '../modules/local/catprokkatsvs'
 include { CHECK_DUPLICATES                       } from '../modules/local/check_duplicates'
-include { COLLECT_FEATURECOUNTS                  } from '../modules/local/collect/featurecounts'
 include { COLLECT_GENOMESELECTION                } from '../modules/local/collect/genomeselection'
 include { TIDYVERSE_JOINFEATURECOUNTSACCNO       } from '../modules/local/tidyverse/joinfeaturecountsaccno'
 include { CREATE_BBMAP_INDEX                     } from '../subworkflows/local/create_bbmap_index'
+include { CUSTOM_COLLECTFEATURECOUNTS            } from '../modules/nf-core/custom/collectfeaturecounts/main'
 include { CUSTOM_COLLECTSTATS                    } from '../modules/nf-core/custom/collectstats/main'
 include { DUCKDB_TABLE2PARQUET                   } from '../modules/nf-core/duckdb/table2parquet'
 include { FASTQC                                 } from '../modules/nf-core/fastqc'
@@ -446,18 +446,18 @@ workflow MAGMAP {
             [ [id: meta.feature ], data ]
         }
 
-    COLLECT_FEATURECOUNTS(ch_collect_featurecounts)
+    CUSTOM_COLLECTFEATURECOUNTS(ch_collect_featurecounts)
 
-    // COLLECT_FEATURECOUNTS itself is kept generic (no genome-accession lookup), so this
+    // CUSTOM_COLLECTFEATURECOUNTS itself is kept generic (no genome-accession lookup), so this
     // pipeline-specific join is a separate step -- see nf-core/magmap#237, where this
     // module is being split out into a shared nf-core/modules component and this join
     // stays local, since attaching accno is specific to a genome-collection pipeline.
     // .first() converts the single GENOMES2ORFS emission to a value channel so it's
-    // reused for every one of COLLECT_FEATURECOUNTS's per-feature-type emissions --
+    // reused for every one of CUSTOM_COLLECTFEATURECOUNTS's per-feature-type emissions --
     // without it, a queue channel with only one item would only pair with the first
     // emission before closing, silently starving the rest.
     TIDYVERSE_JOINFEATURECOUNTSACCNO(
-        COLLECT_FEATURECOUNTS.out.counts,
+        CUSTOM_COLLECTFEATURECOUNTS.out.counts,
         GENOMES2ORFS.out.genomes2orfs.map { _m, g2orfs -> g2orfs }.first()
     )
     ch_fcs_for_stats      = TIDYVERSE_JOINFEATURECOUNTSACCNO.out.counts.collect { _meta, tsv -> tsv }.map { it -> [ it ] }
