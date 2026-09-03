@@ -9,6 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#250](https://github.com/nf-core/magmap/pull/250) - Reduce the `sourmash_genome_selection`/`species_preference` nf-test data from 7 to 3 archaeal species, cutting per-scenario Prokka annotation load and CI runtime, closes [#246](https://github.com/nf-core/magmap/issues/246) (by @erikrikarddaniel).
 - [#248](https://github.com/nf-core/magmap/pull/248) - Replace the local `COLLECT_FEATURECOUNTS` module with the shared `nf-core/modules` component `custom/collectfeaturecounts` ([#237](https://github.com/nf-core/magmap/issues/237), by @erikrikarddaniel).
 - [#243](https://github.com/nf-core/magmap/pull/243) - Document why BBMap, rather than e.g. Bowtie2, is used for read mapping in `conf/modules.config` (by @erikrikarddaniel).
 - [#242](https://github.com/nf-core/magmap/pull/242) - Replace the local `COLLECT_STATS` module with the shared `nf-core/modules` component `custom/collectstats` ([#237](https://github.com/nf-core/magmap/issues/237), by @erikrikarddaniel).

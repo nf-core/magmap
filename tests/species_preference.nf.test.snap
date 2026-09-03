@@ -1,7 +1,7 @@
 {
     "species_preference: gtdb": {
         "content": [
-            70,
+            59,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -65,14 +65,6 @@
                 },
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
-                },
-                "PROKKAGFF2TSV": {
-                    "R": "4.3.1",
-                    "data.table": "1.17.8",
-                    "dtplyr": "1.3.2",
-                    "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
-                    "readr": "2.1.5"
                 },
                 "PROKKA_VERSION": {
                     "prokka": "1.15.6"
@@ -184,18 +176,18 @@
                 "summary_tables/magmap.prokka-annotations.tsv.gz"
             ],
             [
-                "all.genomes.txt:md5,a3a2b6592828c051bc342ee327702480",
-                "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
-                "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
+                "all.genomes.txt:md5,59212416cfaf722dad2e0fb30852298f",
+                "fastqc-status-check-heatmap.txt:md5,2d048bc683af06a44639099eb03dd92a",
+                "fastqc_per_base_n_content_plot.txt:md5,644236c3a2aa8cac95222c0e60ae368d",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
-                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,973b41dfbd153f1ba706b01e38de2ca3",
-                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,b0848999c498a56adc3e02c4a5266ca1",
-                "fastqc_per_sequence_quality_scores_plot.txt:md5,dd3e11f739d9998714bb1b182de118aa",
-                "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
-                "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
+                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,e64e84094bab531e6a53e7ecd6a7fb31",
+                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,ca048e37585c17fce2f3a6ff0aafd72f",
+                "fastqc_per_sequence_quality_scores_plot.txt:md5,34f453f7669f176b600b5d36e8a14c45",
+                "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
+                "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
-                "multiqc_genome_selection.txt:md5,3e0ef1a47589d8793fa2ac563ca550b0"
+                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_genome_selection.txt:md5,9c60cc58c7947ca4b3ea3ecdf576566c"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS"
@@ -218,7 +210,7 @@
             ],
             1
         ],
-        "timestamp": "2026-09-01T23:40:48.099399028",
+        "timestamp": "2026-09-02T11:16:02.596630397",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -226,7 +218,7 @@
     },
     "species_preference: gtdb, genomeset_mode: sample": {
         "content": [
-            74,
+            63,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -290,14 +282,6 @@
                 },
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
-                },
-                "PROKKAGFF2TSV": {
-                    "R": "4.3.1",
-                    "data.table": "1.17.8",
-                    "dtplyr": "1.3.2",
-                    "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
-                    "readr": "2.1.5"
                 },
                 "PROKKA_VERSION": {
                     "prokka": "1.15.6"
@@ -411,20 +395,20 @@
                 "summary_tables/magmap.prokka-annotations.tsv.gz"
             ],
             [
-                "arc00.genomes.txt:md5,bc0f6806d4c8c00ec43103bd6128530a",
-                "arc01.genomes.txt:md5,014cdf38cb0435a01e013f0931e5f6ba",
-                "arc02.genomes.txt:md5,36a2ef9ef2cae75d549a9bbafa715d56",
-                "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
-                "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
+                "arc00.genomes.txt:md5,f67f8647d336ef62f8d26dbe162a1fdd",
+                "arc01.genomes.txt:md5,a09e428c97fa6d6f3256c894becb3f39",
+                "arc02.genomes.txt:md5,dcb37b5a2d352f1276b952e93f269ffa",
+                "fastqc-status-check-heatmap.txt:md5,2d048bc683af06a44639099eb03dd92a",
+                "fastqc_per_base_n_content_plot.txt:md5,644236c3a2aa8cac95222c0e60ae368d",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
-                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,973b41dfbd153f1ba706b01e38de2ca3",
-                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,b0848999c498a56adc3e02c4a5266ca1",
-                "fastqc_per_sequence_quality_scores_plot.txt:md5,dd3e11f739d9998714bb1b182de118aa",
-                "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
-                "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
+                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,e64e84094bab531e6a53e7ecd6a7fb31",
+                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,ca048e37585c17fce2f3a6ff0aafd72f",
+                "fastqc_per_sequence_quality_scores_plot.txt:md5,34f453f7669f176b600b5d36e8a14c45",
+                "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
+                "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
-                "multiqc_genome_selection.txt:md5,6a05091bd311300557b4629d1704ef5e"
+                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_genome_selection.txt:md5,3e9c9004b3067ba0cb71f8cd9b413ddd"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS"
@@ -436,33 +420,23 @@
             [
                 "GCF_000011125.1\tarc00",
                 "GCF_000011125.1\tarc01",
-                "GCF_001412615.1\tarc01",
-                "GCF_003201675.2\tarc01",
-                "GCF_020886315.1\tarc02",
                 "GCF_022064045.1\tarc00",
                 "GCF_022064045.1\tarc02",
-                "GCF_030186535.1\tarc00",
-                "GCF_030186535.1\tarc02",
-                "local_GCA_013329705.1\tarc00"
+                "GCF_030186535.1\tarc01",
+                "GCF_030186535.1\tarc02"
             ],
             [
                 [
                     "GCF_000011125.1",
-                    "GCF_022064045.1",
-                    "GCF_030186535.1",
-                    "local_GCA_013329705.1"
+                    "GCF_022064045.1"
                 ],
                 [
                     "GCF_000011125.1",
-                    "GCF_001412615.1",
-                    "GCF_003201675.2",
-                    "local_GCA_013329705.1"
+                    "GCF_030186535.1"
                 ],
                 [
-                    "GCF_020886315.1",
                     "GCF_022064045.1",
-                    "GCF_030186535.1",
-                    "local_GCA_013329705.1"
+                    "GCF_030186535.1"
                 ]
             ],
             [
@@ -479,7 +453,7 @@
             ],
             1
         ],
-        "timestamp": "2026-09-01T23:52:52.698526763",
+        "timestamp": "2026-09-02T11:26:05.153086364",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -487,7 +461,7 @@
     },
     "species_preference: completeness, genomeset_mode: sample": {
         "content": [
-            72,
+            62,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -672,20 +646,20 @@
                 "summary_tables/magmap.prokka-annotations.tsv.gz"
             ],
             [
-                "arc00.genomes.txt:md5,41c5f54218e1b0d8084e0debfcabfce3",
-                "arc01.genomes.txt:md5,e73505cf4c71eaa34803d989916efc64",
-                "arc02.genomes.txt:md5,6c811e6039ae18bc71bfdd19df9bcc04",
-                "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
-                "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
+                "arc00.genomes.txt:md5,d43664f0f969e5778da44b4f6e7e7a89",
+                "arc01.genomes.txt:md5,81a840a694eacfeb21e04acfe66c03ef",
+                "arc02.genomes.txt:md5,919cc246c0db6ddc8f6e87bc7198cff3",
+                "fastqc-status-check-heatmap.txt:md5,2d048bc683af06a44639099eb03dd92a",
+                "fastqc_per_base_n_content_plot.txt:md5,644236c3a2aa8cac95222c0e60ae368d",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
-                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,973b41dfbd153f1ba706b01e38de2ca3",
-                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,b0848999c498a56adc3e02c4a5266ca1",
-                "fastqc_per_sequence_quality_scores_plot.txt:md5,dd3e11f739d9998714bb1b182de118aa",
-                "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
-                "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
+                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,e64e84094bab531e6a53e7ecd6a7fb31",
+                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,ca048e37585c17fce2f3a6ff0aafd72f",
+                "fastqc_per_sequence_quality_scores_plot.txt:md5,34f453f7669f176b600b5d36e8a14c45",
+                "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
+                "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
-                "multiqc_genome_selection.txt:md5,f563ee06f07eec17664cdbe5824725fb"
+                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_genome_selection.txt:md5,593916795e7f1d3c772f8fa2306ca9c3"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS"
@@ -695,37 +669,25 @@
                 "accno\torf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm"
             ],
             [
-                "GCF_003201675.2\tarc01",
-                "GCF_020886315.1\tarc02",
                 "GCF_022064045.1\tarc00",
                 "GCF_022064045.1\tarc02",
-                "GCF_030186535.1\tarc00",
+                "GCF_030186535.1\tarc01",
                 "GCF_030186535.1\tarc02",
-                "local_GCA_013329705.1\tarc00",
-                "local_GCF_002194565.1\tarc01",
                 "local_GCF_004323575.1\tarc00",
                 "local_GCF_004323575.1\tarc01"
             ],
             [
                 [
                     "GCF_022064045.1",
+                    "local_GCF_004323575.1"
+                ],
+                [
                     "GCF_030186535.1",
-                    "local_GCA_013329705.1",
-                    "local_GCF_002194565.1",
                     "local_GCF_004323575.1"
                 ],
                 [
-                    "GCF_003201675.2",
-                    "local_GCA_013329705.1",
-                    "local_GCF_002194565.1",
-                    "local_GCF_004323575.1"
-                ],
-                [
-                    "GCF_020886315.1",
                     "GCF_022064045.1",
                     "GCF_030186535.1",
-                    "local_GCA_013329705.1",
-                    "local_GCF_002194565.1",
                     "local_GCF_004323575.1"
                 ]
             ],
@@ -743,7 +705,7 @@
             ],
             1
         ],
-        "timestamp": "2026-09-01T23:28:09.035307503",
+        "timestamp": "2026-09-02T11:02:38.115986305",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -751,7 +713,7 @@
     },
     "species_preference: local": {
         "content": [
-            65,
+            57,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -934,18 +896,18 @@
                 "summary_tables/magmap.prokka-annotations.tsv.gz"
             ],
             [
-                "all.genomes.txt:md5,2d550684976cd1372c8f7c67a3031250",
-                "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
-                "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
+                "all.genomes.txt:md5,671d0ddcbcab7f53dad15a0188b72710",
+                "fastqc-status-check-heatmap.txt:md5,2d048bc683af06a44639099eb03dd92a",
+                "fastqc_per_base_n_content_plot.txt:md5,644236c3a2aa8cac95222c0e60ae368d",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
-                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,973b41dfbd153f1ba706b01e38de2ca3",
-                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,b0848999c498a56adc3e02c4a5266ca1",
-                "fastqc_per_sequence_quality_scores_plot.txt:md5,dd3e11f739d9998714bb1b182de118aa",
-                "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
-                "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
+                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,e64e84094bab531e6a53e7ecd6a7fb31",
+                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,ca048e37585c17fce2f3a6ff0aafd72f",
+                "fastqc_per_sequence_quality_scores_plot.txt:md5,34f453f7669f176b600b5d36e8a14c45",
+                "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
+                "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
-                "multiqc_genome_selection.txt:md5,be3a56db32288d8b35109b22e4aab512"
+                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_genome_selection.txt:md5,363b85ce65173237c415607b7a791511"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS"
@@ -968,7 +930,7 @@
             ],
             1
         ],
-        "timestamp": "2026-09-01T22:26:17.679307993",
+        "timestamp": "2026-09-02T10:23:12.106860941",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -976,7 +938,7 @@
     },
     "completeness": {
         "content": [
-            68,
+            58,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -1159,18 +1121,18 @@
                 "summary_tables/magmap.prokka-annotations.tsv.gz"
             ],
             [
-                "all.genomes.txt:md5,cc6ffa6ca3e12a69295163e0730715e7",
-                "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
-                "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
+                "all.genomes.txt:md5,919cc246c0db6ddc8f6e87bc7198cff3",
+                "fastqc-status-check-heatmap.txt:md5,2d048bc683af06a44639099eb03dd92a",
+                "fastqc_per_base_n_content_plot.txt:md5,644236c3a2aa8cac95222c0e60ae368d",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
-                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,973b41dfbd153f1ba706b01e38de2ca3",
-                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,b0848999c498a56adc3e02c4a5266ca1",
-                "fastqc_per_sequence_quality_scores_plot.txt:md5,dd3e11f739d9998714bb1b182de118aa",
-                "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
-                "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
+                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,e64e84094bab531e6a53e7ecd6a7fb31",
+                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,ca048e37585c17fce2f3a6ff0aafd72f",
+                "fastqc_per_sequence_quality_scores_plot.txt:md5,34f453f7669f176b600b5d36e8a14c45",
+                "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
+                "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
-                "multiqc_genome_selection.txt:md5,2085697e5c22eaa9a67a245b57fc0a6b"
+                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_genome_selection.txt:md5,96f8bcbd23f6b0055d7e04e9c8220e0e"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS"
@@ -1193,7 +1155,7 @@
             ],
             1
         ],
-        "timestamp": "2026-09-02T06:18:50.896532296",
+        "timestamp": "2026-09-02T10:46:36.241760522",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -1201,7 +1163,7 @@
     },
     "species_preference: local, genomeset_mode: sample": {
         "content": [
-            69,
+            61,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -1386,20 +1348,20 @@
                 "summary_tables/magmap.prokka-annotations.tsv.gz"
             ],
             [
-                "arc00.genomes.txt:md5,2d550684976cd1372c8f7c67a3031250",
-                "arc01.genomes.txt:md5,619047344c69ab98647e1eb902ad3c7b",
-                "arc02.genomes.txt:md5,2d550684976cd1372c8f7c67a3031250",
-                "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
-                "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
+                "arc00.genomes.txt:md5,671d0ddcbcab7f53dad15a0188b72710",
+                "arc01.genomes.txt:md5,75c151419492772a34fb5a46d162817f",
+                "arc02.genomes.txt:md5,671d0ddcbcab7f53dad15a0188b72710",
+                "fastqc-status-check-heatmap.txt:md5,2d048bc683af06a44639099eb03dd92a",
+                "fastqc_per_base_n_content_plot.txt:md5,644236c3a2aa8cac95222c0e60ae368d",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
-                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,973b41dfbd153f1ba706b01e38de2ca3",
-                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,b0848999c498a56adc3e02c4a5266ca1",
-                "fastqc_per_sequence_quality_scores_plot.txt:md5,dd3e11f739d9998714bb1b182de118aa",
-                "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
-                "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
+                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,e64e84094bab531e6a53e7ecd6a7fb31",
+                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,ca048e37585c17fce2f3a6ff0aafd72f",
+                "fastqc_per_sequence_quality_scores_plot.txt:md5,34f453f7669f176b600b5d36e8a14c45",
+                "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
+                "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
-                "multiqc_genome_selection.txt:md5,fcb9056516b99009a5cba74a198131b6"
+                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_genome_selection.txt:md5,e01ac7cf3a1a5d6d922c88856fe6d184"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS"
@@ -1411,42 +1373,25 @@
             [
                 "GCF_022064045.1\tarc00",
                 "GCF_022064045.1\tarc02",
-                "local_GCA_013329705.1\tarc00",
-                "local_GCA_023269755.1\tarc00",
+                "local_GCA_023269755.1\tarc01",
                 "local_GCA_023269755.1\tarc02",
-                "local_GCF_001315825.1\tarc01",
-                "local_GCF_001315825.1\tarc02",
-                "local_GCF_002194565.1\tarc01",
                 "local_GCF_004323575.1\tarc00",
-                "local_GCF_004323575.1\tarc01",
-                "local_GCF_032248915.1\tarc02"
+                "local_GCF_004323575.1\tarc01"
             ],
             [
                 [
                     "GCF_022064045.1",
-                    "local_GCA_013329705.1",
                     "local_GCA_023269755.1",
-                    "local_GCF_001315825.1",
-                    "local_GCF_002194565.1",
-                    "local_GCF_004323575.1",
-                    "local_GCF_032248915.1"
+                    "local_GCF_004323575.1"
                 ],
                 [
-                    "local_GCA_013329705.1",
                     "local_GCA_023269755.1",
-                    "local_GCF_001315825.1",
-                    "local_GCF_002194565.1",
-                    "local_GCF_004323575.1",
-                    "local_GCF_032248915.1"
+                    "local_GCF_004323575.1"
                 ],
                 [
                     "GCF_022064045.1",
-                    "local_GCA_013329705.1",
                     "local_GCA_023269755.1",
-                    "local_GCF_001315825.1",
-                    "local_GCF_002194565.1",
-                    "local_GCF_004323575.1",
-                    "local_GCF_032248915.1"
+                    "local_GCF_004323575.1"
                 ]
             ],
             [
@@ -1463,7 +1408,7 @@
             ],
             1
         ],
-        "timestamp": "2026-09-01T22:52:52.262341672",
+        "timestamp": "2026-09-02T10:33:42.31209181",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
