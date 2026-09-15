@@ -24,10 +24,10 @@
                 "COLLECT_GENOMESELECTION": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
-                    "tidyr": "1.3.1",
                     "purrr": "1.1.0",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
                 "COLLECT_UNASSIGNEDCOUNTS": {
                     "R": "4.3.1",
@@ -38,19 +38,19 @@
                 },
                 "CUSTOM_COLLECTFEATURECOUNTS": {
                     "R": "4.5.3",
+                    "data.table": "1.17.8",
                     "dplyr": "1.2.1",
-                    "readr": "2.2.0",
-                    "stringr": "1.6.0",
                     "dtplyr": "1.3.3",
-                    "data.table": "1.17.8"
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0"
                 },
                 "CUSTOM_COLLECTSTATS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
                     "purrr": "1.1.0",
-                    "tidyr": "1.3.1",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -96,23 +96,23 @@
                 },
                 "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
-                    "dplyr": "1.1.4"
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "tidyr": "1.3.1"
                 },
                 "TIDYVERSE_SELECTGENOMESPECIES": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2"
                 },
                 "TIDYVERSE_SPLITFEATURECOUNTS": {
                     "R": "4.3.1",
@@ -253,10 +253,10 @@
                 "COLLECT_GENOMESELECTION": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
-                    "tidyr": "1.3.1",
                     "purrr": "1.1.0",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
                 "COLLECT_UNASSIGNEDCOUNTS": {
                     "R": "4.3.1",
@@ -267,19 +267,19 @@
                 },
                 "CUSTOM_COLLECTFEATURECOUNTS": {
                     "R": "4.5.3",
+                    "data.table": "1.17.8",
                     "dplyr": "1.2.1",
-                    "readr": "2.2.0",
-                    "stringr": "1.6.0",
                     "dtplyr": "1.3.3",
-                    "data.table": "1.17.8"
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0"
                 },
                 "CUSTOM_COLLECTSTATS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
                     "purrr": "1.1.0",
-                    "tidyr": "1.3.1",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -325,23 +325,23 @@
                 },
                 "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
-                    "dplyr": "1.1.4"
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "tidyr": "1.3.1"
                 },
                 "TIDYVERSE_SELECTGENOMESPECIES": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2"
                 },
                 "TIDYVERSE_SPLITFEATURECOUNTS": {
                     "R": "4.3.1",
@@ -508,10 +508,10 @@
                 "COLLECT_GENOMESELECTION": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
-                    "tidyr": "1.3.1",
                     "purrr": "1.1.0",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
                 "COLLECT_UNASSIGNEDCOUNTS": {
                     "R": "4.3.1",
@@ -522,19 +522,19 @@
                 },
                 "CUSTOM_COLLECTFEATURECOUNTS": {
                     "R": "4.5.3",
+                    "data.table": "1.17.8",
                     "dplyr": "1.2.1",
-                    "readr": "2.2.0",
-                    "stringr": "1.6.0",
                     "dtplyr": "1.3.3",
-                    "data.table": "1.17.8"
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0"
                 },
                 "CUSTOM_COLLECTSTATS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
                     "purrr": "1.1.0",
-                    "tidyr": "1.3.1",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -560,10 +560,10 @@
                 "PROKKAGFF2TSV": {
                     "R": "4.3.1",
                     "data.table": "1.17.8",
-                    "dtplyr": "1.3.2",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
-                    "readr": "2.1.5"
+                    "dtplyr": "1.3.2",
+                    "readr": "2.1.5",
+                    "tidyr": "1.3.1"
                 },
                 "PROKKA_VERSION": {
                     "prokka": "1.15.6"
@@ -588,23 +588,23 @@
                 },
                 "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
-                    "dplyr": "1.1.4"
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "tidyr": "1.3.1"
                 },
                 "TIDYVERSE_SELECTGENOMESPECIES": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2"
                 },
                 "TIDYVERSE_SPLITFEATURECOUNTS": {
                     "R": "4.3.1",
@@ -772,10 +772,10 @@
                 "COLLECT_GENOMESELECTION": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
-                    "tidyr": "1.3.1",
                     "purrr": "1.1.0",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
                 "COLLECT_UNASSIGNEDCOUNTS": {
                     "R": "4.3.1",
@@ -786,19 +786,19 @@
                 },
                 "CUSTOM_COLLECTFEATURECOUNTS": {
                     "R": "4.5.3",
+                    "data.table": "1.17.8",
                     "dplyr": "1.2.1",
-                    "readr": "2.2.0",
-                    "stringr": "1.6.0",
                     "dtplyr": "1.3.3",
-                    "data.table": "1.17.8"
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0"
                 },
                 "CUSTOM_COLLECTSTATS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
                     "purrr": "1.1.0",
-                    "tidyr": "1.3.1",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -824,10 +824,10 @@
                 "PROKKAGFF2TSV": {
                     "R": "4.3.1",
                     "data.table": "1.17.8",
-                    "dtplyr": "1.3.2",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
-                    "readr": "2.1.5"
+                    "dtplyr": "1.3.2",
+                    "readr": "2.1.5",
+                    "tidyr": "1.3.1"
                 },
                 "PROKKA_VERSION": {
                     "prokka": "1.15.6"
@@ -852,23 +852,23 @@
                 },
                 "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
-                    "dplyr": "1.1.4"
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "tidyr": "1.3.1"
                 },
                 "TIDYVERSE_SELECTGENOMESPECIES": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2"
                 },
                 "TIDYVERSE_SPLITFEATURECOUNTS": {
                     "R": "4.3.1",
@@ -1009,10 +1009,10 @@
                 "COLLECT_GENOMESELECTION": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
-                    "tidyr": "1.3.1",
                     "purrr": "1.1.0",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
                 "COLLECT_UNASSIGNEDCOUNTS": {
                     "R": "4.3.1",
@@ -1023,19 +1023,19 @@
                 },
                 "CUSTOM_COLLECTFEATURECOUNTS": {
                     "R": "4.5.3",
+                    "data.table": "1.17.8",
                     "dplyr": "1.2.1",
-                    "readr": "2.2.0",
-                    "stringr": "1.6.0",
                     "dtplyr": "1.3.3",
-                    "data.table": "1.17.8"
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0"
                 },
                 "CUSTOM_COLLECTSTATS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
                     "purrr": "1.1.0",
-                    "tidyr": "1.3.1",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -1061,10 +1061,10 @@
                 "PROKKAGFF2TSV": {
                     "R": "4.3.1",
                     "data.table": "1.17.8",
-                    "dtplyr": "1.3.2",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
-                    "readr": "2.1.5"
+                    "dtplyr": "1.3.2",
+                    "readr": "2.1.5",
+                    "tidyr": "1.3.1"
                 },
                 "PROKKA_VERSION": {
                     "prokka": "1.15.6"
@@ -1089,23 +1089,23 @@
                 },
                 "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
-                    "dplyr": "1.1.4"
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "tidyr": "1.3.1"
                 },
                 "TIDYVERSE_SELECTGENOMESPECIES": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2"
                 },
                 "TIDYVERSE_SPLITFEATURECOUNTS": {
                     "R": "4.3.1",
@@ -1246,10 +1246,10 @@
                 "COLLECT_GENOMESELECTION": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
-                    "tidyr": "1.3.1",
                     "purrr": "1.1.0",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
                 "COLLECT_UNASSIGNEDCOUNTS": {
                     "R": "4.3.1",
@@ -1260,19 +1260,19 @@
                 },
                 "CUSTOM_COLLECTFEATURECOUNTS": {
                     "R": "4.5.3",
+                    "data.table": "1.17.8",
                     "dplyr": "1.2.1",
-                    "readr": "2.2.0",
-                    "stringr": "1.6.0",
                     "dtplyr": "1.3.3",
-                    "data.table": "1.17.8"
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0"
                 },
                 "CUSTOM_COLLECTSTATS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
                     "purrr": "1.1.0",
-                    "tidyr": "1.3.1",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -1298,10 +1298,10 @@
                 "PROKKAGFF2TSV": {
                     "R": "4.3.1",
                     "data.table": "1.17.8",
-                    "dtplyr": "1.3.2",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
-                    "readr": "2.1.5"
+                    "dtplyr": "1.3.2",
+                    "readr": "2.1.5",
+                    "tidyr": "1.3.1"
                 },
                 "PROKKA_VERSION": {
                     "prokka": "1.15.6"
@@ -1326,23 +1326,23 @@
                 },
                 "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
-                    "dplyr": "1.1.4"
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
                 },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "tidyr": "1.3.1"
                 },
                 "TIDYVERSE_SELECTGENOMESPECIES": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2"
                 },
                 "TIDYVERSE_SPLITFEATURECOUNTS": {
                     "R": "4.3.1",
