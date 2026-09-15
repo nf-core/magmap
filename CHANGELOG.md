@@ -20,6 +20,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#NN](https://github.com/nf-core/magmap/pull/NN) - Fix flaky pipeline-level nf-test snapshots caused by non-deterministic software-versions key order, closes [#253](https://github.com/nf-core/magmap/issues/253) (by @erikrikarddaniel).
 - [#245](https://github.com/nf-core/magmap/pull/245) - Stop the pipeline crashing on any run when NCBI's live remote genome catalog contains a suppressed/replaced assembly with a missing `ftp_path` field; such genomes are now skipped instead, closes [#244](https://github.com/nf-core/magmap/issues/244) (by @erikrikarddaniel).
 
 ### `Dependencies`
