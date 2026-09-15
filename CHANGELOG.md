@@ -25,6 +25,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
+| Tool      | Previous version | New version |
+| --------- | ---------------- | ----------- |
+| nft-utils | 0.0.3            | 1.2.0       |
+
 ### `Deprecated`
 
 ## v1.2.0 - [2026-08-11]
