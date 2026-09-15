@@ -118,7 +118,6 @@
                 "TIDYVERSE_SPLITFEATURECOUNTS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "purrr": "1.1.0",
                     "readr": "2.1.5"
                 },
                 "Workflow": {
@@ -347,7 +346,6 @@
                 "TIDYVERSE_SPLITFEATURECOUNTS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "purrr": "1.1.0",
                     "readr": "2.1.5"
                 },
                 "Workflow": {
@@ -595,7 +593,6 @@
                 "TIDYVERSE_SPLITFEATURECOUNTS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "purrr": "1.1.0",
                     "readr": "2.1.5"
                 },
                 "Workflow": {
@@ -865,7 +862,6 @@
                 "TIDYVERSE_SPLITFEATURECOUNTS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "purrr": "1.1.0",
                     "readr": "2.1.5"
                 },
                 "Workflow": {
@@ -1091,7 +1087,6 @@
                 "TIDYVERSE_SPLITFEATURECOUNTS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "purrr": "1.1.0",
                     "readr": "2.1.5"
                 },
                 "Workflow": {
