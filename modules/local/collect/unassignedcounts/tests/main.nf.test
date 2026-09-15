@@ -1,0 +1,92 @@
+nextflow_process {
+
+    name "Test Process COLLECT_UNASSIGNEDCOUNTS"
+    script "../main.nf"
+    process "COLLECT_UNASSIGNEDCOUNTS"
+
+    tag "modules"
+    tag "modules_local"
+    tag "collect"
+    tag "collect/unassignedcounts"
+
+    // Input is built inline rather than read from a fixture: the pipeline repo carries no test
+    // data of its own. Each file matches a real featureCounts summary's shape (one row per
+    // Assigned/Unassigned_* status, one count column named after the aligned BAM) -- only
+    // Unassigned_NoFeatures/Unassigned_Ambiguity are of interest here; every other status must be
+    // dropped.
+
+    test("Unassigned_NoFeatures and Unassigned_Ambiguity are extracted per sample, other statuses dropped") {
+
+        when {
+            process {
+                """
+                def sample1 = file("\${workDir}/SAMPLE1.featureCounts.tsv.summary")
+                sample1.text = [
+                    ['Status', 'SAMPLE1.sorted.bam'],
+                    ['Assigned', '1000'],
+                    ['Unassigned_Unmapped', '5'],
+                    ['Unassigned_NoFeatures', '50'],
+                    ['Unassigned_Ambiguity', '3']
+                ].collect { r -> r.join('\\t') }.join('\\n') + '\\n'
+
+                def sample2 = file("\${workDir}/SAMPLE2.featureCounts.tsv.summary")
+                sample2.text = [
+                    ['Status', 'SAMPLE2.sorted.bam'],
+                    ['Assigned', '2000'],
+                    ['Unassigned_Unmapped', '7'],
+                    ['Unassigned_NoFeatures', '80'],
+                    ['Unassigned_Ambiguity', '9']
+                ].collect { r -> r.join('\\t') }.join('\\n') + '\\n'
+
+                input[0] = [ [ id:'test' ], [ sample1, sample2 ] ]
+                """
+            }
+        }
+
+        then {
+            def nofeatures = path(process.out.counts[0][1]).csv(sep: '\t', decompress: true, header: true).rows
+            def ambiguity  = path(process.out.counts[0][2]).csv(sep: '\t', decompress: true, header: true).rows
+            assertAll(
+                { assert process.success },
+
+                { assert nofeatures.size() == 2 },
+                { assert nofeatures.find { r -> r["sample"] == 'SAMPLE1' }["count"] as int == 50 },
+                { assert nofeatures.find { r -> r["sample"] == 'SAMPLE2' }["count"] as int == 80 },
+
+                { assert ambiguity.size() == 2 },
+                { assert ambiguity.find { r -> r["sample"] == 'SAMPLE1' }["count"] as int == 3 },
+                { assert ambiguity.find { r -> r["sample"] == 'SAMPLE2' }["count"] as int == 9 },
+
+                // Pseudo-features have no ORF/coordinates of their own -- padded as NA so the table
+                // still lines up with the real per-ORF counts tables it's unioned with downstream.
+                { assert nofeatures.every { r -> r["orf"] == '' } },
+                { assert nofeatures.every { r -> r["accno"] == '' } },
+
+                { assert snapshot(process.out.counts).match() }
+            )
+        }
+    }
+
+    test("Unassigned_NoFeatures and Unassigned_Ambiguity are extracted per sample, other statuses dropped - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                def summary = file("\${workDir}/empty.featureCounts.tsv.summary")
+                summary.text = ''
+
+                input[0] = [ [ id:'test' ], [ summary ] ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

@@ -50,8 +50,8 @@ nextflow_pipeline {
                 { assert path("${params.outdir}/summary_tables/magmap.rRNA.counts.tsv.gz").csv(sep: '\t', decompress: true, header: true).columns["count"].sum() > 10 },
                 { assert path("${params.outdir}/summary_tables/magmap.tmRNA.counts.tsv.gz").linesGzip.size() > 1 },
                 { assert path("${params.outdir}/summary_tables/magmap.tmRNA.counts.tsv.gz").csv(sep: '\t', decompress: true, header: true).columns["count"].sum() > 1 },
-                { assert path("${params.outdir}/summary_tables/magmap.tRNA.counts.tsv.gz").linesGzip.size() > 20 },
-                { assert path("${params.outdir}/summary_tables/magmap.tRNA.counts.tsv.gz").csv(sep: '\t', decompress: true, header: true).columns["count"].sum() > 15 },
+                { assert path("${params.outdir}/summary_tables/magmap.tRNA.counts.tsv.gz").linesGzip.size() > 5 },
+                { assert path("${params.outdir}/summary_tables/magmap.tRNA.counts.tsv.gz").csv(sep: '\t', decompress: true, header: true).columns["count"].sum() > 5 },
                 { assert path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.size() > 400 },
                 { assert path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.size() > 400 },
             )

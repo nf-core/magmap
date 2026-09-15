@@ -1,0 +1,56 @@
+{
+    "counts are split into one file per feature type, unmapped ORFs dropped - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.CDS.featureCounts.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,72883dc528ce6694ac7fdfbb032ec3f3"
+                ],
+                "counts": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.CDS.featureCounts.tsv:md5,d41d8cd98f00b204e9800998ecf8427e"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,72883dc528ce6694ac7fdfbb032ec3f3"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-11T20:20:34.922312876",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "counts are split into one file per feature type, unmapped ORFs dropped": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "feature": "CDS,tRNA"
+                    },
+                    [
+                        "test.CDS.featureCounts.tsv:md5,4ef15bef75a7e4ecacd5f60e294f4699",
+                        "test.tRNA.featureCounts.tsv:md5,c8bf8c2fe45fdcce5342fc052dfe32c3"
+                    ]
+                ]
+            ]
+        ],
+        "timestamp": "2026-09-11T10:25:30.832094808",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

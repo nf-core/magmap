@@ -1,0 +1,202 @@
+nextflow_process {
+
+    name "Test Process TIDYVERSE_SPLITFEATURECOUNTS"
+    script "../main.nf"
+    process "TIDYVERSE_SPLITFEATURECOUNTS"
+
+    tag "modules"
+    tag "modules_local"
+    tag "tidyverse"
+    tag "tidyverse/splitfeaturecounts"
+
+    // Inputs are built inline rather than read from a fixture: the pipeline repo carries no test
+    // data of its own. `counts` matches FEATURECOUNTS' own output shape (a comment line, then a
+    // header, then one row per ORF) for a single sample counted against every feature type at
+    // once; `ftypes` matches CATPROKKATSVS' orf-to-feature-type mapping. One ORF present in
+    // `counts` has no entry in `ftypes` and must be dropped by the inner join.
+
+    test("counts are split into one file per feature type, unmapped ORFs dropped") {
+
+        when {
+            process {
+                """
+                def counts = file("\${workDir}/test.featureCounts.tsv")
+                counts.text = [
+                    ['# Program:featureCounts'],
+                    ['Geneid', 'Chr', 'Start', 'End', 'Strand', 'Length', 'SAMPLE1.sorted.bam'],
+                    ['CDS_1', 'k1', '10', '100', '+', '91', '25'],
+                    ['CDS_2', 'k1', '200', '300', '+', '101', '40'],
+                    ['TRNA_1', 'k2', '5', '80', '-', '76', '7'],
+                    ['UNKNOWN_1', 'k3', '1', '50', '+', '50', '3']
+                ].collect { r -> r.join('\\t') }.join('\\n') + '\\n'
+
+                def ftypes = file("\${workDir}/test.orfs.tsv")
+                ftypes.text = [
+                    ['orf', 'ftype'],
+                    ['CDS_1', 'CDS'],
+                    ['CDS_2', 'CDS'],
+                    ['TRNA_1', 'tRNA']
+                ].collect { r -> r.join('\\t') }.join('\\n') + '\\n'
+
+                input[0] = [ [ id:'test', feature: 'CDS,tRNA' ], counts ]
+                input[1] = ftypes
+                """
+            }
+        }
+
+        then {
+            // Two feature types present, so Nextflow binds a List<Path>, not a single Path -- see
+            // the analogous gotcha noted where this module's output is consumed in workflows/magmap.nf.
+            def outfiles = process.out.counts[0][1]
+            def cds   = outfiles.find { f -> f.toString().contains('.CDS.') }
+            def trna  = outfiles.find { f -> f.toString().contains('.tRNA.') }
+            // Each split file starts with a "# Split by ..." comment line before the real header,
+            // so parse rows by hand rather than via .csv(), which has no header line to skip to.
+            def parseRows = { f ->
+                def lines  = new File(f.toString()).text.readLines().drop(1)
+                def header = lines[0].split('\t')
+                lines.drop(1).collect { line ->
+                    [header, line.split('\t')].transpose().collectEntries { k, v -> [(k): v] }
+                }
+            }
+            def cdsRows  = parseRows(cds)
+            def trnaRows = parseRows(trna)
+            assertAll(
+                { assert process.success },
+
+                { assert outfiles.size() == 2 },
+
+                { assert cdsRows.collect { r -> r["Geneid"] }.sort() == ['CDS_1', 'CDS_2'] },
+                { assert trnaRows.collect { r -> r["Geneid"] } == ['TRNA_1'] },
+
+                // UNKNOWN_1 has no ftype entry, so the inner join drops it from every split file.
+                { assert (cdsRows + trnaRows).every { r -> r["Geneid"] != 'UNKNOWN_1' } },
+
+                { assert snapshot(process.out.counts).match() }
+            )
+        }
+    }
+
+    test("a sample id containing a single-quote character doesn't break the generated R script") {
+
+        when {
+            process {
+                """
+                // Built via a character code, not a literal quote character, to avoid the
+                // escaping ambiguity of nesting quotes inside this outer triple-quoted string.
+                def sampleId = "sample" + Character.toString(39) + "x"
+
+                def counts = file("\${workDir}/quote.featureCounts.tsv")
+                counts.text = [
+                    ['# Program:featureCounts'],
+                    ['Geneid', 'Chr', 'Start', 'End', 'Strand', 'Length', "\${sampleId}.sorted.bam"],
+                    ['CDS_1', 'k1', '10', '100', '+', '91', '25']
+                ].collect { r -> r.join('\\t') }.join('\\n') + '\\n'
+
+                def ftypes = file("\${workDir}/quote.orfs.tsv")
+                ftypes.text = [
+                    ['orf', 'ftype'],
+                    ['CDS_1', 'CDS']
+                ].collect { r -> r.join('\\t') }.join('\\n') + '\\n'
+
+                input[0] = [ [ id: sampleId, feature: 'CDS' ], counts ]
+                input[1] = ftypes
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.counts[0][1].toString().contains("CDS.featureCounts.tsv") }
+            )
+        }
+    }
+
+    test("a requested feature type with zero matching rows still produces a file, not a crash") {
+
+        when {
+            process {
+                """
+                // No Geneid here has a matching ftypes entry, so the inner join leaves zero
+                // rows for the sole requested feature type -- this used to make the process
+                // fail outright ("Missing output file(s)"), since a mandatory glob output
+                // needs at least one match and nothing was ever written.
+                def counts = file("\${workDir}/nomatch.featureCounts.tsv")
+                counts.text = [
+                    ['# Program:featureCounts'],
+                    ['Geneid', 'Chr', 'Start', 'End', 'Strand', 'Length', 'SAMPLE1.sorted.bam'],
+                    ['UNKNOWN_1', 'k1', '1', '50', '+', '50', '3']
+                ].collect { r -> r.join('\\t') }.join('\\n') + '\\n'
+
+                def ftypes = file("\${workDir}/nomatch.orfs.tsv")
+                ftypes.text = "orf\\tftype\\n"
+
+                input[0] = [ [ id:'test', feature: 'CDS' ], counts ]
+                input[1] = ftypes
+                """
+            }
+        }
+
+        then {
+            def cdsFile = new File(process.out.counts[0][1].toString())
+            assertAll(
+                { assert process.success },
+                { assert cdsFile.name.contains('.CDS.featureCounts.tsv') },
+                { assert cdsFile.readLines().size() == 2 },
+            )
+        }
+    }
+
+    test("a sample id containing a shell metacharacter doesn't break the stub - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                def counts = file("\${workDir}/semicolon.featureCounts.tsv")
+                counts.text = ''
+                def ftypes = file("\${workDir}/semicolon.orfs.tsv")
+                ftypes.text = ''
+
+                input[0] = [ [ id: 'sample;rm x' ], counts ]
+                input[1] = ftypes
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.counts[0][1].toString().contains('sample;rm x.CDS.featureCounts.tsv') }
+            )
+        }
+    }
+
+    test("counts are split into one file per feature type, unmapped ORFs dropped - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                def counts = file("\${workDir}/empty.featureCounts.tsv")
+                counts.text = ''
+                def ftypes = file("\${workDir}/empty.orfs.tsv")
+                ftypes.text = ''
+
+                input[0] = [ [ id:'test' ], counts ]
+                input[1] = ftypes
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(process.out).match() }
+            )
+        }
+    }
+}

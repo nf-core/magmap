@@ -1,0 +1,41 @@
+name: "tidyverse_splitfeaturecounts"
+description: Split a combined-feature-type featureCounts table back into one native-format file per feature type
+keywords:
+  - featurecounts
+  - split
+  - annotation
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - counts:
+        type: file
+        description: Raw featureCounts output for one sample, counted against all feature types combined
+        pattern: "*.featureCounts.tsv"
+  - - ftypes:
+        type: file
+        description: ORF-to-feature-type mapping (e.g. CATPROKKATSVS's prokka-annotations.tsv.gz), with `orf` and `ftype` columns
+        pattern: "*.tsv.gz"
+output:
+  counts:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - "*.featureCounts.tsv":
+          type: file
+          description: One featureCounts.tsv-shaped file per feature type found in the input, named `<prefix>.<ftype>.featureCounts.tsv`
+          pattern: "*.featureCounts.tsv"
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+authors:
+  - "@erikrikarddaniel"

@@ -7,8 +7,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#251](https://github.com/nf-core/magmap/pull/251) - Add `Unassigned_NoFeatures`/`Unassigned_Ambiguity` columns to `overall_stats.tsv.gz`, closes [#220](https://github.com/nf-core/magmap/issues/220) (by @erikrikarddaniel).
+
 ### `Changed`
 
+- [#251](https://github.com/nf-core/magmap/pull/251) - Run FeatureCounts once per sample across all requested feature types together instead of once per (sample, feature type) (by @erikrikarddaniel).
 - [#250](https://github.com/nf-core/magmap/pull/250) - Reduce the `sourmash_genome_selection`/`species_preference` nf-test data from 7 to 3 archaeal species, cutting per-scenario Prokka annotation load and CI runtime, closes [#246](https://github.com/nf-core/magmap/issues/246) (by @erikrikarddaniel).
 - [#248](https://github.com/nf-core/magmap/pull/248) - Replace the local `COLLECT_FEATURECOUNTS` module with the shared `nf-core/modules` component `custom/collectfeaturecounts` ([#237](https://github.com/nf-core/magmap/issues/237), by @erikrikarddaniel).
 - [#243](https://github.com/nf-core/magmap/pull/243) - Document why BBMap, rather than e.g. Bowtie2, is used for read mapping in `conf/modules.config` (by @erikrikarddaniel).

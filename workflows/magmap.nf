@@ -14,6 +14,7 @@ include { GENOMES2ORFS                           } from '../modules/local/genome
 include { CATPROKKATSVS        	                 } from '../modules/local/catprokkatsvs'
 include { CHECK_DUPLICATES                       } from '../modules/local/check_duplicates'
 include { COLLECT_GENOMESELECTION                } from '../modules/local/collect/genomeselection'
+include { COLLECT_UNASSIGNEDCOUNTS               } from '../modules/local/collect/unassignedcounts'
 include { TIDYVERSE_JOINFEATURECOUNTSACCNO       } from '../modules/local/tidyverse/joinfeaturecountsaccno'
 include { CREATE_BBMAP_INDEX                     } from '../subworkflows/local/create_bbmap_index'
 include { CUSTOM_COLLECTFEATURECOUNTS            } from '../modules/nf-core/custom/collectfeaturecounts/main'
@@ -36,6 +37,7 @@ include { SOURMASH                               } from '../subworkflows/local/s
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts'
 include { TIDYVERSE_JOINMETADATA                 } from '../modules/local/tidyverse/joinmetadata/'
 include { TIDYVERSE_SELECTANNOTATOR              } from '../modules/local/tidyverse/selectannotator/'
+include { TIDYVERSE_SPLITFEATURECOUNTS           } from '../modules/local/tidyverse/splitfeaturecounts'
 include { validateInputSamplesheet               } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 
 /*
@@ -412,29 +414,69 @@ workflow MAGMAP {
         .combine(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect { it -> it[1]}.map { it -> [ it ] })
 
     //
-    // MODULE: FeatureCounts
+    // MODULE: FeatureCounts -- one call per sample, counting all requested feature types together
+    // (respects --features), rather than one call per (sample x feature type).
     //
+    ch_features_joined = ch_features.collect().map { it -> it.join(',') }
+
     ch_featurecounts = ch_stage_counts
-        .combine(ch_features)
-        .map { meta, bam, gff, feature ->
-            [ meta + [feature: feature], bam, gff ]
+        .combine(ch_features_joined)
+        .map { meta, bam, gff, features ->
+            [ meta + [feature: features], bam, gff ]
         }
 
     FEATURECOUNTS(ch_featurecounts)
     ch_multiqc_files = ch_multiqc_files.mix(
         FEATURECOUNTS.out.summary
             .map { meta, summary ->
-                def content = summary.text.replaceAll(/\S+\.sorted\.bam/, "${meta.id}.${meta.feature}")
-                [ "${meta.id}.${meta.feature}.featureCounts.tsv.summary", content ]
+                // meta.id only has to match /^\S+$/, so quoteReplacement() guards against a
+                // literal '$'/'\' being misread as a backreference by replaceAll().
+                def content = summary.text.replaceAll(/\S+\.sorted\.bam/, java.util.regex.Matcher.quoteReplacement(meta.id))
+                [ "${meta.id}.featureCounts.tsv.summary", content ]
             }
             .collectFile { name, content -> [ name, content ] }
             .collect()
         )
 
     //
+    // MODULE: Record Unassigned_NoFeatures/Unassigned_Ambiguity counts (from the single combined
+    // FeatureCounts run above) for the overall stats table -- these have no associated ORF, so
+    // they never enter the per-feature counts tables below.
+    //
+    COLLECT_UNASSIGNEDCOUNTS(
+        FEATURECOUNTS.out.summary
+            .map { _meta, summary -> summary }
+            .collect()
+            .map { it -> [ [ id: 'magmap' ], it ] }
+    )
+
+    // Splits the combined per-sample FeatureCounts output back into per-feature-type files
+    // (via CATPROKKATSVS's orf-to-ftype mapping), so downstream stays unchanged.
+    // .first() broadcasts the single CATPROKKATSVS emission to every sample below --
+    // without it, a queue channel with one item would only pair with the first sample.
+    TIDYVERSE_SPLITFEATURECOUNTS(
+        FEATURECOUNTS.out.counts,
+        CATPROKKATSVS.out.tsv.map { _meta, tsv -> tsv }.first()
+    )
+
+    //
     // MODULE: Collect featurecounts output counts in one table
     //
-    ch_collect_featurecounts = FEATURECOUNTS.out.counts
+    ch_collect_featurecounts = TIDYVERSE_SPLITFEATURECOUNTS.out.counts
+        .flatMap { meta, files ->
+            // A sample with only one requested feature type (e.g. Bakta's GFF has just CDS)
+            // makes Nextflow emit a single Path, not a List -- and Path is Iterable (over
+            // path segments), so an un-normalised collect{} would silently walk directory
+            // components instead. Force a List first.
+            def fileList = files instanceof List ? files : [files]
+            fileList.collect { f ->
+                // Anchored on the fixed suffix, not a first-dot/second-dot split: sample
+                // IDs only have to match /^\S+$/, so a dotted id (e.g. "Station1.Rep2")
+                // would otherwise be misparsed as part of the feature type.
+                def feature = f.name.replaceFirst(/\.featureCounts\.tsv$/, '').tokenize('.').last()
+                [ meta + [feature: feature], f ]
+            }
+        }
         .map { meta, file -> [ meta.feature, [meta, file] ] }
         .groupTuple()
         .map { feature, data ->
@@ -448,10 +490,9 @@ workflow MAGMAP {
 
     CUSTOM_COLLECTFEATURECOUNTS(ch_collect_featurecounts)
 
-    // CUSTOM_COLLECTFEATURECOUNTS itself is kept generic (no genome-accession lookup), so this
-    // pipeline-specific join is a separate step -- see nf-core/magmap#237, where this
-    // module is being split out into a shared nf-core/modules component and this join
-    // stays local, since attaching accno is specific to a genome-collection pipeline.
+    // CUSTOM_COLLECTFEATURECOUNTS itself is kept generic (no genome-accession lookup), since
+    // it's shared with other pipelines; attaching accno is specific to a genome-collection
+    // pipeline, so that join stays local, as a separate step.
     // .first() converts the single GENOMES2ORFS emission to a value channel so it's
     // reused for every one of CUSTOM_COLLECTFEATURECOUNTS's per-feature-type emissions --
     // without it, a queue channel with only one item would only pair with the first
@@ -460,7 +501,11 @@ workflow MAGMAP {
         CUSTOM_COLLECTFEATURECOUNTS.out.counts,
         GENOMES2ORFS.out.genomes2orfs.map { _m, g2orfs -> g2orfs }.first()
     )
-    ch_fcs_for_stats      = TIDYVERSE_JOINFEATURECOUNTSACCNO.out.counts.collect { _meta, tsv -> tsv }.map { it -> [ it ] }
+    ch_fcs_for_stats      = TIDYVERSE_JOINFEATURECOUNTSACCNO.out.counts
+        .map { _meta, tsv -> tsv }
+        .mix(COLLECT_UNASSIGNEDCOUNTS.out.counts.flatMap { _meta, nofeatures, ambiguity -> [ nofeatures, ambiguity ] })
+        .collect()
+        .map { it -> [ it ] }
     ch_collect_stats      = ch_collect_stats.combine(ch_fcs_for_stats)
 
     //

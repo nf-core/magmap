@@ -1,7 +1,7 @@
 {
     "-profile test_single": {
         "content": [
-            62,
+            57,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -30,6 +30,13 @@
                     "readr": "2.1.5",
                     "tidyr": "1.3.1",
                     "purrr": "1.1.0",
+                    "stringr": "1.5.2"
+                },
+                "COLLECT_UNASSIGNEDCOUNTS": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2"
                 },
                 "CUSTOM_COLLECTFEATURECOUNTS": {
@@ -96,6 +103,11 @@
                     "stringr": "1.5.2",
                     "purrr": "1.1.0"
                 },
+                "TIDYVERSE_SPLITFEATURECOUNTS": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
+                },
                 "TRIMGALORE": {
                     "trimgalore": "2.3.0"
                 },
@@ -116,30 +128,12 @@
                 "fastqc/s1_2_fastqc.html",
                 "fastqc/s2_fastqc.html",
                 "featurecounts",
-                "featurecounts/s0.CDS.featureCounts.tsv",
-                "featurecounts/s0.CDS.featureCounts.tsv.summary",
-                "featurecounts/s0.rRNA.featureCounts.tsv",
-                "featurecounts/s0.rRNA.featureCounts.tsv.summary",
-                "featurecounts/s0.tRNA.featureCounts.tsv",
-                "featurecounts/s0.tRNA.featureCounts.tsv.summary",
-                "featurecounts/s0.tmRNA.featureCounts.tsv",
-                "featurecounts/s0.tmRNA.featureCounts.tsv.summary",
-                "featurecounts/s1.CDS.featureCounts.tsv",
-                "featurecounts/s1.CDS.featureCounts.tsv.summary",
-                "featurecounts/s1.rRNA.featureCounts.tsv",
-                "featurecounts/s1.rRNA.featureCounts.tsv.summary",
-                "featurecounts/s1.tRNA.featureCounts.tsv",
-                "featurecounts/s1.tRNA.featureCounts.tsv.summary",
-                "featurecounts/s1.tmRNA.featureCounts.tsv",
-                "featurecounts/s1.tmRNA.featureCounts.tsv.summary",
-                "featurecounts/s2.CDS.featureCounts.tsv",
-                "featurecounts/s2.CDS.featureCounts.tsv.summary",
-                "featurecounts/s2.rRNA.featureCounts.tsv",
-                "featurecounts/s2.rRNA.featureCounts.tsv.summary",
-                "featurecounts/s2.tRNA.featureCounts.tsv",
-                "featurecounts/s2.tRNA.featureCounts.tsv.summary",
-                "featurecounts/s2.tmRNA.featureCounts.tsv",
-                "featurecounts/s2.tmRNA.featureCounts.tsv.summary",
+                "featurecounts/s0.featureCounts.tsv",
+                "featurecounts/s0.featureCounts.tsv.summary",
+                "featurecounts/s1.featureCounts.tsv",
+                "featurecounts/s1.featureCounts.tsv.summary",
+                "featurecounts/s2.featureCounts.tsv",
+                "featurecounts/s2.featureCounts.tsv.summary",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/bbduk-filtered-barplot_Bases.txt",
@@ -219,7 +213,7 @@
                 "multiqc_genome_selection.txt:md5,a0bf13820166e6119e3bd0fc2cd9fe5b"
             ],
             [
-                "sample\tn_post_trimming\tn_non_contaminated\tidxs_n_mapped\tidxs_n_unmapped\tCDS\trRNA\ttRNA\ttmRNA"
+                "sample\tn_post_trimming\tn_non_contaminated\tidxs_n_mapped\tidxs_n_unmapped\tCDS\tUnassigned_Ambiguity\tUnassigned_NoFeatures\trRNA\ttRNA\ttmRNA"
             ],
             4,
             [
@@ -247,7 +241,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-09-01T18:29:37.758395075",
+        "timestamp": "2026-09-11T07:53:22.45175152",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

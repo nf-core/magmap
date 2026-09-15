@@ -1,0 +1,55 @@
+{
+    "Unassigned_NoFeatures and Unassigned_Ambiguity are extracted per sample, other statuses dropped - stub": {
+        "content": [
+            {
+                "0": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.Unassigned_NoFeatures.counts.tsv.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                        "test.Unassigned_Ambiguity.counts.tsv.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                    ]
+                ],
+                "1": [
+                    "versions.yml:md5,b88938a33251f1e42716c698fe4ddd12"
+                ],
+                "counts": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.Unassigned_NoFeatures.counts.tsv.gz:md5,68b329da9893e34099c7d8ad5cb9c940",
+                        "test.Unassigned_Ambiguity.counts.tsv.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                    ]
+                ],
+                "versions": [
+                    "versions.yml:md5,b88938a33251f1e42716c698fe4ddd12"
+                ]
+            }
+        ],
+        "timestamp": "2026-09-10T15:52:19.895197064",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    },
+    "Unassigned_NoFeatures and Unassigned_Ambiguity are extracted per sample, other statuses dropped": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test"
+                    },
+                    "test.Unassigned_NoFeatures.counts.tsv.gz:md5,cda3c0596dc79a69ef755dc5b1af9eb8",
+                    "test.Unassigned_Ambiguity.counts.tsv.gz:md5,c078e5fb693e68d5ebc8e0a462e1979a"
+                ]
+            ]
+        ],
+        "timestamp": "2026-09-10T15:50:50.969076381",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

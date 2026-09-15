@@ -1,7 +1,7 @@
 {
     "annotator: bakta_all": {
         "content": [
-            59,
+            63,
             {
                 "BAKTA_VERSION": {
                     "bakta": "1.12.0"
@@ -30,6 +30,13 @@
                     "readr": "2.1.5",
                     "tidyr": "1.3.1",
                     "purrr": "1.1.0",
+                    "stringr": "1.5.2"
+                },
+                "COLLECT_UNASSIGNEDCOUNTS": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2"
                 },
                 "CUSTOM_COLLECTFEATURECOUNTS": {
@@ -99,6 +106,11 @@
                     "dplyr": "1.1.4",
                     "stringr": "1.5.2"
                 },
+                "TIDYVERSE_SPLITFEATURECOUNTS": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
+                },
                 "TRIMGALORE": {
                     "trimgalore": "2.3.0"
                 },
@@ -121,12 +133,12 @@
                 "fastqc/s2_1_fastqc.html",
                 "fastqc/s2_2_fastqc.html",
                 "featurecounts",
-                "featurecounts/s0.CDS.featureCounts.tsv",
-                "featurecounts/s0.CDS.featureCounts.tsv.summary",
-                "featurecounts/s1.CDS.featureCounts.tsv",
-                "featurecounts/s1.CDS.featureCounts.tsv.summary",
-                "featurecounts/s2.CDS.featureCounts.tsv",
-                "featurecounts/s2.CDS.featureCounts.tsv.summary",
+                "featurecounts/s0.featureCounts.tsv",
+                "featurecounts/s0.featureCounts.tsv.summary",
+                "featurecounts/s1.featureCounts.tsv",
+                "featurecounts/s1.featureCounts.tsv.summary",
+                "featurecounts/s2.featureCounts.tsv",
+                "featurecounts/s2.featureCounts.tsv.summary",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
@@ -210,7 +222,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-09-02T05:53:18.341014805",
+        "timestamp": "2026-09-10T17:04:47.555461231",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
@@ -218,7 +230,7 @@
     },
     "annotator: bakta_supported_only": {
         "content": [
-            54,
+            58,
             {
                 "BAKTA_VERSION": {
                     "bakta": "1.12.0"
@@ -247,6 +259,13 @@
                     "readr": "2.1.5",
                     "tidyr": "1.3.1",
                     "purrr": "1.1.0",
+                    "stringr": "1.5.2"
+                },
+                "COLLECT_UNASSIGNEDCOUNTS": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2"
                 },
                 "CUSTOM_COLLECTFEATURECOUNTS": {
@@ -319,6 +338,11 @@
                     "dplyr": "1.1.4",
                     "stringr": "1.5.2"
                 },
+                "TIDYVERSE_SPLITFEATURECOUNTS": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
+                },
                 "TRIMGALORE": {
                     "trimgalore": "2.3.0"
                 },
@@ -341,12 +365,12 @@
                 "fastqc/s2_1_fastqc.html",
                 "fastqc/s2_2_fastqc.html",
                 "featurecounts",
-                "featurecounts/s0.CDS.featureCounts.tsv",
-                "featurecounts/s0.CDS.featureCounts.tsv.summary",
-                "featurecounts/s1.CDS.featureCounts.tsv",
-                "featurecounts/s1.CDS.featureCounts.tsv.summary",
-                "featurecounts/s2.CDS.featureCounts.tsv",
-                "featurecounts/s2.CDS.featureCounts.tsv.summary",
+                "featurecounts/s0.featureCounts.tsv",
+                "featurecounts/s0.featureCounts.tsv.summary",
+                "featurecounts/s1.featureCounts.tsv",
+                "featurecounts/s1.featureCounts.tsv.summary",
+                "featurecounts/s2.featureCounts.tsv",
+                "featurecounts/s2.featureCounts.tsv.summary",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
@@ -430,7 +454,7 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-09-01T15:59:35.057065607",
+        "timestamp": "2026-09-10T16:23:08.624339431",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"
