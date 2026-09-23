@@ -11,6 +11,7 @@ The directories listed below will be created in the results directory after the 
 The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results are organized as follow:
 
 - [Summary tables](#summary-tables) - Tab separated tables ready for further analysis in tools like R and Python
+- [Proteins](#proteins) - Protein sequences of all selected genomes
 - [Module output](#module-output)
   - [Preprocessing](#preprocessing)
     - [FastQC](#fastqc) - Read quality control
@@ -44,6 +45,21 @@ With [`--save_parquet`](https://nf-co.re/magmap/parameters/#save_parquet), the s
   - `magmap.genomes2orfs.tsv.gz`: Translation table from ORF identifiers to genome identifiers.
   - `magmap.prokka-annotations.tsv.gz`: Annotation details extracted from GFF files.
   - `*.parquet`: with `--save_parquet`, a Parquet copy of each of the above (same basename, `.parquet` extension instead of `.tsv.gz`).
+
+</details>
+
+## Proteins
+
+Amino acid sequences of the CDSs of all genomes selected for mapping, in one file.
+Sequences are named by CDS ID, the same identifiers used for ORFs in the summary tables.
+Genomes annotated by Prokka or Bakta contribute those tools' translations.
+CDSs of genomes that came with a gff file are translated with [gffread](https://github.com/gpertea/gffread), which uses the standard genetic code: proteins starting with an alternative start codon (e.g. GTG or TTG) therefore begin with the corresponding amino acid (e.g. V or L) rather than M.
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `proteins/`
+  - `magmap.proteins.faa.gz`: Protein FASTA, one record per CDS.
 
 </details>
 

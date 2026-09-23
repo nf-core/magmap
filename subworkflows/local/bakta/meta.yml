@@ -23,6 +23,12 @@ output:
         Bakta's nucleotide FASTA output per genome
         Structure: [ val(meta), path(fna) ]
       pattern: "*.fna"
+  - faa:
+      type: file
+      description: |
+        Bakta's protein FASTA output per genome
+        Structure: [ val(meta), path(faa) ]
+      pattern: "*.faa.gz"
   - gff:
       type: file
       description: |

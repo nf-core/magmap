@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#NN](https://github.com/nf-core/magmap/pull/NN) - Add `proteins/magmap.proteins.faa.gz`, a protein FASTA of all selected genomes, translating CDSs with gffread for genomes that come with a gff file, closes [#236](https://github.com/nf-core/magmap/issues/236) (by @erikrikarddaniel).
 - [#251](https://github.com/nf-core/magmap/pull/251) - Add `Unassigned_NoFeatures`/`Unassigned_Ambiguity` columns to `overall_stats.tsv.gz`, closes [#220](https://github.com/nf-core/magmap/issues/220) (by @erikrikarddaniel).
 
 ### `Changed`
@@ -29,6 +30,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 | Tool      | Previous version | New version |
 | --------- | ---------------- | ----------- |
 | nft-utils | 0.0.3            | 1.2.0       |
+| gffread   | -                | 0.12.7      |
 
 ### `Deprecated`
 

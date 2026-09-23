@@ -9,6 +9,7 @@ include { BAM_SORT_STATS_SAMTOOLS                } from '../subworkflows/nf-core
 include { BBMAP_ALIGN                            } from '../modules/nf-core/bbmap/align'
 include { BBMAP_BBDUK                            } from '../modules/nf-core/bbmap/bbduk'
 include { CAT_FASTQ            	                 } from '../modules/nf-core/cat/fastq'
+include { CAT_MANY as CAT_FAA                    } from '../modules/local/cat/many'
 include { CAT_MANY as CAT_GFF                    } from '../modules/local/cat/many'
 include { GENOMES2ORFS                           } from '../modules/local/genomes2orfs'
 include { CATPROKKATSVS        	                 } from '../modules/local/catprokkatsvs'
@@ -22,6 +23,7 @@ include { CUSTOM_COLLECTSTATS                    } from '../modules/nf-core/cust
 include { DUCKDB_TABLE2PARQUET                   } from '../modules/nf-core/duckdb/table2parquet'
 include { FASTQC                                 } from '../modules/nf-core/fastqc'
 include { FASTQC_TRIMGALORE                      } from '../subworkflows/local/fastqc_trimgalore'
+include { GFFREAD_PROTEINS                       } from '../modules/local/gffread/proteins'
 include { methodsDescriptionText                 } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { MULTIQC                                } from '../modules/nf-core/multiqc'
 include { paramsSummaryMap                       } from 'plugin/nf-schema'
@@ -288,10 +290,12 @@ workflow MAGMAP {
 
     ch_bakta_fna = channel.empty()
     ch_bakta_gff = channel.empty()
+    ch_bakta_faa = channel.empty()
     if ( annotator != 'prokka' ) {
         BAKTA(ch_no_gff_bakta)
         ch_bakta_fna = BAKTA.out.fna
         ch_bakta_gff = BAKTA.out.gff
+        ch_bakta_faa = BAKTA.out.faa
         ch_multiqc_files = ch_multiqc_files.mix(BAKTA.out.txt.collect{ _meta, txt -> txt })
     }
 
@@ -393,6 +397,23 @@ workflow MAGMAP {
     // MODULE: Concatenate gff files
     //
     CAT_GFF([id: 'genomes'], ch_collected_genomes.map { genome -> genome.genome_gff }.collect())
+
+    //
+    // MODULE: Translate genomes that came with a gff, and concatenate with Prokka/Bakta proteins
+    //
+    GFFREAD_PROTEINS(
+        ch_genomes
+            .filter { g -> g.genome_gff }
+            .map { g -> [ [ id: g.accno ], g.genome_fna, g.genome_gff ] }
+    )
+    CAT_FAA(
+        [ id: 'magmap.proteins.faa' ],
+        PROKKA.out.faa
+            .mix(ch_bakta_faa)
+            .mix(GFFREAD_PROTEINS.out.faa)
+            .map { _meta, faa -> faa }
+            .collect()
+    )
 
     //
     // MODULE: Create an index file from genome accnos to feature prefixes

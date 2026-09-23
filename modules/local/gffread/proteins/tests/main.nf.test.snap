@@ -1,0 +1,54 @@
+{
+    "inline genome - fna, gff3 - stub": {
+        "content": [
+            {
+                "faa": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.faa.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                    ]
+                ],
+                "versions_gffread": [
+                    [
+                        "GFFREAD_PROTEINS",
+                        "gffread",
+                        "0.12.7"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-09-23T18:39:49.879010558",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "inline genome - fna, gff3": {
+        "content": [
+            {
+                "faa": [
+                    [
+                        {
+                            "id": "test"
+                        },
+                        "test.faa.gz:md5,3a4939a2226d9cb465947fc1258b9400"
+                    ]
+                ],
+                "versions_gffread": [
+                    [
+                        "GFFREAD_PROTEINS",
+                        "gffread",
+                        "0.12.7"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-09-23T18:39:42.653508584",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}
