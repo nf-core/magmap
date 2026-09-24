@@ -1,9 +1,9 @@
 nextflow_process {
 
     name "Test patched GFFREAD protein naming"
-    script "../modules/nf-core/gffread/main.nf"
+    script "../../../modules/nf-core/gffread/main.nf"
     process "GFFREAD"
-    config "./gffread.config"
+    config "./nextflow.config"
 
     tag "gffread"
 
