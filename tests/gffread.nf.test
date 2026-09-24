@@ -1,0 +1,73 @@
+nextflow_process {
+
+    name "Test patched GFFREAD protein naming"
+    script "../modules/nf-core/gffread/main.nf"
+    process "GFFREAD"
+    config "./gffread.config"
+
+    tag "gffread"
+
+    // A CDS without parent, a CDS under a gene, and a split CDS under a gene/mRNA pair.
+    // Proteins must be named by CDS ID, as FeatureCounts reports them.
+    def fna = '>c1\\nATGAAATTTGGGCCCAAATTTGGGTAAATGCCCGGGAAACCCTTTCCCGGGAAATAAATGGAAGAAGAAGAAGAAGAAGAATAA\\n'
+    def gff = [
+        '##gff-version 3',
+        'c1\\tx\\tgene\\t1\\t27\\t.\\t+\\t.\\tID=gene-A',
+        'c1\\tx\\tCDS\\t1\\t27\\t.\\t+\\t0\\tID=cds-A;Parent=gene-A',
+        'c1\\tx\\tgene\\t28\\t57\\t.\\t+\\t.\\tID=gene-B',
+        'c1\\tx\\tmRNA\\t28\\t57\\t.\\t+\\t.\\tID=rna-B;Parent=gene-B',
+        'c1\\tx\\tCDS\\t28\\t39\\t.\\t+\\t0\\tID=cds-B;Parent=rna-B',
+        'c1\\tx\\tCDS\\t43\\t57\\t.\\t+\\t0\\tID=cds-B;Parent=rna-B',
+        'c1\\tx\\tCDS\\t58\\t84\\t.\\t+\\t0\\tID=cds-C'
+    ].join('\\n') + '\\n'
+    def proteins = [ '>cds-A', 'MKFGPKFG', '>cds-B', 'MPGKFPGK', '>cds-C', 'MEEEEEEE' ]
+
+    test("inline genome - fna, gff3") {
+
+        when {
+            process {
+                """
+                input[0] = channel.of('${gff}').collectFile(name: 'test.gff').map { g -> [ [ id:'test' ], g ] }
+                input[1] = channel.of('${fna}').collectFile(name: 'test.fna')
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert path(process.out.gffread_fasta[0][1]).readLines() == proteins },
+                { assert snapshot(sanitizeOutput(process.out)).match() }
+            )
+        }
+
+    }
+
+    test("inline genome - fna.gz, gff3.gz") {
+
+        when {
+            process {
+                """
+                def gz = { name, text ->
+                    def f = file("\${workDir}/\${name}")
+                    f.parent.mkdirs()
+                    new java.util.zip.GZIPOutputStream(f.newOutputStream()).withWriter { w -> w << text }
+                    f
+                }
+                input[0] = channel.of([ [ id:'test' ], gz.call('test.gff.gz', '${gff}') ])
+                input[1] = channel.of(gz.call('test.fna.gz', '${fna}'))
+                """
+            }
+        }
+
+        then {
+            assert process.success
+            assertAll(
+                { assert path(process.out.gffread_fasta[0][1]).readLines() == proteins },
+                { assert snapshot(sanitizeOutput(process.out)).match() }
+            )
+        }
+
+    }
+
+}

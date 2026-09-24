@@ -23,7 +23,7 @@ include { CUSTOM_COLLECTSTATS                    } from '../modules/nf-core/cust
 include { DUCKDB_TABLE2PARQUET                   } from '../modules/nf-core/duckdb/table2parquet'
 include { FASTQC                                 } from '../modules/nf-core/fastqc'
 include { FASTQC_TRIMGALORE                      } from '../subworkflows/local/fastqc_trimgalore'
-include { GFFREAD_PROTEINS                       } from '../modules/local/gffread/proteins'
+include { GFFREAD                                } from '../modules/nf-core/gffread'
 include { methodsDescriptionText                 } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { MULTIQC                                } from '../modules/nf-core/multiqc'
 include { paramsSummaryMap                       } from 'plugin/nf-schema'
@@ -401,16 +401,19 @@ workflow MAGMAP {
     //
     // MODULE: Translate genomes that came with a gff, and concatenate with Prokka/Bakta proteins
     //
-    GFFREAD_PROTEINS(
-        ch_genomes
-            .filter { g -> g.genome_gff }
-            .map { g -> [ [ id: g.accno ], g.genome_fna, g.genome_gff ] }
-    )
+    ch_genomes
+        .filter { g -> g.genome_gff }
+        .multiMap { g ->
+            gff:   [ [ id: g.accno ], g.genome_gff ]
+            fasta: g.genome_fna
+        }
+        .set { ch_gffread }
+    GFFREAD(ch_gffread.gff, ch_gffread.fasta)
     CAT_FAA(
         [ id: 'magmap.proteins.faa' ],
         PROKKA.out.faa
             .mix(ch_bakta_faa)
-            .mix(GFFREAD_PROTEINS.out.faa)
+            .mix(GFFREAD.out.gffread_fasta)
             .map { _meta, faa -> faa }
             .collect()
     )

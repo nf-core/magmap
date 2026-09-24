@@ -1,25 +1,34 @@
 {
-    "inline genome - fna, gff3 - stub": {
+    "inline genome - fna.gz, gff3.gz": {
         "content": [
             {
-                "faa": [
+                "bed": [
+                    
+                ],
+                "gffread_fasta": [
                     [
                         {
                             "id": "test"
                         },
-                        "test.faa.gz:md5,68b329da9893e34099c7d8ad5cb9c940"
+                        "test.fasta:md5,3a4939a2226d9cb465947fc1258b9400"
                     ]
+                ],
+                "gffread_gff": [
+                    
+                ],
+                "gtf": [
+                    
                 ],
                 "versions_gffread": [
                     [
-                        "GFFREAD_PROTEINS",
+                        "GFFREAD",
                         "gffread",
                         "0.12.7"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-09-23T18:39:49.879010558",
+        "timestamp": "2026-09-24T16:52:55.024458073",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -28,24 +37,33 @@
     "inline genome - fna, gff3": {
         "content": [
             {
-                "faa": [
+                "bed": [
+                    
+                ],
+                "gffread_fasta": [
                     [
                         {
                             "id": "test"
                         },
-                        "test.faa.gz:md5,3a4939a2226d9cb465947fc1258b9400"
+                        "test.fasta:md5,3a4939a2226d9cb465947fc1258b9400"
                     ]
+                ],
+                "gffread_gff": [
+                    
+                ],
+                "gtf": [
+                    
                 ],
                 "versions_gffread": [
                     [
-                        "GFFREAD_PROTEINS",
+                        "GFFREAD",
                         "gffread",
                         "0.12.7"
                     ]
                 ]
             }
         ],
-        "timestamp": "2026-09-23T18:39:42.653508584",
+        "timestamp": "2026-09-24T14:26:54.168006969",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"

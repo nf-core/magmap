@@ -76,7 +76,7 @@
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
                 },
-                "GFFREAD_PROTEINS": {
+                "GFFREAD": {
                     "gffread": "0.12.7"
                 },
                 "PROKKAGFF2TSV": {
@@ -566,7 +566,7 @@
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
                 },
-                "GFFREAD_PROTEINS": {
+                "GFFREAD": {
                     "gffread": "0.12.7"
                 },
                 "PROKKAGFF2TSV": {
@@ -844,7 +844,7 @@
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
                 },
-                "GFFREAD_PROTEINS": {
+                "GFFREAD": {
                     "gffread": "0.12.7"
                 },
                 "PROKKAGFF2TSV": {

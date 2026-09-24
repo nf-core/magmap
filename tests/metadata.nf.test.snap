@@ -64,7 +64,7 @@
                 "GENOMES2ORFS": {
                     "sed": 4.9
                 },
-                "GFFREAD_PROTEINS": {
+                "GFFREAD": {
                     "gffread": "0.12.7"
                 },
                 "PROKKAGFF2TSV": {

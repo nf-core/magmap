@@ -457,7 +457,7 @@
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
                 "multiqc_fastqc.txt:md5,ce7f1eb1bdf9591922528372e806963d",
                 "multiqc_genome_selection.txt:md5,5d01e65942a79929138b1e43f1d058ab",
-                "magmap.proteins.faa.gz:md5,a837b022aac4d801b2313552fbc8056e"
+                "magmap.proteins.faa.gz:md5,3d8d2621db06784234cdf3a516a90d0b"
             ],
             [
                 "accno\tcheckm_completeness\tcheckm_contamination\tcheckm_strain_heterogeneity\tcontig_count\tgenome_size\tgtdb_genome_representative\tgtdb_representative\tgtdb_taxonomy\tsource\tpriority"
