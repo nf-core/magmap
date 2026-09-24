@@ -25,20 +25,6 @@ workflow SOURMASH {
         skip_sourmash               // Boolean that controls whether user-provided genomes are sketched, indexed and used in gathering genomes
 
     main:
-        ch_ncbi_genomeinfo = ch_remote_genome_sources
-                .splitCsv(skip: 1, header: true, sep: '\t')
-                // NCBI marks some suppressed/replaced assemblies in the live assembly_summary
-                // catalogs with an empty ftp_path -- such a genome can never be fetched anyway,
-                // so drop it here rather than crash the whole run on a null-safe string op below.
-                .filter { row -> row.ftp_path }
-                .map { row ->
-                    [
-                        accno: row["#assembly_accession"],
-                        genome_fna: "${row.ftp_path}/${row.ftp_path - ~/\/$/ - ~/.*\//}_genomic.fna.gz",
-                        genome_gff: ""
-                    ]
-                }
-
         ch_sample_sigs = channel.empty()
         if ( index_list || ! skip_sourmash ) {
             SAMPLE_SKETCH(ch_sample_reads)
@@ -81,6 +67,20 @@ workflow SOURMASH {
 
         // Call Sourmash with indices for remote genomes if present
         if ( index_list ) {
+            ch_ncbi_genomeinfo = ch_remote_genome_sources
+                .splitCsv(skip: 1, header: true, sep: '\t')
+                // NCBI marks some suppressed/replaced assemblies in the live assembly_summary
+                // catalogs with an empty ftp_path -- such a genome can never be fetched anyway,
+                // so drop it here rather than crash the whole run on a null-safe string op below.
+                .filter { row -> row.ftp_path }
+                .map { row ->
+                    [
+                        accno: row["#assembly_accession"],
+                        genome_fna: "${row.ftp_path}/${row.ftp_path - ~/\/$/ - ~/.*\//}_genomic.fna.gz",
+                        genome_gff: ""
+                    ]
+                }
+
             // To make sure that all combinations of sample signatures and indexes are gathered below,
             // combine the two channels.
             // (In theory, this should not be required as the command supposedly can take multiple samples
