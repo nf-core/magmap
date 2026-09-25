@@ -50,10 +50,11 @@ With [`--save_parquet`](https://nf-co.re/magmap/parameters/#save_parquet), the s
 
 ## Proteins
 
-Amino acid sequences of the CDSs of all genomes selected for mapping, in one file.
-Sequences are named by CDS ID, the same identifiers used for ORFs in the summary tables.
-Genomes annotated by Prokka or Bakta contribute those tools' translations.
-CDSs of genomes that came with a gff file are translated with [gffread](https://github.com/gpertea/gffread), which uses the standard genetic code: proteins starting with an alternative start codon (e.g. GTG or TTG) therefore begin with the corresponding amino acid (e.g. V or L) rather than M.
+One protein FASTA file holds the proteins of all genomes selected for mapping.
+Each protein is named by its CDS ID, which is also its ORF identifier in the summary tables.
+For genomes annotated by Prokka or Bakta, the proteins come from the annotation output.
+For genomes that came with a gff file, [gffread](https://github.com/gpertea/gffread) translates the CDSs.
+gffread uses the standard genetic code, so a protein with an alternative start codon (e.g. GTG or TTG) begins with V or L instead of M.
 
 <details markdown="1">
 <summary>Output files</summary>
