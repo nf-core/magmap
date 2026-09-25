@@ -1,7 +1,7 @@
 {
     "species_preference: gtdb": {
         "content": [
-            63,
+            64,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -11,6 +11,9 @@
                 },
                 "CATPROKKATSVS": {
                     "pigz": 2.8
+                },
+                "CAT_FAA": {
+                    "pigz": 2.6
                 },
                 "CAT_FNA": {
                     "pigz": 2.6
@@ -169,6 +172,8 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_magmap_software_mqc_versions.yml",
+                "proteins",
+                "proteins/magmap.proteins.faa.gz",
                 "samtools",
                 "samtools/arc00.flagstat",
                 "samtools/arc00.idxstats",
@@ -199,7 +204,8 @@
                 "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
                 "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
-                "multiqc_genome_selection.txt:md5,9c60cc58c7947ca4b3ea3ecdf576566c"
+                "multiqc_genome_selection.txt:md5,9c60cc58c7947ca4b3ea3ecdf576566c",
+                "magmap.proteins.faa.gz:md5,8ae424e881f890a1ae0aa42c9ebd708c"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\tUnassigned_Ambiguity\tUnassigned_NoFeatures"
@@ -222,15 +228,15 @@
             ],
             1
         ],
-        "timestamp": "2026-09-11T09:54:01.482593397",
+        "timestamp": "2026-09-23T22:32:11.956030865",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     },
     "species_preference: gtdb, genomeset_mode: sample": {
         "content": [
-            67,
+            68,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -240,6 +246,9 @@
                 },
                 "CATPROKKATSVS": {
                     "pigz": 2.8
+                },
+                "CAT_FAA": {
+                    "pigz": 2.6
                 },
                 "CAT_FNA": {
                     "pigz": 2.6
@@ -400,6 +409,8 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_magmap_software_mqc_versions.yml",
+                "proteins",
+                "proteins/magmap.proteins.faa.gz",
                 "samtools",
                 "samtools/arc00.flagstat",
                 "samtools/arc00.idxstats",
@@ -432,7 +443,8 @@
                 "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
                 "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
-                "multiqc_genome_selection.txt:md5,3e9c9004b3067ba0cb71f8cd9b413ddd"
+                "multiqc_genome_selection.txt:md5,3e9c9004b3067ba0cb71f8cd9b413ddd",
+                "magmap.proteins.faa.gz:md5,8ae424e881f890a1ae0aa42c9ebd708c"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\tUnassigned_Ambiguity\tUnassigned_NoFeatures"
@@ -477,15 +489,15 @@
             ],
             1
         ],
-        "timestamp": "2026-09-11T10:02:03.314825045",
+        "timestamp": "2026-09-23T22:40:42.309251882",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     },
     "species_preference: completeness, genomeset_mode: sample": {
         "content": [
-            66,
+            68,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -495,6 +507,9 @@
                 },
                 "CATPROKKATSVS": {
                     "pigz": 2.8
+                },
+                "CAT_FAA": {
+                    "pigz": 2.6
                 },
                 "CAT_FNA": {
                     "pigz": 2.6
@@ -556,6 +571,9 @@
                 },
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
+                },
+                "GFFREAD": {
+                    "gffread": "0.12.7"
                 },
                 "PROKKAGFF2TSV": {
                     "R": "4.3.1",
@@ -663,6 +681,8 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_magmap_software_mqc_versions.yml",
+                "proteins",
+                "proteins/magmap.proteins.faa.gz",
                 "samtools",
                 "samtools/arc00.flagstat",
                 "samtools/arc00.idxstats",
@@ -695,7 +715,8 @@
                 "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
                 "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
-                "multiqc_genome_selection.txt:md5,593916795e7f1d3c772f8fa2306ca9c3"
+                "multiqc_genome_selection.txt:md5,593916795e7f1d3c772f8fa2306ca9c3",
+                "magmap.proteins.faa.gz:md5,b4e08876f0bcb6895921efff2833d9f9"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\tUnassigned_Ambiguity\tUnassigned_NoFeatures"
@@ -741,15 +762,15 @@
             ],
             1
         ],
-        "timestamp": "2026-09-11T09:44:42.973245405",
+        "timestamp": "2026-09-23T22:23:39.262046835",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     },
     "species_preference: local": {
         "content": [
-            61,
+            64,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -759,6 +780,9 @@
                 },
                 "CATPROKKATSVS": {
                     "pigz": 2.8
+                },
+                "CAT_FAA": {
+                    "pigz": 2.6
                 },
                 "CAT_FNA": {
                     "pigz": 2.6
@@ -820,6 +844,9 @@
                 },
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
+                },
+                "GFFREAD": {
+                    "gffread": "0.12.7"
                 },
                 "PROKKAGFF2TSV": {
                     "R": "4.3.1",
@@ -925,6 +952,8 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_magmap_software_mqc_versions.yml",
+                "proteins",
+                "proteins/magmap.proteins.faa.gz",
                 "samtools",
                 "samtools/arc00.flagstat",
                 "samtools/arc00.idxstats",
@@ -955,7 +984,8 @@
                 "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
                 "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
-                "multiqc_genome_selection.txt:md5,363b85ce65173237c415607b7a791511"
+                "multiqc_genome_selection.txt:md5,363b85ce65173237c415607b7a791511",
+                "magmap.proteins.faa.gz:md5,f669263f7e72259f79e9caed442cc139"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\tUnassigned_Ambiguity\tUnassigned_NoFeatures"
@@ -978,15 +1008,15 @@
             ],
             1
         ],
-        "timestamp": "2026-09-11T09:08:50.179320443",
+        "timestamp": "2026-09-23T21:53:05.998803945",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     },
     "completeness": {
         "content": [
-            62,
+            64,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -996,6 +1026,9 @@
                 },
                 "CATPROKKATSVS": {
                     "pigz": 2.8
+                },
+                "CAT_FAA": {
+                    "pigz": 2.6
                 },
                 "CAT_FNA": {
                     "pigz": 2.6
@@ -1057,6 +1090,9 @@
                 },
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
+                },
+                "GFFREAD": {
+                    "gffread": "0.12.7"
                 },
                 "PROKKAGFF2TSV": {
                     "R": "4.3.1",
@@ -1162,6 +1198,8 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_magmap_software_mqc_versions.yml",
+                "proteins",
+                "proteins/magmap.proteins.faa.gz",
                 "samtools",
                 "samtools/arc00.flagstat",
                 "samtools/arc00.idxstats",
@@ -1192,7 +1230,8 @@
                 "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
                 "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
-                "multiqc_genome_selection.txt:md5,96f8bcbd23f6b0055d7e04e9c8220e0e"
+                "multiqc_genome_selection.txt:md5,96f8bcbd23f6b0055d7e04e9c8220e0e",
+                "magmap.proteins.faa.gz:md5,b4e08876f0bcb6895921efff2833d9f9"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\tUnassigned_Ambiguity\tUnassigned_NoFeatures"
@@ -1215,15 +1254,15 @@
             ],
             1
         ],
-        "timestamp": "2026-09-11T09:28:38.279535188",
+        "timestamp": "2026-09-23T22:11:32.128697494",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     },
     "species_preference: local, genomeset_mode: sample": {
         "content": [
-            65,
+            68,
             {
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
@@ -1233,6 +1272,9 @@
                 },
                 "CATPROKKATSVS": {
                     "pigz": 2.8
+                },
+                "CAT_FAA": {
+                    "pigz": 2.6
                 },
                 "CAT_FNA": {
                     "pigz": 2.6
@@ -1294,6 +1336,9 @@
                 },
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
+                },
+                "GFFREAD": {
+                    "gffread": "0.12.7"
                 },
                 "PROKKAGFF2TSV": {
                     "R": "4.3.1",
@@ -1401,6 +1446,8 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_magmap_software_mqc_versions.yml",
+                "proteins",
+                "proteins/magmap.proteins.faa.gz",
                 "samtools",
                 "samtools/arc00.flagstat",
                 "samtools/arc00.idxstats",
@@ -1433,7 +1480,8 @@
                 "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
                 "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
-                "multiqc_genome_selection.txt:md5,e01ac7cf3a1a5d6d922c88856fe6d184"
+                "multiqc_genome_selection.txt:md5,e01ac7cf3a1a5d6d922c88856fe6d184",
+                "magmap.proteins.faa.gz:md5,f669263f7e72259f79e9caed442cc139"
             ],
             [
                 "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\tUnassigned_Ambiguity\tUnassigned_NoFeatures"
@@ -1480,9 +1528,9 @@
             ],
             1
         ],
-        "timestamp": "2026-09-11T09:18:00.210302592",
+        "timestamp": "2026-09-23T22:02:46.135651766",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     }

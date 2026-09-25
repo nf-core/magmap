@@ -1,0 +1,44 @@
+Changes in component 'nf-core/gffread'
+'modules/nf-core/gffread/meta.yml' is unchanged
+Changes in 'gffread/main.nf':
+--- modules/nf-core/gffread/main.nf
++++ modules/nf-core/gffread/main.nf
+@@ -44,6 +44,29 @@
+         $args_sorted \\
+         $output
+ 
++    # gffread names proteins by transcript (CDS parent); FeatureCounts uses the CDS ID
++    ${gff_gz ? "gunzip -c $gff" : "cat $gff"} | awk -F '\\t' '
++        FNR == NR {
++            if (\$3 != "CDS") next
++            id = ""
++            parent = ""
++            n = split(\$9, attrs, ";")
++            for (i = 1; i <= n; i++) {
++                if (attrs[i] ~ /^ID=/) id = substr(attrs[i], 4)
++                else if (attrs[i] ~ /^Parent=/) parent = substr(attrs[i], 8)
++            }
++            if (parent == "") parent = id
++            if (!(parent in cds)) cds[parent] = id
++            next
++        }
++        /^>/ {
++            name = substr(\$1, 2)
++            if (name in cds) \$0 = ">" cds[name]
++        }
++        { print }
++    ' - $output_name > renamed.tmp
++    mv renamed.tmp $output_name
++
+     ${fasta_gz ? "rm -f $fasta_in ${fasta_in}.fai" : ''}
+     """
+ 
+
+'modules/nf-core/gffread/environment.yml' is unchanged
+'modules/nf-core/gffread/tests/nextflow-bed.config' is unchanged
+'modules/nf-core/gffread/tests/nextflow.config' is unchanged
+'modules/nf-core/gffread/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/gffread/tests/nextflow-fasta.config' is unchanged
+'modules/nf-core/gffread/tests/nextflow-gff3.config' is unchanged
+'modules/nf-core/gffread/tests/main.nf.test' is unchanged
+************************************************************

@@ -28,6 +28,10 @@
 
 > Schwengers O., Jelonek L., Dieckmann M. A., Beyvers S., Blom J., Goesmann A. Bakta: rapid and standardized annotation of bacterial genomes via alignment-free sequence identification. Microbial Genomics, 2021;7(11):000685. doi: 10.1099/mgen.0.000685. PMID: 34739369; PMCID: PMC8743544.
 
+- [gffread](https://github.com/gpertea/gffread)
+
+> Pertea G, Pertea M. GFF Utilities: GffRead and GffCompare. F1000Research 2020, 9:304. doi: 10.12688/f1000research.23297.2.
+
 - [BBmap](https://sourceforge.net/projects/bbmap/)
 
 - [samtools](http://www.htslib.org)

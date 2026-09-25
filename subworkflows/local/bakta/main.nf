@@ -32,6 +32,7 @@ workflow BAKTA {
 
     emit:
     fna = BAKTA_BAKTA.out.fna // channel: [ val(meta), path(fna) ]
+    faa = BAKTA_BAKTA.out.faa // channel: [ val(meta), path(faa) ]
     gff = BAKTA_BAKTA.out.gff // channel: [ val(meta), path(gff3) ]
     txt = BAKTA_BAKTA.out.txt // channel: [ val(meta), path(txt) ]
 }
