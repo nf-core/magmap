@@ -1,0 +1,99 @@
+nextflow_function {
+
+    name "Test validateGenomeMetadataIds"
+    script "../main.nf"
+    function "validateGenomeMetadataIds"
+    tag "subworkflows"
+    tag "utils_nfcore_magmap_pipeline"
+
+    test("all genomes in GTDB-Tk and CheckM, FASTA extensions and gzip in metadata") {
+
+        when {
+            function {
+                """
+                file('genomeinfo.csv').text = 'accno,genome_fna\\nbin_1,bin_1.fa.gz\\nbin_2,bin_2.fa.gz\\n'
+                file('gtdbtk.tsv').text = 'user_genome\\tclassification\\nbin_1.fa\\td__Bacteria\\nbin_2.fa\\td__Archaea\\n'
+                file('checkm.tsv').text = 'Name\\tCompleteness\\nbin_1\\t90\\n'
+                new java.util.zip.GZIPOutputStream(file('checkm2.tsv.gz').newOutputStream()).withWriter { w -> w << 'Name\\tCompleteness\\nbin_2.fasta\\t80\\n' }
+                input[0] = 'genomeinfo.csv'
+                input[1] = null
+                input[2] = 'gtdbtk.tsv'
+                input[3] = 'checkm.tsv,checkm2.tsv.gz'
+                """
+            }
+        }
+
+        then {
+            assert function.success
+        }
+    }
+
+    test("genome missing from GTDB-Tk but in GTDB metadata") {
+
+        when {
+            function {
+                """
+                file('genomeinfo.csv').text = 'accno,genome_fna\\nbin_1,bin_1.fa.gz\\nGCF_000001.1,GCF_000001.1.fna.gz\\n'
+                file('gtdbtk.tsv').text = 'user_genome\\tclassification\\nbin_1\\td__Bacteria\\n'
+                file('gtdb.tsv').text = 'accession\\tgtdb_taxonomy\\nRS_GCF_000001.1\\td__Bacteria\\n'
+                input[0] = 'genomeinfo.csv'
+                input[1] = 'gtdb.tsv'
+                input[2] = 'gtdbtk.tsv'
+                input[3] = null
+                """
+            }
+        }
+
+        then {
+            assert function.success
+        }
+    }
+
+    test("genome missing from GTDB-Tk, no GTDB metadata") {
+
+        when {
+            function {
+                """
+                file('genomeinfo.csv').text = 'accno,genome_fna\\nbin_1,bin_1.fa.gz\\nbin_2,bin_2.fa.gz\\n'
+                file('gtdbtk.tsv').text = 'user_genome\\tclassification\\nbin_1\\td__Bacteria\\n'
+                input[0] = 'genomeinfo.csv'
+                input[1] = null
+                input[2] = 'gtdbtk.tsv'
+                input[3] = null
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert function.failed },
+                { assert function.stdout.any { l -> l.contains('1 genome(s) in --genomeinfo not found in --gtdbtk_metadata: bin_2.') } }
+            )
+        }
+    }
+
+    test("genome missing from CheckM and GTDB metadata") {
+
+        when {
+            function {
+                """
+                file('genomeinfo.csv').text = 'accno,genome_fna\\nbin_1,bin_1.fa.gz\\n'
+                file('gtdbtk.tsv').text = 'user_genome\\tclassification\\nbin_1\\td__Bacteria\\n'
+                file('checkm.tsv').text = 'Name\\tCompleteness\\nbin_1_renamed\\t90\\n'
+                file('gtdb.tsv').text = 'accession\\tgtdb_taxonomy\\nRS_GCF_000001.1\\td__Bacteria\\n'
+                input[0] = 'genomeinfo.csv'
+                input[1] = 'gtdb.tsv'
+                input[2] = 'gtdbtk.tsv'
+                input[3] = 'checkm.tsv'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert function.failed },
+                { assert function.stdout.any { l -> l.contains('1 genome(s) in --genomeinfo not found in --checkm_metadata or --gtdb_metadata: bin_1.') } }
+            )
+        }
+    }
+}

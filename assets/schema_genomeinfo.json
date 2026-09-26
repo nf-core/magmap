@@ -9,8 +9,8 @@
         "properties": {
             "accno": {
                 "type": "string",
-                "pattern": "^\\S+$",
-                "errorMessage": "Sample name must be provided and cannot contain spaces",
+                "pattern": "^(?!\\S*\\.(fa|fna|fasta)(\\.gz)?$)\\S+$",
+                "errorMessage": "Accession must be provided, cannot contain spaces and cannot end with a FASTA extension (.fa, .fna, .fasta)",
                 "meta": ["accno"]
             },
             "genome_fna": {

@@ -214,6 +214,9 @@ workflow PIPELINE_INITIALISATION {
     if (species_preference in ['completeness', 'gtdb'] && !checkm_metadata) {
         error("--species_preference '${species_preference}' additionally requires --checkm_metadata.")
     }
+    if ( genomeinfo ) {
+        validateGenomeMetadataIds(genomeinfo, gtdb_metadata, gtdbtk_metadata, checkm_metadata)
+    }
 
     //
     // Take care of genome metadata files
@@ -325,6 +328,47 @@ def validateInputSamplesheet(input) {
 
     return [ metas[0], fastqs ]
 }
+
+//
+// Every --genomeinfo genome must be described by each metadata type supplied, either in
+// GTDB-Tk/CheckM output or in GTDB metadata; otherwise its metadata columns end up empty
+//
+def validateGenomeMetadataIds(genomeinfo, gtdb_metadata, gtdbtk_metadata, checkm_metadata) {
+    def accnos = file(genomeinfo).splitCsv(header: true).collect { row -> row.accno } as Set
+    def gtdb_ids = null
+    [ '--gtdbtk_metadata': gtdbtk_metadata, '--checkm_metadata': checkm_metadata ].each { param, files ->
+        if ( !files ) {
+            return
+        }
+        def missing = accnos - metadataIds(files)
+        if ( missing && gtdb_metadata ) {
+            // GTDB metadata files are large, so only read them when needed
+            gtdb_ids = gtdb_ids ?: metadataIds(gtdb_metadata).collect { id -> id.replaceFirst(/^.._/, '') } as Set
+            missing = missing - gtdb_ids
+        }
+        if ( missing ) {
+            error("${missing.size()} genome(s) in --genomeinfo not found in ${param}${gtdb_metadata ? ' or --gtdb_metadata' : ''}: ${missing.sort().take(5).join(', ')}${missing.size() > 5 ? ', ...' : ''}. Identifiers must match the accno column exactly, except that FASTA extensions (.fa, .fna, .fasta) in metadata files are ignored.")
+        }
+    }
+}
+
+//
+// Identifiers from the first column of tab-separated metadata files, with any FASTA extension
+// removed. Keep the extension regex in sync with modules/local/tidyverse/joinmetadata.
+//
+def metadataIds(files) {
+    def ids = [] as Set
+    files.tokenize(',').each { f ->
+        def path = file(f)
+        def stream = path.name.endsWith('.gz') ? new java.util.zip.GZIPInputStream(path.newInputStream()) : path.newInputStream()
+        stream.withReader { reader ->
+            reader.readLine()
+            reader.eachLine { line -> ids << line.split('\t', 2)[0].replaceFirst(/\.(fa|fna|fasta)(\.gz)?$/, '') }
+        }
+    }
+    return ids
+}
+
 //
 // Get attribute from genome config file e.g. fasta
 //

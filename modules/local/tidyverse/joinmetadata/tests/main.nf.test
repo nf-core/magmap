@@ -1,0 +1,35 @@
+nextflow_process {
+
+    name "Test Process TIDYVERSE_JOINMETADATA"
+    script "../main.nf"
+    process "TIDYVERSE_JOINMETADATA"
+
+    tag "modules"
+    tag "modules_local"
+    tag "tidyverse"
+    tag "tidyverse/joinmetadata"
+
+    test("GTDB-Tk and CheckM identifiers with FASTA extensions") {
+
+        when {
+            process {
+                """
+                file('genomes.tsv').text = 'bin_1\\nbin_2\\n'
+                file('gtdbtk.tsv').text = 'user_genome\\tclassification\\nbin_1.fa\\td__Bacteria\\nbin_2.fna\\td__Archaea\\n'
+                file('checkm2.tsv').text = 'Name\\tCompleteness\\tContamination\\tGenome_Size\\nbin_1\\t90.5\\t1.2\\t3000000\\nbin_2.fasta\\t80.1\\t0.5\\t2000000\\n'
+                input[0] = file('genomes.tsv')
+                input[1] = []
+                input[2] = [ file('gtdbtk.tsv') ]
+                input[3] = [ file('checkm2.tsv') ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(path(process.out.genome_metadata[0]).linesGzip).match() }
+            )
+        }
+    }
+}

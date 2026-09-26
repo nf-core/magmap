@@ -50,4 +50,24 @@ nextflow_pipeline {
             )
         }
     }
+
+    test("-profile test_metadata, accno with FASTA extension") {
+
+        when {
+            def sheet = new File("$outputDir/genomeinfo.csv")
+            sheet.parentFile.mkdirs()
+            sheet.text = "accno,genome_fna\nbin_1.fa,bin_1.fa.gz\n"
+            params {
+                outdir     = "$outputDir"
+                genomeinfo = sheet.path
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stderr.any { l -> l.contains('cannot end with a FASTA extension') } }
+            )
+        }
+    }
 }

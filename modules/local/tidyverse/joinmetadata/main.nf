@@ -59,7 +59,7 @@ process TIDYVERSE_JOINMETADATA {
     if ( gtdbtk_metadata ) {
         read_gtdbtk_metadata = """
             gtdbtk_metadata <- read_tsv(c('${gtdbtk_metadata.join('\', \'')}'), show_col_types = FALSE) %>%
-                transmute(accno = user_genome, gtdb_taxonomy = classification)
+                transmute(accno = str_remove(user_genome, '[.](fa|fna|fasta)([.]gz)?\$'), gtdb_taxonomy = classification)
         """
     }
 
@@ -84,7 +84,7 @@ process TIDYVERSE_JOINMETADATA {
                 tibble::add_column(!!!checkm_cols[setdiff(names(checkm_cols), names(.))]) %>%
                     rename(accno = 1) %>%
                     transmute(
-                        accno,
+                        accno = str_remove(accno, '[.](fa|fna|fasta)([.]gz)?\$'),
                         checkm_completeness = as.double(Completeness), checkm_contamination = as.double(Contamination),
                         checkm_strain_heterogeneity = as.double(`Strain heterogeneity`),
                         contig_count = as.integer(`# contigs`),
