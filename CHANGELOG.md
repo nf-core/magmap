@@ -22,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#261](https://github.com/nf-core/magmap/pull/261) - Reject `--genomeinfo` accessions ending in a FASTA extension, which made Prokka fail, and stop at startup if a genome is missing from `--gtdbtk_metadata`/`--checkm_metadata`; FASTA extensions in those files' identifiers are now ignored, closes [#260](https://github.com/nf-core/magmap/issues/260) (by @erikrikarddaniel).
 - [#256](https://github.com/nf-core/magmap/pull/256) - Populate the MultiQC report's methods-description tool citations/bibliography, which had always rendered blank, closes [#231](https://github.com/nf-core/magmap/issues/231) (by @erikrikarddaniel).
 - [#255](https://github.com/nf-core/magmap/pull/255) - Fix flaky pipeline-level nf-test snapshots caused by non-deterministic software-versions key order, closes [#253](https://github.com/nf-core/magmap/issues/253) (by @erikrikarddaniel).
 - [#245](https://github.com/nf-core/magmap/pull/245) - Stop the pipeline crashing on any run when NCBI's live remote genome catalog contains a suppressed/replaced assembly with a missing `ftp_path` field; such genomes are now skipped instead, closes [#244](https://github.com/nf-core/magmap/issues/244) (by @erikrikarddaniel).

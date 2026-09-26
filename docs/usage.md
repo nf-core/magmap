@@ -126,11 +126,11 @@ GCA_002688515,./genomes/GCA_002688515.fna,
 
 Any genome used by the pipeline for which a gff file is not found will be annotated with Prokka and/or Bakta to produce a gff file, see [Choosing an annotator: Prokka or Bakta](#choosing-an-annotator-prokka-or-bakta).
 
-| Column       | Description                                                                                                                               |
-| ------------ | ----------------------------------------------------------------------------------------------------------------------------------------- |
-| `accno`      | Accession number. For your local genomes, write the name of them.                                                                         |
-| `genome_fna` | Full path to Fasta file that contains nucleotide sequences of your genome. File can be gzipped and have the extension ".fna.gz" or "fna". |
-| `genome_gff` | Full path to gff file of your genome. File can be gzipped and have the extension ".gff.gz" or ".gff".                                     |
+| Column       | Description                                                                                                                                                                        |
+| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `accno`      | Identifier of the genome, e.g. its accession number or bin name. Cannot end with a FASTA extension (`.fa`, `.fna`, `.fasta`), see [Genome metadata input](#genome-metadata-input). |
+| `genome_fna` | Full path to Fasta file that contains nucleotide sequences of your genome. File can be gzipped and have the extension ".fna.gz" or "fna".                                          |
+| `genome_gff` | Full path to gff file of your genome. File can be gzipped and have the extension ".gff.gz" or ".gff".                                                                              |
 
 ### Genome index input
 
@@ -184,6 +184,11 @@ The Bakta database itself is handled the same way: point [`--bakta_db`](https://
 **nf-core/magmap** accepts three types of metadata files that provides information about the genomes that you will use in the pipeline:
 output from CheckM/CheckM2 and GTDB-Tk as well as standard GTDB metadata files.
 The pipeline will merge the tables and summarise the information for easy access.
+
+Metadata is joined to your genomes by identifier, so the identifiers in the GTDB-Tk and CheckM/CheckM2 files must match the `accno` column of `--genomeinfo`.
+FASTA extensions (`.fa`, `.fna`, `.fasta`, optionally followed by `.gz`) in metadata identifiers are ignored, so e.g. `bin_1.fa` in a GTDB-Tk summary matches `bin_1`.
+A genome can instead be described by `--gtdb_metadata` if it is a GTDB genome, using its accession without the `RS_`/`GB_` prefix as `accno`.
+The pipeline checks this before starting, and stops with an error listing the genomes that could not be found.
 
 #### (1) GTDB metadata
 
