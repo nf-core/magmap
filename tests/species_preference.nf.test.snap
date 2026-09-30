@@ -1,8 +1,11 @@
 {
     "species_preference: gtdb": {
         "content": [
-            64,
+            65,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
@@ -236,8 +239,11 @@
     },
     "species_preference: gtdb, genomeset_mode: sample": {
         "content": [
-            68,
+            69,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
@@ -497,8 +503,11 @@
     },
     "species_preference: completeness, genomeset_mode: sample": {
         "content": [
-            68,
+            69,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
@@ -770,8 +779,11 @@
     },
     "species_preference: local": {
         "content": [
-            64,
+            65,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
@@ -1016,8 +1028,11 @@
     },
     "completeness": {
         "content": [
-            64,
+            65,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
@@ -1262,8 +1277,11 @@
     },
     "species_preference: local, genomeset_mode: sample": {
         "content": [
-            68,
+            69,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },

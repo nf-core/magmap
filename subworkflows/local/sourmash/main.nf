@@ -8,6 +8,7 @@ include { SOURMASH_SKETCH as GENOME_SKETCH         } from '../../../modules/nf-c
 include { SOURMASH_INDEX  as GENOME_INDEX          } from '../../../modules/nf-core/sourmash/index/main'
 include { SOURMASH_SKETCH as SAMPLE_SKETCH         } from '../../../modules/nf-core/sourmash/sketch/main'
 include { WGET as WGET_GENOME                      } from '../../../modules/nf-core/wget/main'
+include { ASSEMBLYSUMMARY_FILTER                   } from '../../../modules/local/assemblysummary/filter/main'
 include { TIDYVERSE_SELECTGENOMESPECIES            } from '../../../modules/local/tidyverse/selectgenomespecies/main'
 
 workflow SOURMASH {
@@ -67,20 +68,6 @@ workflow SOURMASH {
 
         // Call Sourmash with indices for remote genomes if present
         if ( index_list ) {
-            ch_ncbi_genomeinfo = ch_remote_genome_sources
-                .splitCsv(skip: 1, header: true, sep: '\t')
-                // NCBI marks some suppressed/replaced assemblies in the live assembly_summary
-                // catalogs with an empty ftp_path -- such a genome can never be fetched anyway,
-                // so drop it here rather than crash the whole run on a null-safe string op below.
-                .filter { row -> row.ftp_path }
-                .map { row ->
-                    [
-                        accno: row["#assembly_accession"],
-                        genome_fna: "${row.ftp_path}/${row.ftp_path - ~/\/$/ - ~/.*\//}_genomic.fna.gz",
-                        genome_gff: ""
-                    ]
-                }
-
             // To make sure that all combinations of sample signatures and indexes are gathered below,
             // combine the two channels.
             // (In theory, this should not be required as the command supposedly can take multiple samples
@@ -159,6 +146,26 @@ workflow SOURMASH {
             }
 
             // 2. Fetch NCBI genomes
+            ASSEMBLYSUMMARY_FILTER(
+                ch_joint_remote_genomes_for_fetch
+                    .collectFile(name: 'remote_accessions.txt', newLine: true) { g -> g.accno },
+                ch_remote_genome_sources.collect()
+            )
+
+            ch_ncbi_genomeinfo = ASSEMBLYSUMMARY_FILTER.out.tsv
+                .splitCsv(header: true, sep: '\t')
+                // NCBI marks some suppressed/replaced assemblies in the live assembly_summary
+                // catalogs with an empty ftp_path -- such a genome can never be fetched anyway,
+                // so drop it here rather than crash the whole run on a null-safe string op below.
+                .filter { row -> row.ftp_path }
+                .map { row ->
+                    [
+                        accno: row.accno,
+                        genome_fna: "${row.ftp_path}/${row.ftp_path - ~/\/$/ - ~/.*\//}_genomic.fna.gz",
+                        genome_gff: ""
+                    ]
+                }
+
             WGET_GENOME(
                 ch_joint_remote_genomes_for_fetch
                     .map { genome -> [ [ genome.accno ] ] }

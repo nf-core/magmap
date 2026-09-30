@@ -1,8 +1,11 @@
 {
     "multiple indexes": {
         "content": [
-            74,
+            75,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
@@ -258,8 +261,11 @@
     },
     "remote only, genomeset_mode: sample": {
         "content": [
-            64,
+            65,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
@@ -491,8 +497,11 @@
     },
     "local + remote, genomeset_mode: sample": {
         "content": [
-            75,
+            76,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
@@ -769,8 +778,11 @@
     },
     "local + remote": {
         "content": [
-            71,
+            72,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
@@ -1023,8 +1035,11 @@
     },
     "remote only": {
         "content": [
-            60,
+            61,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
