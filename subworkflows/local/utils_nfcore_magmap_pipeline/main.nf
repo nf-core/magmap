@@ -215,7 +215,7 @@ workflow PIPELINE_INITIALISATION {
         error("--species_preference '${species_preference}' additionally requires --checkm_metadata.")
     }
     if ( genomeinfo ) {
-        validateGenomeMetadataIds(genomeinfo, gtdb_metadata, gtdbtk_metadata, checkm_metadata)
+        validateGenomeMetadataIds(genomeinfo, gtdb_metadata, gtdbtk_metadata, checkm_metadata).each { msg -> log.warn(msg) }
     }
 
     //
@@ -330,12 +330,13 @@ def validateInputSamplesheet(input) {
 }
 
 //
-// Every --genomeinfo genome must be described by each metadata type supplied, either in
-// GTDB-Tk/CheckM output or in GTDB metadata; otherwise its metadata columns end up empty
+// Warnings for --genomeinfo genomes missing from a supplied metadata type, either in GTDB-Tk/CheckM
+// output or in GTDB metadata; their metadata columns end up empty
 //
 def validateGenomeMetadataIds(genomeinfo, gtdb_metadata, gtdbtk_metadata, checkm_metadata) {
     def accnos = file(genomeinfo).splitCsv(header: true).collect { row -> row.accno } as Set
     def gtdb_ids = null
+    def warnings = []
     [ '--gtdbtk_metadata': gtdbtk_metadata, '--checkm_metadata': checkm_metadata ].each { param, files ->
         if ( !files ) {
             return
@@ -347,9 +348,10 @@ def validateGenomeMetadataIds(genomeinfo, gtdb_metadata, gtdbtk_metadata, checkm
             missing = missing - gtdb_ids
         }
         if ( missing ) {
-            error("${missing.size()} genome(s) in --genomeinfo not found in ${param}${gtdb_metadata ? ' or --gtdb_metadata' : ''}: ${missing.sort().take(5).join(', ')}${missing.size() > 5 ? ', ...' : ''}. Identifiers must match the accno column exactly, except that FASTA extensions (.fa, .fna, .fasta) in metadata files are ignored.")
+            warnings << "${missing.size()} genome(s) in --genomeinfo not found in ${param}${gtdb_metadata ? ' or --gtdb_metadata' : ''}: ${missing.sort().take(5).join(', ')}${missing.size() > 5 ? ', ...' : ''}. Their metadata columns will be empty. Identifiers must match the accno column exactly, except that FASTA extensions (.fa, .fna, .fasta) in metadata files are ignored."
         }
     }
+    return warnings
 }
 
 //

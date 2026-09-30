@@ -24,7 +24,10 @@ nextflow_function {
         }
 
         then {
-            assert function.success
+            assertAll(
+                { assert function.success },
+                { assert function.result == [] }
+            )
         }
     }
 
@@ -45,11 +48,14 @@ nextflow_function {
         }
 
         then {
-            assert function.success
+            assertAll(
+                { assert function.success },
+                { assert function.result == [] }
+            )
         }
     }
 
-    test("genome missing from GTDB-Tk, no GTDB metadata") {
+    test("genome missing from GTDB-Tk, no GTDB metadata: warns") {
 
         when {
             function {
@@ -66,13 +72,14 @@ nextflow_function {
 
         then {
             assertAll(
-                { assert function.failed },
-                { assert function.stdout.any { l -> l.contains('1 genome(s) in --genomeinfo not found in --gtdbtk_metadata: bin_2.') } }
+                { assert function.success },
+                { assert function.result.size() == 1 },
+                { assert function.result[0].startsWith('1 genome(s) in --genomeinfo not found in --gtdbtk_metadata: bin_2. Their metadata columns will be empty.') }
             )
         }
     }
 
-    test("genome missing from CheckM and GTDB metadata") {
+    test("genome missing from CheckM and GTDB metadata: warns") {
 
         when {
             function {
@@ -91,8 +98,9 @@ nextflow_function {
 
         then {
             assertAll(
-                { assert function.failed },
-                { assert function.stdout.any { l -> l.contains('1 genome(s) in --genomeinfo not found in --checkm_metadata or --gtdb_metadata: bin_1.') } }
+                { assert function.success },
+                { assert function.result.size() == 1 },
+                { assert function.result[0].startsWith('1 genome(s) in --genomeinfo not found in --checkm_metadata or --gtdb_metadata: bin_1. Their metadata columns will be empty.') }
             )
         }
     }
