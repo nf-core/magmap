@@ -16,15 +16,15 @@
             "genome_fna": {
                 "type": "string",
                 "format": "file-path",
-                "pattern": "^\\S+(\\.fa)|(\\.fna)|(\\.fasta)(\\.gz)?$",
-                "errorMessage": "Fasta file must be provided, the name cannot contain spaces and must end with `.fa`, `.fna`, `.fasta`, potentially followed by a `.gz`'",
+                "pattern": "^\\S+\\.(fa|fna|fasta)(\\.gz)?$",
+                "errorMessage": "Fasta file must be provided, the name cannot contain spaces and must end with `.fa`, `.fna`, `.fasta`, potentially followed by a `.gz`",
                 "meta": ["genome_fna"]
             },
             "genome_gff": {
                 "type": "string",
                 "format": "file-path",
                 "pattern": "^\\S+\\.gff3?(\\.gz)?$",
-                "errorMessage": "The name of the gff file cannot contain spaces and must end with `.gff` or `.gff3``, potentially followed by a `.gz`",
+                "errorMessage": "The name of the gff file cannot contain spaces and must end with `.gff` or `.gff3`, potentially followed by a `.gz`",
                 "meta": ["genome_gff"]
             }
         },
