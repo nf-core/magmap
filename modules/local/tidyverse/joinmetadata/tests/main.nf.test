@@ -1,0 +1,90 @@
+nextflow_process {
+
+    name "Test Process TIDYVERSE_JOINMETADATA"
+    script "../main.nf"
+    process "TIDYVERSE_JOINMETADATA"
+
+    tag "modules"
+    tag "modules_local"
+    tag "tidyverse"
+    tag "tidyverse/joinmetadata"
+
+    test("GTDB-Tk and CheckM identifiers with FASTA extensions") {
+
+        when {
+            process {
+                """
+                file('genomes.tsv').text = 'bin_1\\nbin_2\\n'
+                file('gtdbtk.tsv').text = 'user_genome\\tclassification\\nbin_1.fa\\td__Bacteria\\nbin_2.fna\\td__Archaea\\n'
+                file('checkm2.tsv').text = 'Name\\tCompleteness\\tContamination\\tGenome_Size\\nbin_1\\t90.5\\t1.2\\t3000000\\nbin_2.fasta\\t80.1\\t0.5\\t2000000\\n'
+                input[0] = file('genomes.tsv')
+                input[1] = []
+                input[2] = [ file('gtdbtk.tsv') ]
+                input[3] = [ file('checkm2.tsv') ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert snapshot(path(process.out.genome_metadata[0]).linesGzip).match() }
+            )
+        }
+    }
+
+    test("GTDB metadata wins over GTDB-Tk and CheckM") {
+
+        when {
+            process {
+                """
+                file('genomes.tsv').text = 'GCF_000001.1\\n'
+                file('gtdb.tsv').text = 'accession\\tcheckm_completeness\\tcheckm_contamination\\tcheckm_strain_heterogeneity\\tcontig_count\\tgenome_size\\tgtdb_genome_representative\\tgtdb_representative\\tgtdb_taxonomy\\nRS_GCF_000001.1\\t99.9\\t0.1\\t0\\t1\\t4000000\\tRS_GCF_000001.1\\tt\\td__Bacteria;p__FromGTDB\\n'
+                file('gtdbtk.tsv').text = 'user_genome\\tclassification\\nGCF_000001.1.fna\\td__Bacteria;p__FromGTDBTk\\n'
+                file('checkm2.tsv').text = 'Name\\tCompleteness\\tContamination\\tGenome_Size\\nGCF_000001.1\\t50.0\\t5.0\\t3000000\\n'
+                input[0] = file('genomes.tsv')
+                input[1] = [ file('gtdb.tsv') ]
+                input[2] = [ file('gtdbtk.tsv') ]
+                input[3] = [ file('checkm2.tsv') ]
+                """
+            }
+        }
+
+        then {
+            def lines = path(process.out.genome_metadata[0]).linesGzip
+            assertAll(
+                { assert process.success },
+                { assert lines.size() == 2 },
+                { assert lines[1].contains('p__FromGTDB\t') },
+                { assert lines[1].contains('GTDB metadata') },
+                { assert snapshot(lines).match() }
+            )
+        }
+    }
+
+    test("same genome in CheckM and CheckM2 with and without extension gives one row") {
+
+        when {
+            process {
+                """
+                file('genomes.tsv').text = 'bin_1\\n'
+                file('checkm.tsv').text = 'Bin Id\\tCompleteness\\tContamination\\nbin_1\\t90.0\\t1.0\\n'
+                file('checkm2.tsv').text = 'Name\\tCompleteness\\tContamination\\tGenome_Size\\nbin_1.FA\\t91.0\\t1.1\\t3000000\\n'
+                input[0] = file('genomes.tsv')
+                input[1] = []
+                input[2] = []
+                input[3] = [ file('checkm.tsv'), file('checkm2.tsv') ]
+                """
+            }
+        }
+
+        then {
+            def lines = path(process.out.genome_metadata[0]).linesGzip
+            assertAll(
+                { assert process.success },
+                { assert lines.size() == 2 },
+                { assert snapshot(lines).match() }
+            )
+        }
+    }
+}
