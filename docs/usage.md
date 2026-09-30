@@ -186,9 +186,12 @@ output from CheckM/CheckM2 and GTDB-Tk as well as standard GTDB metadata files.
 The pipeline will merge the tables and summarise the information for easy access.
 
 Metadata is joined to your genomes by identifier, so the identifiers in the GTDB-Tk and CheckM/CheckM2 files must match the `accno` column of `--genomeinfo`.
-FASTA extensions (`.fa`, `.fna`, `.fasta`, optionally followed by `.gz`) in metadata identifiers are ignored, so e.g. `bin_1.fa` in a GTDB-Tk summary matches `bin_1`.
+FASTA extensions (`.fa`, `.fna`, `.fasta`, optionally followed by `.gz`, in any case) in metadata identifiers are ignored, so e.g. `bin_1.fa` in a GTDB-Tk summary matches `bin_1`.
 A genome can instead be described by `--gtdb_metadata` if it is a GTDB genome, using its accession without the `RS_`/`GB_` prefix as `accno`.
 The pipeline checks this before starting and warns about genomes that could not be found; their metadata columns will be empty.
+The check covers every `--genomeinfo` genome, including ones that Sourmash later leaves out.
+If a genome is missing from the GTDB-Tk or CheckM/CheckM2 files, the check looks for it in the `--gtdb_metadata` files.
+These files are large, and the check reads them on the machine running Nextflow, which can slow down the start of a run.
 
 #### (1) GTDB metadata
 

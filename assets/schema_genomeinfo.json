@@ -9,7 +9,7 @@
         "properties": {
             "accno": {
                 "type": "string",
-                "pattern": "^(?!\\S*\\.(fa|fna|fasta)(\\.gz)?$)\\S+$",
+                "pattern": "^(?i)(?!\\S*\\.(fa|fna|fasta)(\\.gz)?$)\\S+$",
                 "errorMessage": "Accession must be provided, cannot contain spaces and cannot end with a FASTA extension (.fa, .fna, .fasta)",
                 "meta": ["accno"]
             },

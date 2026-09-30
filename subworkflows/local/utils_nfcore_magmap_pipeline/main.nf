@@ -344,7 +344,9 @@ def validateGenomeMetadataIds(genomeinfo, gtdb_metadata, gtdbtk_metadata, checkm
         def missing = accnos - metadataIds(files)
         if ( missing && gtdb_metadata ) {
             // GTDB metadata files are large, so only read them when needed
-            gtdb_ids = gtdb_ids ?: metadataIds(gtdb_metadata).collect { id -> id.replaceFirst(/^.._/, '') } as Set
+            if ( gtdb_ids == null ) {
+                gtdb_ids = metadataIds(gtdb_metadata).collect { id -> id.replaceFirst(/^.._/, '') } as Set
+            }
             missing = missing - gtdb_ids
         }
         if ( missing ) {
@@ -355,8 +357,8 @@ def validateGenomeMetadataIds(genomeinfo, gtdb_metadata, gtdbtk_metadata, checkm
 }
 
 //
-// Identifiers from the first column of tab-separated metadata files, with any FASTA extension
-// removed. Keep the extension regex in sync with modules/local/tidyverse/joinmetadata.
+// Identifiers from the first column of tab-separated metadata files, unquoted and with any FASTA
+// extension removed. Keep the extension regex in sync with modules/local/tidyverse/joinmetadata.
 //
 def metadataIds(files) {
     def ids = [] as Set
@@ -365,7 +367,7 @@ def metadataIds(files) {
         def stream = path.name.endsWith('.gz') ? new java.util.zip.GZIPInputStream(path.newInputStream()) : path.newInputStream()
         stream.withReader { reader ->
             reader.readLine()
-            reader.eachLine { line -> ids << line.split('\t', 2)[0].replaceFirst(/\.(fa|fna|fasta)(\.gz)?$/, '') }
+            reader.eachLine { line -> ids << line.split('\t', 2)[0].trim().replaceAll(/^"|"$/, '').replaceFirst(/(?i)\.(fa|fna|fasta)(\.gz)?$/, '') }
         }
     }
     return ids
