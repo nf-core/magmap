@@ -335,7 +335,7 @@ Second, the mapping output is processed by FeatureCount to produce feature speci
 
 ### Output formats
 
-The summary tables described in [the output docs](https://nf-co.re/magmap/output#summary-tables) are always written as gzipped TSV.
+The summary tables described in [the output docs](output.md#summary-tables) are always written as gzipped TSV.
 With [`--save_parquet`](https://nf-co.re/magmap/parameters/#save_parquet), the same tables are also written as [Parquet](https://parquet.apache.org/) files alongside the TSVs -- useful if you're loading them into tools like [DuckDB](https://duckdb.org/) or [Polars](https://pola.rs/), which can query Parquet's columnar, typed format without decompressing/parsing the whole file first.
 
 ## Running the pipeline

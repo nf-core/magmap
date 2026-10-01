@@ -108,7 +108,7 @@ BBduk is built-in tool from BBmap.
 ### Filtering genomes
 
 The Sourmash program can be used to prefilter genomes so that only genomes likely to be represented among the reads are passed to mapping.
-In addition, Sourmash can be used to fetch remote genomes, see [usage docs](https://nf-co.re/magmap/usage#genome-input).
+In addition, Sourmash can be used to fetch remote genomes, see [usage docs](usage.md#genome-input).
 No output from Sourmash is saved to `<outdir>` by default; the output is only used to select genomes for further processing.
 Use [`--sourmash_save_sourmash`](https://nf-co.re/magmap/parameters/#sourmash_save_sourmash) to copy the `*.csv.gz` and `*.sbt.zip` output files (`*.sig` and `*.sig.zip` are not saved under `<outdir>` even with this parameter).
 
@@ -140,7 +140,7 @@ Genomes already found in the directory specified, will be skipped by the Prokka 
 
 ### Bakta
 
-[Bakta](https://github.com/oschwengers/bakta) is an alternative to Prokka for genomes lacking a gff, selected with [`--annotator bakta_supported_only` or `--annotator bakta_all`](https://nf-co.re/magmap/parameters/#annotator) -- see [Choosing an annotator: Prokka or Bakta](https://nf-co.re/magmap/usage#choosing-an-annotator-prokka-or-bakta) in the usage docs.
+[Bakta](https://github.com/oschwengers/bakta) is an alternative to Prokka for genomes lacking a gff, selected with [`--annotator bakta_supported_only` or `--annotator bakta_all`](https://nf-co.re/magmap/parameters/#annotator) -- see [Choosing an annotator: Prokka or Bakta](usage.md#choosing-an-annotator-prokka-or-bakta) in the usage docs.
 Bakta is only designed to annotate Bacteria; `bakta_supported_only` keeps Archaea (and genomes it can't classify by domain) on Prokka, while `bakta_all` sends everything to Bakta regardless.
 As with Prokka, output is directed to subdirectories of the directory specified with [`--bakta_store_dir`](https://nf-co.re/magmap/parameters/#bakta_store_dir) (by default `magmap_bakta`), and genomes already found there are skipped.
 The Bakta database itself is downloaded once into [`--bakta_db`](https://nf-co.re/magmap/parameters/#bakta_db) (by default `magmap_bakta_db`) and reused on subsequent runs.
