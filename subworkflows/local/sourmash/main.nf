@@ -154,10 +154,6 @@ workflow SOURMASH {
 
             ch_ncbi_genomeinfo = ASSEMBLYSUMMARY_FILTER.out.tsv
                 .splitCsv(header: true, sep: '\t')
-                // NCBI marks some suppressed/replaced assemblies in the live assembly_summary
-                // catalogs with an empty ftp_path -- such a genome can never be fetched anyway,
-                // so drop it here rather than crash the whole run on a null-safe string op below.
-                .filter { row -> row.ftp_path }
                 .map { row ->
                     [
                         accno: row.accno,

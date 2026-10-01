@@ -15,7 +15,7 @@ nextflow_process {
             process {
                 """
                 def hdr = '#assembly_accession\\tbioproject\\tftp_path\\tassembly_level\\n'
-                file('accessions.txt').text = 'GCF_000001.1\\nGCA_000002.1\\nGCA_000009.1\\n'
+                file('accessions.txt').text = 'GCF_000001.1\\nGCA_000002.1\\nGCA_000009.1\\nGCA_000008.1\\n'
                 file('refseq.txt').text = '# See ftp://ftp.ncbi.nlm.nih.gov/genomes/README_assembly_summary.txt\\n' + hdr +
                     'GCF_000001.1\\tPRJ1\\thttps://host/GCF_000001.1_ASM1\\tComplete\\n' +
                     'GCF_000003.1\\tPRJ3\\thttps://host/GCF_000003.1_ASM3\\tComplete\\n'
@@ -24,6 +24,7 @@ nextflow_process {
                         w << '# See ftp://ftp.ncbi.nlm.nih.gov/genomes/README_assembly_summary.txt\\n' + hdr +
                             'GCA_000002.1\\tPRJ2\\thttps://host/GCA_000002.1_ASM2\\tContig\\n' +
                             'GCA_000009.1\\tPRJ9\\t\\tContig\\n' +
+                            'GCA_000008.1\\tPRJ8\\tna\\tContig\\n' +
                             'GCA_000004.1\\tPRJ4\\thttps://host/GCA_000004.1_ASM4\\tContig\\n'
                     }
                 }
@@ -38,11 +39,34 @@ nextflow_process {
             assertAll(
                 { assert process.success },
                 { assert lines[0] == 'accno\tftp_path' },
-                { assert lines.size() == 4 },
+                { assert lines.size() == 3 },
                 { assert lines.contains('GCF_000001.1\thttps://host/GCF_000001.1_ASM1') },
                 { assert lines.contains('GCA_000002.1\thttps://host/GCA_000002.1_ASM2') },
-                { assert lines.contains('GCA_000009.1\t') },
                 { assert snapshot(lines, process.out.findAll { key, val -> key.startsWith('versions') }).match() }
+            )
+        }
+    }
+
+    test("summaries with the same file name") {
+
+        when {
+            process {
+                """
+                file('accessions.txt').text = 'GCF_000001.1\\nGCA_000002.1\\n'
+                file('a').mkdirs()
+                file('b').mkdirs()
+                file('a/assembly_summary.txt').text = '#assembly_accession\\tftp_path\\nGCF_000001.1\\thttps://host/GCF_000001.1_ASM1\\n'
+                file('b/assembly_summary.txt').text = '#assembly_accession\\tftp_path\\nGCA_000002.1\\thttps://host/GCA_000002.1_ASM2\\n'
+                input[0] = file('accessions.txt')
+                input[1] = [ file('a/assembly_summary.txt'), file('b/assembly_summary.txt') ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.tsv[0]).readLines().size() == 3 }
             )
         }
     }

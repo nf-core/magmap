@@ -8,7 +8,7 @@ process ASSEMBLYSUMMARY_FILTER {
 
     input:
     path accessions
-    path summaries, stageAs: 'summaries/*'
+    path summaries, stageAs: 'summaries/??/*'
 
     output:
     path "ncbi_genomeinfo.tsv", emit: tsv
@@ -20,11 +20,11 @@ process ASSEMBLYSUMMARY_FILTER {
     script:
     """
     printf 'accno\\tftp_path\\n' > ncbi_genomeinfo.tsv
-    gzip -cdf summaries/* | gawk -F'\\t' -v OFS='\\t' '
+    gzip -cdf summaries/*/* | gawk -F'\\t' -v OFS='\\t' '
         NR == FNR { want[\$1]; next }
         /^#assembly_accession/ { for (i = 1; i <= NF; i++) if (\$i == "ftp_path") col = i; next }
         /^#/ { next }
-        \$1 in want { print \$1, \$col }
+        \$1 in want && \$col != "" && \$col != "na" { print \$1, \$col }
     ' ${accessions} - >> ncbi_genomeinfo.tsv
     """
 

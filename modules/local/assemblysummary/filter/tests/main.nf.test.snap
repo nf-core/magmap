@@ -14,7 +14,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-30T14:23:31.225512825",
+        "timestamp": "2026-10-01T17:02:06.350768834",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -24,9 +24,8 @@
         "content": [
             [
                 "accno\tftp_path",
-                "GCA_000002.1\thttps://host/GCA_000002.1_ASM2",
-                "GCA_000009.1\t",
-                "GCF_000001.1\thttps://host/GCF_000001.1_ASM1"
+                "GCF_000001.1\thttps://host/GCF_000001.1_ASM1",
+                "GCA_000002.1\thttps://host/GCA_000002.1_ASM2"
             ],
             {
                 "versions_gawk": [
@@ -38,7 +37,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-30T14:23:16.159488729",
+        "timestamp": "2026-10-01T17:01:40.207620412",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
