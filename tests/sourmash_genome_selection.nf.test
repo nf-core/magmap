@@ -31,7 +31,7 @@ nextflow_pipeline {
                     path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
                     path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
                 ).match() },
-                // 'all' keeps every local and every remote genome Sourmash matches -- no species dedup
+                // 'all' keeps every local and remote genome Sourmash matches, with no species deduplication
                 { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('local_') }.size() == 2 },
                 { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.size() == 6 },
                 { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.size() > 8000 },
@@ -104,7 +104,7 @@ nextflow_pipeline {
                     path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
                     path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
                 ).match() },
-                // No --genomeinfo at all: every selected genome is remote, none of them local_*
+                // No --genomeinfo: every selected genome is remote, none of them local_*
                 { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('local_') }.size() == 0 },
                 { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.size() == 4 },
                 { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.size() > 6000 },
@@ -161,9 +161,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "$outputDir"
-                // NOTE: params.pipelines_testdata_base_path isn't resolved yet in this
-                // per-test override context (evaluates to null), so this has to be a
-                // literal URL rather than built from that param like the base config does.
+                // params.pipelines_testdata_base_path is null here, so the URL is literal.
                 // Keep in sync with pipelines_testdata_base_path in nextflow.config.
                 indexes = "https://raw.githubusercontent.com/nf-core/test-datasets/magmap/testdata/archaeal_trio.index.sbt.zip,https://raw.githubusercontent.com/nf-core/test-datasets/magmap/testdata/archaeal_trio.index.sbt.zip"
             }
@@ -186,8 +184,7 @@ nextflow_pipeline {
                     path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
                     path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
                 ).match() },
-                // Same effective genome set as "all" -- two copies of the same index just proves
-                // comma-separated --indexes parsing and multi-index gathering doesn't break anything
+                // Same genome set as "all"; two copies of one index test comma-separated --indexes parsing
                 { assert path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.size() == 6 },
                 { assert path("${params.outdir}/sourmash/arc00_remoteidx_00_prefetch.csv.gz").linesGzip.size() > 0 },
                 { assert path("${params.outdir}/sourmash/arc00_remoteidx_01_prefetch.csv.gz").linesGzip.size() > 0 },

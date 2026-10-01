@@ -47,8 +47,7 @@ process TIDYVERSE_SELECTANNOTATOR {
         prokka_accessions       <- character()
         unclassified_accessions <- character()
     } else {
-        # bakta_supported_only: Bacteria to Bakta, everything else (incl. genomes we
-        # couldn't classify by domain) falls back to Prokka.
+        # bakta_supported_only: Bacteria go to Bakta; everything else, including genomes without a domain, goes to Prokka.
         bakta_accessions        <- domains %>% filter(domain == 'Bacteria') %>% pull(accno)
         unclassified_accessions <- setdiff(no_gff, domains %>% pull(accno))
         prokka_accessions       <- setdiff(no_gff, bakta_accessions)

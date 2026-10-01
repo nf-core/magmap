@@ -1,7 +1,6 @@
 //
-// Annotate genomes with Bakta: download (or reuse a cached/user-supplied) database, then
-// run Bakta on genomes lacking a GFF. Bakta's own version reporting is handled by the
-// storeDir-decoupled BAKTA_VERSION process -- see modules/local/bakta_version.
+// Annotate genomes lacking a GFF with Bakta, downloading or reusing a database.
+// BAKTA_VERSION reports the Bakta version, decoupled from the storeDir-cached process.
 //
 
 include { BAKTA_BAKTADBDOWNLOAD } from '../../../modules/nf-core/bakta/baktadbdownload/main'
@@ -11,12 +10,11 @@ include { BAKTA_VERSION         } from '../../../modules/local/bakta_version/mai
 workflow BAKTA {
 
     take:
-    ch_fasta // channel: [ val(meta), path(fasta) ] -- genomes without a GFF to annotate with Bakta
+    ch_fasta // channel: [ val(meta), path(fasta) ]: genomes without a GFF to annotate with Bakta
 
     main:
-    // Only download the (potentially large) Bakta database if there's actually a genome
-    // to annotate with it -- ch_fasta can be empty even when --annotator requests Bakta,
-    // e.g. if domain classification routed every genome lacking a GFF to Prokka instead.
+    // Download the large database only if there is a genome to annotate; ch_fasta can be
+    // empty when --annotator requests Bakta but every genome was routed to Prokka.
     BAKTA_BAKTADBDOWNLOAD(ch_fasta.count().filter { n -> n > 0 })
 
     BAKTA_BAKTA(

@@ -1,7 +1,4 @@
-// Safely quote a Groovy value as a single-quoted R string literal. Used for
-// local_accnos, whose size is bounded by the number of locally-provided genomes
-// (documented as accepting arbitrary text via --genomeinfo) -- without this, a value
-// containing a quote could break the generated R syntax, or worse.
+// Quote a value as a single-quoted R string literal; --genomeinfo accepts arbitrary text.
 def rq(v) {
     return "'" + v.toString().replace('\\', '\\\\').replace("'", "\\'") + "'"
 }
@@ -17,7 +14,7 @@ process COLLECT_GENOMESELECTION {
 
     input:
     tuple val(meta), path(genome_files) // one <sample-or-'all'>.genomes.txt per genome set, one accession per line
-    val local_accnos                    // [ accno, ... ] -- genomes originating from --genomeinfo that were kept in the run
+    val local_accnos                    // [ accno, ... ]: genomes originating from --genomeinfo that were kept in the run
 
     output:
     tuple val(meta), path("${prefix}.genome_selection_mqc.tsv"), emit: multiqc
@@ -43,11 +40,7 @@ process COLLECT_GENOMESELECTION {
 
     local_accnos <- ${local_accnos_r}
 
-    # Read the accessions for each genome set from its own <sample-or-'all'>.genomes.txt
-    # file rather than embedding them into this generated script -- this pipeline maps
-    # against potentially large genome collections, and interpolating every accession
-    # into the script text does not scale (in --genomeset_mode sample, the row count is
-    # samples x genomes).
+    # Accessions are read from files; interpolating them into this script does not scale.
     genome_sets <- tibble(fname = Sys.glob('*.genomes.txt')) %>%
         mutate(
             sample = str_remove(basename(fname), '\\\\.genomes\\\\.txt\$'),
@@ -73,7 +66,7 @@ process COLLECT_GENOMESELECTION {
         c(
             "# id: 'genome_selection'",
             "# section_name: 'Genome selection'",
-            "# description: 'Number of local (user-provided) and remote (NCBI-fetched) genomes selected per genome set -- one row per sample when --genomeset_mode sample is used, a single row otherwise. See summary_tables/${prefix}.genome_selection.tsv.gz for the full per-genome breakdown.'",
+            "# description: 'Number of local (user-provided) and remote (NCBI-fetched) genomes selected per genome set: one row per sample when --genomeset_mode sample is used, a single row otherwise. See summary_tables/${prefix}.genome_selection.tsv.gz for the full per-genome breakdown.'",
             "# plot_type: 'table'"
         ),
         "${prefix}.genome_selection_mqc.tsv"

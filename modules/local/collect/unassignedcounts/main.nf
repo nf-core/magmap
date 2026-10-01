@@ -41,9 +41,7 @@ process COLLECT_UNASSIGNEDCOUNTS {
         }
     )
 
-    # accno/orf/chr/start/end/strand/length/tpm have no meaning for these pseudo-features,
-    # but CUSTOM_COLLECTSTATS reads every fcs file together and needs matching columns,
-    # so pad them out as NA here.
+    # Pad columns without meaning for pseudo-features with NA; CUSTOM_COLLECTSTATS needs matching columns.
     d <- d %>%
         mutate(
             accno = NA_character_, orf = NA_character_, chr = NA_character_,

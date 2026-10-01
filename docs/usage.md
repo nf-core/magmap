@@ -163,16 +163,18 @@ Note, more than one index file can be provided, separated by commas.
 #### Genome data will be directed to a specific directory
 
 All genomes potentially downloaded as part of the Sourmash process, will be output in the directory specified with [`--genome_store_dir`](https://nf-co.re/magmap/parameters/#genome_store_dir) (set to `genomes` by default).  
-Similarly, the output from Prokka annotation of genomes will be stored in the directory specified with [`--prokka_store_dir`](https://nf-co.re/magmap/parameters/#prokka_store_dir) (`magmap_prokka` by default), and the output from Bakta annotation in [`--bakta_store_dir`](https://nf-co.re/magmap/parameters/#bakta_store_dir) (`magmap_bakta` by default) -- see [Choosing an annotator: Prokka or Bakta](#choosing-an-annotator-prokka-or-bakta).
+Similarly, the output from Prokka annotation of genomes will be stored in the directory specified with [`--prokka_store_dir`](https://nf-co.re/magmap/parameters/#prokka_store_dir) (`magmap_prokka` by default), and the output from Bakta annotation in [`--bakta_store_dir`](https://nf-co.re/magmap/parameters/#bakta_store_dir) (`magmap_bakta` by default); see [Choosing an annotator: Prokka or Bakta](#choosing-an-annotator-prokka-or-bakta).
 On subsequent runs, any genome file or Prokka/Bakta annotation files found in the specified directories will be skipped from download and/or annotation.
 Since annotating genomes is computationally relatively expensive, we recommend that you _reuse these directories_ between pipeline runs.
 If you create storage directories that you can access from the directories from which you run the pipeline, just symlink the storage directories to the pipeline run directory or give the full path to the `--genome_store_dir`, `--prokka_store_dir` and `--bakta_store_dir` parameters.
-The Bakta database itself is handled the same way: point [`--bakta_db`](https://nf-co.re/magmap/parameters/#bakta_db) (`magmap_bakta_db` by default) at a directory, and the pipeline downloads a database into it the first time and reuses it on subsequent runs -- or point it at a directory where you've already downloaded one yourself (e.g. with `bakta_db download`) to skip the pipeline's download entirely.
+The Bakta database itself is handled the same way: point [`--bakta_db`](https://nf-co.re/magmap/parameters/#bakta_db) (`magmap_bakta_db` by default) at a directory, and the pipeline downloads a database into it the first time and reuses it on subsequent runs.
+To skip the download, point it at a directory that already holds a database, for example one fetched with `bakta_db download`.
 
 > [!WARNING]
 > These caches are keyed purely by each genome's `accno`, on the assumption that the same accno means the same genome across runs.
-> That's always true for remote genomes -- NCBI accessions are globally unique and tied to fixed content -- but for your own genomes provided via `--genomeinfo`, `accno` is just whatever you write in that column.
-> If you reuse an accno for a genuinely different genome in a later run, the pipeline will silently reuse the old cached Prokka/Bakta annotation instead of re-annotating (this also affects Bakta's contig and feature names, which are derived from `accno` too -- see [Choosing an annotator: Prokka or Bakta](#choosing-an-annotator-prokka-or-bakta)).
+> That is always true for remote genomes, since NCBI accessions are globally unique and tied to fixed content.
+> For your own genomes provided via `--genomeinfo`, `accno` is whatever you write in that column.
+> If you reuse an accno for a genuinely different genome in a later run, the pipeline will silently reuse the old cached Prokka/Bakta annotation instead of re-annotating (this also affects Bakta's contig and feature names, which are derived from `accno` too; see [Choosing an annotator: Prokka or Bakta](#choosing-an-annotator-prokka-or-bakta)).
 > Keep local genome accessions unique across runs and projects, or clear the relevant subdirectory of the store dir before reusing an accno for different content.
 
 > [!NOTE]
@@ -218,15 +220,17 @@ Genomes that can't be matched to a GTDB species (e.g. missing from `--gtdb_metad
 
 - `all` (default): keeps every genome Sourmash selects, local or remote.
 - `local`: drops any remote candidate genome that represents the same GTDB species as one of your already-selected local genomes, before it is downloaded. The local genome is never dropped.
-- `completeness`: additionally requires `--checkm_metadata` (completeness/contamination for your local genomes). For a duplicated species, keeps whichever genome — local or remote — has the higher CheckM completeness, and drops the other, even if that means dropping the local genome.
-- `gtdb`: same as `completeness` but ranks genomes by GTDB's own species-representative criterion, `completeness - 5 × contamination`, instead of completeness alone.
+- `completeness`: additionally requires `--checkm_metadata` (completeness/contamination for your local genomes). For a duplicated species, keeps whichever genome, local or remote, has the higher CheckM completeness, and drops the other, even if that means dropping the local genome.
+- `gtdb`: same as `completeness` but ranks genomes by GTDB's own species-representative criterion, `completeness - 5 * contamination`, instead of completeness alone.
 
-For `completeness`/`gtdb`, a genome missing completeness or contamination data is always kept rather than compared and potentially dropped. Ties go to the local genome.
+For `completeness`/`gtdb`, a genome missing completeness or contamination data is always kept rather than compared and potentially dropped.
+Ties go to the local genome.
 
 > [!NOTE]
 > To make sure you only get one genome per species, you need to make sure that your local database only contains one genome per species and use a remote Sourmash index with one genome per species.
 
-Keeping multiple genomes for the same species (the default, `all`) means reads from that species can map ambiguously across them -- see [Multimapping](#multimapping) below for how the pipeline handles that.
+Keeping multiple genomes for the same species (the default, `all`) means reads from that species can map ambiguously across them.
+See [Multimapping](#multimapping) below for how the pipeline handles that.
 
 ### Check duplicates
 
@@ -284,17 +288,17 @@ Output is placed in subdirectories under the directory specified with [`--prokka
 #### Choosing an annotator: Prokka or Bakta
 
 By default, every genome lacking a gff is annotated with Prokka.
-Bakta [was designed to annotate Bacteria only](https://github.com/oschwengers/bakta#readme) -- it has no option to change this -- so using it for Archaea is not officially supported, even though some users may want to risk it anyway, particularly when Archaea are rare in their samples.
+Bakta [was designed to annotate Bacteria only](https://github.com/oschwengers/bakta#readme), with no option to change this, so using it for Archaea is not officially supported, even though some users may want to risk it anyway, particularly when Archaea are rare in their samples.
 The [`--annotator`](https://nf-co.re/magmap/parameters/#annotator) parameter controls this:
 
 | annotator (default: `prokka`) | Behaviour                                                                                                                                              |
 | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | `prokka`                      | Every genome lacking a gff is annotated with Prokka.                                                                                                   |
 | `bakta_supported_only`        | Genomes classified as Bacteria are annotated with Bakta; everything else (Archaea, and genomes whose domain can't be determined) falls back to Prokka. |
-| `bakta_all`                   | Every genome lacking a gff is annotated with Bakta, including Archaea -- unsupported by Bakta, at the user's own risk.                                 |
+| `bakta_all`                   | Every genome lacking a gff is annotated with Bakta, including Archaea; unsupported by Bakta, at the user's own risk.                                   |
 
 `bakta_supported_only` and `bakta_all` both require [`--bakta_db`](https://nf-co.re/magmap/parameters/#bakta_db) (see [above](#genome-data-will-be-directed-to-a-specific-directory)).
-`bakta_supported_only` additionally determines each genome's domain from `--gtdb_metadata` (remote/GTDB genomes) and `--gtdbtk_metadata` (your local genomes) -- the same files used for [`--species_preference`](#preferring-local-or-remote-genomes-for-the-same-species).
+`bakta_supported_only` additionally determines each genome's domain from `--gtdb_metadata` (remote/GTDB genomes) and `--gtdbtk_metadata` (your local genomes); the same files used for [`--species_preference`](#preferring-local-or-remote-genomes-for-the-same-species).
 If a genome's domain can't be determined (e.g. it's missing from both), it's routed to Prokka rather than dropped or errored on, and the pipeline prints a warning listing which genomes this happened for.
 
 ```bash
@@ -305,7 +309,8 @@ nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.cs
 
 A read can align equally well to more than one target sequence whenever the genome collection contains genomes similar enough that the read could plausibly have come from any of them.
 This happens most often when [`--species_preference`](#preferring-local-or-remote-genomes-for-the-same-species) is left at its default (`all`) and multiple genomes representing the same species are kept side by side; it can also happen across genomes of different species that happen to share conserved regions, regardless of `--species_preference`.
-Choosing a stricter `--species_preference` (`local`, `completeness` or `gtdb`) reduces multimapping by dropping redundant same-species genomes down to one representative, but that comes at the cost of losing whatever strain-level resolution the discarded genomes would have provided -- there's a direct tradeoff between "fewer ambiguous reads" and "keeping enough closely related genomes around to tell strains apart".
+Choosing a stricter `--species_preference` (`local`, `completeness` or `gtdb`) reduces multimapping by dropping redundant same-species genomes down to one representative, but that comes at the cost of losing whatever strain-level resolution the discarded genomes would have provided.
+There is a direct tradeoff between fewer ambiguous reads and keeping enough closely related genomes to tell strains apart.
 If your downstream analysis cares about that resolution, prefer `--species_preference all` and rely on the settings below to control how the ambiguity itself is handled.
 
 If there are several possible alignments, BBMap align will, by default, assign a read to only one target sequence.
@@ -329,14 +334,16 @@ nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.cs
 
 ### Feature quantification
 
-Genome features -- by default CDS, rRNA, tRNA and tmRNA, but that can be controlled with [`--features`](parameters/#features) -- are quantified in a two-step process.
+Genome features are quantified in a two-step process.
+By default the features are CDS, rRNA, tRNA and tmRNA; control this with [`--features`](parameters/#features).
 First, reads are mapped to a concatenated set of genome contigs.
 Second, the mapping output is processed by FeatureCount to produce feature specific count tables.
 
 ### Output formats
 
 The summary tables described in [the output docs](output.md#summary-tables) are always written as gzipped TSV.
-With [`--save_parquet`](https://nf-co.re/magmap/parameters/#save_parquet), the same tables are also written as [Parquet](https://parquet.apache.org/) files alongside the TSVs -- useful if you're loading them into tools like [DuckDB](https://duckdb.org/) or [Polars](https://pola.rs/), which can query Parquet's columnar, typed format without decompressing/parsing the whole file first.
+With [`--save_parquet`](https://nf-co.re/magmap/parameters/#save_parquet), the same tables are also written as [Parquet](https://parquet.apache.org/) files alongside the TSVs.
+This is useful when loading them into tools like [DuckDB](https://duckdb.org/) or [Polars](https://pola.rs/), which query the columnar, typed format without parsing the whole file first.
 
 ## Running the pipeline
 
