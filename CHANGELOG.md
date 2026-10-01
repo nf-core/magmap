@@ -12,6 +12,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#NN](https://github.com/nf-core/magmap/pull/NN) - Link between the pipeline's own docs pages with relative links, so readers stay on the docs version they are browsing, closes [#249](https://github.com/nf-core/magmap/issues/249) (by @erikrikarddaniel).
 - [#262](https://github.com/nf-core/magmap/pull/262) - Filter the NCBI assembly summaries (`--remote_genome_sources`) down to the selected remote genomes in a process, instead of parsing them all in the Nextflow head process, closes [#258](https://github.com/nf-core/magmap/issues/258) (by @erikrikarddaniel).
 - [#259](https://github.com/nf-core/magmap/pull/259) - Only download and parse the NCBI assembly summaries (`--remote_genome_sources`) when `--indexes` is given; they were read on every run, adding minutes to runs that never fetch remote genomes (by @erikrikarddaniel).
 - [#251](https://github.com/nf-core/magmap/pull/251) - Run FeatureCounts once per sample across all requested feature types together instead of once per (sample, feature type) (by @erikrikarddaniel).
