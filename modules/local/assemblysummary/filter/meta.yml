@@ -1,0 +1,82 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "assemblysummary_filter"
+description: Extract the FTP path of selected accessions from NCBI assembly summary files
+keywords:
+  - ncbi
+  - assembly summary
+  - filter
+tools:
+  - "gawk":
+      description: "GNU awk, a pattern scanning and text processing language"
+      homepage: "https://www.gnu.org/software/gawk/"
+      documentation: "https://www.gnu.org/software/gawk/manual/"
+      licence: ["GPL-3.0-or-later"]
+      identifier: ""
+
+input:
+  - accessions:
+      type: file
+      description: Text file with one assembly accession per line
+      pattern: "*.txt"
+      ontologies: []
+  - summaries:
+      type: file
+      description: NCBI assembly summary files, optionally gzipped
+      ontologies: []
+output:
+  tsv:
+    - ncbi_genomeinfo.tsv:
+        type: file
+        description: Tab-separated file with the columns `accno` and `ftp_path`, one row per selected accession found in the summaries
+        pattern: "ncbi_genomeinfo.tsv"
+        ontologies:
+          - edam: http://edamontology.org/format_3475
+  versions_gawk:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - gawk:
+          type: string
+          description: The name of the tool
+      - gawk 'BEGIN { print PROCINFO["version"] }':
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - gawk:
+          type: string
+          description: The name of the tool
+      - gawk 'BEGIN { print PROCINFO["version"] }':
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"
+containers:
+  docker:
+    linux/amd64:
+      name: community.wave.seqera.io/library/gawk_gzip:fe0c202000bc8ed4
+      build_id: bd-fe0c202000bc8ed4_1
+      scan_id: sc-0653c1ae5a7281a7_1
+    linux/arm64:
+      name: community.wave.seqera.io/library/gawk_gzip:6fab93852b0eb5a5
+      build_id: bd-6fab93852b0eb5a5_1
+      scan_id: sc-0bdc20c1d00f0236_1
+  singularity:
+    linux/arm64:
+      name: oras://community.wave.seqera.io/library/gawk_gzip:88d638f9e3f9deb5
+      build_id: bd-88d638f9e3f9deb5_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/b1/b18bce5d444a24376f0ee2afe5237f65cc62d14ff4cc1b7b1ed4f9a23f38e483/data
+    linux/amd64:
+      name: oras://community.wave.seqera.io/library/gawk_gzip:9f1bcf81dc06adb6
+      build_id: bd-9f1bcf81dc06adb6_1
+      https: https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/06/0600fdb9287986d3d684b95d6e94f597c41b24a746608532d7c0836bd7b44c15/data
+  conda:
+    linux/amd64:
+      lock_file: modules/local/assemblysummary/filter/.conda-lock/linux_amd64-bd-fe0c202000bc8ed4_1.txt
+    linux/arm64:
+      lock_file: modules/local/assemblysummary/filter/.conda-lock/linux_arm64-bd-6fab93852b0eb5a5_1.txt
