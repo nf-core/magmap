@@ -337,7 +337,13 @@ nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.cs
 Genome features are quantified in a two-step process.
 By default the features are CDS, rRNA, tRNA and tmRNA; control this with [`--features`](parameters/#features).
 First, reads are mapped to a concatenated set of genome contigs.
-Second, the mapping output is processed by FeatureCount to produce feature specific count tables.
+Second, the mapping output is processed by featureCounts, run once per sample for all requested feature types together, to produce feature specific count tables.
+A read overlapping features of different types, for example a tRNA inside a CDS, is therefore not counted for any of them.
+It is counted as `Unassigned_Ambiguity` in `magmap.overall_stats.tsv.gz` instead.
+
+Before version 1.3.0, featureCounts ran once per feature type, so such a read was counted for each type it overlapped.
+Counts for the smaller feature types, such as tRNA, can be lower in version 1.3.0 and later than in earlier versions.
+In the pipeline's test data, the tRNA total fell from 34 to 12 reads and the tmRNA total from 4 to 2.
 
 ### Output formats
 
