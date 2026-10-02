@@ -10,7 +10,7 @@
                         {
                             "id": "test"
                         },
-                        "test.fasta:md5,3a4939a2226d9cb465947fc1258b9400"
+                        "test.proteins.fasta:md5,3a4939a2226d9cb465947fc1258b9400"
                     ]
                 ],
                 "gffread_gff": [
@@ -28,7 +28,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-24T16:52:55.024458073",
+        "timestamp": "2026-10-02T07:15:43.04164992",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
@@ -45,7 +45,7 @@
                         {
                             "id": "test"
                         },
-                        "test.fasta:md5,3a4939a2226d9cb465947fc1258b9400"
+                        "test.proteins.fasta:md5,3a4939a2226d9cb465947fc1258b9400"
                     ]
                 ],
                 "gffread_gff": [
@@ -63,7 +63,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-09-24T14:26:54.168006969",
+        "timestamp": "2026-10-02T07:15:36.262944398",
         "meta": {
             "nf-test": "0.9.4",
             "nextflow": "26.04.6"
