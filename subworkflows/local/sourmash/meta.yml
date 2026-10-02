@@ -10,6 +10,7 @@ components:
   - sourmash/sketch
   - sourmash/index
   - wget
+  - assemblysummary/filter
   - tidyverse/selectgenomespecies
 input:
   - ch_sample_reads:

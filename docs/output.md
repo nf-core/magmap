@@ -39,6 +39,7 @@ With [`--save_parquet`](https://nf-co.re/magmap/parameters/#save_parquet), the s
 
 - `summary_tables/`
   - `magmap.overall_stats.tsv.gz`: Overall statistics from the pipeline, e.g. number of reads, number of called ORFs, number of reads mapping back to contigs/ORFs etc.
+    The columns `Unassigned_NoFeatures` and `Unassigned_Ambiguity` give the number of mapped reads featureCounts could not assign to a feature, because they overlapped none or more than one.
   - `magmap.<FEATURE>.counts.tsv.gz`: Read counts and TPMs for `FEATURE` per ORF and sample. TPMs are calculated as: `r = count/length; tpm = r/sum(r)` over each sample, i.e. a length-corrected relative abundance.
   - `magmap.genome_metadata.tsv.gz`: Genome metadata from GTDB, GTDB-Tk and CheckM/CheckM2 if provided by the user.
   - `magmap.genome_selection.tsv.gz`: Per genome set (one per sample when `--genomeset_mode sample` is used, a single set otherwise), which genomes were selected and whether each originated from `--genomeinfo` (local) or was fetched from NCBI (remote).
@@ -122,7 +123,8 @@ Use [`--sourmash_save_sourmash`](https://nf-co.re/magmap/parameters/#sourmash_sa
 
 ### Prokka
 
-[Prokka](https://github.com/tseemann/prokka) identifies ORFs in genomes for which a gff file is not provided and [`--annotator`](https://nf-co.re/magmap/parameters/#annotator) routes to it -- see [Bakta](#bakta) below for the alternative.
+[Prokka](https://github.com/tseemann/prokka) identifies ORFs in genomes for which a gff file is not provided and [`--annotator`](https://nf-co.re/magmap/parameters/#annotator) routes to it.
+See [Bakta](#bakta) below for the alternative.
 In addition to calling ORFs (done with Prodigal) Prokka will functionally annotate the ORFs.
 To make it easier to reuse already annotated genomes in other projects, output from Prokka is directed to subdirectories of the directory specified with the [`--prokka_store_dir` parameter](https://nf-co.re/magmap/parameters/#prokka_store_dir) (by default `magmap_prokka` in the working directory for the pipeline run).
 Genomes already found in the directory specified, will be skipped by the Prokka step.
@@ -140,7 +142,8 @@ Genomes already found in the directory specified, will be skipped by the Prokka 
 
 ### Bakta
 
-[Bakta](https://github.com/oschwengers/bakta) is an alternative to Prokka for genomes lacking a gff, selected with [`--annotator bakta_supported_only` or `--annotator bakta_all`](https://nf-co.re/magmap/parameters/#annotator) -- see [Choosing an annotator: Prokka or Bakta](usage.md#choosing-an-annotator-prokka-or-bakta) in the usage docs.
+[Bakta](https://github.com/oschwengers/bakta) is an alternative to Prokka for genomes lacking a gff, selected with [`--annotator bakta_supported_only` or `--annotator bakta_all`](https://nf-co.re/magmap/parameters/#annotator).
+See [Choosing an annotator: Prokka or Bakta](usage.md#choosing-an-annotator-prokka-or-bakta) in the usage docs.
 Bakta is only designed to annotate Bacteria; `bakta_supported_only` keeps Archaea (and genomes it can't classify by domain) on Prokka, while `bakta_all` sends everything to Bakta regardless.
 As with Prokka, output is directed to subdirectories of the directory specified with [`--bakta_store_dir`](https://nf-co.re/magmap/parameters/#bakta_store_dir) (by default `magmap_bakta`), and genomes already found there are skipped.
 The Bakta database itself is downloaded once into [`--bakta_db`](https://nf-co.re/magmap/parameters/#bakta_db) (by default `magmap_bakta_db`) and reused on subsequent runs.
@@ -158,7 +161,7 @@ The Bakta database itself is downloaded once into [`--bakta_db`](https://nf-co.r
 </details>
 
 :::warning
-`--prokka_store_dir`/`--bakta_store_dir` are reused across pipeline runs -- genomes already found there are skipped rather than re-annotated (see above).
+`--prokka_store_dir`/`--bakta_store_dir` are reused across pipeline runs; genomes already found there are skipped rather than re-annotated (see above).
 This means genomes accumulated in a store directory over time may have been annotated with _different_ versions of Prokka or Bakta, even though only a single, current version is reported in the collated `versions.yml`/MultiQC report.
 There is currently no automated check or report of per-genome annotation tool versions across a genome library (see [issue #229](https://github.com/nf-core/magmap/issues/229)).
 If consistent annotation-tool versions across your whole genome collection matters, either start from an empty store directory, or track outside the pipeline which version annotated which genome.
@@ -206,8 +209,8 @@ To save the `.bam` files, use `--bbmap_save_bam`; to save the index, use `--bbma
 <summary>Output files</summary>
 
 - `featurecounts/`
-  - `<SAMPLE>.<FEATURE>.featureCounts.tsv`: Counts for `SAMPLE` and `FEATURE`
-  - `<SAMPLE>.<FEATURE>.featureCounts.tsv.summary`: Summary of counts for `SAMPLE` and `FEATURE`
+  - `<SAMPLE>.featureCounts.tsv`: Counts for `SAMPLE`, for all feature types together
+  - `<SAMPLE>.featureCounts.tsv.summary`: Summary of counts for `SAMPLE`
 
 </details>
 
@@ -260,4 +263,5 @@ Results generated by MultiQC collate pipeline QC from supported tools e.g. FastQ
 The FastQC plots displayed in the MultiQC report shows _untrimmed_ reads. They may contain adapter sequence and potentially regions with low quality.
 :::
 
-The report also includes a "Genome selection" table with the number of local (user-provided) and remote (NCBI-fetched) genomes selected per genome set -- one row per sample when `--genomeset_mode sample` is used, a single row for the whole run otherwise. See `summary_tables/magmap.genome_selection.tsv.gz` for the full per-genome breakdown.
+The report also includes a "Genome selection" table with the number of local (user-provided) and remote (NCBI-fetched) genomes selected per genome set: one row per sample when `--genomeset_mode sample` is used, a single row for the whole run otherwise.
+See `summary_tables/magmap.genome_selection.tsv.gz` for the full per-genome breakdown.

@@ -9,11 +9,9 @@ nextflow_process {
     tag "tidyverse"
     tag "tidyverse/splitfeaturecounts"
 
-    // Inputs are built inline rather than read from a fixture: the pipeline repo carries no test
-    // data of its own. `counts` matches FEATURECOUNTS' own output shape (a comment line, then a
-    // header, then one row per ORF) for a single sample counted against every feature type at
-    // once; `ftypes` matches CATPROKKATSVS' orf-to-feature-type mapping. One ORF present in
-    // `counts` has no entry in `ftypes` and must be dropped by the inner join.
+    // Inputs are built inline. `counts` has the shape of FEATURECOUNTS output for one sample
+    // and all feature types; `ftypes` has the shape of the CATPROKKATSVS orf-to-feature-type
+    // mapping. One ORF in `counts` has no `ftypes` entry and must be dropped.
 
     test("counts are split into one file per feature type, unmapped ORFs dropped") {
 
@@ -45,13 +43,11 @@ nextflow_process {
         }
 
         then {
-            // Two feature types present, so Nextflow binds a List<Path>, not a single Path -- see
-            // the analogous gotcha noted where this module's output is consumed in workflows/magmap.nf.
+            // Two feature types emit a List<Path>; a single type would emit a Path.
             def outfiles = process.out.counts[0][1]
             def cds   = outfiles.find { f -> f.toString().contains('.CDS.') }
             def trna  = outfiles.find { f -> f.toString().contains('.tRNA.') }
-            // Each split file starts with a "# Split by ..." comment line before the real header,
-            // so parse rows by hand rather than via .csv(), which has no header line to skip to.
+            // Split files start with a comment line before the header, so rows are parsed by hand.
             def parseRows = { f ->
                 def lines  = new File(f.toString()).text.readLines().drop(1)
                 def header = lines[0].split('\t')
@@ -82,8 +78,7 @@ nextflow_process {
         when {
             process {
                 """
-                // Built via a character code, not a literal quote character, to avoid the
-                // escaping ambiguity of nesting quotes inside this outer triple-quoted string.
+                // A character code avoids nesting a literal quote in this triple-quoted string.
                 def sampleId = "sample" + Character.toString(39) + "x"
 
                 def counts = file("\${workDir}/quote.featureCounts.tsv")
@@ -118,10 +113,8 @@ nextflow_process {
         when {
             process {
                 """
-                // No Geneid here has a matching ftypes entry, so the inner join leaves zero
-                // rows for the sole requested feature type -- this used to make the process
-                // fail outright ("Missing output file(s)"), since a mandatory glob output
-                // needs at least one match and nothing was ever written.
+                // No Geneid matches an ftypes entry, so the requested feature type has zero rows
+                // and the process must still write a header-only file.
                 def counts = file("\${workDir}/nomatch.featureCounts.tsv")
                 counts.text = [
                     ['# Program:featureCounts'],

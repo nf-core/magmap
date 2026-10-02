@@ -12,7 +12,7 @@ nf_core_version: 4.1.0
 repository_type: pipeline
 template:
   author: Danilo Di Leo, Emelie Nilsson and Daniel Lundin
-  description: nf-core/magmap is a bioinformatics best-practice analysis pipeline for mapping reads to a (large) collections of genomes.
+  description: nf-core/magmap is a bioinformatics best-practice analysis pipeline for mapping reads to (large) collections of genomes.
   force: false
   is_nfcore: true
   name: magmap

@@ -2,11 +2,7 @@ process PROKKA_VERSION {
     label 'process_single'
 
     conda "${moduleDir}/environment.yml"
-    // Deliberately reusing the exact same container as modules/nf-core/prokka: its
-    // environment.yml is kept in sync with the vendored module's (same prokka/openjdk/
-    // parallel versions) specifically so this local version-reporting workaround can
-    // share the vendored module's container instead of building/maintaining a near-
-    // duplicate one.
+    // Keep environment.yml identical to modules/nf-core/prokka so both share one container.
     container "${ workflow.containerEngine in ['singularity', 'apptainer'] && !task.ext.singularity_pull_docker_container
 ?         'https://community-cr-prod.seqera.io/docker/registry/v2/blobs/sha256/7b/7bc89d4083c0a4baaaca0ef9ac0ba65e0feaebd8d88fe1c16c47041cbc67f360/data'
 :         'community.wave.seqera.io/library/prokka_openjdk_parallel:f21b98bcef4c3579' }"

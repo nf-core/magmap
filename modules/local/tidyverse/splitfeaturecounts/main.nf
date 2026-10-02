@@ -1,5 +1,4 @@
-// Safely quote a Groovy value as a single-quoted R string literal -- meta.id only has to
-// match /^\S+$/, so a sample name with a quote character would otherwise break R syntax.
+// Quote a value as a single-quoted R string literal; meta.id may contain quote characters.
 def rq(v) {
     return "'" + v.toString().replace('\\', '\\\\').replace("'", "\\'") + "'"
 }
@@ -37,15 +36,12 @@ process TIDYVERSE_SPLITFEATURECOUNTS {
 
     counts <- read_tsv("${counts}", skip = 1, col_types = cols(Geneid = col_character(), .default = col_guess()))
 
-    # Reconstructs the per-feature-type files a dedicated per-type featureCounts run
-    # would have produced, so CUSTOM_COLLECTFEATURECOUNTS/TIDYVERSE_JOINFEATURECOUNTSACCNO
-    # stay unchanged even though FEATURECOUNTS now runs once per sample.
+    # Reconstructs the per-feature-type files that downstream collection modules expect.
     annotated <- counts %>%
         inner_join(ftypes, by = c('Geneid' = 'orf'))
 
-    # Iterate over the requested feature types (meta.feature), not unique(annotated\$ftype):
-    # a type with zero matching rows must still produce a (header-only) file, since the
-    # output below is a mandatory glob requiring at least one match.
+    # Iterate over meta.feature, not unique(annotated\$ftype): a type without rows must
+    # still produce a header-only file because the output glob requires a match.
     for ( f in strsplit(${rq(meta.feature)}, ',')[[1]] ) {
         outfile <- paste0(${rq(prefix)}, ".", f, ".featureCounts.tsv")
         writeLines("# Split by TIDYVERSE_SPLITFEATURECOUNTS", outfile)
@@ -68,8 +64,7 @@ process TIDYVERSE_SPLITFEATURECOUNTS {
 
     stub:
     prefix = task.ext.prefix ?: "${meta.id}"
-    // Single-quoted and quote-escaped: meta.id only has to match /^\S+$/, so a shell
-    // metacharacter here would otherwise break out of the unquoted touch command.
+    // Quote the prefix; meta.id may contain shell metacharacters.
     safePrefix = prefix.replace("'", "'\\''")
     """
     touch '${safePrefix}.CDS.featureCounts.tsv'

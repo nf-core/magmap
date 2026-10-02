@@ -9,11 +9,8 @@ nextflow_process {
     tag "collect"
     tag "collect/unassignedcounts"
 
-    // Input is built inline rather than read from a fixture: the pipeline repo carries no test
-    // data of its own. Each file matches a real featureCounts summary's shape (one row per
-    // Assigned/Unassigned_* status, one count column named after the aligned BAM) -- only
-    // Unassigned_NoFeatures/Unassigned_Ambiguity are of interest here; every other status must be
-    // dropped.
+    // Input is built inline: each file has the shape of a featureCounts summary, and only
+    // Unassigned_NoFeatures and Unassigned_Ambiguity rows are kept.
 
     test("Unassigned_NoFeatures and Unassigned_Ambiguity are extracted per sample, other statuses dropped") {
 
@@ -57,8 +54,7 @@ nextflow_process {
                 { assert ambiguity.find { r -> r["sample"] == 'SAMPLE1' }["count"] as int == 3 },
                 { assert ambiguity.find { r -> r["sample"] == 'SAMPLE2' }["count"] as int == 9 },
 
-                // Pseudo-features have no ORF/coordinates of their own -- padded as NA so the table
-                // still lines up with the real per-ORF counts tables it's unioned with downstream.
+                // Pseudo-features have no ORF or coordinates; the columns are padded as NA.
                 { assert nofeatures.every { r -> r["orf"] == '' } },
                 { assert nofeatures.every { r -> r["accno"] == '' } },
 

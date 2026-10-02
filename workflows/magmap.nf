@@ -62,7 +62,7 @@ workflow MAGMAP {
     ch_checkm_metadata          // channel: CheckM/CheckM2 metadata files
     genomeset_mode              //  string: Either 'joint' for mapping samples against all genomes, or 'sample' to map to sample-specific sets
     species_preference          //  string: 'all' to select all genomes for a species or 'local', 'completeness' or 'gtdb' to prefer one according to different criteria
-    annotator                   //  string: 'prokka', 'bakta_supported_only' or 'bakta_all' -- which tool(s) to annotate genomes lacking a GFF with
+    annotator                   //  string: 'prokka', 'bakta_supported_only' or 'bakta_all'; which tool(s) to annotate genomes lacking a GFF with
     skip_sourmash               // boolean: run Sourmash or not
     sourmash_ksize              // integer
     ch_features                 // channel: list of feature types to call
@@ -249,15 +249,15 @@ workflow MAGMAP {
             annotator
         )
 
-        // Warn (once) about genomes bakta_supported_only couldn't classify by domain and
-        // therefore routed to Prokka rather than Bakta
+        // Warn once about genomes that bakta_supported_only could not classify by domain
+        // and routed to Prokka
         TIDYVERSE_SELECTANNOTATOR.out.unclassified_accessions
             .splitText() { it.trim() }
             .filter { it }
             .collect()
             .subscribe { accnos ->
                 if ( accnos ) {
-                    log.warn "--annotator ${annotator}: could not determine a GTDB domain for ${accnos.size()} genome(s) lacking a GFF (${accnos.join(', ')}) -- routed to Prokka instead of Bakta. Provide --gtdb_metadata/--gtdbtk_metadata covering these genomes to use Bakta for them."
+                    log.warn "--annotator ${annotator}: could not determine a GTDB domain for ${accnos.size()} genome(s) lacking a GFF (${accnos.join(', ')}); routed to Prokka instead of Bakta. Provide --gtdb_metadata/--gtdbtk_metadata covering these genomes to use Bakta for them."
                 }
             }
 
@@ -373,9 +373,8 @@ workflow MAGMAP {
     }
 
     //
-    // Publish the genome accessions that went into each BBMap index -- one file for the
-    // whole run in 'joint' mode, one per sample in 'sample' mode. Reused as the input to
-    // COLLECT_GENOMESELECTION below.
+    // Publish the genome accessions of each BBMap index: one file for the run in 'joint'
+    // mode, one per sample in 'sample' mode. Also the input to COLLECT_GENOMESELECTION.
     //
     ch_genome_accnos_files = CREATE_BBMAP_INDEX.out.genome_accnos
         .collectFile(storeDir: "${outdir}/bbmap") { meta, accnos ->
@@ -383,9 +382,7 @@ workflow MAGMAP {
         }
 
     //
-    // MODULE: Summarize local vs remote genome selection for the MultiQC report -- one
-    // row per sample when genomeset_mode is 'sample', a single row for the whole run
-    // otherwise.
+    // MODULE: Summarise local vs remote genome selection for the MultiQC report
     //
     COLLECT_GENOMESELECTION(
         ch_genome_accnos_files.collect().map { files -> [ [ id: 'magmap' ], files ] },
@@ -438,8 +435,7 @@ workflow MAGMAP {
         .combine(BAM_SORT_STATS_SAMTOOLS.out.idxstats.collect { it -> it[1]}.map { it -> [ it ] })
 
     //
-    // MODULE: FeatureCounts -- one call per sample, counting all requested feature types together
-    // (respects --features), rather than one call per (sample x feature type).
+    // MODULE: FeatureCounts, one call per sample counting all requested feature types together
     //
     ch_features_joined = ch_features.collect().map { it -> it.join(',') }
 
@@ -453,8 +449,7 @@ workflow MAGMAP {
     ch_multiqc_files = ch_multiqc_files.mix(
         FEATURECOUNTS.out.summary
             .map { meta, summary ->
-                // meta.id only has to match /^\S+$/, so quoteReplacement() guards against a
-                // literal '$'/'\' being misread as a backreference by replaceAll().
+                // quoteReplacement() stops '$' or '\' in meta.id being read as a backreference
                 def content = summary.text.replaceAll(/\S+\.sorted\.bam/, java.util.regex.Matcher.quoteReplacement(meta.id))
                 [ "${meta.id}.featureCounts.tsv.summary", content ]
             }
@@ -463,9 +458,7 @@ workflow MAGMAP {
         )
 
     //
-    // MODULE: Record Unassigned_NoFeatures/Unassigned_Ambiguity counts (from the single combined
-    // FeatureCounts run above) for the overall stats table -- these have no associated ORF, so
-    // they never enter the per-feature counts tables below.
+    // MODULE: Record Unassigned_NoFeatures/Unassigned_Ambiguity counts for the overall stats table
     //
     COLLECT_UNASSIGNEDCOUNTS(
         FEATURECOUNTS.out.summary
@@ -474,10 +467,9 @@ workflow MAGMAP {
             .map { it -> [ [ id: 'magmap' ], it ] }
     )
 
-    // Splits the combined per-sample FeatureCounts output back into per-feature-type files
-    // (via CATPROKKATSVS's orf-to-ftype mapping), so downstream stays unchanged.
-    // .first() broadcasts the single CATPROKKATSVS emission to every sample below --
-    // without it, a queue channel with one item would only pair with the first sample.
+    // Split the combined FeatureCounts output into per-feature-type files using the
+    // CATPROKKATSVS orf-to-ftype mapping.
+    // .first() makes the single CATPROKKATSVS emission pair with every sample.
     TIDYVERSE_SPLITFEATURECOUNTS(
         FEATURECOUNTS.out.counts,
         CATPROKKATSVS.out.tsv.map { _meta, tsv -> tsv }.first()
@@ -488,15 +480,11 @@ workflow MAGMAP {
     //
     ch_collect_featurecounts = TIDYVERSE_SPLITFEATURECOUNTS.out.counts
         .flatMap { meta, files ->
-            // A sample with only one requested feature type (e.g. Bakta's GFF has just CDS)
-            // makes Nextflow emit a single Path, not a List -- and Path is Iterable (over
-            // path segments), so an un-normalised collect{} would silently walk directory
-            // components instead. Force a List first.
+            // A single feature type emits a Path, not a List, and Path is Iterable over its
+            // segments; force a List so collect{} does not walk directory components.
             def fileList = files instanceof List ? files : [files]
             fileList.collect { f ->
-                // Anchored on the fixed suffix, not a first-dot/second-dot split: sample
-                // IDs only have to match /^\S+$/, so a dotted id (e.g. "Station1.Rep2")
-                // would otherwise be misparsed as part of the feature type.
+                // Anchor on the fixed suffix; sample IDs may contain dots (e.g. "Station1.Rep2").
                 def feature = f.name.replaceFirst(/\.featureCounts\.tsv$/, '').tokenize('.').last()
                 [ meta + [feature: feature], f ]
             }
@@ -514,13 +502,8 @@ workflow MAGMAP {
 
     CUSTOM_COLLECTFEATURECOUNTS(ch_collect_featurecounts)
 
-    // CUSTOM_COLLECTFEATURECOUNTS itself is kept generic (no genome-accession lookup), since
-    // it's shared with other pipelines; attaching accno is specific to a genome-collection
-    // pipeline, so that join stays local, as a separate step.
-    // .first() converts the single GENOMES2ORFS emission to a value channel so it's
-    // reused for every one of CUSTOM_COLLECTFEATURECOUNTS's per-feature-type emissions --
-    // without it, a queue channel with only one item would only pair with the first
-    // emission before closing, silently starving the rest.
+    // CUSTOM_COLLECTFEATURECOUNTS is shared with other pipelines, so the accno join stays a separate local step.
+    // .first() makes the single GENOMES2ORFS emission pair with every per-feature-type emission.
     TIDYVERSE_JOINFEATURECOUNTSACCNO(
         CUSTOM_COLLECTFEATURECOUNTS.out.counts,
         GENOMES2ORFS.out.genomes2orfs.map { _m, g2orfs -> g2orfs }.first()

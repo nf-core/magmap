@@ -2,7 +2,7 @@
     "$schema": "https://json-schema.org/draft/2020-12/schema",
     "$id": "https://raw.githubusercontent.com/nf-core/magmap/master/nextflow_schema.json",
     "title": "nf-core/magmap pipeline parameters",
-    "description": "nf-core/magmap is a bioinformatics best-practice analysis pipeline for mapping reads to a (large) collections of genomes.",
+    "description": "nf-core/magmap is a bioinformatics best-practice analysis pipeline for mapping reads to (large) collections of genomes.",
     "type": "object",
     "$defs": {
         "input_output_options": {
