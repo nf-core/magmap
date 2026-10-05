@@ -3,19 +3,19 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.3.0dev - [YYYY-mm-dd]
+## v1.3.0 - [YYYY-mm-dd]
 
 ### `Added`
 
-- [#257](https://github.com/nf-core/magmap/pull/257) - Add `proteins/magmap.proteins.faa.gz`, a protein FASTA of all selected genomes, translating CDSs with gffread for genomes that come with a gff file, closes [#236](https://github.com/nf-core/magmap/issues/236) (by @erikrikarddaniel).
-- [#251](https://github.com/nf-core/magmap/pull/251) - Add `Unassigned_NoFeatures`/`Unassigned_Ambiguity` columns to `overall_stats.tsv.gz`, closes [#220](https://github.com/nf-core/magmap/issues/220) (by @erikrikarddaniel).
+- [#257](https://github.com/nf-core/magmap/pull/257) - Add `proteins/magmap.proteins.faa.gz`, a protein FASTA of all selected genomes, translating CDSs with gffread for genomes that come with a gff file, closes [#236](https://github.com/nf-core/magmap/issues/236) (by @erikrikarddaniel, reviewed by @LouisLeNezet).
+- [#251](https://github.com/nf-core/magmap/pull/251) - Add `Unassigned_NoFeatures`/`Unassigned_Ambiguity` columns to `overall_stats.tsv.gz`, closes [#220](https://github.com/nf-core/magmap/issues/220) (by @erikrikarddaniel, reviewed by @nschan).
 
 ### `Changed`
 
 - [#264](https://github.com/nf-core/magmap/pull/264) - Link between the pipeline's own docs pages with relative links, so readers stay on the docs version they are browsing, closes [#249](https://github.com/nf-core/magmap/issues/249) (by @erikrikarddaniel).
-- [#262](https://github.com/nf-core/magmap/pull/262) - Filter the NCBI assembly summaries (`--remote_genome_sources`) down to the selected remote genomes in a process, instead of parsing them all in the Nextflow head process, closes [#258](https://github.com/nf-core/magmap/issues/258) (by @erikrikarddaniel).
+- [#262](https://github.com/nf-core/magmap/pull/262) - Filter the NCBI assembly summaries (`--remote_genome_sources`) down to the selected remote genomes in a process, instead of parsing them all in the Nextflow head process, closes [#258](https://github.com/nf-core/magmap/issues/258) (by @erikrikarddaniel, reviewed by @vagkaratzas).
 - [#259](https://github.com/nf-core/magmap/pull/259) - Only download and parse the NCBI assembly summaries (`--remote_genome_sources`) when `--indexes` is given; they were read on every run, adding minutes to runs that never fetch remote genomes (by @erikrikarddaniel).
-- [#251](https://github.com/nf-core/magmap/pull/251) - Run FeatureCounts once per sample across all requested feature types together instead of once per (sample, feature type). A read overlapping features of different types is now counted as `Unassigned_Ambiguity` rather than for each type, so counts for smaller feature types, e.g. tRNA, can be lower than in earlier versions (by @erikrikarddaniel).
+- [#251](https://github.com/nf-core/magmap/pull/251) - Run FeatureCounts once per sample across all requested feature types together instead of once per (sample, feature type). A read overlapping features of different types is now counted as `Unassigned_Ambiguity` rather than for each type, so counts for smaller feature types, e.g. tRNA, can be lower than in earlier versions (by @erikrikarddaniel, reviewed by @nschan).
 - [#250](https://github.com/nf-core/magmap/pull/250) - Reduce the `sourmash_genome_selection`/`species_preference` nf-test data from 7 to 3 archaeal species, cutting per-scenario Prokka annotation load and CI runtime, closes [#246](https://github.com/nf-core/magmap/issues/246) (by @erikrikarddaniel).
 - [#248](https://github.com/nf-core/magmap/pull/248) - Replace the local `COLLECT_FEATURECOUNTS` module with the shared `nf-core/modules` component `custom/collectfeaturecounts` ([#237](https://github.com/nf-core/magmap/issues/237), by @erikrikarddaniel).
 - [#243](https://github.com/nf-core/magmap/pull/243) - Document why BBMap, rather than e.g. Bowtie2, is used for read mapping in `conf/modules.config` (by @erikrikarddaniel).
@@ -24,9 +24,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#261](https://github.com/nf-core/magmap/pull/261) - Reject `--genomeinfo` accessions ending in a FASTA extension, which made Prokka fail, closes [#260](https://github.com/nf-core/magmap/issues/260) (by @erikrikarddaniel).
-- [#261](https://github.com/nf-core/magmap/pull/261) - Ignore FASTA extensions in `--gtdbtk_metadata` and `--checkm_metadata` identifiers, so e.g. `bin_1.fa` matches `bin_1`, and warn at startup about `--genomeinfo` genomes missing from them (by @erikrikarddaniel).
-- [#261](https://github.com/nf-core/magmap/pull/261) - `--genomeinfo` FASTA file names must now end in `.fa`, `.fna` or `.fasta`, optionally followed by `.gz`; a broken pattern let names like `genome.fa.bak` through (by @erikrikarddaniel).
+- [#261](https://github.com/nf-core/magmap/pull/261) - Reject `--genomeinfo` accessions ending in a FASTA extension, which made Prokka fail, closes [#260](https://github.com/nf-core/magmap/issues/260) (by @erikrikarddaniel, reviewed by @vagkaratzas).
+- [#261](https://github.com/nf-core/magmap/pull/261) - Ignore FASTA extensions in `--gtdbtk_metadata` and `--checkm_metadata` identifiers, so e.g. `bin_1.fa` matches `bin_1`, and warn at startup about `--genomeinfo` genomes missing from them (by @erikrikarddaniel, reviewed by @vagkaratzas).
+- [#261](https://github.com/nf-core/magmap/pull/261) - `--genomeinfo` FASTA file names must now end in `.fa`, `.fna` or `.fasta`, optionally followed by `.gz`; a broken pattern let names like `genome.fa.bak` through (by @erikrikarddaniel, reviewed by @vagkaratzas).
 - [#256](https://github.com/nf-core/magmap/pull/256) - Populate the MultiQC report's methods-description tool citations/bibliography, which had always rendered blank, closes [#231](https://github.com/nf-core/magmap/issues/231) (by @erikrikarddaniel).
 - [#255](https://github.com/nf-core/magmap/pull/255) - Fix flaky pipeline-level nf-test snapshots caused by non-deterministic software-versions key order, closes [#253](https://github.com/nf-core/magmap/issues/253) (by @erikrikarddaniel).
 - [#245](https://github.com/nf-core/magmap/pull/245) - Stop the pipeline crashing on any run when NCBI's live remote genome catalog contains a suppressed/replaced assembly with a missing `ftp_path` field; such genomes are now skipped instead, closes [#244](https://github.com/nf-core/magmap/issues/244) (by @erikrikarddaniel).
