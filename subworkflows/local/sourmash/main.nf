@@ -28,14 +28,14 @@ workflow SOURMASH {
     main:
         ch_sample_sigs = channel.empty()
         if ( index_list || ! skip_sourmash ) {
-            SAMPLE_SKETCH(ch_sample_reads)
+            SAMPLE_SKETCH(ch_sample_reads, true)
             ch_sample_sigs = SAMPLE_SKETCH.out.signatures
         }
 
         // Skip sketching and indexing of user-provided genomes if skip_sourmash is set
         ch_joint_user_genomes = ch_user_genomeinfo   // Will be set to selected genomes if sourmash is _not_ skipped, since sourmash will then be used to select matching genomes
         if ( ! skip_sourmash ) {
-            GENOME_SKETCH(ch_user_genomeinfo.map { it -> [ [ id: it.accno ], it.genome_fna ] })
+            GENOME_SKETCH(ch_user_genomeinfo.map { it -> [ [ id: it.accno ], it.genome_fna ] }, true)
 
             ch_genome_sigs = GENOME_SKETCH.out.signatures
                 .collect { _meta, sig -> sig }

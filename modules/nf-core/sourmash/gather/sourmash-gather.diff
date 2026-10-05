@@ -1,4 +1,5 @@
 Changes in component 'nf-core/sourmash/gather'
+'modules/nf-core/sourmash/gather/environment.yml' is unchanged
 'modules/nf-core/sourmash/gather/meta.yml' is unchanged
 Changes in 'sourmash/gather/main.nf':
 --- modules/nf-core/sourmash/gather/main.nf
@@ -28,7 +29,6 @@ Changes in 'sourmash/gather/main.nf':
      tuple val(meta), path('*_matches.sig.zip'), optional: true, emit: matches
      tuple val(meta), path('*_prefetch.sig.zip'), optional: true, emit: prefetch
 
-'modules/nf-core/sourmash/gather/environment.yml' is unchanged
 'modules/nf-core/sourmash/gather/tests/nextflow.config' is unchanged
 'modules/nf-core/sourmash/gather/tests/main.nf.test' is unchanged
 'modules/nf-core/sourmash/gather/tests/main.nf.test.snap' is unchanged
