@@ -313,6 +313,8 @@ Choosing a stricter `--species_preference` (`local`, `completeness` or `gtdb`) r
 There is a direct tradeoff between fewer ambiguous reads and keeping enough closely related genomes to tell strains apart.
 If your downstream analysis cares about that resolution, prefer `--species_preference all` and rely on the settings below to control how the ambiguity itself is handled.
 
+The pipeline maps reads with BBMap rather than Bowtie2, which failed to index a soil metagenome in [Bushnell's benchmark](https://www.osti.gov/biblio/1241166) (LBNL-7065E, 2014).
+
 If there are several possible alignments, BBMap align will, by default, assign a read to only one target sequence.
 The pipeline supports all four possible BBMap values for this option:
 

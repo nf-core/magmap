@@ -8,6 +8,7 @@ process ASSEMBLYSUMMARY_FILTER {
 
     input:
     path accessions
+    // Each `?` becomes the file's index, so same-named summaries from different sources don't collide
     path summaries, stageAs: 'summaries/??/*'
 
     output:

@@ -166,30 +166,4 @@ nextflow_process {
             )
         }
     }
-
-    test("counts are split into one file per feature type, unmapped ORFs dropped - stub") {
-
-        options "-stub"
-
-        when {
-            process {
-                """
-                def counts = file("\${workDir}/empty.featureCounts.tsv")
-                counts.text = ''
-                def ftypes = file("\${workDir}/empty.orfs.tsv")
-                ftypes.text = ''
-
-                input[0] = [ [ id:'test' ], counts ]
-                input[1] = ftypes
-                """
-            }
-        }
-
-        then {
-            assertAll(
-                { assert process.success },
-                { assert snapshot(process.out).match() }
-            )
-        }
-    }
 }

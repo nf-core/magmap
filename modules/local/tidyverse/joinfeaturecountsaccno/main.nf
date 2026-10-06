@@ -50,11 +50,16 @@ process TIDYVERSE_JOINFEATURECOUNTSACCNO {
     touch ${prefix}.counts.tsv
     gzip ${prefix}.counts.tsv
 
-    cat <<-END_VERSIONS > versions.yml
-    "${task.process}":
-        R: 4.1.0
-        readr: 2.0.0
-        dplyr: 1.0.7
-    END_VERSIONS
+    Rscript -e '
+        writeLines(
+            c(
+                "\\"${task.process}\\":",
+                paste0("    R: ", paste0(R.Version()[c("major","minor")], collapse = ".")),
+                paste0("    readr: ", packageVersion("readr")),
+                paste0("    dplyr: ", packageVersion("dplyr"))
+            ),
+            "versions.yml"
+        )
+    '
     """
 }

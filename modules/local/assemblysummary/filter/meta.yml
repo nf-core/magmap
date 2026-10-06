@@ -18,11 +18,13 @@ input:
       type: file
       description: Text file with one assembly accession per line
       pattern: "*.txt"
-      ontologies: []
+      ontologies:
+        - edam: http://edamontology.org/format_2330 # Textual format
   - summaries:
       type: file
       description: NCBI assembly summary files, optionally gzipped
-      ontologies: []
+      ontologies:
+        - edam: http://edamontology.org/format_2330 # Textual format
 output:
   tsv:
     - ncbi_genomeinfo.tsv:
