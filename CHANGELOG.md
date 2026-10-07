@@ -26,6 +26,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
+- [#NN](https://github.com/nf-core/magmap/pull/NN) - Pin `nf-schema@2.7.2` in the AWS full-size test launch config, whose own `plugins` block replaced the pipeline's and let `nf-schema` 3.0.0 load, which broke `paramsSummaryLog` (by @erikrikarddaniel).
 - [#261](https://github.com/nf-core/magmap/pull/261) - Reject `--genomeinfo` accessions ending in a FASTA extension, which made Prokka fail, closes [#260](https://github.com/nf-core/magmap/issues/260) (by @erikrikarddaniel, reviewed by @vagkaratzas).
 - [#261](https://github.com/nf-core/magmap/pull/261) - Ignore FASTA extensions in `--gtdbtk_metadata` and `--checkm_metadata` identifiers, so e.g. `bin_1.fa` matches `bin_1`, and warn at startup about `--genomeinfo` genomes missing from them (by @erikrikarddaniel, reviewed by @vagkaratzas).
 - [#261](https://github.com/nf-core/magmap/pull/261) - `--genomeinfo` FASTA file names must now end in `.fa`, `.fna` or `.fasta`, optionally followed by `.gz`; a broken pattern let names like `genome.fa.bak` through (by @erikrikarddaniel, reviewed by @vagkaratzas).
