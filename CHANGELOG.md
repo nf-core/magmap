@@ -12,8 +12,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#267](https://github.com/nf-core/magmap/pull/267) - Update nf-core modules and subworkflows (by @erikrikarddaniel).
-- [#267](https://github.com/nf-core/magmap/pull/267) - Trim Galore! now runs with the default `process_medium` resources instead of 1 GB of memory, which could get it killed for running out of memory on real data (by @erikrikarddaniel).
+- [#267](https://github.com/nf-core/magmap/pull/267) - Update nf-core modules and subworkflows (by @erikrikarddaniel, reviewed by @vagkaratzas).
+- [#267](https://github.com/nf-core/magmap/pull/267) - Trim Galore! now runs with the default `process_medium` resources instead of 1 GB of memory, which could get it killed for running out of memory on real data (by @erikrikarddaniel, reviewed by @vagkaratzas).
 - [#264](https://github.com/nf-core/magmap/pull/264) - Link between the pipeline's own docs pages with relative links, so readers stay on the docs version they are browsing, closes [#249](https://github.com/nf-core/magmap/issues/249) (by @erikrikarddaniel).
 - [#262](https://github.com/nf-core/magmap/pull/262) - Filter the NCBI assembly summaries (`--remote_genome_sources`) down to the selected remote genomes in a process, instead of parsing them all in the Nextflow head process, closes [#258](https://github.com/nf-core/magmap/issues/258) (by @erikrikarddaniel, reviewed by @vagkaratzas).
 - [#259](https://github.com/nf-core/magmap/pull/259) - Only download and parse the NCBI assembly summaries (`--remote_genome_sources`) when `--indexes` is given; they were read on every run, adding minutes to runs that never fetch remote genomes (by @erikrikarddaniel).

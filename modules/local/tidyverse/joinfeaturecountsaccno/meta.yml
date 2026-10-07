@@ -36,3 +36,4 @@ output:
         - edam: "http://edamontology.org/format_3750" # YAML
 authors:
   - "@erikrikarddaniel"
+  - "@danilodileo"

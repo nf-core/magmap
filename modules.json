@@ -52,7 +52,7 @@
                     },
                     "custom/collectstats": {
                         "branch": "master",
-                        "git_sha": "23e432f42c1f2aea64898b48839ebf7b925e4e8a",
+                        "git_sha": "93fba8b93fd34ecf1a8f45fe792a7abd420bdde4",
                         "installed_by": ["modules"]
                     },
                     "custom/dumpsoftwareversions": {
