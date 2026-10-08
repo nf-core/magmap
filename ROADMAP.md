@@ -8,7 +8,7 @@ Current release: 1.3.0. `dev` is 1.3.1dev and holds only #275 (AWS full-test Fus
 - Budget: fewer than 100 changed files per release (`git diff --stat master...dev | tail -1`).
 - One theme per release. Small bug fixes may ride along when they touch files already in the diff.
 - Eukaryote support is additive, so it ships as minor releases (1.4, 1.5, ...).
-  nf-core semver makes only these breaking: renamed/removed params, changed *mandatory* samplesheet columns, changed output formats or layout, removed features.
+  nf-core semver makes only these breaking: renamed/removed params, changed _mandatory_ samplesheet columns, changed output formats or layout, removed features.
   A new optional `--genomeinfo` column is not breaking.
 - 2.0 is reserved for the first batch of breaking changes.
 - External gates (nf-core/modules, nf-core/test-datasets `magmap` branch) are listed as PR 0 and do not count against the budget.
@@ -16,12 +16,12 @@ Current release: 1.3.0. `dev` is 1.3.1dev and holds only #275 (AWS full-test Fus
 
 ## Overview
 
-| Release | Theme | Type | Est. files | Gated by |
-| --- | --- | --- | --- | --- |
-| 1.4.0 | Eukaryotic transcriptomes from `--genomeinfo`, annotated with TransDecoder | minor | ~60-80 | test data, module install |
-| 1.5.0 | MMETSP as a remote source, with its quality metadata | minor | ~40-60 | #239 OSF link verified, 1.4.0 |
-| 1.6.0 | Eukaryotic genomes: MetaEuk, EukCC, `species_preference` | minor | ~50-70 | 1.4.0, #241 open questions |
-| 2.0.0 | Breaking batch, starting with dropping Sourmash for user-provided genomes | major | ~30-50 | - |
+| Release | Theme                                                                      | Type  | Est. files | Gated by                      |
+| ------- | -------------------------------------------------------------------------- | ----- | ---------- | ----------------------------- |
+| 1.4.0   | Eukaryotic transcriptomes from `--genomeinfo`, annotated with TransDecoder | minor | ~60-80     | test data, module install     |
+| 1.5.0   | MMETSP as a remote source, with its quality metadata                       | minor | ~40-60     | #239 OSF link verified, 1.4.0 |
+| 1.6.0   | Eukaryotic genomes: MetaEuk, EukCC, `species_preference`                   | minor | ~50-70     | 1.4.0, #241 open questions    |
+| 2.0.0   | Breaking batch, starting with dropping Sourmash for user-provided genomes  | major | ~30-50     | -                             |
 
 ## 1.4.0 in depth
 
@@ -38,12 +38,12 @@ Motivation: the metaT of a mixed 92-sample project mapped poorly because the euk
 
 ### Behaviour by input
 
-| Row | GFF given | Today | 1.4.0 |
-| --- | --- | --- | --- |
-| prokaryotic genome | yes | skip annotation | same |
-| prokaryotic genome | no | Prokka or Bakta by `--annotator` | same |
-| transcriptome | yes | not supported | skip annotation |
-| transcriptome | no | not supported | TransDecoder |
+| Row                | GFF given | Today                            | 1.4.0           |
+| ------------------ | --------- | -------------------------------- | --------------- |
+| prokaryotic genome | yes       | skip annotation                  | same            |
+| prokaryotic genome | no        | Prokka or Bakta by `--annotator` | same            |
+| transcriptome      | yes       | not supported                    | skip annotation |
+| transcriptome      | no        | not supported                    | TransDecoder    |
 
 ### Invariants and traps found in the code
 
@@ -68,14 +68,14 @@ Motivation: the metaT of a mixed 92-sample project mapped poorly because the euk
 
 ### PR plan
 
-| PR | Content | Est. files |
-| --- | --- | --- |
-| 0a | nf-core/test-datasets `magmap` branch: 2-3 small eukaryotic transcriptomes, README entry | external |
-| 0b | nf-core/modules: check `transdecoder/*` are current | external |
-| 1 | Riders: #265, #263, #229 | ~15 |
-| 2 | `GENOMES2ORFS` ID regex generalisation, with test | ~5 |
-| 3 | Install transdecoder modules, new annotation branch in `workflows/magmap.nf`, `sequence_type` in `assets/schema_genomeinfo.json` and its parsing, params, docs | ~35 |
-| 4 | Test profile `test_transcriptome` with `.nf.test` + snapshot, metro map (#269), CHANGELOG | ~20 |
+| PR  | Content                                                                                                                                                        | Est. files |
+| --- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| 0a  | nf-core/test-datasets `magmap` branch: 2-3 small eukaryotic transcriptomes, README entry                                                                       | external   |
+| 0b  | nf-core/modules: check `transdecoder/*` are current                                                                                                            | external   |
+| 1   | Riders: #265, #263, #229                                                                                                                                       | ~15        |
+| 2   | `GENOMES2ORFS` ID regex generalisation, with test                                                                                                              | ~5         |
+| 3   | Install transdecoder modules, new annotation branch in `workflows/magmap.nf`, `sequence_type` in `assets/schema_genomeinfo.json` and its parsing, params, docs | ~35        |
+| 4   | Test profile `test_transcriptome` with `.nf.test` + snapshot, metro map (#269), CHANGELOG                                                                      | ~20        |
 
 ### Done when
 
@@ -110,26 +110,26 @@ Motivation: the metaT of a mixed 92-sample project mapped poorly because the euk
 
 ## Backlog
 
-| # | Item | Note |
-| --- | --- | --- |
-| #184 | inStrain | Modules exist, needs a design. Deferred until after 1.3.0. |
-| #164 | eggnog-mapper and KOfamscan | Separate theme (functional annotation, as in metatdenovo). |
-| #87 | Skip steps for a concatenated genome file | Interacts with genome selection. Needs scoping. |
-| #34 | HMM profile scan | No description. Needs scoping. |
+| #    | Item                                      | Note                                                       |
+| ---- | ----------------------------------------- | ---------------------------------------------------------- |
+| #184 | inStrain                                  | Modules exist, needs a design. Deferred until after 1.3.0. |
+| #164 | eggnog-mapper and KOfamscan               | Separate theme (functional annotation, as in metatdenovo). |
+| #87  | Skip steps for a concatenated genome file | Interacts with genome selection. Needs scoping.            |
+| #34  | HMM profile scan                          | No description. Needs scoping.                             |
 
 ## Traceability
 
-| Item | Release |
-| --- | --- |
-| #239 transcripts, local | 1.4.0 |
-| #239 MMETSP remote | 1.5.0 |
-| #240 TransDecoder | 1.4.0 |
-| #240 MetaEuk | 1.6.0 |
-| #241 BUSCO metadata for MMETSP | 1.5.0 |
-| #241 EukCC, `species_preference` | 1.6.0 |
-| #265, #263, #229, #269 | 1.4.0 |
-| Drop local Sourmash | 2.0.0 |
-| #184, #164, #87, #34 | backlog |
+| Item                             | Release |
+| -------------------------------- | ------- |
+| #239 transcripts, local          | 1.4.0   |
+| #239 MMETSP remote               | 1.5.0   |
+| #240 TransDecoder                | 1.4.0   |
+| #240 MetaEuk                     | 1.6.0   |
+| #241 BUSCO metadata for MMETSP   | 1.5.0   |
+| #241 EukCC, `species_preference` | 1.6.0   |
+| #265, #263, #229, #269           | 1.4.0   |
+| Drop local Sourmash              | 2.0.0   |
+| #184, #164, #87, #34             | backlog |
 
 ## Decisions log
 
