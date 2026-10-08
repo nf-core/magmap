@@ -126,7 +126,7 @@
                     "readr": "2.1.5"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.3.0"
+                    "nf-core/magmap": "v1.3.1dev"
                 }
             },
             [
@@ -364,7 +364,7 @@
                     "readr": "2.1.5"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.3.0"
+                    "nf-core/magmap": "v1.3.1dev"
                 }
             },
             [
@@ -639,7 +639,7 @@
                     "readr": "2.1.5"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.3.0"
+                    "nf-core/magmap": "v1.3.1dev"
                 }
             },
             [
@@ -915,7 +915,7 @@
                     "readr": "2.1.5"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.3.0"
+                    "nf-core/magmap": "v1.3.1dev"
                 }
             },
             [
@@ -1164,7 +1164,7 @@
                     "readr": "2.1.5"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.3.0"
+                    "nf-core/magmap": "v1.3.1dev"
                 }
             },
             [
@@ -1413,7 +1413,7 @@
                     "readr": "2.1.5"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.3.0"
+                    "nf-core/magmap": "v1.3.1dev"
                 }
             },
             [
