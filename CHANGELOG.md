@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.3.0 - [YYYY-mm-dd]
+## v1.3.0 - [2026-10-08]
 
 ### `Added`
 
@@ -20,13 +20,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#251](https://github.com/nf-core/magmap/pull/251) - Run FeatureCounts once per sample across all requested feature types together instead of once per (sample, feature type). A read overlapping features of different types is now counted as `Unassigned_Ambiguity` rather than for each type, so counts for smaller feature types, e.g. tRNA, can be lower than in earlier versions. The per-sample files in `featurecounts/` are now named `<SAMPLE>.featureCounts.tsv` and hold all feature types, instead of one `<SAMPLE>.<FEATURE>.featureCounts.tsv` per feature type (by @erikrikarddaniel, reviewed by @nschan).
 - [#250](https://github.com/nf-core/magmap/pull/250) - Reduce the `sourmash_genome_selection`/`species_preference` nf-test data from 7 to 3 archaeal species, cutting per-scenario Prokka annotation load and CI runtime, closes [#246](https://github.com/nf-core/magmap/issues/246) (by @erikrikarddaniel).
 - [#248](https://github.com/nf-core/magmap/pull/248) - Replace the local `COLLECT_FEATURECOUNTS` module with the shared `nf-core/modules` component `custom/collectfeaturecounts` ([#237](https://github.com/nf-core/magmap/issues/237), by @erikrikarddaniel).
-- [#243](https://github.com/nf-core/magmap/pull/243) - Document why BBMap, rather than e.g. Bowtie2, is used for read mapping in `conf/modules.config` (by @erikrikarddaniel).
+- [#243](https://github.com/nf-core/magmap/pull/243) - Document why BBMap, rather than e.g. Bowtie2, is used for read mapping in `docs/usage.md` (by @erikrikarddaniel).
 - [#242](https://github.com/nf-core/magmap/pull/242) - Replace the local `COLLECT_STATS` module with the shared `nf-core/modules` component `custom/collectstats` ([#237](https://github.com/nf-core/magmap/issues/237), by @erikrikarddaniel).
 - [#238](https://github.com/nf-core/magmap/pull/238) - Split the genome-accession join out of `COLLECT_FEATURECOUNTS` into a new local module, `TIDYVERSE_JOINFEATURECOUNTSACCNO`, in preparation for sharing feature-count aggregation logic with other pipelines ([#237](https://github.com/nf-core/magmap/issues/237), by @erikrikarddaniel).
 
 ### `Fixed`
 
-- [#NN](https://github.com/nf-core/magmap/pull/NN) - Pin `nf-schema@2.7.2` in the AWS full-size test launch config, whose own `plugins` block replaced the pipeline's and let `nf-schema` 3.0.0 load, which broke `paramsSummaryLog` (by @erikrikarddaniel).
+- [#273](https://github.com/nf-core/magmap/pull/273) - Pin `nf-schema@2.7.2` in the AWS full-size test launch config, whose own `plugins` block replaced the pipeline's and let `nf-schema` 3.0.0 load, which broke `paramsSummaryLog` (by @erikrikarddaniel).
 - [#261](https://github.com/nf-core/magmap/pull/261) - Reject `--genomeinfo` accessions ending in a FASTA extension, which made Prokka fail, closes [#260](https://github.com/nf-core/magmap/issues/260) (by @erikrikarddaniel, reviewed by @vagkaratzas).
 - [#261](https://github.com/nf-core/magmap/pull/261) - Ignore FASTA extensions in `--gtdbtk_metadata` and `--checkm_metadata` identifiers, so e.g. `bin_1.fa` matches `bin_1`, and warn at startup about `--genomeinfo` genomes missing from them (by @erikrikarddaniel, reviewed by @vagkaratzas).
 - [#261](https://github.com/nf-core/magmap/pull/261) - `--genomeinfo` FASTA file names must now end in `.fa`, `.fna` or `.fasta`, optionally followed by `.gz`; a broken pattern let names like `genome.fa.bak` through (by @erikrikarddaniel, reviewed by @vagkaratzas).
