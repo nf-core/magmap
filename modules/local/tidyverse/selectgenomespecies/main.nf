@@ -67,9 +67,7 @@ process TIDYVERSE_SELECTGENOMESPECIES {
             pull(species) %>%
             unique()
 
-        # Drop a remote candidate only if it shares a classified species with a selected local
-        # genome. Candidates missing from the GTDB metadata are kept (fail open): we can't
-        # determine their species, so we don't drop a genome Sourmash asked for.
+        # Candidates missing from the GTDB metadata are kept: their species is unknown.
         dropped_remote <- remote_meta %>%
             filter(!is.na(species), species != '', species %in% local_species_set) %>%
             pull(accno)
@@ -77,8 +75,7 @@ process TIDYVERSE_SELECTGENOMESPECIES {
         kept_remote <- setdiff(remote_candidates, dropped_remote)
         kept_local  <- local_accessions
     } else {
-        # species_preference is 'completeness' or 'gtdb': pick the best-scoring genome per
-        # species across BOTH local and remote candidates -- a local genome can lose here.
+        # 'completeness' or 'gtdb': keep the best-scoring genome per species; a local genome can lose.
         checkm_cols <- c(
              '# contigs' = NA_integer_,
              'Genome size (bp)' = NA_integer_, 'Genome_Size' = NA_integer_,
@@ -109,14 +106,14 @@ process TIDYVERSE_SELECTGENOMESPECIES {
                     checkm_completeness
             )
 
-        # Fail open: keep anything we can't meaningfully compare (unclassified species or no score)
+        # Keep genomes without a species or score.
         unevaluable <- candidates %>% filter(is.na(species) | species == '' | is.na(score)) %>% pull(accno)
 
         best <- candidates %>%
             filter(!is.na(species), species != '', !is.na(score)) %>%
             group_by(species) %>%
             filter(score == max(score)) %>%
-            # Ties go to the local genome, if one is among the tied candidates
+            # Ties go to the local genome.
             filter(!('local' %in% source) | source == 'local') %>%
             ungroup() %>%
             pull(accno)

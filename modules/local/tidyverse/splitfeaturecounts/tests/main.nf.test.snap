@@ -1,0 +1,23 @@
+{
+    "counts are split into one file per feature type, unmapped ORFs dropped": {
+        "content": [
+            [
+                [
+                    {
+                        "id": "test",
+                        "feature": "CDS,tRNA"
+                    },
+                    [
+                        "test.CDS.featureCounts.tsv:md5,4ef15bef75a7e4ecacd5f60e294f4699",
+                        "test.tRNA.featureCounts.tsv:md5,c8bf8c2fe45fdcce5342fc052dfe32c3"
+                    ]
+                ]
+            ]
+        ],
+        "timestamp": "2026-09-11T10:25:30.832094808",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.6"
+        }
+    }
+}

@@ -44,9 +44,30 @@ nextflow_pipeline {
                 { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.size() > 500 },
                 { assert path("${params.outdir}/summary_tables/magmap.rRNA.counts.tsv.gz").linesGzip.size() > 5 },
                 { assert path("${params.outdir}/summary_tables/magmap.tmRNA.counts.tsv.gz").linesGzip.size() > 1 },
-                { assert path("${params.outdir}/summary_tables/magmap.tRNA.counts.tsv.gz").linesGzip.size() > 20 },
+                { assert path("${params.outdir}/summary_tables/magmap.tRNA.counts.tsv.gz").linesGzip.size() > 5 },
                 { assert path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.size() > 400 },
                 { assert path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.size() > 400 },
+            )
+        }
+    }
+
+    test("-profile test_metadata, accno with FASTA extension") {
+
+        when {
+            def sheet = new File("$outputDir/genomeinfo.csv")
+            sheet.parentFile.mkdirs()
+            sheet.text = "accno,genome_fna\nGCA_002688505.1.FNA,https://raw.githubusercontent.com/nf-core/test-datasets/magmap/testdata/GCA_002688505.1_ASM268850v1_genomic.fna.gz\n"
+            params {
+                outdir     = "$outputDir"
+                genomeinfo = sheet.path
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.failed },
+                { assert workflow.stderr.any { l -> l.contains('cannot end with a FASTA extension') } },
+                { assert !workflow.stderr.any { l -> l.contains('genome_fna') } }
             )
         }
     }

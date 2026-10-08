@@ -1,0 +1,10 @@
+---
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/environment-schema.json
+name: tidyverse_joinfeaturecountsaccno
+channels:
+  - conda-forge
+  - bioconda
+dependencies:
+  - conda-forge::r-base=4.3.1
+  - conda-forge::r-dplyr=1.1.4
+  - conda-forge::r-readr=2.1.5

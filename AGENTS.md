@@ -22,13 +22,13 @@ Requires Nextflow, nf-core tools, and nf-test.
 nextflow run . -profile test,docker --outdir <OUTDIR>
 
 # Run the full nf-test suite (mirrors CI)
-nf-test test --tag test --profile +docker --verbose
+nf-test test --tag pipeline --profile=+docker --verbose
 
 # Run a single nf-test file
-nf-test test tests/species_preference.nf.test --profile +docker --verbose
+nf-test test tests/species_preference.nf.test --profile=+docker --verbose
 
 # Update snapshots after intentional output changes
-nf-test test --tag test --profile +docker --verbose --update-snapshots
+nf-test test --tag pipeline --profile=+docker --verbose --update-snapshot
 
 # Lint (nf-core conventions)
 nf-core pipelines lint .

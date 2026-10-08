@@ -37,6 +37,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io), a workflow tool
 3. Filter reads with [`BBduk`](https://sourceforge.net/projects/bbmap/)
 4. Select reference genomes based on k-mer signatures in reads with [`sourmash`](https://sourmash.readthedocs.io/en/latest/)
 5. Annotate selected genomes lacking a gff file with [`Prokka`](https://github.com/tseemann/prokka) or [`Bakta`](https://github.com/oschwengers/bakta) ([`--annotator`](https://nf-co.re/magmap/parameters/#annotator))
+   and translate the CDSs of genomes with a gff file ([`gffread`](https://github.com/gpertea/gffread)) to produce a protein FASTA of all selected genomes
 6. Quantification of genes identified in selected reference genomes:
    1. Generate index of assembly ([`BBmap index`](https://sourceforge.net/projects/bbmap/))
    2. Mapping cleaned reads to the assembly for quantification ([`BBmap`](https://sourceforge.net/projects/bbmap/))

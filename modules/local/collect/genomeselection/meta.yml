@@ -1,5 +1,5 @@
 name: "collect_genomeselection"
-description: Summarize how many local (user-provided) and remote (NCBI-fetched) genomes were selected per genome set
+description: Summarise how many local (user-provided) and remote (NCBI-fetched) genomes were selected per genome set
 keywords:
   - genomes
   - sourmash

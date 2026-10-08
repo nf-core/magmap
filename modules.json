@@ -45,6 +45,16 @@
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
                         "installed_by": ["modules"]
                     },
+                    "custom/collectfeaturecounts": {
+                        "branch": "master",
+                        "git_sha": "94b413835288b0e80bd29256d0a95e4fce020a8b",
+                        "installed_by": ["modules"]
+                    },
+                    "custom/collectstats": {
+                        "branch": "master",
+                        "git_sha": "93fba8b93fd34ecf1a8f45fe792a7abd420bdde4",
+                        "installed_by": ["modules"]
+                    },
                     "custom/dumpsoftwareversions": {
                         "branch": "master",
                         "git_sha": "eac429d4c67ac5114ce7d4287d460d8f05fd9fab",
@@ -52,13 +62,19 @@
                     },
                     "duckdb/table2parquet": {
                         "branch": "master",
-                        "git_sha": "a01390acb6fb8c7539c8d9126b16df24092db83c",
+                        "git_sha": "64017d8989654a65db85f8ba181a9c387ac58fad",
                         "installed_by": ["modules"]
                     },
                     "fastqc": {
                         "branch": "master",
                         "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
                         "installed_by": ["modules"]
+                    },
+                    "gffread": {
+                        "branch": "master",
+                        "git_sha": "b3d1ca84b3f0051498abb91bd4333b701be4384d",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/gffread/gffread.diff"
                     },
                     "multiqc": {
                         "branch": "master",
@@ -67,7 +83,7 @@
                     },
                     "pigz/compress": {
                         "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "git_sha": "0bd9da8d8d90e8740c12964f5bf70a61a61f2142",
                         "installed_by": ["modules"]
                     },
                     "prokka": {
@@ -103,31 +119,29 @@
                     },
                     "sourmash/gather": {
                         "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "git_sha": "6eaecd6ef9bfc7faf313b1abeaae9b129795291d",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/sourmash/gather/sourmash-gather.diff"
                     },
                     "sourmash/index": {
                         "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/sourmash/index/sourmash-index.diff"
+                        "git_sha": "6eaecd6ef9bfc7faf313b1abeaae9b129795291d",
+                        "installed_by": ["modules"]
                     },
                     "sourmash/sketch": {
                         "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
-                        "installed_by": ["modules"],
-                        "patch": "modules/nf-core/sourmash/sketch/sourmash-sketch.diff"
+                        "git_sha": "6eaecd6ef9bfc7faf313b1abeaae9b129795291d",
+                        "installed_by": ["modules"]
                     },
                     "subread/featurecounts": {
                         "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "git_sha": "c565f1b27c06a1e8b726e2a646d4c822ae3b514a",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/subread/featurecounts/subread-featurecounts.diff"
                     },
                     "trimgalore": {
                         "branch": "master",
-                        "git_sha": "2a30bfb6a1b4667692d734e33e000a3bd1d74a0d",
+                        "git_sha": "f97696ae2ba28e94032adafea6777d7eb38d2c1d",
                         "installed_by": ["modules"]
                     },
                     "wget": {
@@ -142,22 +156,22 @@
                 "nf-core": {
                     "bam_sort_stats_samtools": {
                         "branch": "master",
-                        "git_sha": "9339809fcb90af8a8b7051e6cd914894d5c52002",
+                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
                         "installed_by": ["subworkflows"]
                     },
                     "bam_stats_samtools": {
                         "branch": "master",
-                        "git_sha": "9339809fcb90af8a8b7051e6cd914894d5c52002",
+                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
                         "installed_by": ["bam_sort_stats_samtools"]
                     },
                     "utils_nextflow_pipeline": {
                         "branch": "master",
-                        "git_sha": "1a545fcbd762911c21a64ced3dbef99b2b51ac75",
+                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfcore_pipeline": {
                         "branch": "master",
-                        "git_sha": "a3fb7351b1fdb2b1de282b765816bbea190e86a8",
+                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
                         "installed_by": ["subworkflows"]
                     },
                     "utils_nfschema_plugin": {

@@ -1,8 +1,11 @@
 {
     "multiple indexes": {
         "content": [
-            86,
+            75,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
@@ -11,6 +14,9 @@
                 },
                 "CATPROKKATSVS": {
                     "pigz": 2.8
+                },
+                "CAT_FAA": {
+                    "pigz": 2.6
                 },
                 "CAT_FNA": {
                     "pigz": 2.6
@@ -21,27 +27,36 @@
                 "CHECK_DUPLICATES": {
                     "zgrep": 1.5
                 },
-                "COLLECT_FEATURECOUNTS": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "dtplyr": "1.3.2",
-                    "data.table": "1.17.8"
-                },
                 "COLLECT_GENOMESELECTION": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
-                    "tidyr": "1.3.1",
                     "purrr": "1.1.0",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
-                "COLLECT_STATS": {
+                "COLLECT_UNASSIGNEDCOUNTS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
                     "purrr": "1.1.0",
-                    "tidyr": "1.3.1",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2"
+                },
+                "CUSTOM_COLLECTFEATURECOUNTS": {
+                    "R": "4.5.3",
+                    "data.table": "1.17.8",
+                    "dplyr": "1.2.1",
+                    "dtplyr": "1.3.3",
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0"
+                },
+                "CUSTOM_COLLECTSTATS": {
+                    "R": "4.5.3",
+                    "dplyr": "1.2.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0",
+                    "tidyr": "1.3.1"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -64,13 +79,16 @@
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
                 },
+                "GFFREAD": {
+                    "gffread": "0.12.7"
+                },
                 "PROKKAGFF2TSV": {
                     "R": "4.3.1",
                     "data.table": "1.17.8",
-                    "dtplyr": "1.3.2",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
-                    "readr": "2.1.5"
+                    "dtplyr": "1.3.2",
+                    "readr": "2.1.5",
+                    "tidyr": "1.3.1"
                 },
                 "PROKKA_VERSION": {
                     "prokka": "1.15.6"
@@ -93,16 +111,26 @@
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
                 },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
+                },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "tidyr": "1.3.1"
+                },
+                "TIDYVERSE_SPLITFEATURECOUNTS": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.2.0"
+                    "nf-core/magmap": "v1.3.0"
                 }
             },
             [
@@ -120,24 +148,12 @@
                 "fastqc/arc02_1_fastqc.html",
                 "fastqc/arc02_2_fastqc.html",
                 "featurecounts",
-                "featurecounts/arc00.CDS.featureCounts.tsv",
-                "featurecounts/arc00.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc00.rRNA.featureCounts.tsv",
-                "featurecounts/arc00.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc00.tRNA.featureCounts.tsv",
-                "featurecounts/arc00.tRNA.featureCounts.tsv.summary",
-                "featurecounts/arc01.CDS.featureCounts.tsv",
-                "featurecounts/arc01.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc01.rRNA.featureCounts.tsv",
-                "featurecounts/arc01.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc01.tRNA.featureCounts.tsv",
-                "featurecounts/arc01.tRNA.featureCounts.tsv.summary",
-                "featurecounts/arc02.CDS.featureCounts.tsv",
-                "featurecounts/arc02.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc02.rRNA.featureCounts.tsv",
-                "featurecounts/arc02.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc02.tRNA.featureCounts.tsv",
-                "featurecounts/arc02.tRNA.featureCounts.tsv.summary",
+                "featurecounts/arc00.featureCounts.tsv",
+                "featurecounts/arc00.featureCounts.tsv.summary",
+                "featurecounts/arc01.featureCounts.tsv",
+                "featurecounts/arc01.featureCounts.tsv.summary",
+                "featurecounts/arc02.featureCounts.tsv",
+                "featurecounts/arc02.featureCounts.tsv.summary",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
@@ -163,6 +179,8 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_magmap_software_mqc_versions.yml",
+                "proteins",
+                "proteins/magmap.proteins.faa.gz",
                 "samtools",
                 "samtools/arc00.flagstat",
                 "samtools/arc00.idxstats",
@@ -204,21 +222,22 @@
                 "summary_tables/magmap.tRNA.counts.tsv.gz"
             ],
             [
-                "all.genomes.txt:md5,b944d7c3726a0454f18485d4b474eabb",
-                "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
-                "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
+                "all.genomes.txt:md5,490ddf3e5f47b0a3a6863f1fcfbf077c",
+                "fastqc-status-check-heatmap.txt:md5,2d048bc683af06a44639099eb03dd92a",
+                "fastqc_per_base_n_content_plot.txt:md5,644236c3a2aa8cac95222c0e60ae368d",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
-                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,973b41dfbd153f1ba706b01e38de2ca3",
-                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,b0848999c498a56adc3e02c4a5266ca1",
-                "fastqc_per_sequence_quality_scores_plot.txt:md5,dd3e11f739d9998714bb1b182de118aa",
-                "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
-                "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
+                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,e64e84094bab531e6a53e7ecd6a7fb31",
+                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,ca048e37585c17fce2f3a6ff0aafd72f",
+                "fastqc_per_sequence_quality_scores_plot.txt:md5,34f453f7669f176b600b5d36e8a14c45",
+                "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
+                "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
-                "multiqc_genome_selection.txt:md5,26f79789c380394d13bb21521119e731"
+                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_genome_selection.txt:md5,4982d7c0ecad450a22b0ef6ff6674db2",
+                "magmap.proteins.faa.gz:md5,f5759f098fd9b2a75501a00db5ad2db6"
             ],
             [
-                "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\trRNA\ttRNA"
+                "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\tUnassigned_Ambiguity\tUnassigned_NoFeatures\trRNA\ttRNA"
             ],
             4,
             [
@@ -234,16 +253,19 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-07-28T13:56:28.166173357",
+        "timestamp": "2026-09-23T21:41:16.907163382",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     },
     "remote only, genomeset_mode: sample": {
         "content": [
-            70,
+            65,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
@@ -253,33 +275,45 @@
                 "CATPROKKATSVS": {
                     "pigz": 2.8
                 },
+                "CAT_FAA": {
+                    "pigz": 2.6
+                },
                 "CAT_FNA": {
                     "pigz": 2.6
                 },
                 "CAT_GFF": {
                     "pigz": 2.6
                 },
-                "COLLECT_FEATURECOUNTS": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "dtplyr": "1.3.2",
-                    "data.table": "1.17.8"
-                },
                 "COLLECT_GENOMESELECTION": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
-                    "tidyr": "1.3.1",
                     "purrr": "1.1.0",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
-                "COLLECT_STATS": {
+                "COLLECT_UNASSIGNEDCOUNTS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
                     "purrr": "1.1.0",
-                    "tidyr": "1.3.1",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2"
+                },
+                "CUSTOM_COLLECTFEATURECOUNTS": {
+                    "R": "4.5.3",
+                    "data.table": "1.17.8",
+                    "dplyr": "1.2.1",
+                    "dtplyr": "1.3.3",
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0"
+                },
+                "CUSTOM_COLLECTSTATS": {
+                    "R": "4.5.3",
+                    "dplyr": "1.2.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0",
+                    "tidyr": "1.3.1"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -314,16 +348,26 @@
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
                 },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
+                },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "tidyr": "1.3.1"
+                },
+                "TIDYVERSE_SPLITFEATURECOUNTS": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.2.0"
+                    "nf-core/magmap": "v1.3.0"
                 }
             },
             [
@@ -343,24 +387,12 @@
                 "fastqc/arc02_1_fastqc.html",
                 "fastqc/arc02_2_fastqc.html",
                 "featurecounts",
-                "featurecounts/arc00.CDS.featureCounts.tsv",
-                "featurecounts/arc00.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc00.rRNA.featureCounts.tsv",
-                "featurecounts/arc00.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc00.tRNA.featureCounts.tsv",
-                "featurecounts/arc00.tRNA.featureCounts.tsv.summary",
-                "featurecounts/arc01.CDS.featureCounts.tsv",
-                "featurecounts/arc01.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc01.rRNA.featureCounts.tsv",
-                "featurecounts/arc01.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc01.tRNA.featureCounts.tsv",
-                "featurecounts/arc01.tRNA.featureCounts.tsv.summary",
-                "featurecounts/arc02.CDS.featureCounts.tsv",
-                "featurecounts/arc02.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc02.rRNA.featureCounts.tsv",
-                "featurecounts/arc02.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc02.tRNA.featureCounts.tsv",
-                "featurecounts/arc02.tRNA.featureCounts.tsv.summary",
+                "featurecounts/arc00.featureCounts.tsv",
+                "featurecounts/arc00.featureCounts.tsv.summary",
+                "featurecounts/arc01.featureCounts.tsv",
+                "featurecounts/arc01.featureCounts.tsv.summary",
+                "featurecounts/arc02.featureCounts.tsv",
+                "featurecounts/arc02.featureCounts.tsv.summary",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
@@ -386,6 +418,8 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_magmap_software_mqc_versions.yml",
+                "proteins",
+                "proteins/magmap.proteins.faa.gz",
                 "samtools",
                 "samtools/arc00.flagstat",
                 "samtools/arc00.idxstats",
@@ -414,23 +448,24 @@
                 "summary_tables/magmap.tRNA.counts.tsv.gz"
             ],
             [
-                "arc00.genomes.txt:md5,c21f8f8a718d32dc0f26874707b44b14",
-                "arc01.genomes.txt:md5,e6cf521da8f7114b10611272909824a0",
-                "arc02.genomes.txt:md5,18e6ec6dc8285f7a4e54a6ffc65438f7",
-                "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
-                "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
+                "arc00.genomes.txt:md5,f67f8647d336ef62f8d26dbe162a1fdd",
+                "arc01.genomes.txt:md5,a09e428c97fa6d6f3256c894becb3f39",
+                "arc02.genomes.txt:md5,dcb37b5a2d352f1276b952e93f269ffa",
+                "fastqc-status-check-heatmap.txt:md5,2d048bc683af06a44639099eb03dd92a",
+                "fastqc_per_base_n_content_plot.txt:md5,644236c3a2aa8cac95222c0e60ae368d",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
-                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,973b41dfbd153f1ba706b01e38de2ca3",
-                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,b0848999c498a56adc3e02c4a5266ca1",
-                "fastqc_per_sequence_quality_scores_plot.txt:md5,dd3e11f739d9998714bb1b182de118aa",
-                "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
-                "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
+                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,e64e84094bab531e6a53e7ecd6a7fb31",
+                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,ca048e37585c17fce2f3a6ff0aafd72f",
+                "fastqc_per_sequence_quality_scores_plot.txt:md5,34f453f7669f176b600b5d36e8a14c45",
+                "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
+                "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
-                "multiqc_genome_selection.txt:md5,e55031ea22ff9ec8bccbd08aa1f69d48"
+                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_genome_selection.txt:md5,3e9c9004b3067ba0cb71f8cd9b413ddd",
+                "magmap.proteins.faa.gz:md5,8ae424e881f890a1ae0aa42c9ebd708c"
             ],
             [
-                "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\trRNA\ttRNA"
+                "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\tUnassigned_Ambiguity\tUnassigned_NoFeatures\trRNA\ttRNA"
             ],
             4,
             [
@@ -439,13 +474,9 @@
             [
                 "GCF_000011125.1\tarc00",
                 "GCF_000011125.1\tarc01",
-                "GCF_000017945.1\tarc00",
-                "GCF_001412615.1\tarc01",
-                "GCF_003201675.2\tarc01",
-                "GCF_020886315.1\tarc02",
                 "GCF_022064045.1\tarc00",
                 "GCF_022064045.1\tarc02",
-                "GCF_030186535.1\tarc00",
+                "GCF_030186535.1\tarc01",
                 "GCF_030186535.1\tarc02"
             ],
             [
@@ -458,16 +489,19 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-07-28T13:38:39.899528752",
+        "timestamp": "2026-09-23T21:28:02.762738338",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     },
     "local + remote, genomeset_mode: sample": {
         "content": [
-            87,
+            76,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
@@ -476,6 +510,9 @@
                 },
                 "CATPROKKATSVS": {
                     "pigz": 2.8
+                },
+                "CAT_FAA": {
+                    "pigz": 2.6
                 },
                 "CAT_FNA": {
                     "pigz": 2.6
@@ -486,27 +523,36 @@
                 "CHECK_DUPLICATES": {
                     "zgrep": 1.5
                 },
-                "COLLECT_FEATURECOUNTS": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "dtplyr": "1.3.2",
-                    "data.table": "1.17.8"
-                },
                 "COLLECT_GENOMESELECTION": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
-                    "tidyr": "1.3.1",
                     "purrr": "1.1.0",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
-                "COLLECT_STATS": {
+                "COLLECT_UNASSIGNEDCOUNTS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
                     "purrr": "1.1.0",
-                    "tidyr": "1.3.1",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2"
+                },
+                "CUSTOM_COLLECTFEATURECOUNTS": {
+                    "R": "4.5.3",
+                    "data.table": "1.17.8",
+                    "dplyr": "1.2.1",
+                    "dtplyr": "1.3.3",
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0"
+                },
+                "CUSTOM_COLLECTSTATS": {
+                    "R": "4.5.3",
+                    "dplyr": "1.2.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0",
+                    "tidyr": "1.3.1"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -529,13 +575,16 @@
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
                 },
+                "GFFREAD": {
+                    "gffread": "0.12.7"
+                },
                 "PROKKAGFF2TSV": {
                     "R": "4.3.1",
                     "data.table": "1.17.8",
-                    "dtplyr": "1.3.2",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
-                    "readr": "2.1.5"
+                    "dtplyr": "1.3.2",
+                    "readr": "2.1.5",
+                    "tidyr": "1.3.1"
                 },
                 "PROKKA_VERSION": {
                     "prokka": "1.15.6"
@@ -558,16 +607,26 @@
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
                 },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
+                },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "tidyr": "1.3.1"
+                },
+                "TIDYVERSE_SPLITFEATURECOUNTS": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.2.0"
+                    "nf-core/magmap": "v1.3.0"
                 }
             },
             [
@@ -587,24 +646,12 @@
                 "fastqc/arc02_1_fastqc.html",
                 "fastqc/arc02_2_fastqc.html",
                 "featurecounts",
-                "featurecounts/arc00.CDS.featureCounts.tsv",
-                "featurecounts/arc00.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc00.rRNA.featureCounts.tsv",
-                "featurecounts/arc00.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc00.tRNA.featureCounts.tsv",
-                "featurecounts/arc00.tRNA.featureCounts.tsv.summary",
-                "featurecounts/arc01.CDS.featureCounts.tsv",
-                "featurecounts/arc01.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc01.rRNA.featureCounts.tsv",
-                "featurecounts/arc01.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc01.tRNA.featureCounts.tsv",
-                "featurecounts/arc01.tRNA.featureCounts.tsv.summary",
-                "featurecounts/arc02.CDS.featureCounts.tsv",
-                "featurecounts/arc02.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc02.rRNA.featureCounts.tsv",
-                "featurecounts/arc02.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc02.tRNA.featureCounts.tsv",
-                "featurecounts/arc02.tRNA.featureCounts.tsv.summary",
+                "featurecounts/arc00.featureCounts.tsv",
+                "featurecounts/arc00.featureCounts.tsv.summary",
+                "featurecounts/arc01.featureCounts.tsv",
+                "featurecounts/arc01.featureCounts.tsv.summary",
+                "featurecounts/arc02.featureCounts.tsv",
+                "featurecounts/arc02.featureCounts.tsv.summary",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
@@ -630,6 +677,8 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_magmap_software_mqc_versions.yml",
+                "proteins",
+                "proteins/magmap.proteins.faa.gz",
                 "samtools",
                 "samtools/arc00.flagstat",
                 "samtools/arc00.idxstats",
@@ -665,23 +714,24 @@
                 "summary_tables/magmap.tRNA.counts.tsv.gz"
             ],
             [
-                "arc00.genomes.txt:md5,7ae712916d80b7c61ad76205648ea941",
-                "arc01.genomes.txt:md5,f81d9b16b4ee1660f31a6ff1be9cc719",
-                "arc02.genomes.txt:md5,aac816c08252d5930371c490446076ec",
-                "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
-                "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
+                "arc00.genomes.txt:md5,2d20626da3e56e7f41c8ed13617781b3",
+                "arc01.genomes.txt:md5,775c4b1392064c7a55181061312b8dd7",
+                "arc02.genomes.txt:md5,db3be4a7930d51e5c636de7da06d600d",
+                "fastqc-status-check-heatmap.txt:md5,2d048bc683af06a44639099eb03dd92a",
+                "fastqc_per_base_n_content_plot.txt:md5,644236c3a2aa8cac95222c0e60ae368d",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
-                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,973b41dfbd153f1ba706b01e38de2ca3",
-                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,b0848999c498a56adc3e02c4a5266ca1",
-                "fastqc_per_sequence_quality_scores_plot.txt:md5,dd3e11f739d9998714bb1b182de118aa",
-                "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
-                "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
+                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,e64e84094bab531e6a53e7ecd6a7fb31",
+                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,ca048e37585c17fce2f3a6ff0aafd72f",
+                "fastqc_per_sequence_quality_scores_plot.txt:md5,34f453f7669f176b600b5d36e8a14c45",
+                "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
+                "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
-                "multiqc_genome_selection.txt:md5,609f54644ac6fcae24358073fe13dc8b"
+                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_genome_selection.txt:md5,8d48a2d118da88f40cb8b2be711290d9",
+                "magmap.proteins.faa.gz:md5,f5759f098fd9b2a75501a00db5ad2db6"
             ],
             [
-                "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\trRNA\ttRNA"
+                "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\tUnassigned_Ambiguity\tUnassigned_NoFeatures\trRNA\ttRNA"
             ],
             4,
             [
@@ -690,37 +740,21 @@
             [
                 [
                     "GCF_000011125.1",
-                    "GCF_000017945.1",
                     "GCF_022064045.1",
-                    "GCF_030186535.1",
-                    "local_GCA_013329705.1",
                     "local_GCA_023269755.1",
-                    "local_GCF_001315825.1",
-                    "local_GCF_002194565.1",
-                    "local_GCF_004323575.1",
-                    "local_GCF_032248915.1"
+                    "local_GCF_004323575.1"
                 ],
                 [
                     "GCF_000011125.1",
-                    "GCF_001412615.1",
-                    "GCF_003201675.2",
-                    "local_GCA_013329705.1",
+                    "GCF_030186535.1",
                     "local_GCA_023269755.1",
-                    "local_GCF_001315825.1",
-                    "local_GCF_002194565.1",
-                    "local_GCF_004323575.1",
-                    "local_GCF_032248915.1"
+                    "local_GCF_004323575.1"
                 ],
                 [
-                    "GCF_020886315.1",
                     "GCF_022064045.1",
                     "GCF_030186535.1",
-                    "local_GCA_013329705.1",
                     "local_GCA_023269755.1",
-                    "local_GCF_001315825.1",
-                    "local_GCF_002194565.1",
-                    "local_GCF_004323575.1",
-                    "local_GCF_032248915.1"
+                    "local_GCF_004323575.1"
                 ]
             ],
             [
@@ -736,16 +770,19 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-07-28T16:45:21.230448191",
+        "timestamp": "2026-09-23T20:58:22.382081935",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     },
     "local + remote": {
         "content": [
-            83,
+            72,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
@@ -754,6 +791,9 @@
                 },
                 "CATPROKKATSVS": {
                     "pigz": 2.8
+                },
+                "CAT_FAA": {
+                    "pigz": 2.6
                 },
                 "CAT_FNA": {
                     "pigz": 2.6
@@ -764,27 +804,36 @@
                 "CHECK_DUPLICATES": {
                     "zgrep": 1.5
                 },
-                "COLLECT_FEATURECOUNTS": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "dtplyr": "1.3.2",
-                    "data.table": "1.17.8"
-                },
                 "COLLECT_GENOMESELECTION": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
-                    "tidyr": "1.3.1",
                     "purrr": "1.1.0",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
-                "COLLECT_STATS": {
+                "COLLECT_UNASSIGNEDCOUNTS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
                     "purrr": "1.1.0",
-                    "tidyr": "1.3.1",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2"
+                },
+                "CUSTOM_COLLECTFEATURECOUNTS": {
+                    "R": "4.5.3",
+                    "data.table": "1.17.8",
+                    "dplyr": "1.2.1",
+                    "dtplyr": "1.3.3",
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0"
+                },
+                "CUSTOM_COLLECTSTATS": {
+                    "R": "4.5.3",
+                    "dplyr": "1.2.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0",
+                    "tidyr": "1.3.1"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -807,13 +856,16 @@
                 "GENOME_SKETCH": {
                     "sourmash": "4.9.4"
                 },
+                "GFFREAD": {
+                    "gffread": "0.12.7"
+                },
                 "PROKKAGFF2TSV": {
                     "R": "4.3.1",
                     "data.table": "1.17.8",
-                    "dtplyr": "1.3.2",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
-                    "readr": "2.1.5"
+                    "dtplyr": "1.3.2",
+                    "readr": "2.1.5",
+                    "tidyr": "1.3.1"
                 },
                 "PROKKA_VERSION": {
                     "prokka": "1.15.6"
@@ -836,16 +888,26 @@
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
                 },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
+                },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "tidyr": "1.3.1"
+                },
+                "TIDYVERSE_SPLITFEATURECOUNTS": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.2.0"
+                    "nf-core/magmap": "v1.3.0"
                 }
             },
             [
@@ -863,24 +925,12 @@
                 "fastqc/arc02_1_fastqc.html",
                 "fastqc/arc02_2_fastqc.html",
                 "featurecounts",
-                "featurecounts/arc00.CDS.featureCounts.tsv",
-                "featurecounts/arc00.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc00.rRNA.featureCounts.tsv",
-                "featurecounts/arc00.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc00.tRNA.featureCounts.tsv",
-                "featurecounts/arc00.tRNA.featureCounts.tsv.summary",
-                "featurecounts/arc01.CDS.featureCounts.tsv",
-                "featurecounts/arc01.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc01.rRNA.featureCounts.tsv",
-                "featurecounts/arc01.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc01.tRNA.featureCounts.tsv",
-                "featurecounts/arc01.tRNA.featureCounts.tsv.summary",
-                "featurecounts/arc02.CDS.featureCounts.tsv",
-                "featurecounts/arc02.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc02.rRNA.featureCounts.tsv",
-                "featurecounts/arc02.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc02.tRNA.featureCounts.tsv",
-                "featurecounts/arc02.tRNA.featureCounts.tsv.summary",
+                "featurecounts/arc00.featureCounts.tsv",
+                "featurecounts/arc00.featureCounts.tsv.summary",
+                "featurecounts/arc01.featureCounts.tsv",
+                "featurecounts/arc01.featureCounts.tsv.summary",
+                "featurecounts/arc02.featureCounts.tsv",
+                "featurecounts/arc02.featureCounts.tsv.summary",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
@@ -906,6 +956,8 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_magmap_software_mqc_versions.yml",
+                "proteins",
+                "proteins/magmap.proteins.faa.gz",
                 "samtools",
                 "samtools/arc00.flagstat",
                 "samtools/arc00.idxstats",
@@ -941,21 +993,22 @@
                 "summary_tables/magmap.tRNA.counts.tsv.gz"
             ],
             [
-                "all.genomes.txt:md5,b944d7c3726a0454f18485d4b474eabb",
-                "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
-                "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
+                "all.genomes.txt:md5,490ddf3e5f47b0a3a6863f1fcfbf077c",
+                "fastqc-status-check-heatmap.txt:md5,2d048bc683af06a44639099eb03dd92a",
+                "fastqc_per_base_n_content_plot.txt:md5,644236c3a2aa8cac95222c0e60ae368d",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
-                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,973b41dfbd153f1ba706b01e38de2ca3",
-                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,b0848999c498a56adc3e02c4a5266ca1",
-                "fastqc_per_sequence_quality_scores_plot.txt:md5,dd3e11f739d9998714bb1b182de118aa",
-                "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
-                "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
+                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,e64e84094bab531e6a53e7ecd6a7fb31",
+                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,ca048e37585c17fce2f3a6ff0aafd72f",
+                "fastqc_per_sequence_quality_scores_plot.txt:md5,34f453f7669f176b600b5d36e8a14c45",
+                "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
+                "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
-                "multiqc_genome_selection.txt:md5,26f79789c380394d13bb21521119e731"
+                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_genome_selection.txt:md5,4982d7c0ecad450a22b0ef6ff6674db2",
+                "magmap.proteins.faa.gz:md5,f5759f098fd9b2a75501a00db5ad2db6"
             ],
             [
-                "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\trRNA\ttRNA"
+                "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\tUnassigned_Ambiguity\tUnassigned_NoFeatures\trRNA\ttRNA"
             ],
             4,
             [
@@ -974,16 +1027,19 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-07-28T13:01:35.112496261",
+        "timestamp": "2026-09-23T20:46:57.924949692",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     },
     "remote only": {
         "content": [
-            66,
+            61,
             {
+                "ASSEMBLYSUMMARY_FILTER": {
+                    "gawk": "5.3.1"
+                },
                 "BBMAP_ALIGN": {
                     "bbmap": 39.18
                 },
@@ -993,33 +1049,45 @@
                 "CATPROKKATSVS": {
                     "pigz": 2.8
                 },
+                "CAT_FAA": {
+                    "pigz": 2.6
+                },
                 "CAT_FNA": {
                     "pigz": 2.6
                 },
                 "CAT_GFF": {
                     "pigz": 2.6
                 },
-                "COLLECT_FEATURECOUNTS": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "dtplyr": "1.3.2",
-                    "data.table": "1.17.8"
-                },
                 "COLLECT_GENOMESELECTION": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
-                    "tidyr": "1.3.1",
                     "purrr": "1.1.0",
-                    "stringr": "1.5.2"
+                    "readr": "2.1.5",
+                    "stringr": "1.5.2",
+                    "tidyr": "1.3.1"
                 },
-                "COLLECT_STATS": {
+                "COLLECT_UNASSIGNEDCOUNTS": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
-                    "readr": "2.1.5",
                     "purrr": "1.1.0",
-                    "tidyr": "1.3.1",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2"
+                },
+                "CUSTOM_COLLECTFEATURECOUNTS": {
+                    "R": "4.5.3",
+                    "data.table": "1.17.8",
+                    "dplyr": "1.2.1",
+                    "dtplyr": "1.3.3",
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0"
+                },
+                "CUSTOM_COLLECTSTATS": {
+                    "R": "4.5.3",
+                    "dplyr": "1.2.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.2.0",
+                    "stringr": "1.6.0",
+                    "tidyr": "1.3.1"
                 },
                 "FASTQC": {
                     "fastqc": "0.12.1"
@@ -1054,16 +1122,26 @@
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
                 },
+                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
+                },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
-                    "readr": "2.1.5",
                     "dplyr": "1.1.4",
-                    "tidyr": "1.3.1",
+                    "purrr": "1.1.0",
+                    "readr": "2.1.5",
                     "stringr": "1.5.2",
-                    "purrr": "1.1.0"
+                    "tidyr": "1.3.1"
+                },
+                "TIDYVERSE_SPLITFEATURECOUNTS": {
+                    "R": "4.3.1",
+                    "dplyr": "1.1.4",
+                    "readr": "2.1.5"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.2.0"
+                    "nf-core/magmap": "v1.3.0"
                 }
             },
             [
@@ -1081,24 +1159,12 @@
                 "fastqc/arc02_1_fastqc.html",
                 "fastqc/arc02_2_fastqc.html",
                 "featurecounts",
-                "featurecounts/arc00.CDS.featureCounts.tsv",
-                "featurecounts/arc00.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc00.rRNA.featureCounts.tsv",
-                "featurecounts/arc00.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc00.tRNA.featureCounts.tsv",
-                "featurecounts/arc00.tRNA.featureCounts.tsv.summary",
-                "featurecounts/arc01.CDS.featureCounts.tsv",
-                "featurecounts/arc01.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc01.rRNA.featureCounts.tsv",
-                "featurecounts/arc01.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc01.tRNA.featureCounts.tsv",
-                "featurecounts/arc01.tRNA.featureCounts.tsv.summary",
-                "featurecounts/arc02.CDS.featureCounts.tsv",
-                "featurecounts/arc02.CDS.featureCounts.tsv.summary",
-                "featurecounts/arc02.rRNA.featureCounts.tsv",
-                "featurecounts/arc02.rRNA.featureCounts.tsv.summary",
-                "featurecounts/arc02.tRNA.featureCounts.tsv",
-                "featurecounts/arc02.tRNA.featureCounts.tsv.summary",
+                "featurecounts/arc00.featureCounts.tsv",
+                "featurecounts/arc00.featureCounts.tsv.summary",
+                "featurecounts/arc01.featureCounts.tsv",
+                "featurecounts/arc01.featureCounts.tsv.summary",
+                "featurecounts/arc02.featureCounts.tsv",
+                "featurecounts/arc02.featureCounts.tsv.summary",
                 "multiqc",
                 "multiqc/multiqc_data",
                 "multiqc/multiqc_data/fastqc-status-check-heatmap.txt",
@@ -1124,6 +1190,8 @@
                 "multiqc/multiqc_report.html",
                 "pipeline_info",
                 "pipeline_info/nf_core_magmap_software_mqc_versions.yml",
+                "proteins",
+                "proteins/magmap.proteins.faa.gz",
                 "samtools",
                 "samtools/arc00.flagstat",
                 "samtools/arc00.idxstats",
@@ -1152,21 +1220,22 @@
                 "summary_tables/magmap.tRNA.counts.tsv.gz"
             ],
             [
-                "all.genomes.txt:md5,757ada832145b9171f48929e7771e3dd",
-                "fastqc-status-check-heatmap.txt:md5,24e97c0abe69381f1fbc50e2cdec3c33",
-                "fastqc_per_base_n_content_plot.txt:md5,d6eb0baa0dad9878d8531e3adb7892d7",
+                "all.genomes.txt:md5,59212416cfaf722dad2e0fb30852298f",
+                "fastqc-status-check-heatmap.txt:md5,2d048bc683af06a44639099eb03dd92a",
+                "fastqc_per_base_n_content_plot.txt:md5,644236c3a2aa8cac95222c0e60ae368d",
                 "fastqc_per_base_sequence_quality_plot.txt:md5,ef731079bd4eba01607a016cc40b4310",
-                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,973b41dfbd153f1ba706b01e38de2ca3",
-                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,b0848999c498a56adc3e02c4a5266ca1",
-                "fastqc_per_sequence_quality_scores_plot.txt:md5,dd3e11f739d9998714bb1b182de118aa",
-                "fastqc_sequence_counts_plot.txt:md5,db7a484b8cfc80e68dc7168244f32b51",
-                "fastqc_sequence_duplication_levels_plot.txt:md5,05b3b0febf818caf9fb99475c9a3a275",
+                "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,e64e84094bab531e6a53e7ecd6a7fb31",
+                "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,ca048e37585c17fce2f3a6ff0aafd72f",
+                "fastqc_per_sequence_quality_scores_plot.txt:md5,34f453f7669f176b600b5d36e8a14c45",
+                "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
+                "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,71d0889a7b479f12db53103470ee5ca5",
-                "multiqc_genome_selection.txt:md5,b3863dd38016f62360924a616ee79713"
+                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_genome_selection.txt:md5,9c60cc58c7947ca4b3ea3ecdf576566c",
+                "magmap.proteins.faa.gz:md5,8ae424e881f890a1ae0aa42c9ebd708c"
             ],
             [
-                "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\trRNA\ttRNA"
+                "sample\tn_post_trimming\tidxs_n_mapped\tidxs_n_unmapped\tCDS\tUnassigned_Ambiguity\tUnassigned_NoFeatures\trRNA\ttRNA"
             ],
             4,
             [
@@ -1182,9 +1251,9 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-07-28T13:26:36.107367972",
+        "timestamp": "2026-09-23T21:13:46.685577193",
         "meta": {
-            "nf-test": "0.9.5",
+            "nf-test": "0.9.4",
             "nextflow": "26.04.6"
         }
     }

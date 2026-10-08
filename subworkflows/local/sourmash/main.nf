@@ -8,43 +8,34 @@ include { SOURMASH_SKETCH as GENOME_SKETCH         } from '../../../modules/nf-c
 include { SOURMASH_INDEX  as GENOME_INDEX          } from '../../../modules/nf-core/sourmash/index/main'
 include { SOURMASH_SKETCH as SAMPLE_SKETCH         } from '../../../modules/nf-core/sourmash/sketch/main'
 include { WGET as WGET_GENOME                      } from '../../../modules/nf-core/wget/main'
+include { ASSEMBLYSUMMARY_FILTER                   } from '../../../modules/local/assemblysummary/filter/main'
 include { TIDYVERSE_SELECTGENOMESPECIES            } from '../../../modules/local/tidyverse/selectgenomespecies/main'
 
 workflow SOURMASH {
     take:
         ch_sample_reads             // Fastq files with reads for each sample [ val(meta), [ path(reads) ] ]
-        ch_indexes                  // List of Sourmash indexs [ path(index) ]
+        ch_indexes                  // List of Sourmash indexes [ path(index) ]
         index_list                  // Value of the indexes param, used for if clauses
         ch_user_genomeinfo          // User provided genomes [ path(genome) ]
         ch_remote_genome_sources    // Paths to genome information in NCBI format, i.e. containing at least the assembly_accession and ftp_path fields: path(csvfile)
-        species_preference          // String: 'all', 'local', 'completeness' or 'gtdb' to indicate prefered genome for a species
+        species_preference          // String: 'all', 'local', 'completeness' or 'gtdb' to indicate preferred genome for a species
         ch_gtdb_metadata            // GTDB metadata files, used to resolve remote genome species and completeness/contamination
         ch_gtdbtk_metadata          // GTDB-Tk output files, used to resolve local genome species
         ch_checkm_metadata          // CheckM/CheckM2 output files, used to resolve local genome completeness/contamination
-        ksize                       // K-mere size to use: val(odd_int)
+        ksize                       // K-mer size to use: val(odd_int)
         skip_sourmash               // Boolean that controls whether user-provided genomes are sketched, indexed and used in gathering genomes
 
     main:
-        ch_ncbi_genomeinfo = ch_remote_genome_sources
-                .splitCsv(skip: 1, header: true, sep: '\t')
-                .map { row ->
-                    [
-                        accno: row["#assembly_accession"],
-                        genome_fna: "${row.ftp_path}/${row.ftp_path - ~/\/$/ - ~/.*\//}_genomic.fna.gz",
-                        genome_gff: ""
-                    ]
-                }
-
         ch_sample_sigs = channel.empty()
         if ( index_list || ! skip_sourmash ) {
-            SAMPLE_SKETCH(ch_sample_reads)
+            SAMPLE_SKETCH(ch_sample_reads, true)
             ch_sample_sigs = SAMPLE_SKETCH.out.signatures
         }
 
         // Skip sketching and indexing of user-provided genomes if skip_sourmash is set
         ch_joint_user_genomes = ch_user_genomeinfo   // Will be set to selected genomes if sourmash is _not_ skipped, since sourmash will then be used to select matching genomes
         if ( ! skip_sourmash ) {
-            GENOME_SKETCH(ch_user_genomeinfo.map { it -> [ [ id: it.accno ], it.genome_fna ] })
+            GENOME_SKETCH(ch_user_genomeinfo.map { it -> [ [ id: it.accno ], it.genome_fna ] }, true)
 
             ch_genome_sigs = GENOME_SKETCH.out.signatures
                 .collect { _meta, sig -> sig }
@@ -98,7 +89,7 @@ workflow SOURMASH {
             // with --genomeinfo, or genomes we need to fetch from NCBI
 
             // 1. Find the remote genomes that were selected
-            // 1.2 Sample-specific set -- "sample"
+            // 1.2 Sample-specific set, "sample"
             ch_sample_remote_genomes = GATHER_REMOTE_GENOMES.out.result
                 .splitCsv( sep: ',', header: true, quote: '"')
                 // Strip everything except accession number from NCBI-like names
@@ -109,7 +100,7 @@ workflow SOURMASH {
                         [ id: meta.id, accno: genome.name ]
                 }
 
-            // 1.2 Total set -- "joint"
+            // 1.2 Total set, "joint"
             ch_joint_remote_genomes = ch_sample_remote_genomes
                 .map { g -> [ accno: g.accno ] }
                 .unique()
@@ -155,6 +146,22 @@ workflow SOURMASH {
             }
 
             // 2. Fetch NCBI genomes
+            ASSEMBLYSUMMARY_FILTER(
+                ch_joint_remote_genomes_for_fetch
+                    .collectFile(name: 'remote_accessions.txt', newLine: true) { g -> g.accno },
+                ch_remote_genome_sources.collect()
+            )
+
+            ch_ncbi_genomeinfo = ASSEMBLYSUMMARY_FILTER.out.tsv
+                .splitCsv(header: true, sep: '\t')
+                .map { row ->
+                    [
+                        accno: row.accno,
+                        genome_fna: "${row.ftp_path}/${row.ftp_path - ~/\/$/ - ~/.*\//}_genomic.fna.gz",
+                        genome_gff: ""
+                    ]
+                }
+
             WGET_GENOME(
                 ch_joint_remote_genomes_for_fetch
                     .map { genome -> [ [ genome.accno ] ] }
@@ -179,7 +186,7 @@ workflow SOURMASH {
                 .map { g -> [ [  id: g[1].id ], [ accno: g[1].accno, g_fna: g[2] ] ] }
                 .mix(ch_sample_user_genomes_kept)
 
-            // 3.2 Total set -- "joint"
+            // 3.2 Total set, "joint"
             ch_joint_filtered_genomes = ch_joint_user_genomes_kept
                 .mix(
                     WGET_GENOME.out.outfile
@@ -187,8 +194,7 @@ workflow SOURMASH {
                 )
         }
 
-        // Accessions of local genomes that were actually kept in the run (a single,
-        // run-wide list -- local genomes are not narrowed down per sample), used to tell
+        // Accessions of local genomes kept in the run (one run-wide list), used to tell
         // local and remote genomes apart in the genome-selection MultiQC summary
         ch_local_accessions_kept = ch_joint_user_genomes_kept
             .map { g -> g.accno }

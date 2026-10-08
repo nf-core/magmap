@@ -1,0 +1,46 @@
+{
+    "stub": {
+        "content": [
+            {
+                "tsv": [
+                    "ncbi_genomeinfo.tsv:md5,f53dcac7d0f63163dbb906d3488474f0"
+                ],
+                "versions_gawk": [
+                    [
+                        "ASSEMBLYSUMMARY_FILTER",
+                        "gawk",
+                        "5.3.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-01T17:02:06.350768834",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "selected accessions from a plain and a gzipped summary": {
+        "content": [
+            [
+                "accno\tftp_path",
+                "GCF_000001.1\thttps://host/GCF_000001.1_ASM1",
+                "GCA_000002.1\thttps://host/GCA_000002.1_ASM2"
+            ],
+            {
+                "versions_gawk": [
+                    [
+                        "ASSEMBLYSUMMARY_FILTER",
+                        "gawk",
+                        "5.3.1"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-10-01T17:01:40.207620412",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}

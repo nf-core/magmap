@@ -1,0 +1,41 @@
+name: "collect_unassignedcounts"
+description: Extract per-sample Unassigned_NoFeatures and Unassigned_Ambiguity counts from featureCounts summary files
+keywords:
+  - featurecounts
+  - collect
+  - unassigned
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test', single_end:false ]
+    - summaries:
+        type: file
+        description: featureCounts summary files, one per sample, from a run counting reads against all feature types combined
+        pattern: "*.featureCounts.tsv.summary"
+output:
+  counts:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test', single_end:false ]
+      - nofeatures:
+          type: file
+          description: Per-sample Unassigned_NoFeatures counts
+          pattern: "*.Unassigned_NoFeatures.counts.tsv.gz"
+      - ambiguity:
+          type: file
+          description: Per-sample Unassigned_Ambiguity counts
+          pattern: "*.Unassigned_Ambiguity.counts.tsv.gz"
+topics:
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies:
+          - edam: "http://edamontology.org/format_3750" # YAML
+authors:
+  - "@erikrikarddaniel"

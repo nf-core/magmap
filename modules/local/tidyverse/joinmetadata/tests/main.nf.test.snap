@@ -1,0 +1,42 @@
+{
+    "GTDB metadata wins over GTDB-Tk and CheckM": {
+        "content": [
+            [
+                "accno\tcheckm_completeness\tcheckm_contamination\tcheckm_strain_heterogeneity\tcontig_count\tgenome_size\tgtdb_genome_representative\tgtdb_representative\tgtdb_taxonomy\tsource\tpriority",
+                "GCF_000001.1\t99.9\t0.1\t0\t1\t4000000\tRS_GCF_000001.1\tTRUE\td__Bacteria;p__FromGTDB\tGTDB metadata\t10"
+            ]
+        ],
+        "timestamp": "2026-09-30T13:26:45.554079436",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "same genome in CheckM and CheckM2 with and without extension gives one row": {
+        "content": [
+            [
+                "accno\tcheckm_completeness\tcheckm_contamination\tcheckm_strain_heterogeneity\tcontig_count\tgenome_size\tgtdb_genome_representative\tgtdb_representative\tgtdb_taxonomy\tsource\tpriority",
+                "bin_1\t90\t1\tNA\tNA\tNA\t\tNA\tNA\tGTDB-Tk/CheckM\t0"
+            ]
+        ],
+        "timestamp": "2026-09-30T13:26:54.759556869",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    },
+    "GTDB-Tk and CheckM identifiers with FASTA extensions": {
+        "content": [
+            [
+                "accno\tcheckm_completeness\tcheckm_contamination\tcheckm_strain_heterogeneity\tcontig_count\tgenome_size\tgtdb_genome_representative\tgtdb_representative\tgtdb_taxonomy\tsource\tpriority",
+                "bin_1\t90.5\t1.2\tNA\tNA\t3000000\t\tNA\td__Bacteria\tGTDB-Tk/CheckM\t0",
+                "bin_2\t80.1\t0.5\tNA\tNA\t2000000\t\tNA\td__Archaea\tGTDB-Tk/CheckM\t0"
+            ]
+        ],
+        "timestamp": "2026-09-26T17:23:29.026147777",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.6"
+        }
+    }
+}
