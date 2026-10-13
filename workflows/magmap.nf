@@ -24,6 +24,7 @@ include { DUCKDB_TABLE2PARQUET                   } from '../modules/nf-core/duck
 include { FASTQC                                 } from '../modules/nf-core/fastqc'
 include { FASTQC_TRIMGALORE                      } from '../subworkflows/local/fastqc_trimgalore'
 include { GFFREAD                                } from '../modules/nf-core/gffread'
+include { HMMCLASSIFY                            } from '../subworkflows/local/hmmclassify'
 include { methodsDescriptionText                 } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { MULTIQC                                } from '../modules/nf-core/multiqc'
 include { paramsSummaryMap                       } from 'plugin/nf-schema'
@@ -66,6 +67,7 @@ workflow MAGMAP {
     skip_sourmash               // boolean: run Sourmash or not
     sourmash_ksize              // integer
     ch_features                 // channel: list of feature types to call
+    ch_hmms                     // channel: HMM profiles to search the proteins with
     skip_fastqc                 // boolean
     skip_qc                     // boolean
     skip_trimming               // boolean
@@ -421,6 +423,15 @@ workflow MAGMAP {
     GENOMES2ORFS(ch_collected_genomes.map { genome -> genome.genome_gff }.collect().map { genomes -> [ [ id: 'genomes' ], genomes ] })
 
     //
+    // SUBWORKFLOW: Search the proteins with HMM profiles
+    //
+    HMMCLASSIFY(
+        ch_hmms,
+        CAT_FAA.out.concatenated_files.map { _meta, faa -> [ [ id: 'magmap' ], faa ] },
+        GENOMES2ORFS.out.genomes2orfs.map { _meta, g2orfs -> g2orfs }.first()
+    )
+
+    //
     // SUBWORKFLOW: sort bam file and produce statistics
     //
     ch_fasta_fai = CREATE_BBMAP_INDEX.out.genome_fnas
@@ -535,6 +546,7 @@ workflow MAGMAP {
                 .mix(CATPROKKATSVS.out.tsv.map { _meta, tsv -> tsv })
                 .mix(TIDYVERSE_JOINFEATURECOUNTSACCNO.out.counts.map { _meta, tsv -> tsv })
                 .mix(CUSTOM_COLLECTSTATS.out.overall_stats.map { _meta, tsv -> tsv })
+                .mix(HMMCLASSIFY.out.hmmrank.map { _meta, tsv -> tsv })
                 .map { tsv -> [ [ id: tsv.name.replaceAll(/\.tsv(\.gz)?$/, '') ], tsv ] }
         )
     }

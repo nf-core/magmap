@@ -49,6 +49,9 @@ workflow PIPELINE_INITIALISATION {
     gtdbtk_metadata         //  string: Path to GTDB-Tk metadata file
     checkm_metadata         //  string: Path to GTDB metadata file
     features                //  string: Comma-separated string of feature types
+    hmmdir                  //  string: Directory with HMM files
+    hmmpattern              //  string: Pattern selecting the HMM files in hmmdir
+    hmmfiles                //  string: Comma-separated list of HMM files
 
     main:
 
@@ -247,6 +250,13 @@ workflow PIPELINE_INITIALISATION {
         .flatten()
         .unique()
 
+    ch_hmms = channel.empty()
+    if ( hmmdir ) {
+        ch_hmms = channel.fromPath("${hmmdir}/${hmmpattern}", checkIfExists: true)
+    } else if ( hmmfiles ) {
+        ch_hmms = channel.fromPath(hmmfiles.tokenize(','), checkIfExists: true)
+    }
+
     emit:
     samplesheet             = ch_samplesheet
     genomeinfo              = ch_genomeinfo
@@ -256,6 +266,7 @@ workflow PIPELINE_INITIALISATION {
     gtdbtk_metadata         = ch_gtdbtk_metadata
     checkm_metadata         = ch_checkm_metadata
     features                = ch_features
+    hmms                    = ch_hmms
 }
 
 /*
