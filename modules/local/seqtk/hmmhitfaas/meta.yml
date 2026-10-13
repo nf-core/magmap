@@ -1,0 +1,66 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "seqtk_hmmhitfaas"
+description: Uses seqtk subseq to write one protein FASTA file for every profile with hits in a table of ranked HMMER hits
+keywords:
+  - hmmer
+  - seqtk
+  - fasta
+tools:
+  - "seqtk":
+      description: "Seqtk is a fast and lightweight tool for processing sequences in the FASTA or FASTQ format"
+      homepage: "https://github.com/lh3/seqtk"
+      documentation: "https://github.com/lh3/seqtk"
+      tool_dev_url: "https://github.com/lh3/seqtk"
+      licence: ["MIT"]
+      identifier: biotools:seqtk
+input:
+  - - meta:
+        type: map
+        description: Groovy Map containing sample information. e.g. `[ id:'sample1' ]`
+    - hmmrank:
+        type: file
+        description: Gzipped TSV of ranked HMMER hits from hmmer/hmmrank, with the profile in the first column and the target sequence in the second
+        pattern: "*.hmmrank.tsv.gz"
+        ontologies: []
+    - faa:
+        type: file
+        description: Protein FASTA file that was searched with hmmsearch
+        pattern: "*.{faa,faa.gz}"
+        ontologies: []
+output:
+  faas:
+    - - meta:
+          type: map
+          description: Groovy Map containing sample information. e.g. `[ id:'sample1' ]`
+      - "hits/*.faa.gz":
+          type: file
+          description: One gzipped protein FASTA file per profile, holding the sequences with hits to that profile
+          pattern: "hits/*.faa.gz"
+          ontologies: []
+  versions_seqtk:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - seqtk:
+          type: string
+          description: The name of the tool
+      - 'seqtk 2>&1 | grep Version | sed "s/^.*Version: //; s/ .*\$//"':
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - seqtk:
+          type: string
+          description: The name of the tool
+      - 'seqtk 2>&1 | grep Version | sed "s/^.*Version: //; s/ .*\$//"':
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@erikrikarddaniel"
+  - "@danilodileo"
+maintainers:
+  - "@erikrikarddaniel"
+  - "@danilodileo"
