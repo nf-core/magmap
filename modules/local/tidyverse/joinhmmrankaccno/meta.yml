@@ -1,0 +1,51 @@
+name: "tidyverse_joinhmmrankaccno"
+description: Join genome accession numbers onto a table of ranked HMMER hits
+keywords:
+  - hmmer
+  - join
+  - genome
+tools:
+  - "dplyr":
+      description: "A grammar of data manipulation"
+      homepage: "https://dplyr.tidyverse.org/"
+      documentation: "https://dplyr.tidyverse.org/"
+      licence: ["MIT"]
+      identifier: ""
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map containing sample information
+          e.g. [ id:'test' ]
+    - hmmrank:
+        type: file
+        description: Ranked HMMER hits from hmmer/hmmrank, with the target sequence in the accno column
+        pattern: "*.hmmrank.tsv.gz"
+        ontologies: []
+  - g2ids:
+      type: file
+      description: File mapping genome accessions to ORF IDs
+      pattern: "*genomes2orfs.tsv.gz"
+      ontologies: []
+output:
+  hmmrank:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map containing sample information
+            e.g. [ id:'test' ]
+      - "${prefix}.hmmrank.tsv.gz":
+          type: file
+          description: Ranked HMMER hits with the genome accession, genome name and ORF ID in the first three columns
+          pattern: "*.hmmrank.tsv.gz"
+          ontologies: []
+  versions:
+    - versions.yml:
+        type: file
+        description: File containing software versions
+        pattern: "versions.yml"
+        ontologies: []
+authors:
+  - "@danilodileo"
+maintainers:
+  - "@danilodileo"
