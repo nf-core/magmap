@@ -76,6 +76,11 @@
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/gffread/gffread.diff"
                     },
+                    "hmmer/hmmrank": {
+                        "branch": "master",
+                        "git_sha": "64017d8989654a65db85f8ba181a9c387ac58fad",
+                        "installed_by": ["modules"]
+                    },
                     "hmmer/hmmsearch": {
                         "branch": "master",
                         "git_sha": "3a42d4fbb69436f53e0f06d2fe65b48f9d0085cc",
