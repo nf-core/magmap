@@ -21,6 +21,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
     - [Sourmash](#sourmash) - Output from Sourmash filtering of genomes.
   - [Prokka](#prokka) - Output from Prokka
   - [Bakta](#bakta) - Output from Bakta
+  - [HMMER](#hmmer) - Output from the HMM profile search (optional)
   - [Genome fetching](#genome-fetching) - Genomes fetched from remote sources
   - [Quantification of genome features](#quantification-of-genome-features)
     - [BBmap](#bbmap) - Output from BBmap
@@ -45,6 +46,9 @@ With [`--save_parquet`](https://nf-co.re/magmap/parameters/#save_parquet), the s
   - `magmap.genome_selection.tsv.gz`: Per genome set (one per sample when `--genomeset_mode sample` is used, a single set otherwise), which genomes were selected and whether each originated from `--genomeinfo` (local) or was fetched from NCBI (remote).
   - `magmap.genomes2orfs.tsv.gz`: Translation table from ORF identifiers to genome identifiers.
   - `magmap.prokka-annotations.tsv.gz`: Annotation details extracted from GFF files.
+  - `magmap.hmmrank.tsv.gz`: With `--hmmdir` or `--hmmfiles`, one row per protein and HMM profile with a hit.
+    The columns are the genome accession (`accno`), genome name, ORF identifier, profile, profile name from the HMM file, e-value, score and rank.
+    `rank` is 1 for the profile with the highest score for that protein.
   - `*.parquet`: with `--save_parquet`, a Parquet copy of each of the above (same basename, `.parquet` extension instead of `.tsv.gz`).
 
 </details>
@@ -166,6 +170,20 @@ This means genomes accumulated in a store directory over time may have been anno
 There is currently no automated check or report of per-genome annotation tool versions across a genome library (see [issue #229](https://github.com/nf-core/magmap/issues/229)).
 If consistent annotation-tool versions across your whole genome collection matters, either start from an empty store directory, or track outside the pipeline which version annotated which genome.
 :::
+
+### HMMER
+
+With `--hmmdir` or `--hmmfiles`, [HMMER](http://hmmer.org/) `hmmsearch` searches the proteins of all selected genomes with each HMM profile.
+The ranked hits are in `summary_tables/magmap.hmmrank.tsv.gz`, see [Summary tables](#summary-tables).
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `hmmer/`
+  - `magmap.<PROFILE>.tbl.gz`: hmmsearch per-sequence hit table for each profile.
+  - `hits/magmap.<PROFILE>.faa.gz`: Protein FASTA with the sequences with hits to each profile, written with [seqtk](https://github.com/lh3/seqtk).
+
+</details>
 
 ### Genome fetching
 
