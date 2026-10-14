@@ -3,6 +3,20 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## v1.3.1dev - [YYYY-mm-dd]
+
+### `Added`
+
+### `Changed`
+
+### `Fixed`
+
+- [#277](https://github.com/nf-core/magmap/pull/277) - Accept Apptainer as well as Singularity when local modules choose their container, closes [#265](https://github.com/nf-core/magmap/issues/265) (by @danilodileo, reviewed by @erikrikarddaniel).
+
+### `Dependencies`
+
+### `Deprecated`
+
 ## v1.3.0 - [2026-10-08]
 
 ### `Added`
@@ -95,7 +109,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
-- [#199](https://github.com/nf-core/magmap/pull/199) - update template v4.0.2, created with the [nf-core](https://nf-co.re/) template (by @danilodileo).
+- [#199](https://github.com/nf-core/magmap/pull/199) - update template v4.0.2, created with the [nf-core](https://nf-co.re/) template (by @danilodileo, reviewed by @erikrikarddaniel).
 - [#189](https://github.com/nf-core/magmap/pull/189) - Add genome `accno` field to counts tables (by @erikrikarddaniel).
 - [#188](https://github.com/nf-core/magmap/pull/188) - Add the possibility to run mapping with sample-specific genome sets (by @erikrikarddaniel).
 
