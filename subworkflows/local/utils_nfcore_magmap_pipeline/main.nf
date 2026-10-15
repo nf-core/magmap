@@ -252,6 +252,9 @@ workflow PIPELINE_INITIALISATION {
 
     ch_hmms = channel.empty()
     if ( hmmdir ) {
+        if ( hmmfiles ) {
+            log.warn("Both --hmmdir and --hmmfiles were given; --hmmfiles is ignored.")
+        }
         ch_hmms = channel.fromPath("${hmmdir}/${hmmpattern}", checkIfExists: true)
     } else if ( hmmfiles ) {
         ch_hmms = channel.fromPath(hmmfiles.tokenize(','), checkIfExists: true)
