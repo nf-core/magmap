@@ -469,10 +469,9 @@ workflow MAGMAP {
 
     // Split the combined FeatureCounts output into per-feature-type files using the
     // CATPROKKATSVS orf-to-ftype mapping.
-    // .first() makes the single CATPROKKATSVS emission pair with every sample.
     TIDYVERSE_SPLITFEATURECOUNTS(
         FEATURECOUNTS.out.counts,
-        CATPROKKATSVS.out.tsv.map { _meta, tsv -> tsv }.first()
+        CATPROKKATSVS.out.tsv.map { _meta, tsv -> tsv }
     )
 
     //
@@ -503,10 +502,9 @@ workflow MAGMAP {
     CUSTOM_COLLECTFEATURECOUNTS(ch_collect_featurecounts)
 
     // CUSTOM_COLLECTFEATURECOUNTS is shared with other pipelines, so the accno join stays a separate local step.
-    // .first() makes the single GENOMES2ORFS emission pair with every per-feature-type emission.
     TIDYVERSE_JOINFEATURECOUNTSACCNO(
         CUSTOM_COLLECTFEATURECOUNTS.out.counts,
-        GENOMES2ORFS.out.genomes2orfs.map { _m, g2orfs -> g2orfs }.first()
+        GENOMES2ORFS.out.genomes2orfs.map { _m, g2orfs -> g2orfs }
     )
     ch_fcs_for_stats      = TIDYVERSE_JOINFEATURECOUNTSACCNO.out.counts
         .map { _meta, tsv -> tsv }
