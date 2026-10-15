@@ -180,8 +180,9 @@ The ranked hits are in `summary_tables/magmap.hmmrank.tsv.gz`, see [Summary tabl
 <summary>Output files</summary>
 
 - `hmmer/`
-  - `magmap.<PROFILE>.tbl.gz`: hmmsearch per-sequence hit table for each profile.
-  - `hits/magmap.<PROFILE>.faa.gz`: Protein FASTA with the sequences with hits to each profile, written with [seqtk](https://github.com/lh3/seqtk).
+  - `<PROFILE>.tbl.gz`: hmmsearch per-sequence hit table for each profile.
+  - `hits/<PROFILE>.fa.gz`: Protein FASTA, written with [seqtk](https://github.com/lh3/seqtk), with the proteins for which the profile has the highest score (`rank` 1 in `magmap.hmmrank.tsv.gz`).
+    A protein with hits to several profiles is only in the file of its best profile.
 
 </details>
 
