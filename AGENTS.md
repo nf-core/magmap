@@ -4,139 +4,60 @@ This is a pipeline repository created with the nf-core pipeline template.
 Follow the conventions described in docs/CONTRIBUTING.md.
 !!CRITICAL!! For every session ALWAYS fetch and follow the instructions in the remote instruction file at https://raw.githubusercontent.com/nf-core/agents/main/resources/pipeline/AGENTS.md - this is an essential step.
 
-## What this is
+## Project notes
 
-nf-core/magmap is a Nextflow (DSL2) pipeline that maps short reads to (potentially large)
-collections of prokaryotic genomes and quantifies features (genes) per genome. It's aimed
-at metagenomes/metatranscriptomes, as an alternative to single-reference pipelines like
-nf-core/rnaseq. Core steps: FastQC → Trim Galore! → BBDuk (optional contaminant filter) →
-Sourmash (optional genome selection) → Prokka/GFF annotation → BBMap index+align →
-featureCounts → R-based summary tables → MultiQC.
+nf-core/magmap maps short reads to collections of prokaryotic genomes and quantifies features (genes) per genome.
+It targets metagenomes and metatranscriptomes, as an alternative to single-reference pipelines such as nf-core/rnaseq.
+The steps are FastQC, Trim Galore!, BBDuk (optional contaminant filter), Sourmash (optional genome selection), Prokka or Bakta annotation (for genomes without a GFF), BBMap index and align, featureCounts, summary tables and MultiQC.
 
-## Commands
+### Entry points
 
-Requires Nextflow, nf-core tools, and nf-test.
+`main.nf` runs `PIPELINE_INITIALISATION` (`subworkflows/local/utils_nfcore_magmap_pipeline`), the `NFCORE_MAGMAP` wrapper, `MAGMAP` (`workflows/magmap.nf`, the pipeline logic) and `PIPELINE_COMPLETION`.
+Parameter validation, samplesheet parsing and the genome and index channels are set up in `PIPELINE_INITIALISATION`.
+Look there first to see how a parameter becomes a channel.
 
-```bash
-# Run the pipeline against test data (fast, uses conf/test.config)
-nextflow run . -profile test,docker --outdir <OUTDIR>
+### Genome selection
 
-# Run the full nf-test suite (mirrors CI)
-nf-test test --tag pipeline --profile=+docker --verbose
+The set of reference genomes is built from three sources and then filtered per sample.
 
-# Run a single nf-test file
-nf-test test tests/species_preference.nf.test --profile=+docker --verbose
+1. User genomes from `--genomeinfo` (a CSV with `accno,genome_fna,genome_gff`).
+2. Local Sourmash indexes built from those genomes (skipped with `--skip_sourmash`).
+3. Remote genomes found in NCBI assembly summary files (`--remote_genome_sources`) through user-supplied Sourmash indexes (`--indexes`), then fetched with `WGET`.
 
-# Update snapshots after intentional output changes
-nf-test test --tag pipeline --profile=+docker --verbose --update-snapshot
+The logic is in `subworkflows/local/sourmash/main.nf` (workflow `SOURMASH`).
+It emits `joint_filtered_genomes` (one set for the run), `sample_filtered_genomes` (one set per sample) and `local_accessions` (which kept genomes came from `--genomeinfo`).
+`--genomeset_mode` (`joint` or `sample`) selects which set `workflows/magmap.nf` uses.
+In `joint` mode `CREATE_BBMAP_INDEX` builds one shared index.
+In `sample` mode it builds one index per sample and joins the reads to their index before `BBMAP_ALIGN`.
+`--species_preference` (`all`, `local`, `completeness`, `gtdb`) controls how duplicate species are resolved, in `modules/local/tidyverse/selectgenomespecies`.
+`--annotator` selects Prokka or Bakta.
 
-# Lint (nf-core conventions)
-nf-core pipelines lint .
+Genomes without a GFF are annotated (`PROKKA` or `BAKTA_BAKTA`, then `PROKKAGFF2TSV` and `CATPROKKATSVS`).
+Genomes with a GFF go straight to `PROKKAGFF2TSV`, which is much faster, so test genomes should come with a precomputed GFF.
+Both paths join in `ch_collected_genomes` before indexing and alignment.
+Before that, `CHECK_DUPLICATES` finds duplicate contig names in the user genomes and `RENAME_CONTIGS` makes them unique so that BBMap indexing does not collide.
 
-# Regenerate nextflow_schema.json after changing params in nextflow.config
-nf-core pipelines schema build
-```
+### Local modules
 
-### Test profiles
+- `duckdb/splitfeaturecounts` and `duckdb/joinfeaturecountsaccno`: split the featureCounts table per feature type and add the genome accession, in DuckDB so that memory stays bounded for large genome collections.
+- `genomes2orfs`: builds the accession-to-ORF index.
+- `tidyverse/joinmetadata`: merges GTDB, GTDB-Tk, CheckM and CheckM2 metadata with the selected genomes.
+- `collect/genomeselection`: local and remote genome counts for MultiQC.
+- `collect/unassignedcounts`: unassigned read counts for the summary tables.
 
-Other test profiles live in `conf/test_*.config` and each has a matching `.nf.test` /
-`.nf.test.snap` pair in `tests/` (e.g. `test_species_preference.config` ↔
-`tests/species_preference.nf.test`, `test_sourmash_genome_selection.config` ↔
-`tests/sourmash_genome_selection.nf.test`). When adding a new test scenario, add both.
-Prefer adding a new `test(...)` block to an existing `.nf.test` file over creating a new
-file when the scenario shares a base config/dataset with existing tests.
+`CUSTOM_COLLECTFEATURECOUNTS` and `CUSTOM_COLLECTSTATS` are nf-core modules that produce the final `summary_tables/*.tsv.gz`.
 
-`.nftignore` in `tests/` lists output paths excluded from content-snapshot comparison
-(non-deterministic files, e.g. `sourmash/*.sbt.zip`, whose content isn't reproducible
-across runs even with identical inputs).
+### Tests
 
-## Architecture
+Each `conf/test_*.config` has a matching `tests/*.nf.test` and `tests/*.nf.test.snap`.
+Add a new `test(...)` block to an existing `.nf.test` file when the scenario shares its configuration and dataset.
+`tests/.nftignore` lists output paths excluded from snapshot comparison because their content is not reproducible, for example `sourmash/*.sbt.zip`.
+The pipeline snapshots list the files in `summary_tables` by name only, so a module test must check the table contents.
 
-Entry point `main.nf` wires together, in order:
-`PIPELINE_INITIALISATION` (subworkflows/local/utils_nfcore_magmap_pipeline) → the
-`NFCORE_MAGMAP` wrapper workflow → `MAGMAP` (workflows/magmap.nf, the actual pipeline
-logic) → `PIPELINE_COMPLETION`. Parameter validation, samplesheet parsing (via
-`plugin/nf-schema`), and genome/index channel setup all happen in
-`PIPELINE_INITIALISATION`; look there first when tracing how a CLI param becomes a channel.
+### Gotchas
 
-### Genome selection is the core complexity
-
-Unlike a typical single-reference nf-core pipeline, magmap builds its set of reference
-genomes dynamically from up to three sources, then optionally filters them per-sample:
-
-1. **User-provided genomes** (`--genomeinfo` CSV: `accno,genome_fna,genome_gff`).
-2. **Local Sourmash indexes** built from those user genomes (skipped if `--skip_sourmash`).
-3. **Remote genomes** looked up in NCBI assembly summary files (`--remote_genome_sources`,
-   defaults to RefSeq+GenBank summaries) and pulled in via user-supplied Sourmash indexes
-   (`--indexes`), then fetched with `WGET`.
-
-This logic lives in `subworkflows/local/sourmash/main.nf` (workflow `SOURMASH`). It emits
-`joint_filtered_genomes` (one genome set for the whole run), `sample_filtered_genomes` (per-sample
-sets), and `local_accessions` (which kept genomes originated from `--genomeinfo`, used to tag
-local vs. remote origin downstream). Which of the first two is actually used downstream depends
-on `--genomeset_mode` (`joint` or `sample`), branched in `workflows/magmap.nf` — `joint`
-builds one shared BBMap index via `CREATE_BBMAP_INDEX`; `sample` builds a distinct index
-per sample from `sample_filtered_genomes` and joins reads to their matching index before
-`BBMAP_ALIGN`. `--species_preference` (`all`/`local`/`completeness`/`gtdb`) controls how
-duplicate-species genomes are resolved and is consumed later by
-`modules/local/tidyverse/joinmetadata`.
-
-Genomes lacking a GFF (mostly ones fetched from NCBI) are annotated with Prokka
-(`PROKKA` + `PROKKAGFF2TSV` + `CATPROKKATSVS`); genomes that already have a GFF skip
-straight to `PROKKAGFF2TSV` (much faster — this is why test genomes should be given a
-pre-computed GFF whenever possible, see Gotchas below). Both paths reconverge into
-`ch_collected_genomes` before indexing/alignment.
-
-Before any of this, `CHECK_DUPLICATES` (modules/local/check_duplicates) scans user genome
-FASTA files for duplicate contig names and `RENAME_CONTIGS` disambiguates them so
-downstream BBMap indexing doesn't collide.
-
-### Local vs nf-core modules/subworkflows
-
-- `modules/nf-core/` and `subworkflows/nf-core/` are installed via `nf-core modules
-install` / `nf-core subworkflows install` and tracked in `modules.json` — don't hand-edit
-  these; update via nf-core tools instead.
-- `modules/local/` and `subworkflows/local/` are pipeline-specific and safe to edit
-  directly. Notable ones: `check_duplicates`, `rename_contigs`, `genomes2orfs` (builds the
-  genome-accession→feature-prefix index used by `collect/featurecounts`), `catprokkatsvs`,
-  `prokkagff2tsv`, `tidyverse/joinmetadata` (merges GTDB/GTDB-Tk/CheckM/CheckM2 metadata
-  with the selected genome set), `tidyverse/selectgenomespecies` (implements
-  `--species_preference`), `collect/genomeselection` (local/remote genome-count summary
-  for MultiQC), and `collect/stats` + `collect/featurecounts` (R scripts producing the
-  final `summary_tables/*.tsv.gz` outputs).
-
-## Conventions (from `docs/CONTRIBUTING.md`)
-
-- PRs target the `dev` branch, not `master`/`main`.
-- Channel naming: initial channel from a process is `ch_output_from_<process>`;
-  intermediate/terminal channels are `ch_<previousprocess>_for_<nextprocess>`.
-- New params: add a default in the `params {}` block of `nextflow.config` and a matching
-  entry in `nextflow_schema.json` (use `nf-core pipelines schema build` rather than
-  hand-editing the schema).
-- Resource defaults (cpus/memory/time) are set by `withLabel:` selectors in
-  `conf/base.config`, not per-process — unless a specific process needs a tighter
-  test-only override (see Gotchas).
-- AI-assisted changes: keep them small and focused, avoid incidental refactors/moves, and
-  don't touch code outside the scope of the requested change.
-
-## Gotchas
-
-- `genomes/`, `magmap_genomes/`, `magmap_prokka/`, `results/`, and `work/` in the working
-  tree are local run artifacts/scratch data, not part of the pipeline source.
-- `conf/base.config` labels (e.g. `process_low`'s 12GB memory for Prokka) are sized for
-  arbitrary real-world genomes and are often wildly oversized for small test genomes. Test
-  configs override `resourceLimits` and/or specific `withName:` blocks to reserve less
-  memory per task so more jobs (esp. Prokka) can run concurrently in CI/locally — don't
-  "fix" these by assuming the base.config default is a mistake.
-- Nextflow config `withName:` selectors match the process's alias name as actually used in
-  the calling workflow (e.g. `GENOME_INDEX` for `include { SOURMASH_INDEX as GENOME_INDEX }`),
-  not the module's original declared name — an empty `withName: X { }` block (no real
-  directives left inside, just a comment) can trigger `Unknown config attribute` errors on
-  some Nextflow versions even though newer versions tolerate it silently; delete the block
-  entirely instead of leaving it empty.
-- CI runs on 4-cpu self-hosted runners (see `.github/workflows/nf-test.yml`); local dev
-  machines may have many more cores, so observed local concurrency/timing improvements
-  don't necessarily translate to CI — check the runner's real core count before concluding
-  a change will speed up CI.
-- Test genomes for the archaeal duplicate-species dataset live in `nf-core/test-datasets`
-  (`magmap` branch); changes there need a PR to that repo, separate from this one.
+- `genomes/`, `magmap_genomes/`, `magmap_prokka/`, `results/` and `work/` in the working tree are local run artefacts, not pipeline source.
+- The labels in `conf/base.config` are sized for real genomes and are far too large for test genomes. Test configs lower `resourceLimits` or set `withName:` blocks so that more tasks run at once. Do not change `base.config` to fix this.
+- A `withName:` selector matches the alias used in the calling workflow, for example `GENOME_INDEX` for `include { SOURMASH_INDEX as GENOME_INDEX }`. An empty `withName:` block fails with `Unknown config attribute` on some Nextflow versions, so delete it.
+- CI runs on 4-cpu runners. Local timings on a larger machine do not carry over.
+- The test genomes live in the `magmap` branch of `nf-core/test-datasets`. Changes there need a separate pull request.
