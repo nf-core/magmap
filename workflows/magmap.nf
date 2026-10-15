@@ -21,10 +21,10 @@ include { CREATE_BBMAP_INDEX                     } from '../subworkflows/local/c
 include { CUSTOM_COLLECTFEATURECOUNTS            } from '../modules/nf-core/custom/collectfeaturecounts/main'
 include { CUSTOM_COLLECTSTATS                    } from '../modules/nf-core/custom/collectstats/main'
 include { DUCKDB_TABLE2PARQUET                   } from '../modules/nf-core/duckdb/table2parquet'
+include { FASTA_HMMSEARCH_RANK_FASTAS            } from '../subworkflows/nf-core/fasta_hmmsearch_rank_fastas'
 include { FASTQC                                 } from '../modules/nf-core/fastqc'
 include { FASTQC_TRIMGALORE                      } from '../subworkflows/local/fastqc_trimgalore'
 include { GFFREAD                                } from '../modules/nf-core/gffread'
-include { HMMCLASSIFY                            } from '../subworkflows/local/hmmclassify'
 include { methodsDescriptionText                 } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 include { MULTIQC                                } from '../modules/nf-core/multiqc'
 include { paramsSummaryMap                       } from 'plugin/nf-schema'
@@ -38,6 +38,7 @@ include { RENAME_CONTIGS                         } from '../modules/local/rename
 include { softwareVersionsToYAML                 } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { SOURMASH                               } from '../subworkflows/local/sourmash'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts'
+include { TIDYVERSE_JOINHMMRANKACCNO             } from '../modules/local/tidyverse/joinhmmrankaccno'
 include { TIDYVERSE_JOINMETADATA                 } from '../modules/local/tidyverse/joinmetadata/'
 include { TIDYVERSE_SELECTANNOTATOR              } from '../modules/local/tidyverse/selectannotator/'
 include { TIDYVERSE_SPLITFEATURECOUNTS           } from '../modules/local/tidyverse/splitfeaturecounts'
@@ -425,9 +426,14 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: Search the proteins with HMM profiles
     //
-    HMMCLASSIFY(
-        ch_hmms,
-        CAT_FAA.out.concatenated_files.map { _meta, faa -> [ [ id: 'magmap' ], faa ] },
+    FASTA_HMMSEARCH_RANK_FASTAS(
+        ch_hmms.map { hmm -> [ [ id: hmm.name.replaceAll(/(\.hmm)?(\.gz)?$/, '') ], hmm ] },
+        CAT_FAA.out.concatenated_files.map { _meta, faa -> faa },
+        false
+    )
+
+    TIDYVERSE_JOINHMMRANKACCNO(
+        FASTA_HMMSEARCH_RANK_FASTAS.out.hmmrank,
         GENOMES2ORFS.out.genomes2orfs.map { _meta, g2orfs -> g2orfs }.first()
     )
 
@@ -546,7 +552,7 @@ workflow MAGMAP {
                 .mix(CATPROKKATSVS.out.tsv.map { _meta, tsv -> tsv })
                 .mix(TIDYVERSE_JOINFEATURECOUNTSACCNO.out.counts.map { _meta, tsv -> tsv })
                 .mix(CUSTOM_COLLECTSTATS.out.overall_stats.map { _meta, tsv -> tsv })
-                .mix(HMMCLASSIFY.out.hmmrank.map { _meta, tsv -> tsv })
+                .mix(TIDYVERSE_JOINHMMRANKACCNO.out.hmmrank.map { _meta, tsv -> tsv })
                 .map { tsv -> [ [ id: tsv.name.replaceAll(/\.tsv(\.gz)?$/, '') ], tsv ] }
         )
     }

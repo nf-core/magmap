@@ -3,13 +3,13 @@
         "content": [
             [
                 "",
+                "PF00006.tbl.gz",
+                "PF00009.tbl.gz",
+                "PF00154.tbl.gz",
                 "hits",
-                "hits/magmap.PF00006.faa.gz",
-                "hits/magmap.PF00009.faa.gz",
-                "hits/magmap.PF00154.faa.gz",
-                "magmap.PF00006.tbl.gz",
-                "magmap.PF00009.tbl.gz",
-                "magmap.PF00154.tbl.gz"
+                "hits/PF00006.fa.gz",
+                "hits/PF00009.fa.gz",
+                "hits/PF00154.fa.gz"
             ],
             [
                 "accno\tgenome\torf\tprofile\tprofile_desc\tevalue\tscore\trank",
@@ -60,7 +60,7 @@
                 "MQKKNEKSILEALKQIEKQFGKGSIMQLGKNKLTKIETISTGSLSLDIALGIGGLPMGRIIEIYGPESSGKTTLTLEIIASAQKKNKTCLFIDAEHSLDPIYAEKIGVNIKKLLCSQPDNGEQALEICNSLAKKNNIDVIIVDSVAALTPKAEIEGEIGDLHIGSTARMMSQAMRKLARNINKSNILLIFINQIRIKIGIIFGNPETTTGGNALKFYSSIRLEIRKIRNIKKDNLIIGNETKVKVVKNKLSAPFKQAEFEIIYNKGINKYSEILNLGLINNIIKKNGN"
             ]
         ],
-        "timestamp": "2026-10-13T12:48:14.948347",
+        "timestamp": "2026-10-15T09:28:48.768335",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.6"

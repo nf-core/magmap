@@ -75,9 +75,9 @@ nextflow_pipeline {
                 { assert snapshot(
                     getAllFilesFromDir("${params.outdir}/hmmer", relative: true, includeDir: true),
                     path("${params.outdir}/summary_tables/magmap.hmmrank.tsv.gz").linesGzip,
-                    path("${params.outdir}/hmmer/hits/magmap.PF00006.faa.gz").linesGzip,
-                    path("${params.outdir}/hmmer/hits/magmap.PF00009.faa.gz").linesGzip,
-                    path("${params.outdir}/hmmer/hits/magmap.PF00154.faa.gz").linesGzip,
+                    path("${params.outdir}/hmmer/hits/PF00006.fa.gz").linesGzip,
+                    path("${params.outdir}/hmmer/hits/PF00009.fa.gz").linesGzip,
+                    path("${params.outdir}/hmmer/hits/PF00154.fa.gz").linesGzip,
                 ).match() },
                 { assert path("${params.outdir}/summary_tables/magmap.hmmrank.tsv.gz").csv(sep: '\t', decompress: true, header: true).columns["accno"].every { a -> a == 'GCA_002688505.1' } },
             )
