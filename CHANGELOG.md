@@ -9,7 +9,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#NN](https://github.com/nf-core/magmap/pull/NN) - Split and join the feature counts of each sample in DuckDB instead of R, which keeps memory use bounded on large genome collections and stops these steps from running out of memory, closes [#283](https://github.com/nf-core/magmap/issues/283) (by @erikrikarddaniel).
+- [#284](https://github.com/nf-core/magmap/pull/284) - Split and join the feature counts of each sample in DuckDB instead of R, which keeps memory use bounded on large genome collections and stops these steps from running out of memory, closes [#283](https://github.com/nf-core/magmap/issues/283) (by @erikrikarddaniel).
+- [#284](https://github.com/nf-core/magmap/pull/284) - Update `custom/collectfeaturecounts` and `custom/collectstats`, which now handle one input file at a time, so memory use no longer grows with the number of samples, and `CUSTOM_COLLECTFEATURECOUNTS` runs with the `process_low` label instead of `process_high` (by @erikrikarddaniel, reviewed by @piplus2).
 - [#281](https://github.com/nf-core/magmap/pull/281) - Remove two redundant `.first()` calls that made Nextflow warn (by @erikrikarddaniel).
 
 ### `Fixed`
