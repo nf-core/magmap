@@ -16,10 +16,11 @@ include { CATPROKKATSVS        	                 } from '../modules/local/catpro
 include { CHECK_DUPLICATES                       } from '../modules/local/check_duplicates'
 include { COLLECT_GENOMESELECTION                } from '../modules/local/collect/genomeselection'
 include { COLLECT_UNASSIGNEDCOUNTS               } from '../modules/local/collect/unassignedcounts'
-include { TIDYVERSE_JOINFEATURECOUNTSACCNO       } from '../modules/local/tidyverse/joinfeaturecountsaccno'
 include { CREATE_BBMAP_INDEX                     } from '../subworkflows/local/create_bbmap_index'
 include { CUSTOM_COLLECTFEATURECOUNTS            } from '../modules/nf-core/custom/collectfeaturecounts/main'
 include { CUSTOM_COLLECTSTATS                    } from '../modules/nf-core/custom/collectstats/main'
+include { DUCKDB_JOINFEATURECOUNTSACCNO          } from '../modules/local/duckdb/joinfeaturecountsaccno'
+include { DUCKDB_SPLITFEATURECOUNTS              } from '../modules/local/duckdb/splitfeaturecounts'
 include { DUCKDB_TABLE2PARQUET                   } from '../modules/nf-core/duckdb/table2parquet'
 include { FASTQC                                 } from '../modules/nf-core/fastqc'
 include { FASTQC_TRIMGALORE                      } from '../subworkflows/local/fastqc_trimgalore'
@@ -39,7 +40,6 @@ include { SOURMASH                               } from '../subworkflows/local/s
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts'
 include { TIDYVERSE_JOINMETADATA                 } from '../modules/local/tidyverse/joinmetadata/'
 include { TIDYVERSE_SELECTANNOTATOR              } from '../modules/local/tidyverse/selectannotator/'
-include { TIDYVERSE_SPLITFEATURECOUNTS           } from '../modules/local/tidyverse/splitfeaturecounts'
 include { validateInputSamplesheet               } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
 
 /*
@@ -469,7 +469,7 @@ workflow MAGMAP {
 
     // Split the combined FeatureCounts output into per-feature-type files using the
     // CATPROKKATSVS orf-to-ftype mapping.
-    TIDYVERSE_SPLITFEATURECOUNTS(
+    DUCKDB_SPLITFEATURECOUNTS(
         FEATURECOUNTS.out.counts,
         CATPROKKATSVS.out.tsv.map { _meta, tsv -> tsv }
     )
@@ -477,7 +477,7 @@ workflow MAGMAP {
     //
     // MODULE: Collect featurecounts output counts in one table
     //
-    ch_collect_featurecounts = TIDYVERSE_SPLITFEATURECOUNTS.out.counts
+    ch_collect_featurecounts = DUCKDB_SPLITFEATURECOUNTS.out.counts
         .flatMap { meta, files ->
             // A single feature type emits a Path, not a List, and Path is Iterable over its
             // segments; force a List so collect{} does not walk directory components.
@@ -502,11 +502,11 @@ workflow MAGMAP {
     CUSTOM_COLLECTFEATURECOUNTS(ch_collect_featurecounts)
 
     // CUSTOM_COLLECTFEATURECOUNTS is shared with other pipelines, so the accno join stays a separate local step.
-    TIDYVERSE_JOINFEATURECOUNTSACCNO(
+    DUCKDB_JOINFEATURECOUNTSACCNO(
         CUSTOM_COLLECTFEATURECOUNTS.out.counts,
         GENOMES2ORFS.out.genomes2orfs.map { _m, g2orfs -> g2orfs }
     )
-    ch_fcs_for_stats      = TIDYVERSE_JOINFEATURECOUNTSACCNO.out.counts
+    ch_fcs_for_stats      = DUCKDB_JOINFEATURECOUNTSACCNO.out.counts
         .map { _meta, tsv -> tsv }
         .mix(COLLECT_UNASSIGNEDCOUNTS.out.counts.flatMap { _meta, nofeatures, ambiguity -> [ nofeatures, ambiguity ] })
         .collect()
@@ -531,7 +531,7 @@ workflow MAGMAP {
                 .mix(COLLECT_GENOMESELECTION.out.full_table.map { _meta, tsv -> tsv })
                 .mix(GENOMES2ORFS.out.genomes2orfs.map { _meta, tsv -> tsv })
                 .mix(CATPROKKATSVS.out.tsv.map { _meta, tsv -> tsv })
-                .mix(TIDYVERSE_JOINFEATURECOUNTSACCNO.out.counts.map { _meta, tsv -> tsv })
+                .mix(DUCKDB_JOINFEATURECOUNTSACCNO.out.counts.map { _meta, tsv -> tsv })
                 .mix(CUSTOM_COLLECTSTATS.out.overall_stats.map { _meta, tsv -> tsv })
                 .map { tsv -> [ [ id: tsv.name.replaceAll(/\.tsv(\.gz)?$/, '') ], tsv ] }
         )
