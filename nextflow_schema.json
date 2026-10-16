@@ -250,6 +250,34 @@
                 }
             }
         },
+        "hmm_options": {
+            "title": "HMM search options",
+            "type": "object",
+            "fa_icon": "fas fa-search",
+            "description": "Search the proteins of the selected genomes with HMM profiles.",
+            "help_text": "Give either `--hmmdir` or `--hmmfiles`. Each profile is searched with hmmsearch against all proteins of the selected genomes. The ranked hits, with the genome accession of each protein, are written to `summary_tables/magmap.hmmrank.tsv.gz`.",
+            "properties": {
+                "hmmdir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "description": "Directory with HMM files to search the proteins with.",
+                    "help_text": "All files in the directory matching `--hmmpattern` are used.",
+                    "fa_icon": "fas fa-folder-open"
+                },
+                "hmmpattern": {
+                    "type": "string",
+                    "default": "*.hmm",
+                    "description": "Pattern that selects the HMM files in `--hmmdir`.",
+                    "fa_icon": "fas fa-filter"
+                },
+                "hmmfiles": {
+                    "type": "string",
+                    "pattern": "^\\S+hmm(\\.gz)?(,\\S+hmm(\\.gz)?)*$",
+                    "description": "Comma-separated list of HMM files to search the proteins with.",
+                    "fa_icon": "far fa-file-code"
+                }
+            }
+        },
         "sourmash_options": {
             "title": "Sourmash",
             "type": "object",
@@ -457,6 +485,9 @@
         },
         {
             "$ref": "#/$defs/featurecounts_option"
+        },
+        {
+            "$ref": "#/$defs/hmm_options"
         },
         {
             "$ref": "#/$defs/sourmash_options"

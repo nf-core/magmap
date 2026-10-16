@@ -46,6 +46,7 @@ workflow NFCORE_MAGMAP {
     skip_sourmash               // boolean: skip Sourmash or not
     sourmash_ksize              // integer
     features                    // channel: types of features to call
+    hmms                        // channel: HMM profiles to search the proteins with
     skip_fastqc                 // boolean
     skip_qc                     // boolean
     skip_trimming               // boolean
@@ -73,6 +74,7 @@ workflow NFCORE_MAGMAP {
         skip_sourmash,
         sourmash_ksize,
         features,
+        hmms,
         skip_fastqc,
         skip_qc,
         skip_trimming,
@@ -121,7 +123,10 @@ workflow {
         params.gtdb_metadata,
         params.gtdbtk_metadata,
         params.checkm_metadata,
-        params.features
+        params.features,
+        params.hmmdir,
+        params.hmmpattern,
+        params.hmmfiles
     )
 
     //
@@ -143,6 +148,7 @@ workflow {
         params.skip_sourmash,
         params.sourmash_ksize,
         PIPELINE_INITIALISATION.out.features,
+        PIPELINE_INITIALISATION.out.hmms,
         params.skip_fastqc,
         params.skip_qc,
         params.skip_trimming,

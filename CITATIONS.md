@@ -32,6 +32,12 @@
 
 > Pertea G, Pertea M. GFF Utilities: GffRead and GffCompare. F1000Research 2020, 9:304. doi: 10.12688/f1000research.23297.2.
 
+- [HMMER](http://hmmer.org/)
+
+> Eddy SR. Accelerated Profile HMM Searches. PLoS Comput Biol. 2011 Oct;7(10):e1002195. doi: 10.1371/journal.pcbi.1002195. PMID: 22039361; PMCID: PMC3197634.
+
+- [seqtk](https://github.com/lh3/seqtk)
+
 - [BBmap](https://sourceforge.net/projects/bbmap/)
 
 - [samtools](http://www.htslib.org)

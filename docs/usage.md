@@ -24,6 +24,7 @@
     - [Selection of genomes per species](#selection-of-genomes-per-species)
   - [Genome annotation](#genome-annotation)
     - [Choosing an annotator: Prokka or Bakta](#choosing-an-annotator-prokka-or-bakta)
+  - [HMM profile search](#hmm-profile-search)
   - [Multimapping](#Multimapping)
   - [Feature quantification](#feature-quantification)
     - [Output formats](#output-formats)
@@ -304,6 +305,23 @@ If a genome's domain can't be determined (e.g. it's missing from both), it's rou
 ```bash
 nextflow run nf-core/magmap -profile docker --outdir results/ --input samples.csv --genomeinfo localgenomes.csv --annotator bakta_supported_only --bakta_db /path/to/bakta_db
 ```
+
+### HMM profile search
+
+The pipeline can search the proteins of all selected genomes with HMM profiles, for example from [Pfam](https://www.ebi.ac.uk/interpro/entry/pfam/).
+Give the profiles in one of two ways:
+
+- [`--hmmdir`](https://nf-co.re/magmap/parameters/#hmmdir): a directory with one profile per file. [`--hmmpattern`](https://nf-co.re/magmap/parameters/#hmmpattern) selects the files, by default `*.hmm`.
+- [`--hmmfiles`](https://nf-co.re/magmap/parameters/#hmmfiles): a comma-separated list of profile files.
+
+```bash
+--hmmfiles 'PF00154.hmm,PF00009.hmm'
+```
+
+Each profile is searched with `hmmsearch` against `proteins/magmap.proteins.faa.gz`.
+The hits of all profiles are ranked per protein by score, and each hit gets the accession of the genome it belongs to.
+The pipeline names each profile after its file name without the `.hmm` or `.hmm.gz` extension, so every file needs a unique name.
+The pipeline stops with an error if two files give the same name.
 
 ### Multimapping
 
