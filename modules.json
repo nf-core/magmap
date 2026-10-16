@@ -78,7 +78,7 @@
                     },
                     "hmmer/formattsv": {
                         "branch": "master",
-                        "git_sha": "16a32d753b71a738925f436b43a822e5f867ce7d",
+                        "git_sha": "1a6a3077be2cd5cf337a78573f242f984055a9af",
                         "installed_by": ["fasta_hmmsearch_rank_fastas", "modules"]
                     },
                     "hmmer/hmmrank": {
