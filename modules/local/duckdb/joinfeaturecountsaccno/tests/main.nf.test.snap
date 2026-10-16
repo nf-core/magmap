@@ -1,0 +1,19 @@
+{
+    "accno is added as first column, unmapped ORFs dropped, row order kept": {
+        "content": [
+            [
+                [
+                    "accno\torf\tchr\tstart\tend\tstrand\tlength\tsample\tcount\ttpm",
+                    "GCA_2.1\tG2_orf2\tk2\t5\t80\t-\t76\tS1\t7\t0.5",
+                    "GCA_1.1\tG1_orf1\tk1\t10\t100\t+\t91\tS1\t25\t1.25",
+                    "GCA_2.1\tG2_orf2\tk2\t5\t80\t-\t76\tS2\t9\t1e-06"
+                ]
+            ]
+        ],
+        "timestamp": "2026-10-15T17:15:26.300901645",
+        "meta": {
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
+        }
+    }
+}
