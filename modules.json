@@ -88,7 +88,7 @@
                     },
                     "hmmer/hmmsearch": {
                         "branch": "master",
-                        "git_sha": "3a42d4fbb69436f53e0f06d2fe65b48f9d0085cc",
+                        "git_sha": "1a6a3077be2cd5cf337a78573f242f984055a9af",
                         "installed_by": ["fasta_hmmsearch_rank_fastas", "modules"]
                     },
                     "multiqc": {
