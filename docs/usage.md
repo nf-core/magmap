@@ -321,6 +321,7 @@ Give the profiles in one of two ways:
 Each profile is searched with `hmmsearch` against `proteins/magmap.proteins.faa.gz`.
 The hits of all profiles are ranked per protein by score, and each hit gets the accession of the genome it belongs to.
 The pipeline names each profile after its file name without the `.hmm` or `.hmm.gz` extension, so every file needs a unique name.
+The pipeline stops with an error if two files give the same name.
 
 ### Multimapping
 
