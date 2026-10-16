@@ -83,7 +83,7 @@
                     },
                     "hmmer/hmmrank": {
                         "branch": "master",
-                        "git_sha": "64017d8989654a65db85f8ba181a9c387ac58fad",
+                        "git_sha": "1a6a3077be2cd5cf337a78573f242f984055a9af",
                         "installed_by": ["fasta_hmmsearch_rank_fastas", "modules"]
                     },
                     "hmmer/hmmsearch": {
