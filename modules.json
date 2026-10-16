@@ -150,7 +150,7 @@
                     },
                     "sourmash/sketch": {
                         "branch": "master",
-                        "git_sha": "6eaecd6ef9bfc7faf313b1abeaae9b129795291d",
+                        "git_sha": "bc6e6b1a6de4bbdabed41381dd0b4add635271b1",
                         "installed_by": ["modules"]
                     },
                     "subread/featurecounts": {
