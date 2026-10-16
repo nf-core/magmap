@@ -134,7 +134,7 @@
                     },
                     "seqtk/subseq": {
                         "branch": "master",
-                        "git_sha": "183591f15495ea2e473df6e0794eb33df6567d72",
+                        "git_sha": "84fc599fdb226d855e34f6e9ddd329d726ea240d",
                         "installed_by": ["fasta_hmmsearch_rank_fastas"]
                     },
                     "sourmash/gather": {
