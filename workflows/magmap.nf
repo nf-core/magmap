@@ -68,7 +68,7 @@ workflow MAGMAP {
     skip_sourmash               // boolean: run Sourmash or not
     sourmash_ksize              // integer
     ch_features                 // channel: list of feature types to call
-    ch_hmms                     // channel: HMM profiles to search the proteins with
+    ch_hmms                     // channel: [ val(meta), path(hmm) ]: HMM profiles to search the proteins with
     skip_fastqc                 // boolean
     skip_qc                     // boolean
     skip_trimming               // boolean
@@ -427,7 +427,7 @@ workflow MAGMAP {
     // SUBWORKFLOW: Search the proteins with HMM profiles
     //
     FASTA_HMMSEARCH_RANK_FASTAS(
-        ch_hmms.map { hmm -> [ [ id: hmm.name.replaceAll(/(\.hmm)?(\.gz)?$/, '') ], hmm ] },
+        ch_hmms,
         CAT_FAA.out.concatenated_files.map { _meta, faa -> faa },
         false
     )

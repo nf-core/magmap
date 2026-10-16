@@ -250,15 +250,25 @@ workflow PIPELINE_INITIALISATION {
         .flatten()
         .unique()
 
-    ch_hmms = channel.empty()
+    def hmm_files = []
     if ( hmmdir ) {
         if ( hmmfiles ) {
             log.warn("Both --hmmdir and --hmmfiles were given; --hmmfiles is ignored.")
         }
-        ch_hmms = channel.fromPath("${hmmdir}/${hmmpattern}", checkIfExists: true)
+        hmm_files = files("${hmmdir}/${hmmpattern}", checkIfExists: true)
     } else if ( hmmfiles ) {
-        ch_hmms = channel.fromPath(hmmfiles.tokenize(','), checkIfExists: true)
+        hmm_files = hmmfiles.tokenize(',').collect { f -> file(f, checkIfExists: true) }
     }
+    // The profile name becomes the output file name, so two profiles must not share one
+    def hmm_profiles = hmm_files.collect { hmm -> [ [ id: hmm.name.replaceAll(/(\.hmm)?(\.gz)?$/, '') ], hmm ] }
+    def duplicated_profiles = hmm_profiles
+        .countBy { profile -> profile[0].id }
+        .findAll { _id, n -> n > 1 }
+        .keySet()
+    if ( duplicated_profiles ) {
+        error("HMM profile names must be unique after removing the .hmm and .gz extensions. Duplicated: ${duplicated_profiles.join(', ')}")
+    }
+    ch_hmms = channel.fromList(hmm_profiles)
 
     emit:
     samplesheet             = ch_samplesheet
