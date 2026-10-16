@@ -434,7 +434,7 @@ workflow MAGMAP {
 
     TIDYVERSE_JOINHMMRANKACCNO(
         FASTA_HMMSEARCH_RANK_FASTAS.out.hmmrank,
-        GENOMES2ORFS.out.genomes2orfs.map { _meta, g2orfs -> g2orfs }.first()
+        GENOMES2ORFS.out.genomes2orfs.map { _meta, g2orfs -> g2orfs }
     )
 
     //
