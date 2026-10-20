@@ -17,7 +17,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#NN](https://github.com/nf-core/magmap/pull/NN) - Boolean and numeric parameters are typed in `main.nf`, so a value given on the command line such as `--skip_fastqc false` is accepted and a wrong one is rejected at launch, and a parameter the pipeline does not define is now an error instead of a warning
+- [#287](https://github.com/nf-core/magmap/pull/287) - Boolean and numeric parameters are typed in `main.nf`, so a value given on the command line such as `--skip_fastqc false` is accepted and a wrong one is rejected at launch, and a parameter the pipeline does not define is now an error instead of a warning
 - [#277](https://github.com/nf-core/magmap/pull/277) - Accept Apptainer as well as Singularity when local modules choose their container, closes [#265](https://github.com/nf-core/magmap/issues/265) (by @danilodileo, reviewed by @erikrikarddaniel).
 
 ### `Dependencies`
