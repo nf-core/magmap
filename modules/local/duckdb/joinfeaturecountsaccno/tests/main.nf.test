@@ -1,0 +1,199 @@
+nextflow_process {
+
+    name "Test Process DUCKDB_JOINFEATURECOUNTSACCNO"
+    script "../main.nf"
+    process "DUCKDB_JOINFEATURECOUNTSACCNO"
+
+    tag "modules"
+    tag "modules_local"
+    tag "duckdb"
+    tag "duckdb/joinfeaturecountsaccno"
+
+    // Inputs are built inline. `counts` has the shape of CUSTOM_COLLECTFEATURECOUNTS output and
+    // `g2ids` the shape of GENOMES2ORFS output.
+
+    test("accno is added as first column, unmapped ORFs dropped, row order kept") {
+
+        when {
+            process {
+                """
+                def header = ['orf', 'chr', 'start', 'end', 'strand', 'length', 'sample', 'count', 'tpm']
+                def counts = file("\${workDir}/test.counts.tsv")
+                counts.text = ([header] + [
+                    ['G2_orf2', 'k2', '5', '80', '-', '76', 'S1', '7', '0.5'],
+                    ['UNKNOWN_1', 'k3', '1', '50', '+', '50', 'S1', '3', '1000000'],
+                    ['G1_orf1', 'k1', '10', '100', '+', '91', 'S1', '25', '1.25'],
+                    ['G2_orf2', 'k2', '5', '80', '-', '76', 'S2', '9', '1e-06']
+                ]).collect { r -> r.join('\\t') }.join('\\n') + '\\n'
+
+                def g2ids = file("\${workDir}/test.genomes2orfs.tsv")
+                g2ids.text = [
+                    ['accno', 'genome', 'orf'],
+                    ['GCA_2.1', 'genome2', 'G2_orf2'],
+                    ['GCA_1.1', 'genome1', 'G1_orf1']
+                ].collect { r -> r.join('\\t') }.join('\\n') + '\\n'
+
+                input[0] = [ [ id:'test' ], counts ]
+                input[1] = g2ids
+                """
+            }
+        }
+
+        then {
+            def lines = path(process.out.counts[0][1]).linesGzip
+            assertAll(
+                { assert process.success },
+                { assert lines[0] == ['accno', 'orf', 'chr', 'start', 'end', 'strand', 'length', 'sample', 'count', 'tpm'].join('\t') },
+                // UNKNOWN_1 has no accno and is dropped; the others keep their input order.
+                { assert lines.drop(1) == [
+                    ['GCA_2.1', 'G2_orf2', 'k2', '5', '80', '-', '76', 'S1', '7', '0.5'],
+                    ['GCA_1.1', 'G1_orf1', 'k1', '10', '100', '+', '91', 'S1', '25', '1.25'],
+                    ['GCA_2.1', 'G2_orf2', 'k2', '5', '80', '-', '76', 'S2', '9', '1e-06']
+                ].collect { r -> r.join('\t') } },
+                // Values pass through as text, so 1e-06 is not reformatted.
+                { assert snapshot(process.out.counts.collect { m, f -> path(f).linesGzip }).match() }
+            )
+        }
+    }
+
+    test("row order is kept for a table larger than one vector") {
+
+        when {
+            process {
+                """
+                def n = 20000
+                def counts = file("\${workDir}/many.counts.tsv")
+                counts.text = (['orf\\tchr\\tstart\\tend\\tstrand\\tlength\\tsample\\tcount\\ttpm'] +
+                    (0..<n).collect { i -> "orf_\${i}\\tk\\t1\\t2\\t+\\t2\\tS1\\t1\\t1.5" }).join('\\n') + '\\n'
+
+                // g2ids lists the ORFs in reverse order and holds as many unused ORFs as the counts,
+                // so a join that follows its own order would reverse the output.
+                def g2ids = file("\${workDir}/many.genomes2orfs.tsv")
+                g2ids.text = (['accno\\tgenome\\torf'] +
+                    ((2 * n - 1)..0).collect { i -> "GCA_\${i % 7}.1\\tg\\torf_\${i}" }).join('\\n') + '\\n'
+
+                input[0] = [ [ id:'many' ], counts ]
+                input[1] = g2ids
+                """
+            }
+        }
+
+        then {
+            def lines = path(process.out.counts[0][1]).linesGzip
+            def orfs  = lines.drop(1).collect { l -> l.split('\t')[1] }
+            assertAll(
+                { assert process.success },
+                { assert orfs == (0..<20000).collect { i -> "orf_${i}".toString() } }
+            )
+        }
+    }
+
+    test("a sample id containing shell metacharacters doesn't break the script") {
+
+        when {
+            process {
+                """
+                def counts = file("\${workDir}/meta.counts.tsv")
+                counts.text = "orf\\tchr\\tcount\\nG1_orf1\\tk1\\t25\\n"
+                def g2ids = file("\${workDir}/meta.genomes2orfs.tsv")
+                g2ids.text = "accno\\tgenome\\torf\\nGCA_1.1\\tgenome1\\tG1_orf1\\n"
+
+                input[0] = [ [ id: 'a;b c' ], counts ]
+                input[1] = g2ids
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.counts[0][1].toString().endsWith('a;b c.counts.tsv.gz') },
+                { assert path(process.out.counts[0][1]).linesGzip[1] == "GCA_1.1\tG1_orf1\tk1\t25" }
+            )
+        }
+    }
+
+    test("gzipped inputs are read") {
+
+        when {
+            process {
+                """
+                def counts = file("\${workDir}/gz.counts.tsv.gz")
+                counts.withOutputStream { os ->
+                    def z = new java.util.zip.GZIPOutputStream(os)
+                    z.write("orf\\tchr\\tcount\\nG1_orf1\\tk1\\t25\\n".getBytes('UTF-8'))
+                    z.finish()
+                }
+                def g2ids = file("\${workDir}/gz.genomes2orfs.tsv.gz")
+                g2ids.withOutputStream { os ->
+                    def z = new java.util.zip.GZIPOutputStream(os)
+                    z.write("accno\\tgenome\\torf\\nGCA_1.1\\tgenome1\\tG1_orf1\\n".getBytes('UTF-8'))
+                    z.finish()
+                }
+                input[0] = [ [ id: 'gz' ], counts ]
+                input[1] = g2ids
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.counts[0][1]).linesGzip == [ "accno\torf\tchr\tcount", "GCA_1.1\tG1_orf1\tk1\t25" ] }
+            )
+        }
+    }
+
+    test("a sample id containing a single-quote character doesn't break the generated script") {
+
+        when {
+            process {
+                """
+                // A character code avoids nesting a literal quote in this triple-quoted string.
+                def sampleId = "sample" + Character.toString(39) + "x"
+
+                def counts = file("\${workDir}/quote.counts.tsv")
+                counts.text = "orf\\tchr\\tcount\\nG1_orf1\\tk1\\t25\\n"
+                def g2ids = file("\${workDir}/quote.genomes2orfs.tsv")
+                g2ids.text = "accno\\tgenome\\torf\\nGCA_1.1\\tgenome1\\tG1_orf1\\n"
+
+                input[0] = [ [ id: sampleId ], counts ]
+                input[1] = g2ids
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.counts[0][1]).linesGzip[1] == "GCA_1.1\tG1_orf1\tk1\t25" }
+            )
+        }
+    }
+
+    test("a sample id containing a shell metacharacter doesn't break the stub - stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                def counts = file("\${workDir}/semicolon.counts.tsv")
+                counts.text = ''
+                def g2ids = file("\${workDir}/semicolon.genomes2orfs.tsv")
+                g2ids.text = ''
+
+                input[0] = [ [ id: 'sample;rm x' ], counts ]
+                input[1] = g2ids
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.counts[0][1].toString().contains('sample;rm x.counts.tsv.gz') }
+            )
+        }
+    }
+}

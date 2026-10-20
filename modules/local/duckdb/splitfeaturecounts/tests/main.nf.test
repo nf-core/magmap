@@ -1,13 +1,13 @@
 nextflow_process {
 
-    name "Test Process TIDYVERSE_SPLITFEATURECOUNTS"
+    name "Test Process DUCKDB_SPLITFEATURECOUNTS"
     script "../main.nf"
-    process "TIDYVERSE_SPLITFEATURECOUNTS"
+    process "DUCKDB_SPLITFEATURECOUNTS"
 
     tag "modules"
     tag "modules_local"
-    tag "tidyverse"
-    tag "tidyverse/splitfeaturecounts"
+    tag "duckdb"
+    tag "duckdb/splitfeaturecounts"
 
     // Inputs are built inline. `counts` has the shape of FEATURECOUNTS output for one sample
     // and all feature types; `ftypes` has the shape of the CATPROKKATSVS orf-to-feature-type
@@ -20,7 +20,7 @@ nextflow_process {
                 """
                 def counts = file("\${workDir}/test.featureCounts.tsv")
                 counts.text = [
-                    ['# Program:featureCounts'],
+                    ['# Program:featureCounts v2.0.6; Command:"featureCounts" "-g" "ID" "-a" "all.gtf" "-o" "out.tsv" "in.bam"'],
                     ['Geneid', 'Chr', 'Start', 'End', 'Strand', 'Length', 'SAMPLE1.sorted.bam'],
                     ['CDS_1', 'k1', '10', '100', '+', '91', '25'],
                     ['CDS_2', 'k1', '200', '300', '+', '101', '40'],
@@ -73,7 +73,63 @@ nextflow_process {
         }
     }
 
-    test("a sample id containing a single-quote character doesn't break the generated R script") {
+    test("rows keep their input order for a table larger than one vector") {
+
+        when {
+            process {
+                """
+                def n = 20000
+                def counts = file("\${workDir}/many.featureCounts.tsv")
+                counts.text = (['# Program:featureCounts', 'Geneid\\tChr\\tStart\\tEnd\\tStrand\\tLength\\tS1.sorted.bam'] +
+                    (0..<n).collect { i -> "orf_\${i}\\tk\\t1\\t2\\t+\\t2\\t1" }).join('\\n') + '\\n'
+
+                // ftypes lists the ORFs in reverse order and holds many more unused ORFs than the counts,
+                // so a join that follows its own order would reverse the output.
+                def ftypes = file("\${workDir}/many.orfs.tsv")
+                ftypes.text = (['orf\\tftype'] +
+                    ((10 * n - 1)..0).collect { i -> "orf_\${i}\\tCDS" }).join('\\n') + '\\n'
+
+                input[0] = [ [ id:'many', feature: 'CDS' ], counts ]
+                input[1] = ftypes
+                """
+            }
+        }
+
+        then {
+            def orfs = new File(process.out.counts[0][1].toString()).readLines().drop(2).collect { l -> l.split('\t')[0] }
+            assertAll(
+                { assert process.success },
+                { assert orfs == (0..<20000).collect { i -> "orf_${i}".toString() } }
+            )
+        }
+    }
+
+    test("a sample id containing shell metacharacters doesn't break the script") {
+
+        when {
+            process {
+                """
+                def counts = file("\${workDir}/meta.featureCounts.tsv")
+                counts.text = "# Program:featureCounts\\nGeneid\\tChr\\tStart\\tEnd\\tStrand\\tLength\\tS1.sorted.bam\\nCDS_1\\tk1\\t10\\t100\\t+\\t91\\t25\\n"
+                def ftypes = file("\${workDir}/meta.orfs.tsv")
+                ftypes.text = "orf\\tftype\\nCDS_1\\tCDS\\n"
+
+                input[0] = [ [ id: 'a;b c', feature: 'CDS' ], counts ]
+                input[1] = ftypes
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.counts[0][1].toString().endsWith('a;b c.CDS.featureCounts.tsv') },
+                { assert new File(process.out.counts[0][1].toString()).readLines().size() == 3 }
+            )
+        }
+    }
+
+    test("a sample id containing a single-quote character doesn't break the generated script") {
 
         when {
             process {
