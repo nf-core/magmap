@@ -22,6 +22,7 @@ include { CUSTOM_COLLECTSTATS                    } from '../modules/nf-core/cust
 include { DUCKDB_JOINFEATURECOUNTSACCNO          } from '../modules/local/duckdb/joinfeaturecountsaccno'
 include { DUCKDB_SPLITFEATURECOUNTS              } from '../modules/local/duckdb/splitfeaturecounts'
 include { DUCKDB_TABLE2PARQUET                   } from '../modules/nf-core/duckdb/table2parquet'
+include { FASTA_HMMSEARCH_RANK_FASTAS            } from '../subworkflows/nf-core/fasta_hmmsearch_rank_fastas'
 include { FASTQC                                 } from '../modules/nf-core/fastqc'
 include { FASTQC_TRIMGALORE                      } from '../subworkflows/local/fastqc_trimgalore'
 include { GFFREAD                                } from '../modules/nf-core/gffread'
@@ -38,6 +39,7 @@ include { RENAME_CONTIGS                         } from '../modules/local/rename
 include { softwareVersionsToYAML                 } from '../subworkflows/nf-core/utils_nfcore_pipeline'
 include { SOURMASH                               } from '../subworkflows/local/sourmash'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts'
+include { TIDYVERSE_JOINHMMRANKACCNO             } from '../modules/local/tidyverse/joinhmmrankaccno'
 include { TIDYVERSE_JOINMETADATA                 } from '../modules/local/tidyverse/joinmetadata/'
 include { TIDYVERSE_SELECTANNOTATOR              } from '../modules/local/tidyverse/selectannotator/'
 include { validateInputSamplesheet               } from '../subworkflows/local/utils_nfcore_magmap_pipeline'
@@ -66,6 +68,7 @@ workflow MAGMAP {
     skip_sourmash               // boolean: run Sourmash or not
     sourmash_ksize              // integer
     ch_features                 // channel: list of feature types to call
+    ch_hmms                     // channel: [ val(meta), path(hmm) ]: HMM profiles to search the proteins with
     skip_fastqc                 // boolean
     skip_qc                     // boolean
     skip_trimming               // boolean
@@ -421,6 +424,20 @@ workflow MAGMAP {
     GENOMES2ORFS(ch_collected_genomes.map { genome -> genome.genome_gff }.collect().map { genomes -> [ [ id: 'genomes' ], genomes ] })
 
     //
+    // SUBWORKFLOW: Search the proteins with HMM profiles
+    //
+    FASTA_HMMSEARCH_RANK_FASTAS(
+        ch_hmms,
+        CAT_FAA.out.concatenated_files.map { _meta, faa -> faa },
+        false
+    )
+
+    TIDYVERSE_JOINHMMRANKACCNO(
+        FASTA_HMMSEARCH_RANK_FASTAS.out.hmmrank,
+        GENOMES2ORFS.out.genomes2orfs.map { _meta, g2orfs -> g2orfs }
+    )
+
+    //
     // SUBWORKFLOW: sort bam file and produce statistics
     //
     ch_fasta_fai = CREATE_BBMAP_INDEX.out.genome_fnas
@@ -533,6 +550,7 @@ workflow MAGMAP {
                 .mix(CATPROKKATSVS.out.tsv.map { _meta, tsv -> tsv })
                 .mix(DUCKDB_JOINFEATURECOUNTSACCNO.out.counts.map { _meta, tsv -> tsv })
                 .mix(CUSTOM_COLLECTSTATS.out.overall_stats.map { _meta, tsv -> tsv })
+                .mix(TIDYVERSE_JOINHMMRANKACCNO.out.hmmrank.map { _meta, tsv -> tsv })
                 .map { tsv -> [ [ id: tsv.name.replaceAll(/\.tsv(\.gz)?$/, '') ], tsv ] }
         )
     }

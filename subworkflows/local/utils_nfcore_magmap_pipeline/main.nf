@@ -49,6 +49,9 @@ workflow PIPELINE_INITIALISATION {
     gtdbtk_metadata         //  string: Path to GTDB-Tk metadata file
     checkm_metadata         //  string: Path to GTDB metadata file
     features                //  string: Comma-separated string of feature types
+    hmmdir                  //  string: Directory with HMM files
+    hmmpattern              //  string: Pattern selecting the HMM files in hmmdir
+    hmmfiles                //  string: Comma-separated list of HMM files
 
     main:
 
@@ -247,6 +250,26 @@ workflow PIPELINE_INITIALISATION {
         .flatten()
         .unique()
 
+    def hmm_files = []
+    if ( hmmdir ) {
+        if ( hmmfiles ) {
+            log.warn("Both --hmmdir and --hmmfiles were given; --hmmfiles is ignored.")
+        }
+        hmm_files = files("${hmmdir}/${hmmpattern}", checkIfExists: true)
+    } else if ( hmmfiles ) {
+        hmm_files = hmmfiles.tokenize(',').collect { f -> file(f, checkIfExists: true) }
+    }
+    // The profile name becomes the output file name, so two profiles must not share one
+    def hmm_profiles = hmm_files.collect { hmm -> [ [ id: hmm.name.replaceAll(/(\.hmm)?(\.gz)?$/, '') ], hmm ] }
+    def duplicated_profiles = hmm_profiles
+        .countBy { profile -> profile[0].id }
+        .findAll { _id, n -> n > 1 }
+        .keySet()
+    if ( duplicated_profiles ) {
+        error("HMM profile names must be unique after removing the .hmm and .gz extensions. Duplicated: ${duplicated_profiles.join(', ')}")
+    }
+    ch_hmms = channel.fromList(hmm_profiles)
+
     emit:
     samplesheet             = ch_samplesheet
     genomeinfo              = ch_genomeinfo
@@ -256,6 +279,7 @@ workflow PIPELINE_INITIALISATION {
     gtdbtk_metadata         = ch_gtdbtk_metadata
     checkm_metadata         = ch_checkm_metadata
     features                = ch_features
+    hmms                    = ch_hmms
 }
 
 /*

@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#279](https://github.com/nf-core/magmap/pull/279) - Search the proteins of the selected genomes with HMM profiles given with `--hmmdir` or `--hmmfiles`, writing ranked hits with genome accessions to `summary_tables/magmap.hmmrank.tsv.gz`, closes [#34](https://github.com/nf-core/magmap/issues/34) (by @danilodileo).
+
 ### `Changed`
 
 - [#284](https://github.com/nf-core/magmap/pull/284) - Split and join the feature counts of each sample in DuckDB instead of R, which keeps memory use bounded on large genome collections and stops these steps from running out of memory, closes [#283](https://github.com/nf-core/magmap/issues/283) (by @erikrikarddaniel).
