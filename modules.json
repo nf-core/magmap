@@ -109,27 +109,27 @@
                     },
                     "samtools/flagstat": {
                         "branch": "master",
-                        "git_sha": "9339809fcb90af8a8b7051e6cd914894d5c52002",
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
                         "installed_by": ["bam_stats_samtools"]
                     },
                     "samtools/idxstats": {
                         "branch": "master",
-                        "git_sha": "9339809fcb90af8a8b7051e6cd914894d5c52002",
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
                         "installed_by": ["bam_stats_samtools"]
                     },
                     "samtools/index": {
                         "branch": "master",
-                        "git_sha": "9339809fcb90af8a8b7051e6cd914894d5c52002",
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
                         "installed_by": ["bam_sort_stats_samtools"]
                     },
                     "samtools/sort": {
                         "branch": "master",
-                        "git_sha": "9339809fcb90af8a8b7051e6cd914894d5c52002",
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
                         "installed_by": ["bam_sort_stats_samtools"]
                     },
                     "samtools/stats": {
                         "branch": "master",
-                        "git_sha": "9339809fcb90af8a8b7051e6cd914894d5c52002",
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
                         "installed_by": ["bam_stats_samtools"]
                     },
                     "seqtk/subseq": {
@@ -176,12 +176,12 @@
                 "nf-core": {
                     "bam_sort_stats_samtools": {
                         "branch": "master",
-                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
                         "installed_by": ["subworkflows"]
                     },
                     "bam_stats_samtools": {
                         "branch": "master",
-                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
                         "installed_by": ["bam_sort_stats_samtools"]
                     },
                     "fasta_hmmsearch_rank_fastas": {
