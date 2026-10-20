@@ -58,6 +58,12 @@
                     "stringr": "1.6.0",
                     "tidyr": "1.3.1"
                 },
+                "DUCKDB_JOINFEATURECOUNTSACCNO": {
+                    "duckdb": "1.5.5"
+                },
+                "DUCKDB_SPLITFEATURECOUNTS": {
+                    "duckdb": "1.5.5"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -111,11 +117,6 @@
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
                 },
-                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "readr": "2.1.5"
-                },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
@@ -123,11 +124,6 @@
                     "readr": "2.1.5",
                     "stringr": "1.5.2",
                     "tidyr": "1.3.1"
-                },
-                "TIDYVERSE_SPLITFEATURECOUNTS": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "readr": "2.1.5"
                 },
                 "Workflow": {
                     "nf-core/magmap": "v1.3.0"
@@ -253,10 +249,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-09-23T21:41:16.907163382",
+        "timestamp": "2026-10-15T18:56:19.161100001",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
         }
     },
     "remote only, genomeset_mode: sample": {
@@ -315,6 +311,12 @@
                     "stringr": "1.6.0",
                     "tidyr": "1.3.1"
                 },
+                "DUCKDB_JOINFEATURECOUNTSACCNO": {
+                    "duckdb": "1.5.5"
+                },
+                "DUCKDB_SPLITFEATURECOUNTS": {
+                    "duckdb": "1.5.5"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -348,11 +350,6 @@
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
                 },
-                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "readr": "2.1.5"
-                },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
@@ -360,11 +357,6 @@
                     "readr": "2.1.5",
                     "stringr": "1.5.2",
                     "tidyr": "1.3.1"
-                },
-                "TIDYVERSE_SPLITFEATURECOUNTS": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "readr": "2.1.5"
                 },
                 "Workflow": {
                     "nf-core/magmap": "v1.3.0"
@@ -489,10 +481,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-09-23T21:28:02.762738338",
+        "timestamp": "2026-10-15T18:51:07.177512281",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
         }
     },
     "local + remote, genomeset_mode: sample": {
@@ -554,6 +546,12 @@
                     "stringr": "1.6.0",
                     "tidyr": "1.3.1"
                 },
+                "DUCKDB_JOINFEATURECOUNTSACCNO": {
+                    "duckdb": "1.5.5"
+                },
+                "DUCKDB_SPLITFEATURECOUNTS": {
+                    "duckdb": "1.5.5"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -607,11 +605,6 @@
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
                 },
-                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "readr": "2.1.5"
-                },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
@@ -619,11 +612,6 @@
                     "readr": "2.1.5",
                     "stringr": "1.5.2",
                     "tidyr": "1.3.1"
-                },
-                "TIDYVERSE_SPLITFEATURECOUNTS": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "readr": "2.1.5"
                 },
                 "Workflow": {
                     "nf-core/magmap": "v1.3.0"
@@ -770,10 +758,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-09-23T20:58:22.382081935",
+        "timestamp": "2026-10-15T18:40:45.012273625",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
         }
     },
     "local + remote": {
@@ -835,6 +823,12 @@
                     "stringr": "1.6.0",
                     "tidyr": "1.3.1"
                 },
+                "DUCKDB_JOINFEATURECOUNTSACCNO": {
+                    "duckdb": "1.5.5"
+                },
+                "DUCKDB_SPLITFEATURECOUNTS": {
+                    "duckdb": "1.5.5"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -888,11 +882,6 @@
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
                 },
-                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "readr": "2.1.5"
-                },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
@@ -900,11 +889,6 @@
                     "readr": "2.1.5",
                     "stringr": "1.5.2",
                     "tidyr": "1.3.1"
-                },
-                "TIDYVERSE_SPLITFEATURECOUNTS": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "readr": "2.1.5"
                 },
                 "Workflow": {
                     "nf-core/magmap": "v1.3.0"
@@ -1027,10 +1011,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-09-23T20:46:57.924949692",
+        "timestamp": "2026-10-15T18:35:33.417504568",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
         }
     },
     "remote only": {
@@ -1089,6 +1073,12 @@
                     "stringr": "1.6.0",
                     "tidyr": "1.3.1"
                 },
+                "DUCKDB_JOINFEATURECOUNTSACCNO": {
+                    "duckdb": "1.5.5"
+                },
+                "DUCKDB_SPLITFEATURECOUNTS": {
+                    "duckdb": "1.5.5"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -1122,11 +1112,6 @@
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
                 },
-                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "readr": "2.1.5"
-                },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
@@ -1134,11 +1119,6 @@
                     "readr": "2.1.5",
                     "stringr": "1.5.2",
                     "tidyr": "1.3.1"
-                },
-                "TIDYVERSE_SPLITFEATURECOUNTS": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "readr": "2.1.5"
                 },
                 "Workflow": {
                     "nf-core/magmap": "v1.3.0"
@@ -1251,10 +1231,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-09-23T21:13:46.685577193",
+        "timestamp": "2026-10-15T18:45:57.369671169",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
         }
     }
 }

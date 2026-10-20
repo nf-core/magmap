@@ -58,6 +58,12 @@
                     "stringr": "1.6.0",
                     "tidyr": "1.3.1"
                 },
+                "DUCKDB_JOINFEATURECOUNTSACCNO": {
+                    "duckdb": "1.5.5"
+                },
+                "DUCKDB_SPLITFEATURECOUNTS": {
+                    "duckdb": "1.5.5"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -90,11 +96,6 @@
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
                 },
-                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "readr": "2.1.5"
-                },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
@@ -108,11 +109,6 @@
                     "dplyr": "1.1.4",
                     "readr": "2.1.5",
                     "stringr": "1.5.2"
-                },
-                "TIDYVERSE_SPLITFEATURECOUNTS": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "readr": "2.1.5"
                 },
                 "TRIMGALORE": {
                     "trimgalore": "2.3.0"
@@ -228,10 +224,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-09-23T19:24:51.185261497",
+        "timestamp": "2026-10-15T18:21:12.008538087",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
         }
     },
     "annotator: bakta_supported_only": {
@@ -293,6 +289,12 @@
                     "stringr": "1.6.0",
                     "tidyr": "1.3.1"
                 },
+                "DUCKDB_JOINFEATURECOUNTSACCNO": {
+                    "duckdb": "1.5.5"
+                },
+                "DUCKDB_SPLITFEATURECOUNTS": {
+                    "duckdb": "1.5.5"
+                },
                 "FASTQC": {
                     "fastqc": "0.12.1"
                 },
@@ -328,11 +330,6 @@
                 "SAMTOOLS_STATS": {
                     "samtools": 1.24
                 },
-                "TIDYVERSE_JOINFEATURECOUNTSACCNO": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "readr": "2.1.5"
-                },
                 "TIDYVERSE_JOINMETADATA": {
                     "R": "4.3.1",
                     "dplyr": "1.1.4",
@@ -346,11 +343,6 @@
                     "dplyr": "1.1.4",
                     "readr": "2.1.5",
                     "stringr": "1.5.2"
-                },
-                "TIDYVERSE_SPLITFEATURECOUNTS": {
-                    "R": "4.3.1",
-                    "dplyr": "1.1.4",
-                    "readr": "2.1.5"
                 },
                 "TRIMGALORE": {
                     "trimgalore": "2.3.0"
@@ -466,10 +458,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-09-23T19:00:37.781837129",
+        "timestamp": "2026-10-15T18:07:01.038961857",
         "meta": {
-            "nf-test": "0.9.4",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
         }
     }
 }
