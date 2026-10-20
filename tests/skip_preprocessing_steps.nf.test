@@ -57,4 +57,23 @@ nextflow_pipeline {
             )
         }
     }
+
+    test("-profile test_skip_preprocessing_steps, boolean params given on the command line") {
+
+        options "--skip_qc false --skip_fastqc false"
+
+        when {
+            params {
+                outdir = "$outputDir"
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert new File("${params.outdir}/fastqc").listFiles()?.any { it.name.endsWith('_fastqc.html') } },
+                { assert !new File("${params.outdir}/trimgalore").exists() },
+            )
+        }
+    }
 }
