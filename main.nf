@@ -11,6 +11,37 @@
 
 /*
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    PARAMS
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Types for the boolean and numeric params. Defaults stay in nextflow.config. Without a
+    type, a value given on the command line stays a String, so `--skip_fastqc false` is truthy.
+    `help` takes either a boolean or a string and cannot be typed.
+*/
+
+params {
+    save_parquet:              Boolean
+    skip_qc:                   Boolean
+    skip_fastqc:               Boolean
+    save_trimmed:              Boolean
+    skip_trimming:             Boolean
+    bbmap_minid:               Float
+    bbmap_save_bam:            Boolean
+    bbmap_save_index:          Boolean
+    save_concatenated_genomes: Boolean
+    featurecounts_fraction:    Boolean
+    skip_sourmash:             Boolean
+    sourmash_ksize:            Integer
+    sourmash_save_sourmash:    Boolean
+    version:                   Boolean
+    plaintext_email:           Boolean
+    monochrome_logs:           Boolean
+    validate_params:           Boolean
+    help_full:                 Boolean
+    show_hidden:               Boolean
+}
+
+/*
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     IMPORT FUNCTIONS / MODULES / SUBWORKFLOWS / WORKFLOWS
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 */
