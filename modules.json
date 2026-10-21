@@ -67,7 +67,7 @@
                     },
                     "fastqc": {
                         "branch": "master",
-                        "git_sha": "6d46786420b4d7bc88eba026eb389c0c5535d120",
+                        "git_sha": "18eb358065b06f2d3419e37383b002fe7db3da02",
                         "installed_by": ["modules"]
                     },
                     "gffread": {
@@ -78,17 +78,17 @@
                     },
                     "hmmer/formattsv": {
                         "branch": "master",
-                        "git_sha": "16a32d753b71a738925f436b43a822e5f867ce7d",
+                        "git_sha": "1a6a3077be2cd5cf337a78573f242f984055a9af",
                         "installed_by": ["fasta_hmmsearch_rank_fastas", "modules"]
                     },
                     "hmmer/hmmrank": {
                         "branch": "master",
-                        "git_sha": "64017d8989654a65db85f8ba181a9c387ac58fad",
+                        "git_sha": "1a6a3077be2cd5cf337a78573f242f984055a9af",
                         "installed_by": ["fasta_hmmsearch_rank_fastas", "modules"]
                     },
                     "hmmer/hmmsearch": {
                         "branch": "master",
-                        "git_sha": "3a42d4fbb69436f53e0f06d2fe65b48f9d0085cc",
+                        "git_sha": "1a6a3077be2cd5cf337a78573f242f984055a9af",
                         "installed_by": ["fasta_hmmsearch_rank_fastas", "modules"]
                     },
                     "multiqc": {
@@ -109,48 +109,48 @@
                     },
                     "samtools/flagstat": {
                         "branch": "master",
-                        "git_sha": "9339809fcb90af8a8b7051e6cd914894d5c52002",
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
                         "installed_by": ["bam_stats_samtools"]
                     },
                     "samtools/idxstats": {
                         "branch": "master",
-                        "git_sha": "9339809fcb90af8a8b7051e6cd914894d5c52002",
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
                         "installed_by": ["bam_stats_samtools"]
                     },
                     "samtools/index": {
                         "branch": "master",
-                        "git_sha": "9339809fcb90af8a8b7051e6cd914894d5c52002",
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
                         "installed_by": ["bam_sort_stats_samtools"]
                     },
                     "samtools/sort": {
                         "branch": "master",
-                        "git_sha": "9339809fcb90af8a8b7051e6cd914894d5c52002",
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
                         "installed_by": ["bam_sort_stats_samtools"]
                     },
                     "samtools/stats": {
                         "branch": "master",
-                        "git_sha": "9339809fcb90af8a8b7051e6cd914894d5c52002",
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
                         "installed_by": ["bam_stats_samtools"]
                     },
                     "seqtk/subseq": {
                         "branch": "master",
-                        "git_sha": "183591f15495ea2e473df6e0794eb33df6567d72",
+                        "git_sha": "84fc599fdb226d855e34f6e9ddd329d726ea240d",
                         "installed_by": ["fasta_hmmsearch_rank_fastas"]
                     },
                     "sourmash/gather": {
                         "branch": "master",
-                        "git_sha": "6eaecd6ef9bfc7faf313b1abeaae9b129795291d",
+                        "git_sha": "bc6e6b1a6de4bbdabed41381dd0b4add635271b1",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/sourmash/gather/sourmash-gather.diff"
                     },
                     "sourmash/index": {
                         "branch": "master",
-                        "git_sha": "6eaecd6ef9bfc7faf313b1abeaae9b129795291d",
+                        "git_sha": "bc6e6b1a6de4bbdabed41381dd0b4add635271b1",
                         "installed_by": ["modules"]
                     },
                     "sourmash/sketch": {
                         "branch": "master",
-                        "git_sha": "6eaecd6ef9bfc7faf313b1abeaae9b129795291d",
+                        "git_sha": "bc6e6b1a6de4bbdabed41381dd0b4add635271b1",
                         "installed_by": ["modules"]
                     },
                     "subread/featurecounts": {
@@ -176,12 +176,12 @@
                 "nf-core": {
                     "bam_sort_stats_samtools": {
                         "branch": "master",
-                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
                         "installed_by": ["subworkflows"]
                     },
                     "bam_stats_samtools": {
                         "branch": "master",
-                        "git_sha": "6ef220fd9252b42fb3c50348bbdbcb6246730686",
+                        "git_sha": "5f344f0e41fdfaf2506f89400e42a2689d6ab323",
                         "installed_by": ["bam_sort_stats_samtools"]
                     },
                     "fasta_hmmsearch_rank_fastas": {

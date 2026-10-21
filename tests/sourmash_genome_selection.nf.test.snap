@@ -65,7 +65,7 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FEATURECOUNTS": {
                     "subread": "2.1.1"
@@ -228,7 +228,7 @@
                 "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
                 "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_fastqc.txt:md5,9aa71633288bf0af3b206bfc4e310b9b",
                 "multiqc_genome_selection.txt:md5,4982d7c0ecad450a22b0ef6ff6674db2",
                 "magmap.proteins.faa.gz:md5,f5759f098fd9b2a75501a00db5ad2db6"
             ],
@@ -249,10 +249,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-10-15T18:56:19.161100001",
+        "timestamp": "2026-10-20T15:49:34.706747",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     },
     "remote only, genomeset_mode: sample": {
@@ -318,7 +318,7 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FEATURECOUNTS": {
                     "subread": "2.1.1"
@@ -452,7 +452,7 @@
                 "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
                 "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_fastqc.txt:md5,9aa71633288bf0af3b206bfc4e310b9b",
                 "multiqc_genome_selection.txt:md5,3e9c9004b3067ba0cb71f8cd9b413ddd",
                 "magmap.proteins.faa.gz:md5,8ae424e881f890a1ae0aa42c9ebd708c"
             ],
@@ -481,10 +481,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-10-15T18:51:07.177512281",
+        "timestamp": "2026-10-20T13:21:12.979915",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     },
     "local + remote, genomeset_mode: sample": {
@@ -553,7 +553,7 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FEATURECOUNTS": {
                     "subread": "2.1.1"
@@ -714,7 +714,7 @@
                 "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
                 "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_fastqc.txt:md5,9aa71633288bf0af3b206bfc4e310b9b",
                 "multiqc_genome_selection.txt:md5,8d48a2d118da88f40cb8b2be711290d9",
                 "magmap.proteins.faa.gz:md5,f5759f098fd9b2a75501a00db5ad2db6"
             ],
@@ -758,10 +758,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-10-15T18:40:45.012273625",
+        "timestamp": "2026-10-20T13:01:23.280415",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     },
     "local + remote": {
@@ -830,7 +830,7 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FEATURECOUNTS": {
                     "subread": "2.1.1"
@@ -987,7 +987,7 @@
                 "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
                 "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_fastqc.txt:md5,9aa71633288bf0af3b206bfc4e310b9b",
                 "multiqc_genome_selection.txt:md5,4982d7c0ecad450a22b0ef6ff6674db2",
                 "magmap.proteins.faa.gz:md5,f5759f098fd9b2a75501a00db5ad2db6"
             ],
@@ -1011,10 +1011,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-10-15T18:35:33.417504568",
+        "timestamp": "2026-10-20T12:49:12.562586",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     },
     "remote only": {
@@ -1080,7 +1080,7 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FEATURECOUNTS": {
                     "subread": "2.1.1"
@@ -1210,7 +1210,7 @@
                 "fastqc_sequence_counts_plot.txt:md5,fcc421ee837b2303f872145c66a4792f",
                 "fastqc_sequence_duplication_levels_plot.txt:md5,57427dfbeb25a085f516c1ee8c48e5d6",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,191ccf170e5f110119c395c54dae8845",
+                "multiqc_fastqc.txt:md5,9aa71633288bf0af3b206bfc4e310b9b",
                 "multiqc_genome_selection.txt:md5,9c60cc58c7947ca4b3ea3ecdf576566c",
                 "magmap.proteins.faa.gz:md5,8ae424e881f890a1ae0aa42c9ebd708c"
             ],
@@ -1231,10 +1231,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-10-15T18:45:57.369671169",
+        "timestamp": "2026-10-20T13:11:00.324254",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     }
 }

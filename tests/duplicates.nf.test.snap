@@ -62,7 +62,7 @@
                     "duckdb": "1.5.5"
                 },
                 "FASTQC": {
-                    "fastqc": "0.12.1"
+                    "fastqc": "0.13.0"
                 },
                 "FEATURECOUNTS": {
                     "subread": "2.1.1"
@@ -209,14 +209,14 @@
                 "fastqc_adapter_content_plot.txt:md5,847ded8ccf3c10ab66d421e61933a899",
                 "fastqc_overrepresented_sequences_plot.txt:md5,882815485253c9c8d4dcbf3c3d58d364",
                 "fastqc_per_base_n_content_plot.txt:md5,63f48e7650148b7c49b9e4ea0ab57abb",
-                "fastqc_per_base_sequence_quality_plot.txt:md5,9b42854a4b81fc0f76684960682ba25e",
+                "fastqc_per_base_sequence_quality_plot.txt:md5,52041379088de1bfc4aee298f0c23b50",
                 "fastqc_per_sequence_gc_content_plot_Counts.txt:md5,94d18520ec9f2cf01b9f8c41078eb77f",
                 "fastqc_per_sequence_gc_content_plot_Percentages.txt:md5,d8f4cd87ddbcfcfbcaf87bf42b64b012",
-                "fastqc_per_sequence_quality_scores_plot.txt:md5,3d32fc7eed7468abed6450cc8c7c3322",
+                "fastqc_per_sequence_quality_scores_plot.txt:md5,639050e6afab36efd87720928960f723",
                 "fastqc_sequence_counts_plot.txt:md5,aa8603ccb9c0d0d188281d1764f03330",
                 "fastqc_sequence_duplication_levels_plot.txt:md5,f8316c4463604b6c67902115f894f429",
                 "multiqc_citations.txt:md5,31ebda00f4c076224028ba5760113b5f",
-                "multiqc_fastqc.txt:md5,ce7f1eb1bdf9591922528372e806963d",
+                "multiqc_fastqc.txt:md5,f7d9628338c5f9255883b7606348e33c",
                 "multiqc_genome_selection.txt:md5,f62bc5e570fcf2041b7f5a3513f3687c",
                 "magmap.proteins.faa.gz:md5,48b84d3b0a094c3495a7308f4abb4928"
             ],
@@ -249,10 +249,10 @@
                 "orf\tftype\tlength\tgene\tec_number\tcog\tproduct"
             ]
         ],
-        "timestamp": "2026-10-15T18:24:18.270506025",
+        "timestamp": "2026-10-20T12:24:48.333906",
         "meta": {
             "nf-test": "0.9.5",
-            "nextflow": "26.04.0"
+            "nextflow": "26.04.6"
         }
     }
 }
