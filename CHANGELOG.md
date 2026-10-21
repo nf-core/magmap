@@ -9,12 +9,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#284](https://github.com/nf-core/magmap/pull/284) - Split and join the feature counts of each sample in DuckDB instead of R, which keeps memory use bounded on large genome collections and stops these steps from running out of memory, closes [#283](https://github.com/nf-core/magmap/issues/283) (by @erikrikarddaniel).
+- [#284](https://github.com/nf-core/magmap/pull/284) - Split and join the feature counts of each sample in DuckDB instead of R, which keeps memory use bounded on large genome collections and stops these steps from running out of memory, closes [#283](https://github.com/nf-core/magmap/issues/283) (by @erikrikarddaniel, reviewed by @danilodileo).
 - [#284](https://github.com/nf-core/magmap/pull/284) - Update `custom/collectfeaturecounts` and `custom/collectstats`, which now handle one input file at a time, so memory use no longer grows with the number of samples, and `CUSTOM_COLLECTFEATURECOUNTS` runs with the `process_low` label instead of `process_high` (by @erikrikarddaniel, reviewed by @piplus2).
 
 ### `Fixed`
 
-- [#287](https://github.com/nf-core/magmap/pull/287) - Boolean and numeric parameters are typed in `main.nf`, so a value given on the command line such as `--skip_fastqc false` is accepted and a wrong one is rejected at launch, and a parameter the pipeline does not define is now an error instead of a warning
+- [#287](https://github.com/nf-core/magmap/pull/287) - Boolean and numeric parameters are typed in `main.nf`, so a value given on the command line such as `--skip_fastqc false` is accepted and a wrong one is rejected at launch, and a parameter the pipeline does not define is now an error instead of a warning (by @erikrikarddaniel).
 - [#277](https://github.com/nf-core/magmap/pull/277) - Accept Apptainer as well as Singularity when local modules choose their container, closes [#265](https://github.com/nf-core/magmap/issues/265) (by @danilodileo, reviewed by @erikrikarddaniel).
 
 ### `Dependencies`
