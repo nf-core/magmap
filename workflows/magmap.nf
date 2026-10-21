@@ -137,13 +137,12 @@ workflow MAGMAP {
     //
     CAT_FASTQ (ch_short_reads_forcat.cat.map { meta, reads -> [meta, reads.flatten()] })
 
-    // Ensure we don't have nests of nests so that structure is in form expected for assembly
+    // Unnest the reads of samples that skip CAT_FASTQ, to match its output shape
     ch_short_reads_catskipped = ch_short_reads_forcat.skip_cat.map { meta, reads ->
         def new_reads = meta.single_end ? reads[0] : reads.flatten()
             [meta, new_reads]
     }
 
-    // Combine single run and multi-run-merged data
     ch_short_reads = channel.empty()
     ch_short_reads = CAT_FASTQ.out.reads.mix(ch_short_reads_catskipped)
 
