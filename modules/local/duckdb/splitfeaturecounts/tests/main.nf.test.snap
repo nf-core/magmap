@@ -8,16 +8,16 @@
                         "feature": "CDS,tRNA"
                     },
                     [
-                        "test.CDS.featureCounts.tsv:md5,4ef15bef75a7e4ecacd5f60e294f4699",
-                        "test.tRNA.featureCounts.tsv:md5,c8bf8c2fe45fdcce5342fc052dfe32c3"
+                        "test.CDS.featureCounts.tsv:md5,42b4238e4b206c55df16fb8fd354f294",
+                        "test.tRNA.featureCounts.tsv:md5,95cf57dc7f465c0a5aae83678026f367"
                     ]
                 ]
             ]
         ],
-        "timestamp": "2026-09-11T10:25:30.832094808",
+        "timestamp": "2026-10-15T17:21:56.510853398",
         "meta": {
-            "nf-test": "0.9.5",
-            "nextflow": "26.04.6"
+            "nf-test": "0.9.4",
+            "nextflow": "26.04.0"
         }
     }
 }
