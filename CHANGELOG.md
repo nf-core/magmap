@@ -3,7 +3,7 @@
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## v1.3.1dev - [YYYY-mm-dd]
+## v1.4.0dev - [YYYY-mm-dd]
 
 ### `Added`
 
@@ -11,18 +11,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
-- [#284](https://github.com/nf-core/magmap/pull/284) - Split and join the feature counts of each sample in DuckDB instead of R, which keeps memory use bounded on large genome collections and stops these steps from running out of memory, closes [#283](https://github.com/nf-core/magmap/issues/283) (by @erikrikarddaniel).
-- [#284](https://github.com/nf-core/magmap/pull/284) - Update `custom/collectfeaturecounts` and `custom/collectstats`, which now handle one input file at a time, so memory use no longer grows with the number of samples, and `CUSTOM_COLLECTFEATURECOUNTS` runs with the `process_low` label instead of `process_high` (by @erikrikarddaniel, reviewed by @piplus2).
 - [#281](https://github.com/nf-core/magmap/pull/281) - Remove two redundant `.first()` calls that made Nextflow warn (by @erikrikarddaniel).
 
 ### `Fixed`
 
-- [#287](https://github.com/nf-core/magmap/pull/287) - Boolean and numeric parameters are typed in `main.nf`, so a value given on the command line such as `--skip_fastqc false` is accepted and a wrong one is rejected at launch, and a parameter the pipeline does not define is now an error instead of a warning
-- [#277](https://github.com/nf-core/magmap/pull/277) - Accept Apptainer as well as Singularity when local modules choose their container, closes [#265](https://github.com/nf-core/magmap/issues/265) (by @danilodileo, reviewed by @erikrikarddaniel).
-
 ### `Dependencies`
 
 - [#286](https://github.com/nf-core/magmap/pull/286) - Update nf-core modules and subworkflows: FastQC 0.13.0, and new container builds for the hmmer, seqtk, sourmash and samtools modules (by @danilodileo).
+
+### `Deprecated`
+
+## v1.3.1 - [2026-10-22]
+
+### `Added`
+
+### `Changed`
+
+- [#284](https://github.com/nf-core/magmap/pull/284) - Split and join the feature counts of each sample in DuckDB instead of R, which keeps memory use bounded on large genome collections and stops these steps from running out of memory, closes [#283](https://github.com/nf-core/magmap/issues/283) (by @erikrikarddaniel, reviewed by @danilodileo).
+- [#284](https://github.com/nf-core/magmap/pull/284) - Update `custom/collectfeaturecounts` and `custom/collectstats`, which now handle one input file at a time, so memory use no longer grows with the number of samples, and `CUSTOM_COLLECTFEATURECOUNTS` runs with the `process_low` label instead of `process_high` (by @erikrikarddaniel, reviewed by @piplus2).
+
+### `Fixed`
+
+- [#287](https://github.com/nf-core/magmap/pull/287) - Boolean and numeric parameters are typed in `main.nf`, so a value given on the command line such as `--skip_fastqc false` is accepted and a wrong one is rejected at launch, and a parameter the pipeline does not define is now an error instead of a warning (by @erikrikarddaniel).
+- [#277](https://github.com/nf-core/magmap/pull/277) - Accept Apptainer as well as Singularity when local modules choose their container, closes [#265](https://github.com/nf-core/magmap/issues/265) (by @danilodileo, reviewed by @erikrikarddaniel).
+
+### `Dependencies`
 
 ### `Deprecated`
 

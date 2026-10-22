@@ -111,7 +111,7 @@
                     "trimgalore": "2.3.0"
                 },
                 "Workflow": {
-                    "nf-core/magmap": "v1.3.1dev"
+                    "nf-core/magmap": "v1.4.0dev"
                 }
             },
             [
