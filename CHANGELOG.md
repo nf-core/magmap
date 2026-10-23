@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#NN](https://github.com/nf-core/magmap/pull/NN) - Read `NA` as missing when converting summary tables to Parquet with `--save_parquet`. An `NA` after the first 20480 rows of a numeric column made the conversion fail, and an earlier one made the column text (by @erikrikarddaniel).
+- [#292](https://github.com/nf-core/magmap/pull/292) - Read `NA` as missing when converting summary tables to Parquet with `--save_parquet`. An `NA` after the first 20480 rows of a numeric column made the conversion fail, and an earlier one made the column text (by @erikrikarddaniel).
 - [#291](https://github.com/nf-core/magmap/pull/291) - Launch the AWS tests with `seqeralabs/action-seqera-launch` and the v2 syntax parser, and stop uploading the debug log as an artifact (by @erikrikarddaniel).
 
 ### `Dependencies`
