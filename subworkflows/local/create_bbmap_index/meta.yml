@@ -18,10 +18,6 @@ output:
       description: |
         The BBMap index directory
         Structure: [ path(index_dir) ]
-  - genome_fnas:
-      description: |
-        A set of concatenated genome fasta files
-        Structure: [ path(fasta) ]
   - genome_accnos:
       description: |
         The genome accessions that went into each index

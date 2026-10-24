@@ -439,10 +439,10 @@ workflow MAGMAP {
     //
     // SUBWORKFLOW: sort bam file and produce statistics
     //
-    ch_fasta_fai = CREATE_BBMAP_INDEX.out.genome_fnas
-        .map { meta, fna -> [ meta, fna, [] ] }
+    // No reference: a per-sample fasta would pair with another sample's BAM, and the stats do not use it.
+    ch_no_reference = channel.value([ [:], [], [] ])
 
-    BAM_SORT_STATS_SAMTOOLS(BBMAP_ALIGN.out.bam, ch_fasta_fai)
+    BAM_SORT_STATS_SAMTOOLS(BBMAP_ALIGN.out.bam, ch_no_reference)
 
     ch_stage_counts = BAM_SORT_STATS_SAMTOOLS.out.bam
         .combine(CAT_GFF.out.concatenated_files.map { it -> it[1] })
