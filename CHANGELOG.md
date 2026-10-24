@@ -15,7 +15,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Fixed`
 
-- [#NN](https://github.com/nf-core/magmap/pull/NN) - Stop passing a genome fasta to the samtools sort and stats steps. With `--genomeset_mode sample` each BAM could get another sample's fasta, which changed on every resume and made `SAMTOOLS_STATS` rerun, closes [#293](https://github.com/nf-core/magmap/issues/293) (by @erikrikarddaniel).
+- [#294](https://github.com/nf-core/magmap/pull/294) - Stop passing a genome fasta to the samtools sort and stats steps. With `--genomeset_mode sample` each BAM could get another sample's fasta, which changed on every resume and made `SAMTOOLS_STATS` rerun, closes [#293](https://github.com/nf-core/magmap/issues/293) (by @erikrikarddaniel).
 - [#292](https://github.com/nf-core/magmap/pull/292) - Read `NA` as missing when converting summary tables to Parquet with `--save_parquet`. An `NA` after the first 20480 rows of a numeric column made the conversion fail, and an earlier one made the column text (by @erikrikarddaniel).
 - [#291](https://github.com/nf-core/magmap/pull/291) - Launch the AWS tests with `seqeralabs/action-seqera-launch` and the v2 syntax parser, and stop uploading the debug log as an artifact (by @erikrikarddaniel).
 
