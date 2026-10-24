@@ -54,7 +54,6 @@ nextflow_pipeline {
         then {
             def stable_path = getAllFilesFromDir(params.outdir, relative: true, includeDir: true, ignore: ['pipeline_info/*.{html,json,txt}', 'multiqc/multiqc_plots', 'multiqc/multiqc_plots/**'])
             def stable_content = getAllFilesFromDir(params.outdir, ignoreFile: 'tests/.nftignore')
-            // A per-sample fasta passed beside the BAMs is paired with another sample's BAM and changes the task hash on every resume.
             def samtoolsScripts = []
             new File("$workDir").eachFileRecurse { f ->
                 if (f.name == '.command.sh' && f.text =~ /samtools\s+\\?\s*(stats|sort)\b/) { samtoolsScripts << f.text }
@@ -62,6 +61,7 @@ nextflow_pipeline {
             assertAll(
                 { assert workflow.success},
                 { assert samtoolsScripts.size() == 6 },
+                // A per-sample fasta would pair with another sample's BAM and change the task hash on every resume
                 { assert samtoolsScripts.every { s -> !s.contains('--reference') } },
                 { assert snapshot(
                     workflow.trace.succeeded().size(),
