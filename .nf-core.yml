@@ -3,6 +3,7 @@ lint:
     - docs/images/nf-core-magmap_logo_light.png
     - docs/images/nf-core-magmap_logo_dark.png
     - assets/nf-core-magmap_logo_light.png
+    - .gitignore
     - .github/workflows/branch.yml
     - .github/workflows/linting.yml
   nextflow_config:
