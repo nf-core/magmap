@@ -11,6 +11,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Changed`
 
+- [#296](https://github.com/nf-core/magmap/pull/296) - Template updated to nf-core/tools 4.2.1 (by @erikrikarddaniel)
 - [#281](https://github.com/nf-core/magmap/pull/281) - Remove two redundant `.first()` calls that made Nextflow warn (by @erikrikarddaniel).
 
 ### `Fixed`
