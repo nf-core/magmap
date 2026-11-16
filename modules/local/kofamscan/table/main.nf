@@ -25,7 +25,7 @@ process KOFAMSCAN_TABLE {
     find tsvs -name "*.tsv.gz" -print0 \\
         | sort -z \\
         | xargs -0 zcat \\
-        | grep -v '^#' \\
+        | { grep -v '^#' || true; } \\
         | cut -f 2-7 \\
         | sed 's/\\t"/\\t/' \\
         | sed 's/"\$//' \\

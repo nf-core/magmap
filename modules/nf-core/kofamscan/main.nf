@@ -17,7 +17,7 @@ process KOFAMSCAN {
 
     output:
     tuple val(meta), path("${prefix}.txt.gz"), optional: true, emit: txt
-    tuple val(meta), path("${prefix}.tsv.gz"), optional: true, emit: tsv
+    tuple val(meta), path("${prefix}.tsv.gz"), emit: tsv
 
     when:
     task.ext.when == null || task.ext.when

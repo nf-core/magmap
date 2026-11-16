@@ -1,5 +1,58 @@
 Changes in component 'nf-core/kofamscan'
-'modules/nf-core/kofamscan/meta.yml' is unchanged
+Changes in 'kofamscan/meta.yml':
+--- modules/nf-core/kofamscan/meta.yml
++++ modules/nf-core/kofamscan/meta.yml
+@@ -43,10 +43,10 @@
+           description: |
+             Groovy Map containing sample information
+             e.g. [ id:'test', single_end:false ]
+-      - "*.txt":
++      - "*.txt.gz":
+           type: file
+           description: Application-specific text file with hits information
+-          pattern: "*.{txt}"
++          pattern: "*.txt.gz"
+           ontologies: []
+   tsv:
+     - - meta:
+@@ -54,33 +54,13 @@
+           description: |
+             Groovy Map containing sample information
+             e.g. [ id:'test', single_end:false ]
+-      - "*.tsv":
++      - "*.tsv.gz":
+           type: file
+           description: Tab separated file containing with detailed hits
+-          pattern: "*.{tsv}"
++          pattern: "*.tsv.gz"
+           ontologies:
+             - edam: http://edamontology.org/format_3475 # TSV
+-  versions_kofamscan:
+-    - - ${task.process}:
+-          type: string
+-          description: The name of the process
+-      - kofamscan:
+-          type: string
+-          description: kofamscan version string
+-      - "exec_annotation --version 2>&1 | sed 's/exec_annotation //;'":
+-          type: eval
+-          description: The expression to obtain the version of the tool
+-topics:
+-  versions:
+-    - - ${task.process}:
+-          type: string
+-          description: The name of the process
+-      - kofamscan:
+-          type: string
+-          description: kofamscan version string
+-      - "exec_annotation --version 2>&1 | sed 's/exec_annotation //;'":
+-          type: eval
+-          description: The expression to obtain the version of the tool
++topics: {}
+ authors:
+   - "@toniher"
+ maintainers:
+
 Changes in 'kofamscan/main.nf':
 --- modules/nf-core/kofamscan/main.nf
 +++ modules/nf-core/kofamscan/main.nf
@@ -11,7 +64,7 @@ Changes in 'kofamscan/main.nf':
 -    tuple val(meta), path('*.tsv'), optional: true, emit: tsv
 -    tuple val("${task.process}"), val('kofamscan'), eval("exec_annotation --version 2>&1 | sed 's/exec_annotation //;'"), topic: versions, emit: versions_kofamscan
 +    tuple val(meta), path("${prefix}.txt.gz"), optional: true, emit: txt
-+    tuple val(meta), path("${prefix}.tsv.gz"), optional: true, emit: tsv
++    tuple val(meta), path("${prefix}.tsv.gz"), emit: tsv
  
      when:
      task.ext.when == null || task.ext.when
@@ -60,6 +113,72 @@ Changes in 'kofamscan/main.nf':
 
 'modules/nf-core/kofamscan/environment.yml' is unchanged
 'modules/nf-core/kofamscan/tests/nextflow.config' is unchanged
-'modules/nf-core/kofamscan/tests/main.nf.test.snap' is unchanged
-'modules/nf-core/kofamscan/tests/main.nf.test' is unchanged
+Changes in 'kofamscan/tests/main.nf.test':
+--- modules/nf-core/kofamscan/tests/main.nf.test
++++ modules/nf-core/kofamscan/tests/main.nf.test
+@@ -33,29 +33,6 @@
+         }
+     }
+ 
+-    test("test_kofamscan_txt") {
+-
+-        when {
+-            params {
+-                module_args = ''
+-            }
+-            process {
+-                """
+-                input[0] = [[id:'test'], file(params.modules_testdata_base_path + 'genomics/sarscov2/genome/proteome.fasta',checkIfExists: true)]
+-                input[1] = UNTAR.out.untar.map{it[1]}
+-                input[2] = GUNZIP.out.gunzip.map{it[1]}
+-                """
+-            }
+-        }
+-        then {
+-            assertAll(
+-                { assert process.success },
+-                { assert process.out.txt },
+-                { assert snapshot(process.out.findAll { key, val -> key.startsWith('versions') }).match() }
+-            )
+-        }
+-    }
+-
+     test("test_kofamscan_tsv") {
+ 
+         when {
+@@ -73,19 +50,18 @@
+         then {
+             assertAll(
+                 { assert process.success },
+-                { assert path(process.out.tsv.get(0).get(1)).exists() },
+-                { assert snapshot(process.out.findAll { key, val -> key.startsWith('versions') }).match() }
++                { assert path(process.out.tsv.get(0).get(1)).exists() }
+             )
+         }
+     }
+ 
+-    test("test_kofamscan_txt - stub") {
++    test("test_kofamscan_tsv - stub") {
+ 
+         options "-stub"
+ 
+         when {
+             params {
+-                module_args = ''
++                module_args = '--format detail-tsv'
+             }
+             process {
+                 """
+@@ -98,8 +74,7 @@
+         then {
+             assertAll(
+                 { assert process.success },
+-                { assert process.out.txt },
+-                { assert snapshot(process.out.findAll { key, val -> key.startsWith('versions') }).match() }
++                { assert path(process.out.tsv.get(0).get(1)).exists() }
+             )
+         }
+     }
+
+'modules/nf-core/kofamscan/tests/main.nf.test.snap' was removed
 ************************************************************

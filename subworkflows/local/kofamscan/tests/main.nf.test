@@ -51,4 +51,28 @@ nextflow_workflow {
             )
         }
     }
+
+    test("no genome has a hit - table with only the header") {
+
+        when {
+            workflow {
+                """
+                def base = 'https://raw.githubusercontent.com/nf-core/test-datasets/metatdenovo/test_data/kofamscan/'
+                def g3 = file("\${workDir}/g3.faa")
+                g3.text = '>g3_orf_1\\nMKVLAAGIVGLLLSAQPAHAEQSTGW\\n'
+
+                input[0] = channel.of([ [ id: 'g3' ], g3 ])
+                input[1] = base + 'ko_list.gz'
+                input[2] = base + 'profiles.tar.gz'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert path(workflow.out.tsv[0][1]).linesGzip == [ 'orf\tko\tthrshld\tscore\tevalue\tko_definition' ] }
+            )
+        }
+    }
 }

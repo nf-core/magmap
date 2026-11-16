@@ -22,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Dependencies`
 
+| Tool      | Previous version | New version |
+| --------- | ---------------- | ----------- |
+| kofamscan | -                | 1.3.0       |
+
 - [#286](https://github.com/nf-core/magmap/pull/286) - Update nf-core modules and subworkflows: FastQC 0.13.0, and new container builds for the hmmer, seqtk, sourmash and samtools modules (by @danilodileo).
 
 ### `Deprecated`

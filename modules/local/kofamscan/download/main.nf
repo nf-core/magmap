@@ -20,7 +20,6 @@ process KOFAMSCAN_DOWNLOAD {
     task.ext.when == null || task.ext.when
 
     script:
-
     """
     gunzip -c ${ko_list_gz} > ko_list
 
@@ -28,7 +27,6 @@ process KOFAMSCAN_DOWNLOAD {
     """
 
     stub:
-
     """
     touch ko_list
     mkdir profiles

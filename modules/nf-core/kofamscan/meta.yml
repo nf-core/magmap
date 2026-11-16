@@ -43,10 +43,10 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. [ id:'test', single_end:false ]
-      - "*.txt":
+      - "*.txt.gz":
           type: file
           description: Application-specific text file with hits information
-          pattern: "*.{txt}"
+          pattern: "*.txt.gz"
           ontologies: []
   tsv:
     - - meta:
@@ -54,33 +54,13 @@ output:
           description: |
             Groovy Map containing sample information
             e.g. [ id:'test', single_end:false ]
-      - "*.tsv":
+      - "*.tsv.gz":
           type: file
           description: Tab separated file containing with detailed hits
-          pattern: "*.{tsv}"
+          pattern: "*.tsv.gz"
           ontologies:
             - edam: http://edamontology.org/format_3475 # TSV
-  versions_kofamscan:
-    - - ${task.process}:
-          type: string
-          description: The name of the process
-      - kofamscan:
-          type: string
-          description: kofamscan version string
-      - "exec_annotation --version 2>&1 | sed 's/exec_annotation //;'":
-          type: eval
-          description: The expression to obtain the version of the tool
-topics:
-  versions:
-    - - ${task.process}:
-          type: string
-          description: The name of the process
-      - kofamscan:
-          type: string
-          description: kofamscan version string
-      - "exec_annotation --version 2>&1 | sed 's/exec_annotation //;'":
-          type: eval
-          description: The expression to obtain the version of the tool
+topics: {}
 authors:
   - "@toniher"
 maintainers:
