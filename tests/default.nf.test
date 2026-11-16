@@ -71,6 +71,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "$outputDir"
+                save_parquet = true
                 // params.pipelines_testdata_base_path is null here, so the URLs are literal.
                 // Keep in sync with pipelines_testdata_base_path in nextflow.config.
                 hmmfiles = "https://raw.githubusercontent.com/nf-core/test-datasets/magmap/testdata/PF00006.hmm,https://raw.githubusercontent.com/nf-core/test-datasets/magmap/testdata/PF00009.hmm,https://raw.githubusercontent.com/nf-core/test-datasets/magmap/testdata/PF00154.hmm"
@@ -88,6 +89,8 @@ nextflow_pipeline {
                     path("${params.outdir}/hmmer/hits/PF00154.fa.gz").linesGzip,
                 ).match() },
                 { assert path("${params.outdir}/summary_tables/magmap.hmmrank.tsv.gz").csv(sep: '\t', decompress: true, header: true).columns["accno"].every { a -> a == 'GCA_002688505.1' } },
+                { assert path("${params.outdir}/summary_tables/magmap.hmmrank.parquet").size() > 0 },
+                { assert path("${params.outdir}/summary_tables/magmap.kofamscan.parquet").size() > 0 },
             )
         }
     }
