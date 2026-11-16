@@ -102,6 +102,40 @@
                     "description": "Path to a directory where Bakta annotation output is stored.",
                     "help_text": "Bakta annotation files created by the pipeline will be stored in this directory for potential later use."
                 },
+                "skip_kofamscan": {
+                    "type": "boolean",
+                    "description": "Skip the KofamScan annotation of the genome proteins.",
+                    "help_text": "KofamScan assigns KEGG Orthology (KO) identifiers to the proteins of each genome. The result is written to `summary_tables/magmap.kofamscan.tsv.gz`.",
+                    "fa_icon": "fas fa-forward"
+                },
+                "kofamscan_store_dir": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "default": "magmap_kofamscan",
+                    "fa_icon": "fas fa-dna",
+                    "description": "Path to a directory where KofamScan output is stored.",
+                    "help_text": "The KofamScan output of each genome is stored in this directory and reused by later runs, also with other genome sets. Remove a genome's file to annotate it again, for example after updating the KOfam database."
+                },
+                "kofam_dbpath": {
+                    "type": "string",
+                    "format": "directory-path",
+                    "default": "magmap_kofam_db",
+                    "fa_icon": "fas fa-database",
+                    "description": "Path to a directory where the KOfam database is stored.",
+                    "help_text": "The pipeline downloads the KO list and the HMM profiles into this directory and reuses them in later runs."
+                },
+                "kofam_ko_list_url": {
+                    "type": "string",
+                    "default": "https://www.genome.jp/ftp/db/kofam/ko_list.gz",
+                    "fa_icon": "fas fa-link",
+                    "description": "URL or path of the gzipped KOfam ko_list file."
+                },
+                "kofam_profiles_url": {
+                    "type": "string",
+                    "default": "https://www.genome.jp/ftp/db/kofam/profiles.tar.gz",
+                    "fa_icon": "fas fa-link",
+                    "description": "URL or path of the KOfam HMM profiles archive (a tar.gz file)."
+                },
                 "save_parquet": {
                     "type": "boolean",
                     "description": "Also write the summary tables in Parquet format, alongside the default gzipped TSV.",

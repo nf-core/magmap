@@ -1,0 +1,36 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
+name: "kofamscan"
+description: Annotate the proteins of each genome with KofamScan and concatenate the hits into one table
+keywords:
+  - annotation
+  - kofamscan
+  - kegg
+components:
+  - kofamscan
+  - kofamscan/download
+  - kofamscan/table
+  - kofamscan/version
+input:
+  - ch_proteins:
+      type: file
+      description: |
+        Protein FASTA, one per genome
+        Structure: [ val(meta), path(faa) ]
+      pattern: "*.faa{,.gz}"
+  - ko_list_url:
+      type: string
+      description: URL or path of the KOfam ko_list.gz file
+  - profiles_url:
+      type: string
+      description: URL or path of the KOfam profiles.tar.gz archive
+output:
+  - tsv:
+      type: file
+      description: |
+        One row per protein and KO hit for all genomes
+        Structure: [ val(meta), path(tsv) ]
+      pattern: "*.kofamscan.tsv.gz"
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"

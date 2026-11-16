@@ -1,0 +1,25 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "kofamscan_version"
+description: Reports the KofamScan version once per pipeline run, decoupled from the storeDir-cached KOFAMSCAN process
+keywords:
+  - versions
+  - annotation
+  - kofamscan
+tools:
+  - "kofamscan":
+      description: "Assign KEGG Orthology identifiers to proteins with HMM profiles"
+      homepage: "https://github.com/takaram/kofam_scan"
+      documentation: "https://github.com/takaram/kofam_scan"
+      identifier: ""
+input: []
+output:
+  versions:
+    - versions_kofamscan:
+        type: file
+        description: Topic channel entry with the KofamScan version
+        pattern: ""
+        ontologies: []
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"

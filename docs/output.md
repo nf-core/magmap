@@ -21,6 +21,7 @@ The pipeline is built using [Nextflow](https://www.nextflow.io/) and the results
     - [Sourmash](#sourmash) - Output from Sourmash filtering of genomes.
   - [Prokka](#prokka) - Output from Prokka
   - [Bakta](#bakta) - Output from Bakta
+  - [KofamScan](#kofamscan) - Output from KofamScan
   - [HMMER](#hmmer) - Output from the HMM profile search (optional)
   - [Genome fetching](#genome-fetching) - Genomes fetched from remote sources
   - [Quantification of genome features](#quantification-of-genome-features)
@@ -46,6 +47,9 @@ With [`--save_parquet`](https://nf-co.re/magmap/parameters/#save_parquet), the s
   - `magmap.genome_selection.tsv.gz`: Per genome set (one per sample when `--genomeset_mode sample` is used, a single set otherwise), which genomes were selected and whether each originated from `--genomeinfo` (local) or was fetched from NCBI (remote).
   - `magmap.genomes2orfs.tsv.gz`: Translation table from ORF identifiers to genome identifiers.
   - `magmap.prokka-annotations.tsv.gz`: Annotation details extracted from GFF files.
+  - `magmap.kofamscan.tsv.gz`: Unless `--skip_kofamscan` is used, one row per protein and KEGG Orthology (KO) hit, from [KofamScan](https://github.com/takaram/kofam_scan).
+    The columns are the ORF identifier, KO, the KO's score threshold, score, e-value and KO definition.
+    A hit scoring above the threshold has an `*` in KofamScan's own output; this table also keeps the hits below it, so compare `score` with `thrshld`.
   - `magmap.hmmrank.tsv.gz`: With `--hmmdir` or `--hmmfiles`, one row per protein and HMM profile with a hit.
     The columns are the genome accession (`accno`), genome name, ORF identifier, profile, profile name from the HMM file, e-value, score and rank.
     `rank` is 1 for the profile with the highest score for that protein.
@@ -185,6 +189,27 @@ The ranked hits are in `summary_tables/magmap.hmmrank.tsv.gz`, see [Summary tabl
     A protein with hits to several profiles is only in the file of its best profile.
 
 </details>
+
+### KofamScan
+
+[KofamScan](https://github.com/takaram/kofam_scan) searches the proteins of each selected genome with the KOfam HMM profiles to assign KEGG Orthology (KO) identifiers.
+It runs for every genome, also those that came with a gff file, and is skipped with [`--skip_kofamscan`](https://nf-co.re/magmap/parameters/#skip_kofamscan).
+As for Prokka, the output of each genome is directed to the directory specified with [`--kofamscan_store_dir`](https://nf-co.re/magmap/parameters/#kofamscan_store_dir) (by default `magmap_kofamscan`), and genomes already found there are skipped.
+The KOfam database is downloaded once into [`--kofam_dbpath`](https://nf-co.re/magmap/parameters/#kofam_dbpath) (by default `magmap_kofam_db`) and reused on subsequent runs.
+The table with the hits of all genomes is in `summary_tables/magmap.kofamscan.tsv.gz`, see [Summary tables](#summary-tables).
+
+<details markdown="1">
+<summary>Output files</summary>
+
+- `magmap_kofamscan/`
+  - `<accno>.kofamscan.tsv.gz`: KofamScan's `detail-tsv` output for one genome.
+
+</details>
+
+:::warning
+Genomes found in `--kofamscan_store_dir` are not annotated again, also after the KOfam database has been updated.
+Remove the files of the genomes to annotate with a newer database, or start from an empty store directory.
+:::
 
 ### Genome fetching
 

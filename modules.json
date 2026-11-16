@@ -91,6 +91,12 @@
                         "git_sha": "1a6a3077be2cd5cf337a78573f242f984055a9af",
                         "installed_by": ["fasta_hmmsearch_rank_fastas", "modules"]
                     },
+                    "kofamscan": {
+                        "branch": "master",
+                        "git_sha": "7b3452a23773f687ededb4befd037920e5a51341",
+                        "installed_by": ["modules"],
+                        "patch": "modules/nf-core/kofamscan/kofamscan.diff"
+                    },
                     "multiqc": {
                         "branch": "master",
                         "git_sha": "98403d15b0e50edae1f3fec5eae5e24982f1fade",

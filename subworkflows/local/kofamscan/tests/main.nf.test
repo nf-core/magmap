@@ -1,0 +1,54 @@
+nextflow_workflow {
+
+    name "Test Subworkflow KOFAMSCAN"
+    script "../main.nf"
+    workflow "KOFAMSCAN"
+    config "./nextflow.config"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "kofamscan"
+
+    test("proteins of three genomes - one table with the hits of all of them") {
+
+        when {
+            workflow {
+                """
+                def base = 'https://raw.githubusercontent.com/nf-core/test-datasets/metatdenovo/test_data/kofamscan/'
+                def records = file(base + 'proteins.faa.gz', checkIfExists: true).splitFasta(record: [text: true])
+                def half = records.size().intdiv(2)
+                def g1 = file("\${workDir}/g1.faa")
+                g1.text = records[0..<half].collect { r -> r.text }.join('')
+                def g2 = file("\${workDir}/g2.faa")
+                g2.text = records[half..-1].collect { r -> r.text }.join('')
+
+                // g3 has one protein without any KO hit
+                def g3 = file("\${workDir}/g3.faa")
+                g3.text = '>g3_orf_1\\nMKVLAAGIVGLLLSAQPAHAEQSTGW\\n'
+
+                input[0] = channel.of(
+                    [ [ id: 'g1' ], g1 ],
+                    [ [ id: 'g2' ], g2 ],
+                    [ [ id: 'g3' ], g3 ]
+                )
+                input[1] = base + 'ko_list.gz'
+                input[2] = base + 'profiles.tar.gz'
+                """
+            }
+        }
+
+        then {
+            def rows = path(workflow.out.tsv[0][1]).linesGzip
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.trace.tasks().findAll { t -> t.name.startsWith('KOFAMSCAN:KOFAMSCAN_SCAN') }.size() == 3 },
+                { assert rows[0] == 'orf\tko\tthrshld\tscore\tevalue\tko_definition' },
+                // 29 hits when all proteins are searched in one run, split across g1 and g2 here
+                { assert rows.drop(1).size() == 29 },
+                { assert rows.drop(1).collect { l -> l.split('\t')[0..1].join(' ') }.containsAll([ 'k141_479_4 K07483', 'k141_1034_23 K07483' ]) },
+                { assert !rows.any { l -> l.contains('g3_orf_1') } },
+                { assert snapshot(sanitizeOutput(workflow.out)).match() }
+            )
+        }
+    }
+}
