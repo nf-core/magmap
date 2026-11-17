@@ -1,6 +1,6 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/subworkflows/yaml-schema.json
 name: "kofamscan"
-description: Annotate the proteins of each genome with KofamScan and concatenate the hits into one table
+description: Annotate the proteins of each genome with KofamScan, concatenate the hits into one table and keep the best hit of each protein in another
 keywords:
   - annotation
   - kofamscan
@@ -8,6 +8,7 @@ keywords:
 components:
   - kofamscan
   - kofamscan/download
+  - kofamscan/best
   - kofamscan/table
   - kofamscan/version
 input:
@@ -30,6 +31,12 @@ output:
         One row per protein and KO hit for all genomes
         Structure: [ val(meta), path(tsv) ]
       pattern: "*.kofamscan.tsv.gz"
+  - best_tsv:
+      type: file
+      description: |
+        One row per protein: the KO hit with the highest score, whether or not it reaches the KO's threshold
+        Structure: [ val(meta), path(tsv) ]
+      pattern: "*.kofamscan_best.tsv.gz"
 authors:
   - "@erikrikarddaniel"
 maintainers:

@@ -2,6 +2,14 @@
     "proteins of three genomes - one table with the hits of all of them": {
         "content": [
             {
+                "best_tsv": [
+                    [
+                        {
+                            "id": "magmap"
+                        },
+                        "magmap.kofamscan_best.tsv.gz:md5,a94bdbfc88808e66fcd1addd6483d05a"
+                    ]
+                ],
                 "tsv": [
                     [
                         {
@@ -12,7 +20,7 @@
                 ]
             }
         ],
-        "timestamp": "2026-11-16T11:19:21.300395627",
+        "timestamp": "2026-11-17T09:29:57.651239456",
         "meta": {
             "nf-test": "0.9.5",
             "nextflow": "26.04.0"

@@ -1,0 +1,70 @@
+name: "kofamscan_best"
+description: Keep the KofamScan hit with the highest score for each protein
+keywords:
+  - kofamscan
+  - kegg
+  - orthology
+  - best hit
+tools:
+  - "duckdb":
+      description: "An in-process SQL OLAP database management system"
+      homepage: "https://duckdb.org"
+      documentation: "https://duckdb.org/docs/"
+      tool_dev_url: "https://github.com/duckdb/duckdb"
+      licence:
+        - "MIT"
+      identifier: "biotools:duckdb"
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map identifying the table
+          e.g. `[ id:'magmap' ]`
+    - tsv:
+        type: file
+        description: Table with one row per protein and KO hit, with the columns orf, ko, thrshld, score, evalue and ko_definition
+        pattern: "*.kofamscan.tsv.gz"
+        ontologies:
+          - edam: "http://edamontology.org/format_3475" # TSV
+output:
+  tsv:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map identifying the table
+            e.g. `[ id:'magmap' ]`
+      - "${prefix}.kofamscan_best.tsv.gz":
+          type: file
+          description: |
+            One row per protein: the hit with the highest score, whether or not it reaches the KO's threshold.
+            A tie goes to the KO with the lowest identifier.
+            Rows are sorted by `orf`, the columns are those of the input.
+          pattern: "*.kofamscan_best.tsv.gz"
+          ontologies:
+            - edam: "http://edamontology.org/format_3475" # TSV
+  versions_duckdb:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - duckdb:
+          type: string
+          description: The name of the tool
+      - "duckdb -noheader -list -c 'SELECT substr(version(), 2)'":
+          type: eval
+          description: The expression to obtain the version of the tool
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - duckdb:
+          type: string
+          description: The name of the tool
+      - "duckdb -noheader -list -c 'SELECT substr(version(), 2)'":
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"

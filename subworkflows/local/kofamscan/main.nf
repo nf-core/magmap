@@ -1,5 +1,6 @@
 include { KOFAMSCAN_DOWNLOAD          } from '../../../modules/local/kofamscan/download'
 include { KOFAMSCAN as KOFAMSCAN_SCAN } from '../../../modules/nf-core/kofamscan'
+include { KOFAMSCAN_BEST              } from '../../../modules/local/kofamscan/best'
 include { KOFAMSCAN_TABLE             } from '../../../modules/local/kofamscan/table'
 include { KOFAMSCAN_VERSION           } from '../../../modules/local/kofamscan/version'
 
@@ -27,8 +28,11 @@ workflow KOFAMSCAN {
             .map { tsvs -> [ [ id: 'magmap' ], tsvs ] }
     )
 
+    KOFAMSCAN_BEST( KOFAMSCAN_TABLE.out.tsv )
+
     KOFAMSCAN_VERSION()
 
     emit:
-    tsv = KOFAMSCAN_TABLE.out.tsv // channel: [ val(meta), path(tsv.gz) ]
+    tsv      = KOFAMSCAN_TABLE.out.tsv // channel: [ val(meta), path(tsv.gz) ]
+    best_tsv = KOFAMSCAN_BEST.out.tsv  // channel: [ val(meta), path(tsv.gz) ]
 }

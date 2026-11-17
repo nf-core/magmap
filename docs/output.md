@@ -50,6 +50,9 @@ With [`--save_parquet`](https://nf-co.re/magmap/parameters/#save_parquet), the s
   - `magmap.kofamscan.tsv.gz`: Unless `--skip_kofamscan` is used, one row per protein and KEGG Orthology (KO) hit, from [KofamScan](https://github.com/takaram/kofam_scan).
     The columns are the ORF identifier, KO, the KO's score threshold, score, e-value and KO definition.
     A hit scoring above the threshold has an `*` in KofamScan's own output; this table also keeps the hits below it, so compare `score` with `thrshld`.
+  - `magmap.kofamscan_best.tsv.gz`: The same columns, with one row per protein: the hit with the highest `score`, whether or not it reaches the threshold.
+    A tie goes to the KO with the lowest identifier.
+    No threshold is applied, so filter on `score` and `thrshld` to suit your data, e.g. when the proteins are partial.
   - `magmap.hmmrank.tsv.gz`: With `--hmmdir` or `--hmmfiles`, one row per protein and HMM profile with a hit.
     The columns are the genome accession (`accno`), genome name, ORF identifier, profile, profile name from the HMM file, e-value, score and rank.
     `rank` is 1 for the profile with the highest score for that protein.

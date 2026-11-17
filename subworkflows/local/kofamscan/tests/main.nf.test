@@ -39,6 +39,8 @@ nextflow_workflow {
 
         then {
             def rows = path(workflow.out.tsv[0][1]).linesGzip
+            def best = path(workflow.out.best_tsv[0][1]).linesGzip
+            def scoresByOrf = rows.drop(1).collect { l -> l.split('\t') }.groupBy { f -> f[0] }
             assertAll(
                 { assert workflow.success },
                 { assert workflow.trace.tasks().findAll { t -> t.name.startsWith('KOFAMSCAN:KOFAMSCAN_SCAN') }.size() == 3 },
@@ -47,6 +49,10 @@ nextflow_workflow {
                 { assert rows.drop(1).size() == 29 },
                 { assert rows.drop(1).collect { l -> l.split('\t')[0..1].join(' ') }.containsAll([ 'k141_479_4 K07483', 'k141_1034_23 K07483' ]) },
                 { assert !rows.any { l -> l.contains('g3_orf_1') } },
+                { assert best[0] == 'orf\tko\tthrshld\tscore\tevalue\tko_definition' },
+                // one row per protein with a hit, sorted by ORF, and each is the highest score of that protein in the full table
+                { assert best.drop(1).collect { l -> l.split('\t')[0] } == scoresByOrf.keySet().sort() },
+                { assert best.drop(1).every { l -> def f = l.split('\t'); (f[3] as double) == scoresByOrf[f[0]].collect { h -> h[3] as double }.max() } },
                 { assert snapshot(sanitizeOutput(workflow.out)).match() }
             )
         }
@@ -71,7 +77,8 @@ nextflow_workflow {
         then {
             assertAll(
                 { assert workflow.success },
-                { assert path(workflow.out.tsv[0][1]).linesGzip == [ 'orf\tko\tthrshld\tscore\tevalue\tko_definition' ] }
+                { assert path(workflow.out.tsv[0][1]).linesGzip == [ 'orf\tko\tthrshld\tscore\tevalue\tko_definition' ] },
+                { assert path(workflow.out.best_tsv[0][1]).linesGzip == [ 'orf\tko\tthrshld\tscore\tevalue\tko_definition' ] }
             )
         }
     }

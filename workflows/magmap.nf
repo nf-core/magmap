@@ -424,9 +424,11 @@ workflow MAGMAP {
     // SUBWORKFLOW: Annotate the proteins of each genome with KofamScan
     //
     ch_kofamscan_tsv = channel.empty()
+    ch_kofamscan_best_tsv = channel.empty()
     if ( !skip_kofamscan ) {
         KOFAMSCAN( ch_genome_proteins, kofam_ko_list_url, kofam_profiles_url )
         ch_kofamscan_tsv = KOFAMSCAN.out.tsv.map { _meta, tsv -> tsv }
+        ch_kofamscan_best_tsv = KOFAMSCAN.out.best_tsv.map { _meta, tsv -> tsv }
     }
 
     //
@@ -563,6 +565,7 @@ workflow MAGMAP {
                 .mix(CUSTOM_COLLECTSTATS.out.overall_stats.map { _meta, tsv -> tsv })
                 .mix(TIDYVERSE_JOINHMMRANKACCNO.out.hmmrank.map { _meta, tsv -> tsv })
                 .mix(ch_kofamscan_tsv)
+                .mix(ch_kofamscan_best_tsv)
                 .map { tsv -> [ [ id: tsv.name.replaceAll(/\.tsv(\.gz)?$/, '') ], tsv ] }
         )
     }

@@ -44,6 +44,7 @@ nextflow_pipeline {
                     path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
                     path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
                     path("${params.outdir}/summary_tables/magmap.kofamscan.tsv.gz").linesGzip,
+                    path("${params.outdir}/summary_tables/magmap.kofamscan_best.tsv.gz").linesGzip,
                 ).match() },
                 { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.size() > 500 },
                 { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").csv(sep: '\t', decompress: true, header: true).columns["count"].sum() > 500 },
@@ -57,6 +58,12 @@ nextflow_pipeline {
                 { assert path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.size() > 400 },
                 { assert path("${params.outdir}/summary_tables/magmap.kofamscan.tsv.gz").linesGzip[0] == 'orf\tko\tthrshld\tscore\tevalue\tko_definition' },
                 { assert path("${params.outdir}/summary_tables/magmap.kofamscan.tsv.gz").linesGzip.drop(1).collect { l -> l.split('\t')[1] }.containsAll([ 'K04079', 'K02968' ]) },
+                {
+                    def best = path("${params.outdir}/summary_tables/magmap.kofamscan_best.tsv.gz").linesGzip
+                    def orfs = path("${params.outdir}/summary_tables/magmap.kofamscan.tsv.gz").linesGzip.drop(1).collect { l -> l.split('\t')[0] }.unique().sort()
+                    assert best[0] == 'orf\tko\tthrshld\tscore\tevalue\tko_definition'
+                    assert best.drop(1).collect { l -> l.split('\t')[0] } == orfs
+                },
                 // The ORF identifiers are those of the Prokka annotation, which the other tables join on
                 {
                     def orfs = path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.drop(1).collect { l -> l.split('\t')[0] }
@@ -91,6 +98,7 @@ nextflow_pipeline {
                 { assert path("${params.outdir}/summary_tables/magmap.hmmrank.tsv.gz").csv(sep: '\t', decompress: true, header: true).columns["accno"].every { a -> a == 'GCA_002688505.1' } },
                 { assert path("${params.outdir}/summary_tables/magmap.hmmrank.parquet").size() > 0 },
                 { assert path("${params.outdir}/summary_tables/magmap.kofamscan.parquet").size() > 0 },
+                { assert path("${params.outdir}/summary_tables/magmap.kofamscan_best.parquet").size() > 0 },
             )
         }
     }
