@@ -165,9 +165,10 @@ Note, more than one index file can be provided, separated by commas.
 
 All genomes potentially downloaded as part of the Sourmash process, will be output in the directory specified with [`--genome_store_dir`](https://nf-co.re/magmap/parameters/#genome_store_dir) (set to `genomes` by default).  
 Similarly, the output from Prokka annotation of genomes will be stored in the directory specified with [`--prokka_store_dir`](https://nf-co.re/magmap/parameters/#prokka_store_dir) (`magmap_prokka` by default), and the output from Bakta annotation in [`--bakta_store_dir`](https://nf-co.re/magmap/parameters/#bakta_store_dir) (`magmap_bakta` by default); see [Choosing an annotator: Prokka or Bakta](#choosing-an-annotator-prokka-or-bakta).
-On subsequent runs, any genome file or Prokka/Bakta annotation files found in the specified directories will be skipped from download and/or annotation.
+The output from KofamScan is stored in [`--kofamscan_store_dir`](https://nf-co.re/magmap/parameters/#kofamscan_store_dir) (`magmap_kofamscan` by default) in the same way.
+On subsequent runs, any genome file or Prokka/Bakta/KofamScan annotation files found in the specified directories will be skipped from download and/or annotation.
 Since annotating genomes is computationally relatively expensive, we recommend that you _reuse these directories_ between pipeline runs.
-If you create storage directories that you can access from the directories from which you run the pipeline, just symlink the storage directories to the pipeline run directory or give the full path to the `--genome_store_dir`, `--prokka_store_dir` and `--bakta_store_dir` parameters.
+If you create storage directories that you can access from the directories from which you run the pipeline, just symlink the storage directories to the pipeline run directory or give the full path to the `--genome_store_dir`, `--prokka_store_dir`, `--bakta_store_dir` and `--kofamscan_store_dir` parameters.
 The Bakta database itself is handled the same way: point [`--bakta_db`](https://nf-co.re/magmap/parameters/#bakta_db) (`magmap_bakta_db` by default) at a directory, and the pipeline downloads a database into it the first time and reuses it on subsequent runs.
 To skip the download, point it at a directory that already holds a database, for example one fetched with `bakta_db download`.
 

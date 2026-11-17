@@ -43,6 +43,8 @@ nextflow_pipeline {
                     path("${params.outdir}/summary_tables/magmap.genome_metadata.tsv.gz").linesGzip.findAll { l -> l.contains('GCA') },
                     path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.findAll { l -> l.contains('accno') },
                     path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.findAll { l -> l.contains('orf') },
+                    path("${params.outdir}/summary_tables/magmap.kofamscan.tsv.gz").linesGzip,
+                    path("${params.outdir}/summary_tables/magmap.kofamscan_best.tsv.gz").linesGzip,
                 ).match() },
                 { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").linesGzip.size() > 500 },
                 { assert path("${params.outdir}/summary_tables/magmap.CDS.counts.tsv.gz").csv(sep: '\t', decompress: true, header: true).columns["count"].sum() > 500 },
@@ -54,6 +56,21 @@ nextflow_pipeline {
                 { assert path("${params.outdir}/summary_tables/magmap.tRNA.counts.tsv.gz").csv(sep: '\t', decompress: true, header: true).columns["count"].sum() > 5 },
                 { assert path("${params.outdir}/summary_tables/magmap.genomes2orfs.tsv.gz").linesGzip.size() > 400 },
                 { assert path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.size() > 400 },
+                { assert path("${params.outdir}/summary_tables/magmap.kofamscan.tsv.gz").linesGzip[0] == 'orf\tko\tthrshld\tscore\tevalue\tko_definition' },
+                { assert path("${params.outdir}/summary_tables/magmap.kofamscan.tsv.gz").linesGzip.drop(1).collect { l -> l.split('\t')[1] }.containsAll([ 'K04079', 'K02968' ]) },
+                {
+                    def best = path("${params.outdir}/summary_tables/magmap.kofamscan_best.tsv.gz").linesGzip
+                    def orfs = path("${params.outdir}/summary_tables/magmap.kofamscan.tsv.gz").linesGzip.drop(1).collect { l -> l.split('\t')[0] }.unique().sort()
+                    assert best[0] == 'orf\tko\tthrshld\tscore\tevalue\tko_definition'
+                    assert best.drop(1).collect { l -> l.split('\t')[0] } == orfs
+                },
+                // The stored result is named by genome and by the tool that made its proteins, here the user's GFF
+                { assert file("${launchDir}/magmap_kofamscan_test/GCA_002688505.1.gffread.kofamscan.tsv.gz").exists() },
+                // The ORF identifiers are those of the Prokka annotation, which the other tables join on
+                {
+                    def orfs = path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.drop(1).collect { l -> l.split('\t')[0] }
+                    assert path("${params.outdir}/summary_tables/magmap.kofamscan.tsv.gz").linesGzip.drop(1).every { l -> l.split('\t')[0] in orfs }
+                },
             )
         }
     }
@@ -63,6 +80,7 @@ nextflow_pipeline {
         when {
             params {
                 outdir = "$outputDir"
+                save_parquet = true
                 // params.pipelines_testdata_base_path is null here, so the URLs are literal.
                 // Keep in sync with pipelines_testdata_base_path in nextflow.config.
                 hmmfiles = "https://raw.githubusercontent.com/nf-core/test-datasets/magmap/testdata/PF00006.hmm,https://raw.githubusercontent.com/nf-core/test-datasets/magmap/testdata/PF00009.hmm,https://raw.githubusercontent.com/nf-core/test-datasets/magmap/testdata/PF00154.hmm"
@@ -80,6 +98,9 @@ nextflow_pipeline {
                     path("${params.outdir}/hmmer/hits/PF00154.fa.gz").linesGzip,
                 ).match() },
                 { assert path("${params.outdir}/summary_tables/magmap.hmmrank.tsv.gz").csv(sep: '\t', decompress: true, header: true).columns["accno"].every { a -> a == 'GCA_002688505.1' } },
+                { assert path("${params.outdir}/summary_tables/magmap.hmmrank.parquet").size() > 0 },
+                { assert path("${params.outdir}/summary_tables/magmap.kofamscan.parquet").size() > 0 },
+                { assert path("${params.outdir}/summary_tables/magmap.kofamscan_best.parquet").size() > 0 },
             )
         }
     }

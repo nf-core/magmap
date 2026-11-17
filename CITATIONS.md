@@ -28,6 +28,10 @@
 
 > Schwengers O., Jelonek L., Dieckmann M. A., Beyvers S., Blom J., Goesmann A. Bakta: rapid and standardized annotation of bacterial genomes via alignment-free sequence identification. Microbial Genomics, 2021;7(11):000685. doi: 10.1099/mgen.0.000685. PMID: 34739369; PMCID: PMC8743544.
 
+- [KofamScan](https://github.com/takaram/kofam_scan)
+
+> Aramaki T, Blanc-Mathieu R, Endo H, Ohkubo K, Kanehisa M, Goto S, Ogata H. KofamKOALA: KEGG Ortholog assignment based on profile HMM and adaptive score threshold. Bioinformatics. 2020 Apr 1;36(7):2251-2252. doi: 10.1093/bioinformatics/btz859. PMID: 31742321.
+
 - [gffread](https://github.com/gpertea/gffread)
 
 > Pertea G, Pertea M. GFF Utilities: GffRead and GffCompare. F1000Research 2020, 9:304. doi: 10.12688/f1000research.23297.2.

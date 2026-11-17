@@ -7,6 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### `Added`
 
+- [#300](https://github.com/nf-core/magmap/pull/300) - Annotate the proteins of each genome with KofamScan, one genome at a time with the result stored in `--kofamscan_store_dir`, write all hits to `summary_tables/magmap.kofamscan.tsv.gz` and the best hit of each protein to `summary_tables/magmap.kofamscan_best.tsv.gz`. Skip it with `--skip_kofamscan`, part of [#164](https://github.com/nf-core/magmap/issues/164) (by @erikrikarddaniel).
 - [#279](https://github.com/nf-core/magmap/pull/279) - Search the proteins of the selected genomes with HMM profiles given with `--hmmdir` or `--hmmfiles`, writing ranked hits with genome accessions to `summary_tables/magmap.hmmrank.tsv.gz`, closes [#34](https://github.com/nf-core/magmap/issues/34) (by @danilodileo).
 
 ### `Changed`
@@ -21,6 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - [#291](https://github.com/nf-core/magmap/pull/291) - Launch the AWS tests with `seqeralabs/action-seqera-launch` and the v2 syntax parser, and stop uploading the debug log as an artifact (by @erikrikarddaniel).
 
 ### `Dependencies`
+
+| Tool      | Previous version | New version |
+| --------- | ---------------- | ----------- |
+| kofamscan | -                | 1.3.0       |
 
 - [#286](https://github.com/nf-core/magmap/pull/286) - Update nf-core modules and subworkflows: FastQC 0.13.0, and new container builds for the hmmer, seqtk, sourmash and samtools modules (by @danilodileo).
 

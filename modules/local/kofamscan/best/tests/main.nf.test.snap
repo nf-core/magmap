@@ -1,0 +1,29 @@
+{
+    "the hit with the highest score is kept, with or without reaching its threshold": {
+        "content": [
+            [
+                [
+                    "orf\tko\tthrshld\tscore\tevalue\tko_definition",
+                    "o1\tK00003\t100.0\t300.1\t1e-50\tdef3",
+                    "o2\tK00001\t50.0\t80.0\t1e-9\tdef1",
+                    "o3\tK00007\t200.0\t30.0\t1e-4\tdef7",
+                    "o4\tK00008\t-\t30.0\t1e-3\tdef8"
+                ]
+            ],
+            {
+                "versions_duckdb": [
+                    [
+                        "KOFAMSCAN_BEST",
+                        "duckdb",
+                        "1.5.5"
+                    ]
+                ]
+            }
+        ],
+        "timestamp": "2026-11-17T09:28:13.033937762",
+        "meta": {
+            "nf-test": "0.9.5",
+            "nextflow": "26.04.0"
+        }
+    }
+}
