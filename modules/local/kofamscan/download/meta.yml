@@ -1,5 +1,5 @@
 name: "kofamscan_download"
-description: Downloads KEGG Orthology (KO) data for KofamScan
+description: Unpacks the KOfam ko_list and HMM profiles for KofamScan
 keywords:
   - kofamscan
   - kegg

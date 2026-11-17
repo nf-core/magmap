@@ -72,9 +72,8 @@ Changes in 'kofamscan/main.nf':
      script:
      def args = task.ext.args ?: ''
 -    def prefix = task.ext.prefix ?: "${meta.id}"
--    def extension = args.contains("--format detail-tsv") ? "tsv" :
 +    prefix = task.ext.prefix ?: "${meta.id}"
-+    extension = args.contains("--format detail-tsv") ? "tsv" :
+     def extension = args.contains("--format detail-tsv") ? "tsv" :
                      "txt"
 +    def is_compressed = fasta.toString().endsWith('.gz')
 +    def fasta_name     = is_compressed ? fasta.toString() - '.gz' : "$fasta"
@@ -100,9 +99,8 @@ Changes in 'kofamscan/main.nf':
      stub:
      def args = task.ext.args ?: ''
 -    def prefix = task.ext.prefix ?: "${meta.id}"
--    def extension = args.contains("--format detail-tsv") ? "tsv" :
 +    prefix = task.ext.prefix ?: "${meta.id}"
-+    extension = args.contains("--format detail-tsv") ? "tsv" :
+     def extension = args.contains("--format detail-tsv") ? "tsv" :
                      "txt"
      """
      touch ${prefix}.${extension}

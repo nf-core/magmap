@@ -25,7 +25,7 @@ process KOFAMSCAN {
     script:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
-    extension = args.contains("--format detail-tsv") ? "tsv" :
+    def extension = args.contains("--format detail-tsv") ? "tsv" :
                     "txt"
     def is_compressed = fasta.toString().endsWith('.gz')
     def fasta_name     = is_compressed ? fasta.toString() - '.gz' : "$fasta"
@@ -50,7 +50,7 @@ process KOFAMSCAN {
     stub:
     def args = task.ext.args ?: ''
     prefix = task.ext.prefix ?: "${meta.id}"
-    extension = args.contains("--format detail-tsv") ? "tsv" :
+    def extension = args.contains("--format detail-tsv") ? "tsv" :
                     "txt"
     """
     touch ${prefix}.${extension}
