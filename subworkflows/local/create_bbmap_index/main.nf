@@ -15,6 +15,5 @@ workflow CREATE_BBMAP_INDEX {
 
     emit:
     index         = BBMAP_INDEX.out.index
-    genome_fnas   = CAT_FNA.out.concatenated_files
     genome_accnos = ch_genome_fnas.map { meta, accnos, _fnas -> [ meta, accnos ] }
 }
