@@ -64,6 +64,8 @@ nextflow_pipeline {
                     assert best[0] == 'orf\tko\tthrshld\tscore\tevalue\tko_definition'
                     assert best.drop(1).collect { l -> l.split('\t')[0] } == orfs
                 },
+                // The stored result is named by genome and by the tool that made its proteins, here the user's GFF
+                { assert file("${launchDir}/magmap_kofamscan_test/GCA_002688505.1.gffread.kofamscan.tsv.gz").exists() },
                 // The ORF identifiers are those of the Prokka annotation, which the other tables join on
                 {
                     def orfs = path("${params.outdir}/summary_tables/magmap.prokka-annotations.tsv.gz").linesGzip.drop(1).collect { l -> l.split('\t')[0] }

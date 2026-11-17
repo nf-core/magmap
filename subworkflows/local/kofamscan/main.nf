@@ -7,7 +7,7 @@ include { KOFAMSCAN_VERSION           } from '../../../modules/local/kofamscan/v
 workflow KOFAMSCAN {
 
     take:
-    ch_proteins     // channel: [ val(meta), path(faa) ], one per genome; meta.id is the accession
+    ch_proteins     // channel: [ val(meta), path(faa) ], one per genome; meta.id is the accession, meta.source the tool that made the proteins
     ko_list_url     //  string: URL or path of the KOfam ko_list.gz file
     profiles_url    //  string: URL or path of the KOfam profiles.tar.gz archive
 

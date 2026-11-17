@@ -412,9 +412,9 @@ workflow MAGMAP {
         }
         .set { ch_gffread }
     GFFREAD(ch_gffread.gff, ch_gffread.fasta)
-    ch_genome_proteins = PROKKA.out.faa
-        .mix(ch_bakta_faa)
-        .mix(GFFREAD.out.gffread_fasta)
+    ch_genome_proteins = PROKKA.out.faa.map { meta, faa -> [ meta + [ source: 'prokka' ], faa ] }
+        .mix(ch_bakta_faa.map { meta, faa -> [ meta + [ source: 'bakta' ], faa ] })
+        .mix(GFFREAD.out.gffread_fasta.map { meta, faa -> [ meta + [ source: 'gffread' ], faa ] })
     CAT_FAA(
         [ id: 'magmap.proteins.faa' ],
         ch_genome_proteins.map { _meta, faa -> faa }.collect()

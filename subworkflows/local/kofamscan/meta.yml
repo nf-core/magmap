@@ -15,7 +15,8 @@ input:
   - ch_proteins:
       type: file
       description: |
-        Protein FASTA, one per genome
+        Protein FASTA, one per genome. meta.id is the genome accession and meta.source
+        the tool that made the proteins (prokka, bakta or gffread); both name the stored result.
         Structure: [ val(meta), path(faa) ]
       pattern: "*.faa{,.gz}"
   - ko_list_url:

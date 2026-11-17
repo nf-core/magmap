@@ -205,13 +205,14 @@ The table with the hits of all genomes is in `summary_tables/magmap.kofamscan.ts
 <summary>Output files</summary>
 
 - `magmap_kofamscan/`
-  - `<accno>.kofamscan.tsv.gz`: KofamScan's `detail-tsv` output for one genome.
+  - `<accno>.<source>.kofamscan.tsv.gz`: KofamScan's `detail-tsv` output for one genome, where `<source>` is `prokka`, `bakta` or `gffread`, the tool that made the proteins.
 
 </details>
 
 :::warning
-Genomes found in `--kofamscan_store_dir` are not annotated again, also after the KOfam database has been updated.
-Remove the files of the genomes to annotate with a newer database, or start from an empty store directory.
+Genomes found in `--kofamscan_store_dir` are not annotated again, also after the KOfam database has been updated or the proteins of a genome have changed, for example after editing its GFF.
+The file name holds the tool that made the proteins, so switching between Prokka, Bakta and a GFF given with `--genomeinfo` annotates the genome again.
+Remove the files of the genomes to annotate again, or start from an empty store directory.
 :::
 
 ### Genome fetching
