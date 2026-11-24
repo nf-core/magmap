@@ -93,7 +93,7 @@
                     },
                     "kofamscan": {
                         "branch": "master",
-                        "git_sha": "7b3452a23773f687ededb4befd037920e5a51341",
+                        "git_sha": "efa19023192e8082b55cff0da5dfdba40fb42017",
                         "installed_by": ["modules"],
                         "patch": "modules/nf-core/kofamscan/kofamscan.diff"
                     },
