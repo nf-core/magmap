@@ -1,0 +1,53 @@
+Changes in component 'nf-core/kofamscan'
+Changes in 'kofamscan/meta.yml':
+--- modules/nf-core/kofamscan/meta.yml
++++ modules/nf-core/kofamscan/meta.yml
+@@ -60,27 +60,7 @@
+           pattern: "*.tsv.gz"
+           ontologies:
+             - edam: http://edamontology.org/format_3475 # TSV
+-  versions_kofamscan:
+-    - - ${task.process}:
+-          type: string
+-          description: The name of the process
+-      - kofamscan:
+-          type: string
+-          description: kofamscan version string
+-      - "exec_annotation --version 2>&1 | sed 's/exec_annotation //;'":
+-          type: eval
+-          description: The expression to obtain the version of the tool
+-topics:
+-  versions:
+-    - - ${task.process}:
+-          type: string
+-          description: The name of the process
+-      - kofamscan:
+-          type: string
+-          description: kofamscan version string
+-      - "exec_annotation --version 2>&1 | sed 's/exec_annotation //;'":
+-          type: eval
+-          description: The expression to obtain the version of the tool
++topics: {}
+ authors:
+   - "@toniher"
+ maintainers:
+
+Changes in 'kofamscan/main.nf':
+--- modules/nf-core/kofamscan/main.nf
++++ modules/nf-core/kofamscan/main.nf
+@@ -17,8 +17,7 @@
+ 
+     output:
+     tuple val(meta), path("${prefix}.txt.gz"), optional: true, emit: txt
+-    tuple val(meta), path("${prefix}.tsv.gz"), optional: true, emit: tsv
+-    tuple val("${task.process}"), val('kofamscan'), eval("exec_annotation --version 2>&1 | sed 's/exec_annotation //;'"), topic: versions, emit: versions_kofamscan
++    tuple val(meta), path("${prefix}.tsv.gz"), emit: tsv
+ 
+     when:
+     task.ext.when == null || task.ext.when
+
+'modules/nf-core/kofamscan/environment.yml' is unchanged
+'modules/nf-core/kofamscan/tests/nextflow.config' is unchanged
+'modules/nf-core/kofamscan/tests/main.nf.test.snap' is unchanged
+'modules/nf-core/kofamscan/tests/main.nf.test' is unchanged
+************************************************************

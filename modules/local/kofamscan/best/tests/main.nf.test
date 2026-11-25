@@ -1,0 +1,100 @@
+nextflow_process {
+
+    name "Test Process KOFAMSCAN_BEST"
+    script "../main.nf"
+    process "KOFAMSCAN_BEST"
+
+    tag "modules"
+    tag "modules_local"
+    tag "kofamscan"
+    tag "kofamscan/best"
+
+    // The input is built inline and has the shape of KOFAMSCAN_TABLE output.
+
+    test("the hit with the highest score is kept, with or without reaching its threshold") {
+
+        when {
+            process {
+                """
+                def tsv = file("\${workDir}/test.kofamscan.tsv")
+                tsv.text = ([['orf', 'ko', 'thrshld', 'score', 'evalue', 'ko_definition']] + [
+                    // The best hit is listed first, last and in the middle for different ORFs.
+                    // 9.5 is lower than 80.0 but sorts after it as text.
+                    ['o2', 'K00002', '100.0', '9.5', '1e-3', 'def2'],
+                    ['o2', 'K00001', '50.0', '80.0', '1e-9', 'def1'],
+                    ['o1', 'K00003', '100.0', '300.1', '1e-50', 'def3'],
+                    ['o1', 'K00004', '100.0', '120.0', '1e-20', 'def4'],
+                    ['o1', 'K00005', '100.0', '4.0', '1e-1', 'def5'],
+                    // Only hits below the threshold: still the best one is kept.
+                    ['o3', 'K00006', '200.0', '12.5', '0.02', 'def6'],
+                    ['o3', 'K00007', '200.0', '30.0', '1e-4', 'def7'],
+                    // No threshold for these KOs, and a tie: the lowest KO identifier wins.
+                    ['o4', 'K00009', '-', '30.0', '1e-3', 'def9'],
+                    ['o4', 'K00008', '-', '30.0', '1e-3', 'def8']
+                ]).collect { r -> r.join('\\t') }.join('\\n') + '\\n'
+
+                input[0] = [ [ id:'test' ], tsv ]
+                """
+            }
+        }
+
+        then {
+            def lines = path(process.out.tsv[0][1]).linesGzip
+            assertAll(
+                { assert process.success },
+                { assert lines[0] == ['orf', 'ko', 'thrshld', 'score', 'evalue', 'ko_definition'].join('\t') },
+                { assert lines.drop(1) == [
+                    ['o1', 'K00003', '100.0', '300.1', '1e-50', 'def3'],
+                    ['o2', 'K00001', '50.0', '80.0', '1e-9', 'def1'],
+                    ['o3', 'K00007', '200.0', '30.0', '1e-4', 'def7'],
+                    ['o4', 'K00008', '-', '30.0', '1e-3', 'def8']
+                ].collect { r -> r.join('\t') } },
+                { assert snapshot(process.out.tsv.collect { m, f -> path(f).linesGzip }, process.out.findAll { key, val -> key.startsWith('versions') }).match() }
+            )
+        }
+    }
+
+    test("no hits - only the header") {
+
+        when {
+            process {
+                """
+                def tsv = file("\${workDir}/empty.kofamscan.tsv")
+                tsv.text = 'orf\\tko\\tthrshld\\tscore\\tevalue\\tko_definition\\n'
+
+                input[0] = [ [ id:'test' ], tsv ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert path(process.out.tsv[0][1]).linesGzip == [ 'orf\tko\tthrshld\tscore\tevalue\tko_definition' ] }
+            )
+        }
+    }
+
+    test("stub") {
+
+        options "-stub"
+
+        when {
+            process {
+                """
+                def tsv = file("\${workDir}/test.kofamscan.tsv")
+                tsv.text = ''
+
+                input[0] = [ [ id:'test' ], tsv ]
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert process.success },
+                { assert process.out.tsv[0][1].toString().endsWith('test.kofamscan_best.tsv.gz') }
+            )
+        }
+    }
+}

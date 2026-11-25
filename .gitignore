@@ -18,6 +18,10 @@ magmap_prokka
 magmap_bakta
 magmap_bakta_db
 magmap_bakta_db_test
+magmap_kofamscan
+magmap_kofam_db
+magmap_kofamscan_test
+magmap_kofam_db_test
 genomes/
 *.Rproj
 .positai

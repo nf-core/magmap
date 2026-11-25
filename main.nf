@@ -30,6 +30,7 @@ params {
     save_concatenated_genomes: Boolean
     featurecounts_fraction:    Boolean
     skip_sourmash:             Boolean
+    skip_kofamscan:            Boolean
     sourmash_ksize:            Integer
     sourmash_save_sourmash:    Boolean
     version:                   Boolean
@@ -75,6 +76,9 @@ workflow NFCORE_MAGMAP {
     species_preference          //  string: 'all' to select all genomes for a species or 'local', 'completeness' or 'gtdb' to prefer one according to different criteria
     annotator                   //  string: 'prokka', 'bakta_supported_only' or 'bakta_all'; which tool(s) to annotate genomes lacking a GFF with
     skip_sourmash               // boolean: skip Sourmash or not
+    skip_kofamscan              // boolean: skip KofamScan or not
+    kofam_ko_list_url           //  string: URL or path of the KOfam ko_list.gz file
+    kofam_profiles_url          //  string: URL or path of the KOfam profiles.tar.gz archive
     sourmash_ksize              // integer
     features                    // channel: types of features to call
     hmms                        // channel: HMM profiles to search the proteins with
@@ -103,6 +107,9 @@ workflow NFCORE_MAGMAP {
         species_preference,
         annotator,
         skip_sourmash,
+        skip_kofamscan,
+        kofam_ko_list_url,
+        kofam_profiles_url,
         sourmash_ksize,
         features,
         hmms,
@@ -177,6 +184,9 @@ workflow {
         params.species_preference,
         params.annotator,
         params.skip_sourmash,
+        params.skip_kofamscan,
+        params.kofam_ko_list_url,
+        params.kofam_profiles_url,
         params.sourmash_ksize,
         PIPELINE_INITIALISATION.out.features,
         PIPELINE_INITIALISATION.out.hmms,

@@ -37,6 +37,7 @@ include { PROKKA_VERSION                         } from '../modules/local/prokka
 include { PROKKAGFF2TSV                          } from '../modules/local/prokkagff2tsv'
 include { RENAME_CONTIGS                         } from '../modules/local/rename_contigs'
 include { softwareVersionsToYAML                 } from '../subworkflows/nf-core/utils_nfcore_pipeline'
+include { KOFAMSCAN                              } from '../subworkflows/local/kofamscan'
 include { SOURMASH                               } from '../subworkflows/local/sourmash'
 include { SUBREAD_FEATURECOUNTS as FEATURECOUNTS } from '../modules/nf-core/subread/featurecounts'
 include { TIDYVERSE_JOINHMMRANKACCNO             } from '../modules/local/tidyverse/joinhmmrankaccno'
@@ -66,6 +67,9 @@ workflow MAGMAP {
     species_preference          //  string: 'all' to select all genomes for a species or 'local', 'completeness' or 'gtdb' to prefer one according to different criteria
     annotator                   //  string: 'prokka', 'bakta_supported_only' or 'bakta_all'; which tool(s) to annotate genomes lacking a GFF with
     skip_sourmash               // boolean: run Sourmash or not
+    skip_kofamscan              // boolean: skip the KofamScan annotation of the proteins
+    kofam_ko_list_url           //  string: URL or path of the KOfam ko_list.gz file
+    kofam_profiles_url          //  string: URL or path of the KOfam profiles.tar.gz archive
     sourmash_ksize              // integer
     ch_features                 // channel: list of feature types to call
     ch_hmms                     // channel: [ val(meta), path(hmm) ]: HMM profiles to search the proteins with
@@ -408,14 +412,24 @@ workflow MAGMAP {
         }
         .set { ch_gffread }
     GFFREAD(ch_gffread.gff, ch_gffread.fasta)
+    ch_genome_proteins = PROKKA.out.faa.map { meta, faa -> [ meta + [ source: 'prokka' ], faa ] }
+        .mix(ch_bakta_faa.map { meta, faa -> [ meta + [ source: 'bakta' ], faa ] })
+        .mix(GFFREAD.out.gffread_fasta.map { meta, faa -> [ meta + [ source: 'gffread' ], faa ] })
     CAT_FAA(
         [ id: 'magmap.proteins.faa' ],
-        PROKKA.out.faa
-            .mix(ch_bakta_faa)
-            .mix(GFFREAD.out.gffread_fasta)
-            .map { _meta, faa -> faa }
-            .collect()
+        ch_genome_proteins.map { _meta, faa -> faa }.collect()
     )
+
+    //
+    // SUBWORKFLOW: Annotate the proteins of each genome with KofamScan
+    //
+    ch_kofamscan_tsv = channel.empty()
+    ch_kofamscan_best_tsv = channel.empty()
+    if ( !skip_kofamscan ) {
+        KOFAMSCAN( ch_genome_proteins, kofam_ko_list_url, kofam_profiles_url )
+        ch_kofamscan_tsv = KOFAMSCAN.out.tsv.map { _meta, tsv -> tsv }
+        ch_kofamscan_best_tsv = KOFAMSCAN.out.best_tsv.map { _meta, tsv -> tsv }
+    }
 
     //
     // MODULE: Create an index file from genome accnos to feature prefixes
@@ -550,6 +564,8 @@ workflow MAGMAP {
                 .mix(DUCKDB_JOINFEATURECOUNTSACCNO.out.counts.map { _meta, tsv -> tsv })
                 .mix(CUSTOM_COLLECTSTATS.out.overall_stats.map { _meta, tsv -> tsv })
                 .mix(TIDYVERSE_JOINHMMRANKACCNO.out.hmmrank.map { _meta, tsv -> tsv })
+                .mix(ch_kofamscan_tsv)
+                .mix(ch_kofamscan_best_tsv)
                 .map { tsv -> [ [ id: tsv.name.replaceAll(/\.tsv(\.gz)?$/, '') ], tsv ] }
         )
     }

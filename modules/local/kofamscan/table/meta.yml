@@ -1,0 +1,64 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/nf-core/modules/master/modules/meta-schema.json
+name: "kofamscan_table"
+description: Concatenate the KofamScan detail-tsv output of many genomes into one summary table
+keywords:
+  - kofamscan
+  - kegg
+  - orthology
+  - format
+tools:
+  - "gzip":
+      description: Compression utility
+      homepage: https://www.gnu.org/software/gzip/
+      documentation: https://www.gnu.org/software/gzip/manual/gzip.html
+      licence: ["GPL-3.0-or-later"]
+      identifier: null
+
+input:
+  - - meta:
+        type: map
+        description: |
+          Groovy Map identifying the table
+          e.g. `[ id:'magmap' ]`
+    - tsvs:
+        type: file
+        description: Raw, gzipped KofamScan detail-tsv output, one file per genome
+        pattern: "*.tsv.gz"
+
+output:
+  tsv:
+    - - meta:
+          type: map
+          description: |
+            Groovy Map identifying the table
+            e.g. `[ id:'magmap' ]`
+      - "*.kofamscan.tsv.gz":
+          type: file
+          description: One row per protein and KO hit, with the columns orf, ko, thrshld, score, evalue and ko_definition
+          pattern: "*.kofamscan.tsv.gz"
+  versions_gzip:
+    - - "${task.process}":
+          type: string
+          description: The name of the process
+      - "gzip":
+          type: string
+          description: The name of the tool
+      - "gzip --version":
+          type: eval
+          description: The expression to obtain the version of the tool
+
+topics:
+  versions:
+    - - ${task.process}:
+          type: string
+          description: The name of the process
+      - gzip:
+          type: string
+          description: The name of the tool
+      - gzip --version:
+          type: eval
+          description: The expression to obtain the version of the tool
+authors:
+  - "@erikrikarddaniel"
+maintainers:
+  - "@erikrikarddaniel"

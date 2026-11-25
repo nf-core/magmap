@@ -1,0 +1,143 @@
+nextflow_workflow {
+
+    name "Test Subworkflow KOFAMSCAN"
+    script "../main.nf"
+    workflow "KOFAMSCAN"
+    config "./nextflow.config"
+
+    tag "subworkflows"
+    tag "subworkflows_local"
+    tag "kofamscan"
+
+    test("proteins of three genomes - one table with the hits of all of them") {
+
+        when {
+            params {
+                kofamscan_store_dir = "$outputDir/store"
+            }
+            workflow {
+                """
+                def base = 'https://raw.githubusercontent.com/nf-core/test-datasets/metatdenovo/test_data/kofamscan/'
+                def records = file(base + 'proteins.faa.gz', checkIfExists: true).splitFasta(record: [text: true])
+                def half = records.size().intdiv(2)
+                def g1 = file("\${workDir}/g1.faa")
+                g1.text = records[0..<half].collect { r -> r.text }.join('')
+                def g2 = file("\${workDir}/g2.faa")
+                g2.text = records[half..-1].collect { r -> r.text }.join('')
+
+                // g3 has one protein without any KO hit
+                def g3 = file("\${workDir}/g3.faa")
+                g3.text = '>g3_orf_1\\nMKVLAAGIVGLLLSAQPAHAEQSTGW\\n'
+
+                input[0] = channel.of(
+                    [ [ id: 'g1', source: 'prokka' ], g1 ],
+                    [ [ id: 'g2', source: 'bakta' ], g2 ],
+                    [ [ id: 'g3', source: 'gffread' ], g3 ]
+                )
+                input[1] = base + 'ko_list.gz'
+                input[2] = base + 'profiles.tar.gz'
+                """
+            }
+        }
+
+        then {
+            def rows = path(workflow.out.tsv[0][1]).linesGzip
+            def best = path(workflow.out.best_tsv[0][1]).linesGzip
+            def scoresByOrf = rows.drop(1).collect { l -> l.split('\t') }.groupBy { f -> f[0] }
+            assertAll(
+                { assert workflow.success },
+                { assert workflow.trace.tasks().findAll { t -> t.name.startsWith('KOFAMSCAN:KOFAMSCAN_SCAN') }.size() == 3 },
+                { assert rows[0] == 'orf\tko\tthrshld\tscore\tevalue\tko_definition' },
+                // 29 hits when all proteins are searched in one run, split across g1 and g2 here
+                { assert rows.drop(1).size() == 29 },
+                { assert rows.drop(1).collect { l -> l.split('\t')[0..1].join(' ') }.containsAll([ 'k141_479_4 K07483', 'k141_1034_23 K07483' ]) },
+                { assert !rows.any { l -> l.contains('g3_orf_1') } },
+                { assert best[0] == 'orf\tko\tthrshld\tscore\tevalue\tko_definition' },
+                // one row per protein with a hit, sorted by ORF, and each is the highest score of that protein in the full table
+                { assert best.drop(1).collect { l -> l.split('\t')[0] } == scoresByOrf.keySet().sort() },
+                { assert best.drop(1).every { l -> def f = l.split('\t'); (f[3] as double) == scoresByOrf[f[0]].collect { h -> h[3] as double }.max() } },
+                { assert snapshot(sanitizeOutput(workflow.out)).match() }
+            )
+        }
+    }
+
+    test("no genome has a hit - table with only the header") {
+
+        when {
+            params {
+                kofamscan_store_dir = "$outputDir/store"
+            }
+            workflow {
+                """
+                def base = 'https://raw.githubusercontent.com/nf-core/test-datasets/metatdenovo/test_data/kofamscan/'
+                def g3 = file("\${workDir}/g3.faa")
+                g3.text = '>g3_orf_1\\nMKVLAAGIVGLLLSAQPAHAEQSTGW\\n'
+
+                input[0] = channel.of([ [ id: 'g3', source: 'prokka' ], g3 ])
+                input[1] = base + 'ko_list.gz'
+                input[2] = base + 'profiles.tar.gz'
+                """
+            }
+        }
+
+        then {
+            assertAll(
+                { assert workflow.success },
+                { assert path(workflow.out.tsv[0][1]).linesGzip == [ 'orf\tko\tthrshld\tscore\tevalue\tko_definition' ] },
+                { assert path(workflow.out.best_tsv[0][1]).linesGzip == [ 'orf\tko\tthrshld\tscore\tevalue\tko_definition' ] }
+            )
+        }
+    }
+
+    test("stored result is reused only for the same protein source") {
+
+        // Results left in the store by an earlier run: one for g1 from Prokka, one for g2 from Prokka.
+        // g1 now comes from Bakta, whose protein IDs differ, so its stored Prokka result must not be used.
+        // g2 still comes from Prokka, so its stored result must be used instead of annotating again.
+        when {
+            params {
+                kofamscan_store_dir = "$outputDir/store"
+            }
+            workflow {
+                """
+                def base = 'https://raw.githubusercontent.com/nf-core/test-datasets/metatdenovo/test_data/kofamscan/'
+                def records = file(base + 'proteins.faa.gz', checkIfExists: true).splitFasta(record: [text: true])
+                def half = records.size().intdiv(2)
+                def g1 = file("\${workDir}/g1.faa")
+                g1.text = records[0..<half].collect { r -> r.text }.join('')
+                def g2 = file("\${workDir}/g2.faa")
+                g2.text = records[half..-1].collect { r -> r.text }.join('')
+
+                def store = file("\${params.kofamscan_store_dir}")
+                store.mkdirs()
+                ['g1': 'stale_g1_orf', 'g2': 'stored_g2_orf'].each { acc, orf ->
+                    new java.util.zip.GZIPOutputStream(new FileOutputStream("\${store}/\${acc}.prokka.kofamscan.tsv.gz")).withWriter { w ->
+                        w << "#\\tgene name\\tKO\\tthrshld\\tscore\\tE-value\\tKO definition\\n"
+                        w << "*\\t\${orf}\\tK99999\\t100.0\\t200.0\\t1e-50\\t\\"seeded\\"\\n"
+                    }
+                }
+
+                input[0] = channel.of(
+                    [ [ id: 'g1', source: 'bakta' ], g1 ],
+                    [ [ id: 'g2', source: 'prokka' ], g2 ]
+                )
+                input[1] = base + 'ko_list.gz'
+                input[2] = base + 'profiles.tar.gz'
+                """
+            }
+        }
+
+        then {
+            def orfs = path(workflow.out.tsv[0][1]).linesGzip.drop(1).collect { l -> l.split('\t')[0] }
+            assertAll(
+                { assert workflow.success },
+                // only g1 is annotated, as g2 is found in the store
+                { assert workflow.trace.tasks().findAll { t -> t.name.startsWith('KOFAMSCAN:KOFAMSCAN_SCAN') }.size() == 1 },
+                { assert 'stored_g2_orf' in orfs },
+                { assert !('stale_g1_orf' in orfs) },
+                // g1 was annotated from the first half of the proteins
+                { assert orfs.any { o -> o.startsWith('k141_') } }
+            )
+        }
+    }
+}
